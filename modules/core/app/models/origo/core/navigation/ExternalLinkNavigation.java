@@ -6,7 +6,7 @@ import play.data.validation.Constraints.*;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-@Entity
+@Entity(name = "ExeternalLinkNavigation")
 public class ExternalLinkNavigation extends Model {
 
     @Id

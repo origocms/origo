@@ -12,7 +12,7 @@ import javax.persistence.Id;
 import java.util.Collection;
 import java.util.Date;
 
-@Entity
+@Entity(name = "PageIdNavigation")
 public class PageIdNavigation extends Model {
 
     @Id

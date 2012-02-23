@@ -1,6 +1,6 @@
 package models.origo.core;
 
-import play.data.validation.Constraints.Required;
+import play.data.validation.Constraints;
 import play.db.ebean.Model;
 
 import javax.persistence.Column;
@@ -9,17 +9,17 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import java.util.UUID;
 
-@Entity
+@Entity(name = "Content")
 public class Content extends Model {
 
     @Id
     public Long id;
 
-    @Required
-    //@Unique
+    @Constraints.Required
+    @Column(unique = true)
     public String identifier;
 
-    @Required
+    @Constraints.Required
     @Column(name = "content")
     @Lob
     public String value;

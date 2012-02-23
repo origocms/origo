@@ -49,7 +49,7 @@ public class Settings extends Model {
      */
 
     public Integer getValueAsInteger(final String name) {
-        final String value = getValues().get(name);
+        final String value = getValue(name);
         if (value != null) {
             return Integer.parseInt(value);
         }
@@ -57,7 +57,7 @@ public class Settings extends Model {
     }
 
     public Long getValueAsLong(final String name) {
-        final String value = getValues().get(name);
+        final String value = getValue(name);
         if (value != null) {
             return Long.parseLong(value);
         }
@@ -65,7 +65,7 @@ public class Settings extends Model {
     }
 
     public Boolean getValueAsBoolean(String name) {
-        final String value = getValues().get(name);
+        final String value = getValue(name);
         if (value != null) {
             return BooleanUtils.toBoolean(value);
         }
@@ -73,7 +73,7 @@ public class Settings extends Model {
     }
 
     public Double getValueAsDouble(final String name) {
-        final String value = getValues().get(name);
+        final String value = getValue(name);
         if (value != null) {
             return Double.parseDouble(value);
         }
@@ -81,7 +81,7 @@ public class Settings extends Model {
     }
 
     public Float getValueAsFloat(final String name) {
-        final String value = getValues().get(name);
+        final String value = getValue(name);
         if (value != null) {
             return Float.parseFloat(value);
         }

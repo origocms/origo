@@ -6,7 +6,7 @@ import play.db.ebean.Model;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-@Entity
+@Entity(name = "Meta")
 public class Meta extends Model {
 
     @Id

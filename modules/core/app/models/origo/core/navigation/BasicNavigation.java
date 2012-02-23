@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class BasicNavigation extends Model implements Navigation<BasicNavigation
     @ManyToOne
     public BasicNavigation parent;
 
-    @OneToMany(mappedBy = "parent", orphanRemoval = true)
+    @OneToMany(mappedBy = "parent")
     public List<BasicNavigation> children;
 
     @Required
@@ -55,6 +56,22 @@ public class BasicNavigation extends Model implements Navigation<BasicNavigation
         return children;
     }
 
+    public BasicNavigation create(String section, String type, String referenceId) {
+        return create(section, null, type, referenceId);
+    }
+    
+    public BasicNavigation create(String section, BasicNavigation parent, String type, String referenceId) {
+        BasicNavigation navigation = new BasicNavigation();
+        navigation.section = section;
+        navigation.parent = parent;
+        navigation.type = type;
+        navigation.referenceId = referenceId;
+        navigation.children = new ArrayList<BasicNavigation>();
+        navigation.saveManyToManyAssociations("children");
+        navigation.save();
+        return this;
+    }
+    
     public static Finder<Long, BasicNavigation> find = new Finder<Long, BasicNavigation>(
             Long.class, BasicNavigation.class
     );
@@ -68,19 +85,13 @@ public class BasicNavigation extends Model implements Navigation<BasicNavigation
 
     public static List<BasicNavigation> findWithSection(String section, BasicNavigation parent) {
         List<BasicNavigation> navigations =
-                find.where().eq("section", section).
-                    eq("parent", parent).findList();
+                find.where().eq("section", section).eq("parent", parent).findList();
         Collections.sort(navigations);
         return navigations;
     }
 
-    public static List<BasicNavigation> findWithSection(String section, String parentId) {
-        List<BasicNavigation> navigations =
-                find.where().
-                        eq("section", section).
-                        eq("parent", parentId).findList();
-        Collections.sort(navigations);
-        return navigations;
+    public static List<BasicNavigation> findWithSection(String section, Long parentId) {
+        return findWithSection(section, BasicNavigation.find.ref(parentId));
     }
 
     @Override

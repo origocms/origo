@@ -10,8 +10,8 @@ import java.util.*;
 import play.data.validation.Constraints.*;
 import play.db.ebean.Model;
 
-@Entity
-//@Table(uniqueConstraints = @UniqueConstraint(name = "nodeVersion", columnNames = {"nodeId", "version"}))
+@Entity(name = "RootNode")
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"nodeId", "version"}))
 public final class RootNode extends Model implements Node {
 
     @Id
@@ -38,12 +38,12 @@ public final class RootNode extends Model implements Node {
      * Only kept to make sure all elements added to the HEAD region are unique (we don't want duplicate javascript or css resources.)
      */
     @Transient
-    private Map<String, UIElement> headElement = new HashMap<String, UIElement>();
+    private transient Map<String, UIElement> headElement = new HashMap<String, UIElement>();
     /**
      * A list of UIElements for each region on the page. The key is the region name.
      */
     @Transient
-    private Map<String, List<UIElement>> uiElements = new HashMap<String, List<UIElement>>();
+    private transient Map<String, List<UIElement>> uiElements = new HashMap<String, List<UIElement>>();
 
     public RootNode(Long version) {
         this(UUID.randomUUID().toString(), version);

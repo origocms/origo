@@ -19,7 +19,7 @@ import play.data.validation.Constraints.*;
  * @see origo.core.listeners.BasicPageProvider
  */
 @Entity
-//@Table(uniqueConstraints = @UniqueConstraint(name = "pageVersion", columnNames = {"parentNodeId", "parentVersion"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"parentNodeId", "parentVersion"}))
 public class BasicPage extends Model implements Node {
 
     @Id
@@ -220,6 +220,5 @@ public class BasicPage extends Model implements Node {
                 eq("version", version).
                 findUnique();
     }
-
 }
 

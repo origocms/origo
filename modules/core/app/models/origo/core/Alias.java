@@ -8,7 +8,7 @@ import java.util.Collection;
 
 import play.data.validation.Constraints.*;
 
-@Entity
+@Entity(name = "Alias")
 public class Alias extends Model {
 
     @Id
