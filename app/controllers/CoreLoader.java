@@ -1,0 +1,141 @@
+package controllers;
+
+import models.Alias;
+import controllers.core.Node;
+import controllers.helpers.NodeHelper;
+import controllers.helpers.SettingsHelper;
+import controllers.helpers.ThemeHelper;
+import controllers.ui.RenderedNode;
+import play.Logger;
+import play.mvc.Result;
+import play.mvc.Results;
+
+import java.util.Collection;
+
+public class CoreLoader {
+
+    public static RenderedNode getStartPage() {
+//        try {
+            return loadAndDecorateStartPage();
+/*
+        } catch (PageNotFoundException e) {
+            return redirectToPageNotFoundPage();
+        } catch (Exception e) {
+            Logger.error("An exception occurred while loading the start page: " + e.getMessage());
+            return redirectToInternalServerErrorPage();
+        }
+*/
+    }
+
+    public static RenderedNode getPage(String identifier) {
+//        try {
+            return loadAndDecoratePage(identifier, 0);
+/*
+        } catch (PageNotFoundException e) {
+            throw redirectToPageNotFoundPage();
+        } catch (Exception e) {
+            Logger.error("An exception occurred while loading the page [" + identifier + "]: " + e.getMessage());
+            throw redirectToInternalServerErrorPage();
+        }
+*/
+    }
+
+    public static RenderedNode getPage(String identifier, long version) {
+//        try {
+            return loadAndDecoratePage(identifier, version);
+
+/*
+        } catch (PageNotFoundException e) {
+            throw redirectToPageNotFoundPage();
+        } catch (Exception e) {
+            Logger.error("An exception occurred while loading the page [" + identifier + "] with specific version [" + version + "]: " + e.getMessage());
+            throw redirectToInternalServerErrorPage();
+        }
+*/
+    }
+
+    private static RenderedNode loadAndDecorateStartPage() {
+        String startPage = SettingsHelper.Core.getStartPage();
+        Logger.debug("Loading Start Page [" + startPage + "]");
+        return loadAndDecoratePage(startPage, 0);
+    }
+
+    public static Result redirectToPageNotFoundPage() {
+        Logger.debug("Redirecting to Page-Not-Found Page");
+        String pageNotFoundPage = SettingsHelper.Core.getPageNotFoundPage();
+        Collection<Alias> aliases = Alias.findWithPageId(pageNotFoundPage);
+        if (aliases.iterator().hasNext()) {
+            Alias alias = aliases.iterator().next();
+            return Results.redirect(SettingsHelper.Core.getBaseUrl() + "" + alias.path);
+        } else {
+            // Defaulting to /page-not-found
+            return Results.redirect(SettingsHelper.Core.getBaseUrl() + "page-not-found");
+        }
+    }
+
+    public static Result redirectToInternalServerErrorPage() {
+        Logger.debug("Redirecting to Internal Error Page");
+        String internalServerErrorPage = SettingsHelper.Core.getInternalServerErrorPage();
+        Collection<Alias> aliases = Alias.findWithPageId(internalServerErrorPage);
+        if (aliases.iterator().hasNext()) {
+            Alias alias = aliases.iterator().next();
+            return Results.redirect(SettingsHelper.Core.getBaseUrl() + "" + alias.path);
+        } else {
+            // Defaulting to /error
+            return Results.redirect(SettingsHelper.Core.getBaseUrl() + "error");
+        }
+    }
+
+    private static RenderedNode loadAndDecoratePage(String identifier, long version) {
+        Node node = loadNode(identifier, version);
+        return decorateNode(node);
+    }
+
+    private static Node loadNode(String identifier, long version) {
+        Logger.trace("Trying to find alias for [" + identifier + "]");
+        Alias alias = Alias.findWithPath(identifier);
+        if (alias != null) {
+            Logger.debug("Found alias: " + alias.toString());
+            return loadByNodeIdAndVersion(alias.pageId, version);
+        } else {
+            Logger.debug("No Alias found trying [" + identifier + "] as nodeId");
+            return loadByNodeIdAndVersion(identifier, version);
+        }
+    }
+
+    private static Node loadByNodeIdAndVersion(String identifier, long version) {
+        Node node;
+        if (version != 0) {
+            node = NodeHelper.load(identifier, version);
+        } else {
+            node = NodeHelper.load(identifier);
+        }
+        if (Logger.isDebugEnabled()) {
+            Logger.debug("Loaded " + node.toString());
+        }
+        return node;
+    }
+
+    private static RenderedNode decorateNode(Node node) {
+        RenderedNode renderedNode = ThemeHelper.decorate(node);
+        if (Logger.isDebugEnabled()) {
+            Logger.debug("Decorated " + renderedNode);
+        }
+        return renderedNode;
+    }
+
+/*
+    public static Collection<NavigationElement> getNavigation(String identifier) {
+        return getNavigation(identifier, 0);
+    }
+
+    public static Collection<NavigationElement> getNavigation(String identifier, long version) {
+        Node node = loadNode(identifier, version);
+        Collection<NavigationElement> navigationLinks = NavigationHelper.getNavigation(node, NavigationElement.FRONT);
+        if (Logger.isDebugEnabled()) {
+            Logger.debug("Navigation loaded " + navigationLinks);
+        }
+        return navigationLinks;
+    }
+*/
+}

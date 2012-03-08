@@ -11,15 +11,27 @@ object ApplicationBuild extends Build {
       // Add your project dependencies here,
     )
 
-    val core = PlayProject(appName + "-core", appVersion, path = file("modules/core"), mainLang = JAVA)
-    val admin = PlayProject(appName + "-admin", appVersion, path = file("modules/admin"), mainLang = JAVA)
-    val structuredContent = PlayProject(appName + "-structured-content", appVersion, path = file("modules/structured-content"))
+  /*
+    val core = PlayProject(appName + "-core", appVersion, path = file("modules/core"), mainLang = JAVA).settings(
+      ebeanEnabled := true
+    )
+    val admin = PlayProject(appName + "-admin", appVersion, path = file("modules/admin"), mainLang = JAVA).settings(
+      ebeanEnabled := true
+    ).dependsOn(
+      core
+    )
+    val structuredContent = PlayProject(appName + "-structured-content", appVersion, path = file("modules/structured-content")).settings(
+      ebeanEnabled := true
+    ).dependsOn(
+      core
+    )
+    */
 
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = JAVA).settings(
         ebeanEnabled := true
     )
     .dependsOn(
-        core
+        //core
         //, admin, structuredContent
     )
 

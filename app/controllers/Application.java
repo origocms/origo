@@ -1,14 +1,9 @@
 package controllers;
 
-import controllers.origo.core.CoreLoader;
-import origo.core.ui.RenderedNode;
 import play.db.ebean.Transactional;
 import play.mvc.*;
 
-import views.html.*;
 import views.html.index;
-
-import java.util.Collection;
 
 public class Application extends Controller {
 
