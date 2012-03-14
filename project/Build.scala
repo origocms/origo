@@ -8,11 +8,14 @@ object ApplicationBuild extends Build {
     val appVersion      = "1.0-SNAPSHOT"
 
     val appDependencies = Seq(
-      // Add your project dependencies here,
     )
 
-    val core = PlayProject(appName + "-core", appVersion, path = file("modules/core"), mainLang = JAVA).settings(
-      ebeanEnabled := true
+    val coreDependencies = Seq(
+      "org.hibernate" % "hibernate-entitymanager" % "4.1.1.Final"
+    )
+
+    val core = PlayProject(appName + "-core", appVersion, coreDependencies, path = file("modules/core"), mainLang = JAVA).settings(
+      ebeanEnabled := false
     )
     /*
     val admin = PlayProject(appName + "-admin", appVersion, path = file("modules/admin"), mainLang = JAVA).settings(
@@ -28,7 +31,7 @@ object ApplicationBuild extends Build {
     */
 
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = JAVA).settings(
-        ebeanEnabled := true
+        ebeanEnabled := false
     )
     .dependsOn(
         core

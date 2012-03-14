@@ -1,7 +1,74 @@
-@(message: String)
+@(title: String)(headline: String)(message: String) @*(rightColumns: List[String])*@
 
-@main("Welcome to Play 2.0") {
-    
-    @play20.welcome(message, style = "Java")
-    
+@main(title) {
+
+<div class="menu">
+    <div>
+        <div>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">What we do</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="logo"></div>
+
+<div class="main">
+
+    <div class="content">
+        <div class="headline">
+            <h1>@headline</h1>
+        </div>
+        <div class="body">
+            @Html(message)
+        </div>
+        <div class="right">
+            @*
+            @for((right,i) <- rightColumns.zipWithIndex) {
+            <div class="@if(i==0){first}">
+                @Html(right)
+            </div>
+            }
+            *@
+        </div>
+    </div>
+
+    <div class="footer">
+        <div>
+            <ul>
+                <li><h5>Download</h5></li>
+                <li><a href="#">Latest</a></li>
+                <li><a href="#">Samples</a></li>
+            </ul>
+
+            <ul>
+                <li><h5>Learn</h5></li>
+                <li><a href="#">Terms of Service</a></li>
+                <li><a href="#">Privacy Guidelines</a></li>
+                <li><a href="#">Frequently Asked Questions</a></li>
+                <li><a href="#">Help</a></li>
+            </ul>
+
+            <ul>
+                <li><h5>Information</h5></li>
+                <li><a href="#">About OrigoCMS</a></li>
+                <li><a href="#">Contact Us</a></li>
+                <li><a href="#">Press</a></li>
+            </ul>
+
+        </div>
+
+        <div class="copy">
+            <hr>
+            Copyright &copy; 2012 CodedCity AB.
+        </div>
+
+    </div>
+
+</div>
+
+
 }

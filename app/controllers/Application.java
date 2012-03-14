@@ -1,6 +1,6 @@
 package controllers;
 
-import play.db.ebean.Transactional;
+import play.db.jpa.Transactional;
 import play.mvc.*;
 
 import views.html.index;
@@ -19,7 +19,7 @@ public class Application extends Controller {
         //render(node.getTemplate(), node, navigation);
         //render(node.getTemplate(), node, navigation);
 
-        return ok(index.render("Your new application is ready."));
+        return ok(index.render("Origo", "Welcome!", "Your new application is ready."));
     }
 
     /*
