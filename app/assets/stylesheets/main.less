@@ -1,11 +1,20 @@
 @import "_fonts.less";
 
 body {
-    background-color: #f0f0f0;
     color: #000000;
     margin: 0;
     font-size: 0.775em;
     font-family: 'DroidSansRegular', Arial, sans-serif;
+
+    background: #888787; /* Old browsers */
+    background: -moz-linear-gradient(left,  #888787 0%, #666666 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,#888787), color-stop(100%,#666666)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(left,  #888787 0%,#666666 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(left,  #888787 0%,#666666 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(left,  #888787 0%,#666666 100%); /* IE10+ */
+    background: linear-gradient(left,  #888787 0%,#666666 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#888787', endColorstr='#666666',GradientType=1 ); /* IE6-9 */
+
 }
 
 h1 {
@@ -19,17 +28,17 @@ h2 {
 }
 
 h3 {
-    font-size: 1.0em;
+    font-size: 1.05em;
     font-weight: 700;
 }
 
 h4 {
-    font-size: 0.9em;
+    font-size: 1.0em;
     font-weight: 700;
 }
 
 h5 {
-    font-size: 0.8em;
+    font-size: 0.95em;
     font-weight: 700;
 }
 
@@ -105,27 +114,35 @@ h5 {
     margin-left: 0;
 }
                    
+.menu ul > li.download {
+    display: inline;
+    padding: 0 20px 0 0;
+    margin-left: 0;
+}
+
 .menu ul > li > a {
     text-decoration: none;
     color: #fff;
 }
 
 .logo {
+    background-color: #f0f0f0;
+}
+
+.logo > div {
     z-index: 500;
     width: 920px;
     height: 150px;
     position: relative;
     margin: auto;
-    background-image: url("../images/origo.png");
-    background-repeat:no-repeat;
-    background-position: 0 65px;
+    top: 65px;
 }
 
 .content {
     position: relative;
     width: 920px;
     margin: auto;
-    min-height: 650px;
+    min-height: 550px;
 }
 
 .content .body {
