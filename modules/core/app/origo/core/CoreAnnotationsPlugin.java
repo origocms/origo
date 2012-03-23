@@ -1,16 +1,16 @@
 package origo.core;
 
+import origo.core.annotations.Decorates;
 import origo.core.annotations.Listener;
+import origo.core.annotations.OnLoad;
 import origo.core.annotations.Provides;
+import origo.core.annotations.forms.*;
 import play.Application;
 import play.Logger;
-import play.Play;
 import play.Plugin;
-import play.api.Configuration;
-import play.api.Mode;
-import scala.Enumeration;
 
 import java.lang.annotation.Annotation;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -28,8 +28,6 @@ public class CoreAnnotationsPlugin extends Plugin {
     @Override
     public void onStart() {
 
-        Logger.error("Bla bla");
-        
         Listeners.invalidate();
 
         //Configuration.load(Play.application().getFile("modules/core/conf/application.conf"), getMode());
@@ -38,15 +36,13 @@ public class CoreAnnotationsPlugin extends Plugin {
         
         //List<Class> modifiedJavaClasses = AnnotationPluginHelper.getJavaClasses(modifiedClasses);
         findAndAddListenerAnnotation(annotatedTypes, Provides.class);
-        /*
-        findAndAddListenerAnnotation(Decorates.class);
-        findAndAddListenerAnnotation(OnLoad.class);
-        findAndAddListenerAnnotation(OnSubmit.class);
-        findAndAddListenerAnnotation(SubmitHandler.class);
-        findAndAddListenerAnnotation(SubmitState.class);
-        findAndAddListenerAnnotation(OnLoadForm.class);
-        findAndAddListenerAnnotation(ProvidesForm.class);
-        */
+        findAndAddListenerAnnotation(annotatedTypes, Decorates.class);
+        findAndAddListenerAnnotation(annotatedTypes, OnLoad.class);
+        findAndAddListenerAnnotation(annotatedTypes, OnSubmit.class);
+        findAndAddListenerAnnotation(annotatedTypes, SubmitHandler.class);
+        findAndAddListenerAnnotation(annotatedTypes, SubmitState.class);
+        findAndAddListenerAnnotation(annotatedTypes, OnLoadForm.class);
+        findAndAddListenerAnnotation(annotatedTypes, ProvidesForm.class);
     }
 
     /**
@@ -59,15 +55,8 @@ public class CoreAnnotationsPlugin extends Plugin {
         for (String className : annotatedTypes) {
             Listeners.addListener(annotationClass, className);
         }
-    }
-    
-    private Enumeration.Value getMode() {
-        if (Play.application().isDev()) {
-            return Mode.Dev();
-        } else if (Play.application().isTest()) {
-            return Mode.Test();
-        } 
-        return Mode.Prod();
+        List<CachedAnnotation> annotatedClasses = Listeners.getListenersForAnnotationType(annotationClass);
+        Logger.info("Found "+annotatedClasses.size()+" methods annotated with "+annotationClass);
     }
 
 }

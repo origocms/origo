@@ -75,7 +75,7 @@ public class Listeners {
     private static final Map<Class<?>, List<Method>> class2AllMethodsWithAnnotations = new HashMap<Class<?>, List<Method>>();
 
     /**
-     * Find all annotated method from a class
+     * Find all annotated methods from a class
      * @param clazz The class
      * @return A list of method object
      */

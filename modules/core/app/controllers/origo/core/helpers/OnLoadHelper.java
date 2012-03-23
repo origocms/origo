@@ -16,7 +16,7 @@ import java.util.Map;
  * Helper to trigger \@OnLoad listeners. Should not be used directly, use NodeHelper instead.
  *
  * @see NodeHelper
- * @see controllers.annotations.OnLoad
+ * @see origo.core.annotations.OnLoad
  */
 public class OnLoadHelper {
 
