@@ -15,7 +15,21 @@ object ApplicationBuild extends Build {
     filters
   )
 
-  val main = play.Project(appName, appVersion, appDependencies).settings(
+  val core = play.Project(
+      appName + "-core", appVersion, appDependencies, path = file("modules/core")
+    )
+
+/*
+    val adminArea = PlayProject(
+      appName + "-admin", appVersion, path = file("modules/admin")
+    ).dependsOn(core)
+*/
+
+  val main = play.Project(
+    appName, appVersion
+  ).dependsOn(
+    core
+  ).settings(
     // Add your own project settings here      
   )
 

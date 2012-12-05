@@ -1,8 +1,6 @@
-package com.origocms.core;
+package com.origocms;
 
-import com.origocms.core.configurations.SpringConfiguration;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import play.GlobalSettings;
 
@@ -22,4 +20,5 @@ public class Global extends GlobalSettings {
         }
         return applicationContext.getBean(aClass);
     }
+
 }
