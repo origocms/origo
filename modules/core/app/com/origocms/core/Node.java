@@ -12,7 +12,7 @@ import java.util.Set;
  * starts this will be turned into a RenderedNode.
  *
  * @see com.origocms.core.annotations.Provides
- * @see play.modules.origo.core.annotations.ThemeVariant
+ * @see com.origocms.core.annotations.ThemeVariant
  * @see UIElement
  */
 public interface Node {
@@ -31,7 +31,7 @@ public interface Node {
      *
      * @return a version number
      */
-    Long getVersion();
+    Integer getVersion();
 
     /**
      * A title for this node
@@ -58,7 +58,7 @@ public interface Node {
      * The unique name of the theme variant used for this page
      *
      * @return theme variant name
-     * @see play.modules.origo.core.annotations.ThemeVariant
+     * @see com.origocms.core.annotations.ThemeVariant
      */
     String getThemeVariant();
 
@@ -66,7 +66,7 @@ public interface Node {
      * All the available regions stored on this node.
      *
      * @return a set of region names that can be used for showing content
-     * @see play.modules.origo.core.annotations.ThemeVariant
+     * @see com.origocms.core.annotations.ThemeVariant
      */
     Set<String> getRegions();
 
@@ -83,7 +83,7 @@ public interface Node {
      *
      * @param uiElement the element to be rendered
      * @return the newly added UIElement
-     * @see play.modules.origo.core.annotations.ThemeVariant
+     * @see com.origocms.core.annotations.ThemeVariant
      */
     UIElement addHeadUIElement(UIElement uiElement);
 
@@ -92,7 +92,7 @@ public interface Node {
      *
      * @param uiElement the element to be rendered
      * @return the newly added UIElement
-     * @see play.modules.origo.core.annotations.ThemeVariant
+     * @see com.origocms.core.annotations.ThemeVariant
      */
     UIElement addUIElement(UIElement uiElement);
 
@@ -102,7 +102,7 @@ public interface Node {
      * @param uiElement            the element to be rendered
      * @param reorderElementsBelow if true then all elements below this new element will be reordered according to their individual weight
      * @return the newly added UIElement
-     * @see play.modules.origo.core.annotations.ThemeVariant
+     * @see com.origocms.core.annotations.ThemeVariant
      */
     UIElement addHeadUIElement(UIElement uiElement, boolean reorderElementsBelow);
 
@@ -112,7 +112,7 @@ public interface Node {
      * @param uiElement            the element to be rendered
      * @param reorderElementsBelow if true then all elements below this new element will be reordered according to their individual weight
      * @return the newly added UIElement
-     * @see play.modules.origo.core.annotations.ThemeVariant
+     * @see com.origocms.core.annotations.ThemeVariant
      */
     UIElement addUIElement(UIElement uiElement, boolean reorderElementsBelow);
 

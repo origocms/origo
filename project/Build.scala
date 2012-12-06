@@ -11,7 +11,7 @@ object ApplicationBuild extends Build {
     "org.springframework" % "spring-context" % "3.1.2.RELEASE",
     javaCore,
     javaJdbc,
-    javaEbean,
+    javaJpa,
     filters
   )
 
