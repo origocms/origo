@@ -2,7 +2,7 @@ package com.origocms.core.helpers;
 
 
 import com.origocms.core.Node;
-import com.origocms.core.PageNotFoundException;
+import com.origocms.core.NodeNotFoundException;
 import com.origocms.core.annotations.Types;
 import com.origocms.core.models.RootNode;
 import org.apache.commons.lang3.StringUtils;
@@ -15,7 +15,7 @@ public class NodeHelper {
         //Load RootNode model
         RootNode rootNode = RootNode.findLatestPublishedVersionWithNodeId(nodeId, new Date());
         if (rootNode == null) {
-            throw new PageNotFoundException(nodeId);
+            throw new NodeNotFoundException(nodeId);
         }
 
         return load(rootNode);
@@ -25,7 +25,7 @@ public class NodeHelper {
         //Load RootNode model
         RootNode rootNode = RootNode.findWithNodeIdAndSpecificVersion(nodeId, version);
         if (rootNode == null) {
-            throw new PageNotFoundException(nodeId);
+            throw new NodeNotFoundException(nodeId);
         }
 
         return load(rootNode);

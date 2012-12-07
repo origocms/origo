@@ -1,6 +1,8 @@
 package com.origocms.core.controllers;
 
 import com.origocms.core.Node;
+import com.origocms.core.NodeLoadException;
+import com.origocms.core.NodeNotFoundException;
 import com.origocms.core.helpers.NavigationHelper;
 import com.origocms.core.helpers.NodeHelper;
 import com.origocms.core.helpers.SettingsHelper;
@@ -9,91 +11,73 @@ import com.origocms.core.models.Alias;
 import com.origocms.core.ui.NavigationElement;
 import com.origocms.core.ui.RenderedNode;
 import play.Logger;
-import play.mvc.Results;
+import play.mvc.Controller;
+import play.mvc.Result;
 
 import java.util.Collection;
 
 public class CoreLoader {
 
-    public static RenderedNode getStartPage() {
-        //try {
-            return loadAndDecorateStartPage();
-/*
-        } catch (PageNotFoundException e) {
-            throw redirectToPageNotFoundPage();
+    public static RenderedNode getStartPage() throws NodeLoadException {
+        String startPage = SettingsHelper.Core.getStartPage();
+        try {
+            return loadAndDecoratePage(startPage, 0);
         } catch (Exception e) {
             Logger.error("An exception occurred while loading the start page: " + e.getMessage());
-            throw redirectToInternalServerErrorPage();
+            throw new NodeLoadException(startPage, e.getMessage());
         }
-*/
     }
 
-    public static RenderedNode getPage(String identifier) {
-//        try {
+    public static RenderedNode getPage(String identifier) throws NodeLoadException {
+        try {
             return loadAndDecoratePage(identifier, 0);
-/*
-        } catch (PageNotFoundException e) {
-            throw redirectToPageNotFoundPage();
         } catch (Exception e) {
             Logger.error("An exception occurred while loading the page [" + identifier + "]: " + e.getMessage());
-            throw redirectToInternalServerErrorPage();
+            throw new NodeLoadException(identifier, e.getMessage());
         }
-*/
     }
 
-    public static RenderedNode getPage(String identifier, long version) {
-//        try {
+    public static RenderedNode getPage(String identifier, long version) throws NodeLoadException {
+        try {
             return loadAndDecoratePage(identifier, version);
-/*
-        } catch (PageNotFoundException e) {
-            throw redirectToPageNotFoundPage();
         } catch (Exception e) {
             Logger.error("An exception occurred while loading the page [" + identifier + "] with specific version [" + version + "]: " + e.getMessage());
-            throw redirectToInternalServerErrorPage();
+            throw new NodeLoadException(identifier, e.getMessage());
         }
-*/
     }
 
-    private static RenderedNode loadAndDecorateStartPage() {
-        String startPage = SettingsHelper.Core.getStartPage();
-        Logger.debug("Loading Start Page [" + startPage + "]");
-        return loadAndDecoratePage(startPage, 0);
-    }
-
-    /*
-    public static Results.Redirect redirectToPageNotFoundPage() {
+    public static Result loadPageNotFoundErrorPage() {
         Logger.debug("Redirecting to Page-Not-Found Page");
         String pageNotFoundPage = SettingsHelper.Core.getPageNotFoundPage();
         Collection<Alias> aliases = Alias.findWithPageId(pageNotFoundPage);
         if (aliases.iterator().hasNext()) {
             Alias alias = aliases.iterator().next();
-            return new Results.Redirect(SettingsHelper.Core.getBaseUrl() + "" + alias.path, false);
+            return Controller.redirect(SettingsHelper.Core.getBaseUrl() + "" + alias.path);
         } else {
             // Defaulting to /page-not-found
-            return new Redirect(SettingsHelper.Core.getBaseUrl() + "page-not-found", false);
+            return Controller.redirect(SettingsHelper.Core.getBaseUrl() + "page-not-found");
         }
     }
 
-    public static Redirect redirectToInternalServerErrorPage() {
+    public static Result loadPageLoadErrorPage() {
         Logger.debug("Redirecting to Internal Error Page");
         String internalServerErrorPage = SettingsHelper.Core.getInternalServerErrorPage();
         Collection<Alias> aliases = Alias.findWithPageId(internalServerErrorPage);
         if (aliases.iterator().hasNext()) {
             Alias alias = aliases.iterator().next();
-            return new Redirect(SettingsHelper.Core.getBaseUrl() + "" + alias.path, false);
+            return Controller.redirect(SettingsHelper.Core.getBaseUrl() + "" + alias.path);
         } else {
             // Defaulting to /error
-            return new Redirect(SettingsHelper.Core.getBaseUrl() + "error", false);
+            return Controller.redirect(SettingsHelper.Core.getBaseUrl() + "error");
         }
     }
-    */
 
-    private static RenderedNode loadAndDecoratePage(String identifier, long version) {
+    private static RenderedNode loadAndDecoratePage(String identifier, long version) throws NodeNotFoundException {
         Node node = loadNode(identifier, version);
         return decorateNode(node);
     }
 
-    private static Node loadNode(String identifier, long version) {
+    private static Node loadNode(String identifier, long version) throws NodeNotFoundException {
         Logger.trace("Trying to find alias for [" + identifier + "]");
         Alias alias = Alias.findWithPath(identifier);
         if (alias != null) {
@@ -105,12 +89,15 @@ public class CoreLoader {
         }
     }
 
-    private static Node loadByNodeIdAndVersion(String identifier, long version) {
+    private static Node loadByNodeIdAndVersion(String identifier, long version) throws NodeNotFoundException {
         Node node;
         if (version != 0) {
             node = NodeHelper.load(identifier, version);
         } else {
             node = NodeHelper.load(identifier);
+        }
+        if(node == null) {
+            throw new NodeNotFoundException(identifier);
         }
         if (Logger.isDebugEnabled()) {
             Logger.debug("Loaded " + node.toString());
@@ -126,11 +113,11 @@ public class CoreLoader {
         return renderedNode;
     }
 
-    public static Collection<NavigationElement> getNavigation(String identifier) {
+    public static Collection<NavigationElement> getNavigation(String identifier) throws NodeNotFoundException {
         return getNavigation(identifier, 0);
     }
 
-    public static Collection<NavigationElement> getNavigation(String identifier, long version) {
+    public static Collection<NavigationElement> getNavigation(String identifier, long version) throws NodeNotFoundException {
         Node node = loadNode(identifier, version);
         Collection<NavigationElement> navigationLinks = NavigationHelper.getNavigation(node, NavigationElement.FRONT);
         if (Logger.isDebugEnabled()) {
