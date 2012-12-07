@@ -9,22 +9,18 @@ import com.origocms.core.ui.RenderingContext;
 import com.origocms.core.ui.UIElement;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
+import play.mvc.Result;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ThemeHelper {
 
-    public static RenderedNode decorate(Node node) {
-        CachedThemeVariant themeVariant = loadTheme(node);
-        return decorate(node, themeVariant);
-    }
-
     public static RenderedNode decorate(Node node, CachedThemeVariant themeVariant) {
         RenderedNode renderedNode = new RenderedNode(node.getNodeId());
         setupRegions(themeVariant, renderedNode);
+        renderedNode.setTemplate(themeVariant);
         renderedNode.setTitle(node.getTitle());
-        renderedNode.setTemplate(ReflectionHelper.getTemplate(themeVariant));
         RenderingContext renderingContext = new RenderingContext(themeVariant, node);
         for (String region : node.getRegions()) {
             for (UIElement uiElement : node.getUIElements(region)) {
@@ -104,7 +100,7 @@ public class ThemeHelper {
         return sb.toString();
     }
 
-    private static CachedThemeVariant loadTheme(Node node) {
+    public static CachedThemeVariant loadTheme(Node node) {
         CachedThemeVariant themeVariant = Themes.getThemeVariant(node.getThemeVariant());
         if (themeVariant == null) {
             String themeVariantId = SettingsHelper.Core.getThemeVariant();
@@ -121,4 +117,7 @@ public class ThemeHelper {
         return themeVariant;
     }
 
+    public static Result render(RenderedNode renderedNode) {
+        return ReflectionHelper.invokeTemplate(renderedNode);
+    }
 }

@@ -1,13 +1,14 @@
 package com.origocms.core.ui;
 
+import com.origocms.core.CachedThemeVariant;
+
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class RenderedNode {
 
     private String id;
-
-    private String template;
 
     private String title;
 
@@ -16,7 +17,10 @@ public class RenderedNode {
     private String script;
     private String style;
 
+    private CachedThemeVariant template;
     private Map<String, String> regions;
+
+    private Collection<NavigationElement> navigation;
 
     public RenderedNode(String id) {
         this.id = id;
@@ -29,14 +33,6 @@ public class RenderedNode {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getTemplate() {
-        return template;
-    }
-
-    public void setTemplate(String template) {
-        this.template = template;
     }
 
     public String getTitle() {
@@ -63,6 +59,14 @@ public class RenderedNode {
         this.script = script;
     }
 
+    public CachedThemeVariant getTemplate() {
+        return template;
+    }
+
+    public void setTemplate(CachedThemeVariant template) {
+        this.template = template;
+    }
+
     public Map<String, String> getRegions() {
         return regions;
     }
@@ -73,6 +77,14 @@ public class RenderedNode {
 
     public String get(String region) {
         return regions.get(region);
+    }
+
+    public Collection<NavigationElement> getNavigation() {
+        return navigation;
+    }
+
+    public void setNavigation(Collection<NavigationElement> navigation) {
+        this.navigation = navigation;
     }
 
     public void addMeta(String additionalContent) {
@@ -107,6 +119,6 @@ public class RenderedNode {
 
     @Override
     public String toString() {
-        return "RenderedNode (" + id + ", template=" + template + ") - " + title;
+        return "RenderedNode (" + id + ") - " + title;
     }
 }

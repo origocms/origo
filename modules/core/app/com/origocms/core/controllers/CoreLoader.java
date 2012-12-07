@@ -1,7 +1,7 @@
 package com.origocms.core.controllers;
 
+import com.origocms.core.CachedThemeVariant;
 import com.origocms.core.Node;
-import com.origocms.core.NodeLoadException;
 import com.origocms.core.NodeNotFoundException;
 import com.origocms.core.helpers.NavigationHelper;
 import com.origocms.core.helpers.NodeHelper;
@@ -18,31 +18,37 @@ import java.util.Collection;
 
 public class CoreLoader {
 
-    public static RenderedNode getStartPage() throws NodeLoadException {
+    public static Result getStartPage() {
         String startPage = SettingsHelper.Core.getStartPage();
         try {
             return loadAndDecoratePage(startPage, 0);
+        } catch (NodeNotFoundException e) {
+            return loadPageNotFoundErrorPage();
         } catch (Exception e) {
             Logger.error("An exception occurred while loading the start page: " + e.getMessage());
-            throw new NodeLoadException(startPage, e.getMessage());
+            return loadPageLoadErrorPage();
         }
     }
 
-    public static RenderedNode getPage(String identifier) throws NodeLoadException {
+    public static Result getPage(String identifier) {
         try {
             return loadAndDecoratePage(identifier, 0);
+        } catch (NodeNotFoundException e) {
+            return loadPageNotFoundErrorPage();
         } catch (Exception e) {
             Logger.error("An exception occurred while loading the page [" + identifier + "]: " + e.getMessage());
-            throw new NodeLoadException(identifier, e.getMessage());
+            return loadPageLoadErrorPage();
         }
     }
 
-    public static RenderedNode getPage(String identifier, long version) throws NodeLoadException {
+    public static Result getPage(String identifier, long version) {
         try {
             return loadAndDecoratePage(identifier, version);
+        } catch (NodeNotFoundException e) {
+            return loadPageNotFoundErrorPage();
         } catch (Exception e) {
             Logger.error("An exception occurred while loading the page [" + identifier + "] with specific version [" + version + "]: " + e.getMessage());
-            throw new NodeLoadException(identifier, e.getMessage());
+            return loadPageLoadErrorPage();
         }
     }
 
@@ -72,9 +78,14 @@ public class CoreLoader {
         }
     }
 
-    private static RenderedNode loadAndDecoratePage(String identifier, long version) throws NodeNotFoundException {
+    private static Result loadAndDecoratePage(String identifier, long version) throws NodeNotFoundException {
         Node node = loadNode(identifier, version);
-        return decorateNode(node);
+        RenderedNode renderedNode = ThemeHelper.decorate(node, ThemeHelper.loadTheme(node));
+        renderedNode.setNavigation(getNavigation(identifier));
+        if (Logger.isDebugEnabled()) {
+            Logger.debug("Decorated " + renderedNode);
+        }
+        return ThemeHelper.render(renderedNode);
     }
 
     private static Node loadNode(String identifier, long version) throws NodeNotFoundException {
@@ -103,14 +114,6 @@ public class CoreLoader {
             Logger.debug("Loaded " + node.toString());
         }
         return node;
-    }
-
-    private static RenderedNode decorateNode(Node node) {
-        RenderedNode renderedNode = ThemeHelper.decorate(node);
-        if (Logger.isDebugEnabled()) {
-            Logger.debug("Decorated " + renderedNode);
-        }
-        return renderedNode;
     }
 
     public static Collection<NavigationElement> getNavigation(String identifier) throws NodeNotFoundException {

@@ -1,5 +1,8 @@
 package com.origocms.controllers;
 
+import com.origocms.core.NodeLoadException;
+import com.origocms.core.controllers.CoreLoader;
+import com.origocms.core.ui.RenderedNode;
 import com.origocms.views.html.index;
 import org.springframework.stereotype.Component;
 import play.mvc.Controller;
@@ -9,7 +12,11 @@ import play.mvc.Result;
 public class Application extends Controller {
 
     public Result index() {
-        return ok(index.render("Your new application is ready."));
+        return CoreLoader.getStartPage();
+    }
+
+    public Result page(String identifier) {
+        return CoreLoader.getPage(identifier);
     }
 
 }

@@ -2,17 +2,19 @@ package com.origocms.core.helpers;
 
 import com.origocms.core.CachedDecorator;
 import com.origocms.core.CachedThemeVariant;
+import com.origocms.core.ui.RenderedNode;
 import play.Logger;
+import play.mvc.Result;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Helper methods for invoking the triggers/origo.listeners/hooks.
+ * Helper methods for invoking the triggers/listeners/hooks.
  */
 public class ReflectionHelper {
 
@@ -24,9 +26,6 @@ public class ReflectionHelper {
      * @return whatever object the listener returns, if any.
      */
     public static Object invokeMethod(Method method, Map<Class, Object> parameters) {
-        if (!Modifier.isStatic(method.getModifiers())) {
-            throw new RuntimeException("Method \'" + method.getDeclaringClass().getName() + "." + method.getName() + "\' is not static");
-        }
         Class[] parameterTypes = method.getParameterTypes();
         Object[] foundParameters;
         try {
@@ -34,22 +33,12 @@ public class ReflectionHelper {
         } catch (UnknownParameterTypeException e) {
             throw new RuntimeException("Method \'" + method + "\' has a parameter of type \'" + e.getParameterType() + "\' specified. No parameter of that type exists in the calling parameters");
         }
-        /*
         try {
-            return Java.invokeStatic(method, foundParameters);
-        } catch (Redirect redirect) {
-            throw redirect;
-        } catch (InvocationTargetException e) {
-            if (e.getTargetException() instanceof Redirect) {
-                throw (Redirect) e.getTargetException();
-            }
-            throw new RuntimeException(e.getTargetException().getMessage(), e);
+            return method.invoke(foundParameters);
         } catch (Exception e) {
             Logger.error("Unable to invoke method \'" + method.getDeclaringClass().getName() + "." + method.getName() + "\'");
             throw new RuntimeException(e.getMessage(), e);
         }
-        */
-        return null;
     }
 
     /**
@@ -111,9 +100,9 @@ public class ReflectionHelper {
         return (String) invokeMethod(decorator.method, parameters);
     }
 
-    public static String getTemplate(CachedThemeVariant themeVariant) {
+    public static Result invokeTemplate(RenderedNode renderedNode) {
         try {
-            return (String) invokeMethod(themeVariant.templateMethod, null);
+            return (Result) invokeMethod(renderedNode.getTemplate().templateMethod, Collections.<Class, Object>singletonMap(RenderedNode.class, renderedNode));
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }

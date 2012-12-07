@@ -3,6 +3,10 @@ package com.origocms;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import play.GlobalSettings;
+import play.libs.Yaml;
+
+import java.util.List;
+import java.util.Map;
 
 public class Global extends GlobalSettings {
 

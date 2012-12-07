@@ -11,7 +11,7 @@ import java.util.Date;
 
 public class NodeHelper {
 
-    public static Node load(String nodeId) {
+    public static Node load(String nodeId) throws NodeNotFoundException {
         //Load RootNode model
         RootNode rootNode = RootNode.findLatestPublishedVersionWithNodeId(nodeId, new Date());
         if (rootNode == null) {
@@ -21,7 +21,7 @@ public class NodeHelper {
         return load(rootNode);
     }
 
-    public static Node load(String nodeId, long version) {
+    public static Node load(String nodeId, long version) throws NodeNotFoundException {
         //Load RootNode model
         RootNode rootNode = RootNode.findWithNodeIdAndSpecificVersion(nodeId, version);
         if (rootNode == null) {
