@@ -8,10 +8,10 @@ object ApplicationBuild extends Build {
   val appVersion      = "0.1-SNAPSHOT"
 
   val appDependencies = Seq(
-    "org.springframework" % "spring-context" % "3.1.2.RELEASE",
     javaCore,
     javaJdbc,
-    javaJpa
+    javaJpa,
+    "org.springframework" % "spring-context" % "3.1.2.RELEASE"
   )
 
   val main = play.Project(

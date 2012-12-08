@@ -3,7 +3,7 @@
 # ~~~~
 
 # Home page
-GET     /                           @com.origocms.controllers.Application.index()
+GET     /                           @controllers.origo.Application.index()
 
 ->     /core                        core.Routes
 
