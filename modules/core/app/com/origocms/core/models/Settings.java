@@ -12,7 +12,7 @@ import java.util.Map;
  *
  * @see SettingsKeys
  */
-@Entity(name = "settings")
+@Entity
 @Table(name = "settings")
 public class Settings {
 
@@ -91,19 +91,21 @@ public class Settings {
     }
 
     private static TypedQuery<Settings> loadQuery() {
-        return JPA.em().createQuery("select s from models.Settings s", Settings.class);
+        return JPA.em().createQuery("select s from com.origocms.core.models.Settings s", Settings.class);
     }
 
     private static Settings doSave(Settings settings) {
         return settings.save();
     }
 
+
     public static Settings load() {
-        List<Settings> result = loadQuery().getResultList();
-        if (result.isEmpty()) {
-            return doSave(new Settings());
+        try
+        {
+            return loadQuery().getSingleResult();
+        } catch (NoResultException ignored) {
         }
-        return result.get(0);
+        return new Settings();
     }
 
     @SuppressWarnings("unchecked")
@@ -112,11 +114,16 @@ public class Settings {
     }
 
     public Settings save() {
-        List<Settings> result = loadQuery().getResultList();
-        if (!result.isEmpty() && !result.get(0).id.equals(id)) {
-            throw new RuntimeException("Only one instance of setting should be available in the system");
+        try
+        {
+            Settings settings = loadQuery().getSingleResult();
+            if (!settings.id.equals(id)) {
+                throw new RuntimeException("Only one instance of setting should be available in the system");
+            }
+            JPA.em().merge(this);
+        } catch (NoResultException ignored) {
+            JPA.em().persist(this);
         }
-        JPA.em().persist(this);
         return this;
     }
 

@@ -31,7 +31,7 @@ public class Meta {
     public String region;
 
     public static Meta findWithNodeIdAndSpecificVersion(String nodeId, Integer version, String referenceId) {
-        String queryString = "select distinct m from models.Meta m " +
+        String queryString = "select distinct m from com.origocms.core.models.Meta m " +
                 "where m.nodeId = :nodeId and m.version = :version and m.referenceId = :referenceId";
         final TypedQuery<Meta> query = JPA.em().createQuery(queryString, Meta.class);
         return query.getSingleResult();

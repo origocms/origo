@@ -6,7 +6,7 @@ import play.db.jpa.JPA;
 import javax.persistence.*;
 import java.util.UUID;
 
-@Entity(name = "content")
+@Entity
 @Table(name = "content")
 public class Content {
 
@@ -31,4 +31,8 @@ public class Content {
         return JPA.em().find(Content.class, identifier);
     }
 
+    public Content save() {
+        JPA.em().merge(this);
+        return this;
+    }
 }

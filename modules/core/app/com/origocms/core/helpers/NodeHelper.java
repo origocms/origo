@@ -21,7 +21,7 @@ public class NodeHelper {
         return load(rootNode);
     }
 
-    public static Node load(String nodeId, long version) throws NodeNotFoundException {
+    public static Node load(String nodeId, Integer version) throws NodeNotFoundException {
         //Load RootNode model
         RootNode rootNode = RootNode.findWithNodeIdAndSpecificVersion(nodeId, version);
         if (rootNode == null) {

@@ -1,3 +1,5 @@
+@(uiElement:com.origocms.core.ui.UIElement, attributes:Map[String, String])
+
 #{if element.hasBody()}
 <label #{origo.core.attributes attributes:attributes /}>#{verbatim}${body}#{/verbatim}</label>
 #{/if}

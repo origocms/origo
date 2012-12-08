@@ -8,16 +8,19 @@ object ApplicationBuild extends Build {
   val appVersion      = "0.1-SNAPSHOT"
 
   val appDependencies = Seq(
-    "org.springframework" % "spring-context" % "3.1.2.RELEASE",
     javaCore,
     javaJdbc,
     javaJpa,
-    filters
+    filters,
+    "mysql" % "mysql-connector-java" % "5.1.18",
+    "org.hibernate" % "hibernate-entitymanager" % "4.1.8.Final",
+    "org.hibernate" % "hibernate-core" % "4.1.8.Final",
+    "org.springframework" % "spring-context" % "3.1.2.RELEASE"
   )
 
   val core = play.Project(
-      appName + "-core", appVersion, appDependencies, path = file("modules/core")
-    )
+    appName + "-core", appVersion, appDependencies, path = file("modules/core")
+  )
 
 /*
     val adminArea = PlayProject(
@@ -26,11 +29,10 @@ object ApplicationBuild extends Build {
 */
 
   val main = play.Project(
-    appName, appVersion
+    appName, appVersion, appDependencies
   ).dependsOn(
-    core
+      core
   ).settings(
-    // Add your own project settings here      
   )
 
 }

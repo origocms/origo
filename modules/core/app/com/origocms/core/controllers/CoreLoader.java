@@ -1,6 +1,5 @@
 package com.origocms.core.controllers;
 
-import com.origocms.core.CachedThemeVariant;
 import com.origocms.core.Node;
 import com.origocms.core.NodeNotFoundException;
 import com.origocms.core.helpers.NavigationHelper;
@@ -52,7 +51,7 @@ public class CoreLoader {
         }
     }
 
-    public static Result loadPageNotFoundErrorPage() {
+    private static Result loadPageNotFoundErrorPage() {
         Logger.debug("Redirecting to Page-Not-Found Page");
         String pageNotFoundPage = SettingsHelper.Core.getPageNotFoundPage();
         Collection<Alias> aliases = Alias.findWithPageId(pageNotFoundPage);
@@ -65,7 +64,7 @@ public class CoreLoader {
         }
     }
 
-    public static Result loadPageLoadErrorPage() {
+    private static Result loadPageLoadErrorPage() {
         Logger.debug("Redirecting to Internal Error Page");
         String internalServerErrorPage = SettingsHelper.Core.getInternalServerErrorPage();
         Collection<Alias> aliases = Alias.findWithPageId(internalServerErrorPage);

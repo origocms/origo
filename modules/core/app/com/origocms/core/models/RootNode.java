@@ -9,7 +9,7 @@ import play.db.jpa.JPA;
 import javax.persistence.*;
 import java.util.*;
 
-@Entity(name = "root")
+@Entity
 @Table(name = "root", uniqueConstraints = @UniqueConstraint(name = "nodeVersion", columnNames = {"nodeId", "version"}))
 public final class RootNode implements Node {
 
@@ -181,9 +181,9 @@ public final class RootNode implements Node {
     }
 
     public static List<RootNode> findAllCurrentVersions(Date today) {
-        String queryString = "select n from models.RootNode n " +
+        String queryString = "select n from com.origocms.core.models.RootNode n " +
                 "where n.version = (" +
-                "select max(n2.version) from models.RootNode n2 " +
+                "select max(n2.version) from com.origocms.core.models.RootNode n2 " +
                 "where n2.nodeId = n.nodeId and " +
                 "(n2.publish = null or n2.publish < :today) and" +
                 "(n2.unPublish = null or n2.unPublish >= :today)" +
@@ -195,8 +195,8 @@ public final class RootNode implements Node {
         return nodes;
     }
 
-    public static RootNode findWithNodeIdAndSpecificVersion(String nodeId, Long version) {
-        String queryString = "select n from models.RootNode n " +
+    public static RootNode findWithNodeIdAndSpecificVersion(String nodeId, Integer version) {
+        String queryString = "select n from com.origocms.core.models.RootNode n " +
                 "where n.nodeId = :nodeId and n.version = :version";
         final TypedQuery<RootNode> query = JPA.em().createQuery(queryString, RootNode.class);
         query.setParameter("nodeId", nodeId);
@@ -209,7 +209,7 @@ public final class RootNode implements Node {
     }
 
     public static RootNode findLatestPublishedVersionWithNodeId(String nodeId, Date today) {
-        String queryString = "select distinct n from models.RootNode n " +
+        String queryString = "select distinct n from com.origocms.core.models.RootNode n " +
                 "where n.nodeId = :nodeId and " +
                 "(n.publish = null or n.publish < :today) and " +
                 "(n.unPublish = null or n.unPublish >= :today) " +
@@ -225,7 +225,7 @@ public final class RootNode implements Node {
     }
 
     public static RootNode findLatestVersionWithNodeId(String nodeId) {
-        String queryString = "select distinct n from models.RootNode n " +
+        String queryString = "select distinct n from com.origocms.core.models.RootNode n " +
                 "where n.nodeId = :nodeId " +
                 "order by n.version desc";
         final TypedQuery<RootNode> query = JPA.em().createQuery(queryString, RootNode.class);
@@ -238,7 +238,7 @@ public final class RootNode implements Node {
     }
 
     public static List<RootNode> findAllVersionsWithNodeId(String nodeId) {
-        String queryString = "select distinct n from models.RootNode n " +
+        String queryString = "select distinct n from com.origocms.core.models.RootNode n " +
                 "where n.nodeId = :nodeId " +
                 "order by n.version desc";
         final TypedQuery<RootNode> query = JPA.em().createQuery(queryString, RootNode.class);
@@ -259,4 +259,10 @@ public final class RootNode implements Node {
         copy.themeVariant = themeVariant;
         return copy;
     }
+
+    public RootNode save() {
+        JPA.em().merge(this);
+        return this;
+    }
+
 }

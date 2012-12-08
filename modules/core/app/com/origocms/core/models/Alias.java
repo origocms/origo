@@ -6,7 +6,7 @@ import play.db.jpa.JPA;
 import javax.persistence.*;
 import java.util.Collection;
 
-@Entity(name = "alias")
+@Entity
 @Table(name = "aliases")
 public class Alias {
 
@@ -31,13 +31,13 @@ public class Alias {
     }
 
     public static Alias findWithPath(String path) {
-        final TypedQuery<Alias> query = JPA.em().createQuery("select an from models.Alias an where an.path=:path", Alias.class);
+        final TypedQuery<Alias> query = JPA.em().createQuery("select an from com.origocms.core.models.Alias an where an.path=:path", Alias.class);
         query.setParameter("path", path);
         return query.getSingleResult();
     }
 
     public static Collection<Alias> findWithPageId(String pageId) {
-        final TypedQuery<Alias> query = JPA.em().createQuery("select an from models.Alias an where an.opageId=:pageId", Alias.class);
+        final TypedQuery<Alias> query = JPA.em().createQuery("select an from com.origocms.core.models.Alias an where an.opageId=:pageId", Alias.class);
         query.setParameter("pageId", pageId);
         return query.getResultList();
     }

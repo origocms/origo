@@ -17,7 +17,7 @@ import java.util.Set;
  * @see RootNode
  * @see origo.listeners.BasicPageProvider
  */
-@Entity(name = "pageBasic")
+@Entity
 @Table(name = "page_basic", uniqueConstraints = @UniqueConstraint(name = "pageVersion", columnNames = {"parentNodeId", "parentVersion"}))
 public class BasicPage implements Node {
 
@@ -141,7 +141,7 @@ public class BasicPage implements Node {
     }
 
     public static List<BasicPage> findAllCurrentVersions(Date asOfDate) {
-        String queryString = "select p from models.BasicPage p " +
+        String queryString = "select p from com.origocms.core.models.BasicPage p " +
                 "where p.id in (" +
                 "select n.id from models.RootNode n where n.version = (" +
                 "select max(n2.version) from models.RootNode n2 " +
@@ -155,10 +155,10 @@ public class BasicPage implements Node {
     }
 
     public static BasicPage findCurrentVersion(String nodeId, Date asOfDate) {
-        String queryString = "select p from models.BasicPage p " +
+        String queryString = "select p from com.origocms.core.models.BasicPage p " +
                 "where p.nodeId = :nodeId and p.id in (" +
-                "select n.id from models.RootNode n where n.version = (" +
-                "select max(n2.version) from models.RootNode n2 " +
+                "select n.id from com.origocms.core.models.RootNode n where n.version = (" +
+                "select max(n2.version) from com.origocms.core.models.RootNode n2 " +
                 "where n2.nodeId = n.nodeId and " +
                 "(n2.publish = null or n2.publish < :today) and" +
                 "(n2.unPublish = null or n2.unPublish >= :today)" +
@@ -170,9 +170,9 @@ public class BasicPage implements Node {
     }
 
     public static BasicPage findLatestVersion(String nodeId) {
-        String queryString = "select p from models.BasicPage p " +
+        String queryString = "select p from com.origocms.core.models.BasicPage p " +
                 "where p.nodeId = :nodeId and p.version = (" +
-                "select max(n.version) from models.RootNode n " +
+                "select max(n.version) from com.origocms.core.models.RootNode n " +
                 "where n.nodeId = p.nodeId" +
                 ")";
         final TypedQuery<BasicPage> query = JPA.em().createQuery(queryString, BasicPage.class);
@@ -181,7 +181,7 @@ public class BasicPage implements Node {
     }
 
     public static BasicPage findWithNodeIdAndSpecificVersion(String nodeId, Long version) {
-        String queryString = "select p from models.BasicPage p " +
+        String queryString = "select p from com.origocms.core.models.BasicPage p " +
                 "where p.nodeId = :nodeId and p.version = :version";
         final TypedQuery<BasicPage> query = JPA.em().createQuery(queryString, BasicPage.class);
         query.setParameter("nodeId", nodeId);
@@ -190,13 +190,19 @@ public class BasicPage implements Node {
     }
 
     public static List<BasicPage> findAllLatestVersions() {
-        String queryString = "select p from models.BasicPage p " +
+        String queryString = "select p from com.origocms.core.models.BasicPage p " +
                 "where p.version = (" +
-                "select max(n.version) from models.RootNode n " +
+                "select max(n.version) from com.origocms.core.models.RootNode n " +
                 "where n.nodeId = p.nodeId" +
                 ")";
         final TypedQuery<BasicPage> query = JPA.em().createQuery(queryString, BasicPage.class);
         return query.getResultList();
     }
+
+    public BasicPage save() {
+        JPA.em().merge(this);
+        return this;
+    }
+
 }
 

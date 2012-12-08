@@ -3,6 +3,8 @@ package com.origocms;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import play.GlobalSettings;
+import play.db.jpa.JPA;
+import play.libs.F;
 import play.libs.Yaml;
 
 import java.util.List;
@@ -15,6 +17,12 @@ public class Global extends GlobalSettings {
     @Override
     public void onStart(play.Application application) {
         applicationContext = new ClassPathXmlApplicationContext("components.xml");
+        JPA.withTransaction(new F.Callback0() {
+            @Override
+            public void invoke() throws Throwable {
+                new InitialTestData().create();
+            }
+        });
     }
 
     @Override
