@@ -1,5 +1,7 @@
-@(nodes:List[models.origo.core.RootNode])
+@(node:models.origo.core.RootNode)
 
-        @for(node <- nodes) {
-            @node.nodeId<br>
+        @if(node != null) {
+            @_node(node)
+        } else {
+            <p>No node found</p>
         }

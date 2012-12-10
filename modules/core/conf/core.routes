@@ -4,9 +4,9 @@
 
 # Home page
 GET     /                                       @controllers.origo.core.Node.node()
-GET     /{identifier}                           @controllers.origo.core.Node.nodeCurrent(identifier)
-GET     /{identifier}/{<[0-9]+>version}         @controllers.origo.core.Node.nodeVersion(identifier, version:Integer)
-GET     /{identifier}/all                       @controllers.origo.core.Node.nodeVersions(identifier)
+GET     /:identifier                            @controllers.origo.core.Node.nodeCurrent(identifier)
+GET     /:identifier/$version<[0-9]+>           @controllers.origo.core.Node.nodeVersion(identifier, version:Integer)
+GET     /:identifier/all                        @controllers.origo.core.Node.nodeVersions(identifier)
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET     /assets/*file                           controllers.Assets.at(path="/public", file)

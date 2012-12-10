@@ -32,18 +32,18 @@ public class NodeHelper {
     }
 
     public static Node load(RootNode rootNode) {
-        boolean hasType = !StringUtils.isBlank(rootNode.type) && !rootNode.type.equals(RootNode.class.getName());
+        boolean hasType = !StringUtils.isBlank(rootNode.nodeType) && !rootNode.nodeType.equals(RootNode.class.getName());
         if (hasType) {
-            triggerBeforeNodeLoaded(rootNode.type, rootNode);
+            triggerBeforeNodeLoaded(rootNode.nodeType, rootNode);
         }
 
         Node node = rootNode;
         if (hasType) {
-            node = triggerProvidesNodeListener(rootNode.type, rootNode);
+            node = triggerProvidesNodeListener(rootNode.nodeType, rootNode);
         }
 
         if (hasType) {
-            triggerAfterNodeLoaded(rootNode.type, node);
+            triggerAfterNodeLoaded(rootNode.nodeType, node);
         }
 
         return node;

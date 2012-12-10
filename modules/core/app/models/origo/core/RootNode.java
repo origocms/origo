@@ -29,7 +29,8 @@ public final class RootNode implements Node {
     @Temporal(value = TemporalType.TIMESTAMP)
     public Date unPublish;
 
-    public String type;
+    @Column(name="type")
+    public String nodeType;
 
     public String themeVariant;
 
@@ -167,7 +168,7 @@ public final class RootNode implements Node {
 
     @Override
     public String toString() {
-        return "Node (" + nodeId + "," + version + ")";
+        return "Node ("+ nodeType +" - " + nodeId + "," + version + ")";
     }
 
     private static void initializeNode(RootNode node) {
@@ -221,10 +222,12 @@ public final class RootNode implements Node {
         query.setParameter("nodeId", nodeId);
         query.setParameter("today", today);
         List<RootNode> nodes = query.getResultList();
-        if (!nodes.isEmpty()) {
-            initializeNode(nodes.get(0));
+        if (nodes.isEmpty()) {
+            return null;
         }
-        return null;
+        RootNode node = nodes.get(0);
+        initializeNode(node);
+        return node;
     }
 
     public static RootNode findLatestVersionWithNodeId(String nodeId) {
@@ -234,10 +237,12 @@ public final class RootNode implements Node {
         final Query query = JPA.em().createQuery(queryString);
         query.setParameter("nodeId", nodeId);
         List<RootNode> nodes = query.getResultList();
-        if (!nodes.isEmpty()) {
-            initializeNode(nodes.get(0));
+        if (nodes.isEmpty()) {
+            return null;
         }
-        return null;
+        RootNode node = nodes.get(0);
+        initializeNode(node);
+        return node;
     }
 
     public static List<RootNode> findAllVersionsWithNodeId(String nodeId) {
@@ -250,6 +255,7 @@ public final class RootNode implements Node {
         initializeNodes(nodes);
         return nodes;
     }
+
     public RootNode copy() {
         return copy(false);
     }
@@ -258,7 +264,7 @@ public final class RootNode implements Node {
         RootNode copy = new RootNode(nodeId, increaseVersion ? ++version : version);
         copy.publish = publish;
         copy.unPublish = unPublish;
-        copy.type = type;
+        copy.nodeType = nodeType;
         copy.themeVariant = themeVariant;
         return copy;
     }

@@ -1,0 +1,9 @@
+@(nodes:List[models.origo.core.RootNode])
+
+@if(!nodes.isEmpty()) {
+    @for(node <- nodes) {
+        @_node(node)
+    }
+} else {
+    No nodes available.
+}
