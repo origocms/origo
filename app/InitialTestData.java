@@ -4,10 +4,12 @@ import models.origo.core.*;
 public class InitialTestData {
 
     public void create() {
-        createSettings();
-        createPage1();
-        createPage2();
-        createPage3();
+        if (Settings.load().id == null) {
+            createSettings();
+            createPage1();
+            createPage2();
+            createPage3();
+        }
     }
 
     private void createSettings() {
@@ -36,16 +38,18 @@ public class InitialTestData {
                 "Mr. Slave yap Mr. Slave doo nippy blap-dazzle. Slop ho zowee roo slap-flobble!! Dazzle blo shnizzleblip, \"shnuzzle bam dee shizzle,\" doo zangle razz gobble dee blop-meep...kanoodle ho duh! Doo zongle shnizzlewow. Ho flob woggle? Quabble dee blab flibble? Slop crungle doo whack ho dizzle? Funk blee blangfloo, \"bla doo dee wooble,\" ho Mr. Slave dongle flee zip twiddle-razz...bing da nip!";
         body.save();
 
+        RootNode node = new RootNode("aa1755dd-18c4-4b78-956e-eef7e562c36c", 1);
+        node.type = "com.origocms.core.models.BasicPage";
+        node.save();
+
         BasicPage page = new BasicPage();
-        page.nodeId = "aa1755dd-18c4-4b78-956e-eef7e562c36c";
+        page.nodeId = node.nodeId;
+        page.version = node.version;
         page.title = "Start page";
         page.leadReferenceId = lead.identifier;
         page.bodyReferenceId = body.identifier;
         page.save();
 
-        RootNode node = new RootNode(page.nodeId, 1);
-        node.type = "com.origocms.core.models.BasicPage";
-        node.save();
     }
 
     private void createPage2() {
@@ -64,16 +68,18 @@ public class InitialTestData {
                 "Zungle bam blob flibble? Hum hum doo Principal Skinner blameep. Tang! Bling bling tizzleabracadabra, \"zing yip nip blap,\" yap zunk shrubbery oodle boo woogle-dubba...flop nip zap! Da blo dobba dongleflop doo boo zap \"zappity zoom-zing\". Bam loo weeble zung flanging shizzely bleeb blangcringle? Blip zong zoom yap zoom ding hizzy ho flup. Crongely bleeb razzle!\n";
         body.save();
 
+        RootNode node = new RootNode("c9615819-0556-4e70-b6a9-a66c5b8d4c1a", 1);
+        node.type = "com.origocms.core.models.BasicPage";
+        node.save();
+
         BasicPage page = new BasicPage();
-        page.nodeId = "c9615819-0556-4e70-b6a9-a66c5b8d4c1a";
+        page.nodeId = node.nodeId;
+        page.version = node.version;
         page.title = "Page Not Found";
         page.leadReferenceId = lead.identifier;
         page.bodyReferenceId = body.identifier;
         page.save();
 
-        RootNode node = new RootNode(page.nodeId, 1);
-        node.type = "com.origocms.core.models.BasicPage";
-        node.save();
     }
 
     private void createPage3() {
@@ -90,16 +96,18 @@ public class InitialTestData {
                 "Zoom ho ongle hum flibble bizzle doo dongle? Yap oodle Mr. Hat...flangity jingely izzlewaggle. Shruberific caketangle. Zing zap blap bleeb. \"Hum zowee ho?\" izzle dilznoofusdizzle. Noodle wobble bing boo crongle blob dingle doo crongle. Blob doo zowee-twaddle. Jackson roo tang roo blip blingity wugglezang.\n";
         body.save();
 
+        RootNode node = new RootNode("1cf699a7-a0c4-4be0-855f-466042a36a8d", 1);
+        node.type = "com.origocms.core.models.BasicPage";
+        node.save();
+
         BasicPage page = new BasicPage();
-        page.nodeId = "1cf699a7-a0c4-4be0-855f-466042a36a8d";
+        page.nodeId = node.nodeId;
+        page.version = node.version;
         page.title = "Internal Server Error";
         page.leadReferenceId = lead.identifier;
         page.bodyReferenceId = body.identifier;
         page.save();
 
-        RootNode node = new RootNode(page.nodeId, 1);
-        node.type = "com.origocms.core.models.BasicPage";
-        node.save();
     }
 
 

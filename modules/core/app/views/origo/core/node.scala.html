@@ -1,3 +1,5 @@
 @(nodes:List[models.origo.core.RootNode])
 
-        Nodes:
+        @for(node <- nodes) {
+            @node.nodeId<br>
+        }

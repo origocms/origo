@@ -44,6 +44,9 @@ public final class RootNode implements Node {
     @Transient
     private Map<String, List<UIElement>> uiElements = new HashMap<String, List<UIElement>>();
 
+    private RootNode() {
+    }
+
     public RootNode(Integer version) {
         this(UUID.randomUUID().toString(), version);
     }
@@ -188,7 +191,7 @@ public final class RootNode implements Node {
                 "(n2.publish = null or n2.publish < :today) and" +
                 "(n2.unPublish = null or n2.unPublish >= :today)" +
                 ")";
-        final TypedQuery<RootNode> query = JPA.em().createQuery(queryString, RootNode.class);
+        final Query query = JPA.em().createQuery(queryString);
         query.setParameter("today", today);
         List<RootNode> nodes = query.getResultList();
         initializeNodes(nodes);
@@ -198,10 +201,10 @@ public final class RootNode implements Node {
     public static RootNode findWithNodeIdAndSpecificVersion(String nodeId, Integer version) {
         String queryString = "select n from models.origo.core.RootNode n " +
                 "where n.nodeId = :nodeId and n.version = :version";
-        final TypedQuery<RootNode> query = JPA.em().createQuery(queryString, RootNode.class);
+        final Query query = JPA.em().createQuery(queryString);
         query.setParameter("nodeId", nodeId);
         query.setParameter("version", version);
-        RootNode node = query.getSingleResult();
+        RootNode node = (RootNode)query.getSingleResult();
         if (node != null) {
             initializeNode(node);
         }
@@ -214,7 +217,7 @@ public final class RootNode implements Node {
                 "(n.publish = null or n.publish < :today) and " +
                 "(n.unPublish = null or n.unPublish >= :today) " +
                 "order by n.version desc";
-        final TypedQuery<RootNode> query = JPA.em().createQuery(queryString, RootNode.class);
+        final Query query = JPA.em().createQuery(queryString);
         query.setParameter("nodeId", nodeId);
         query.setParameter("today", today);
         List<RootNode> nodes = query.getResultList();
@@ -228,7 +231,7 @@ public final class RootNode implements Node {
         String queryString = "select distinct n from models.origo.core.RootNode n " +
                 "where n.nodeId = :nodeId " +
                 "order by n.version desc";
-        final TypedQuery<RootNode> query = JPA.em().createQuery(queryString, RootNode.class);
+        final Query query = JPA.em().createQuery(queryString);
         query.setParameter("nodeId", nodeId);
         List<RootNode> nodes = query.getResultList();
         if (!nodes.isEmpty()) {
@@ -241,7 +244,7 @@ public final class RootNode implements Node {
         String queryString = "select distinct n from models.origo.core.RootNode n " +
                 "where n.nodeId = :nodeId " +
                 "order by n.version desc";
-        final TypedQuery<RootNode> query = JPA.em().createQuery(queryString, RootNode.class);
+        final Query query = JPA.em().createQuery(queryString);
         query.setParameter("nodeId", nodeId);
         List<RootNode> nodes = query.getResultList();
         initializeNodes(nodes);

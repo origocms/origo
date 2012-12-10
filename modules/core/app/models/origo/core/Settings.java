@@ -97,7 +97,7 @@ public class Settings {
     public static Settings load() {
         try
         {
-            return (Settings)JPA.em().createQuery("select s from models.Settings s", Settings.class).getSingleResult();
+            return (Settings)JPA.em().createQuery("select s from models.origo.core.Settings s", Settings.class).getSingleResult();
         } catch (NoResultException ignored) {
         }
         return new Settings();
@@ -114,8 +114,9 @@ public class Settings {
             Settings settings = load();
             if (settings.id == null || settings.id.equals(id)) {
                 JPA.em().merge(this);
+            } else {
+                throw new RuntimeException("Only one instance of setting should be available in the system");
             }
-            throw new RuntimeException("Only one instance of setting should be available in the system");
         } catch (NoResultException ignored) {
             JPA.em().persist(this);
         }
