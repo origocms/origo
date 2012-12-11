@@ -1,16 +1,19 @@
 package main.origo.core;
 
 import java.lang.annotation.Annotation;
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
 
 public class CachedAnnotation implements Comparable<CachedAnnotation> {
 
     public final Annotation annotation;
-    public final Method method;
+    public final MethodHandle method;
+    public final Class declaringClass;
 
-    public CachedAnnotation(Annotation annotation, Method method) {
+    public CachedAnnotation(Annotation annotation, Class declaringClass, MethodHandle method) {
         this.annotation = annotation;
         this.method = method;
+        this.declaringClass = declaringClass;
     }
 
     @Override

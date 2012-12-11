@@ -1,13 +1,15 @@
 package main.origo.core;
 
-import java.lang.reflect.Method;
+import java.lang.invoke.MethodHandle;
 
 public class CachedDecorator {
 
-    public final Method method;
+    public final MethodHandle method;
+    public final Class declaringClass;
 
-    public CachedDecorator(Method method) {
-        this.method = method;
+    public CachedDecorator(Class declaringClass, MethodHandle methodHandle) {
+        this.declaringClass = declaringClass;
+        this.method = methodHandle;
     }
 
 }

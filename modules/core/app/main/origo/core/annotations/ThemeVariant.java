@@ -1,6 +1,6 @@
 package main.origo.core.annotations;
 
-import org.springframework.stereotype.Component;
+import main.origo.core.ui.RenderedNode;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -13,7 +13,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-@Component
 public @interface ThemeVariant {
 
     /**
@@ -40,4 +39,12 @@ public @interface ThemeVariant {
      * @return the type of output this theme variant produces
      */
     String output() default "HTML";
+
+    public static class Context {
+        public RenderedNode renderedNode;
+
+        public Context(RenderedNode renderedNode) {
+            this.renderedNode = renderedNode;
+        }
+    }
 }

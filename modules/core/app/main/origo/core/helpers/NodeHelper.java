@@ -7,6 +7,7 @@ import main.origo.core.annotations.Types;
 import models.origo.core.RootNode;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Collections;
 import java.util.Date;
 
 public class NodeHelper {
@@ -57,11 +58,11 @@ public class NodeHelper {
     }
 
     public static void triggerBeforeNodeLoaded(String withType, RootNode rootNode) {
-        OnLoadHelper.triggerBeforeListener(Types.NODE, withType, rootNode);
+        OnLoadHelper.triggerBeforeListener(Types.NODE, withType, rootNode, Collections.<String, Object>emptyMap());
     }
 
     public static void triggerAfterNodeLoaded(String withType, Node node) {
-        OnLoadHelper.triggerAfterListener(Types.NODE, withType, node);
+        OnLoadHelper.triggerAfterListener(Types.NODE, withType, node, Collections.<String, Object>emptyMap());
     }
 
 }

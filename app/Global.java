@@ -1,15 +1,11 @@
-import models.origo.core.Settings;
-import org.springframework.beans.BeansException;
+import main.origo.core.AnnotationProcessor;
+import main.origo.core.Listeners;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import play.GlobalSettings;
 import play.db.jpa.JPA;
 import play.libs.F;
-import play.libs.Yaml;
-
-import java.util.List;
-import java.util.Map;
 
 public class Global extends GlobalSettings {
 
@@ -24,6 +20,7 @@ public class Global extends GlobalSettings {
             new InitialTestData().create();
         }
     });
+        AnnotationProcessor.scan();
     }
 
     @Override

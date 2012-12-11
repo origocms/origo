@@ -1,15 +1,19 @@
 package main.origo.core.helpers;
 
+import com.google.common.collect.Maps;
 import main.origo.core.CachedAnnotation;
 import main.origo.core.Listeners;
+import main.origo.core.Navigation;
 import main.origo.core.Node;
 import main.origo.core.annotations.Provides;
+import main.origo.core.ui.NavigationElement;
+import models.origo.core.RootNode;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
 /**
- * Helper to trigger \@Provides origo.listeners. Should not be used directly except in core and admin, use NodeHelper
+ * Helper to trigger \@Provides origo listeners. Should not be used directly except in core and admin, use NodeHelper
  * instead when creating a new module.
  *
  * @see NodeHelper
@@ -18,22 +22,27 @@ import java.util.*;
 public class ProvidesHelper {
 
     public static <T> T triggerListener(String providesType, String withType, Node node) {
-        //noinspection unchecked
-        return (T) triggerListener(providesType, withType, node, Collections.<Class, Object>emptyMap());
+        return triggerListener(providesType, withType, node, Maps.<String, Object>newHashMap());
     }
 
-    public static <T> T triggerListener(String providesType, String withType, Node node, Class argType, Object arg) {
-        //noinspection unchecked
-        return (T) triggerListener(providesType, withType, node, Collections.<Class, Object>singletonMap(argType, arg));
-    }
-
-    public static <T> T triggerListener(String providesType, String withType, Node node, Map<Class, Object> args) {
+    public static <T> T triggerListener(String providesType, String withType, Node node, Map<String, Object> args) {
         CachedAnnotation cachedAnnotation = findListener(providesType, withType);
-        Map<Class, Object> parameters = new HashMap<Class, Object>();
-        parameters.put(Node.class, node);
-        parameters.putAll(args);
-        //noinspection unchecked
-        return (T) ReflectionHelper.invokeMethod(cachedAnnotation.method, parameters);
+        try {
+            //noinspection unchecked
+            return (T) cachedAnnotation.method.invokeExact(cachedAnnotation.declaringClass, new Provides.Context(node, args));
+        } catch (Throwable e) {
+            throw new RuntimeException("", e);
+        }
+    }
+
+    public static <T> T triggerListener(String providesType, String withType, RootNode node, Navigation navigation, Map<String, Object> args) {
+        CachedAnnotation cachedAnnotation = findListener(providesType, withType);
+        try {
+            //noinspection unchecked
+            return (T) cachedAnnotation.method.invokeExact(cachedAnnotation.declaringClass, new Provides.Context(node, navigation, args));
+        } catch (Throwable e) {
+            throw new RuntimeException("", e);
+        }
     }
 
     /**

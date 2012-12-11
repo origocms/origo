@@ -1,11 +1,16 @@
 package main.origo.core.annotations;
 
-import org.springframework.stereotype.Component;
+import main.origo.core.Navigation;
+import main.origo.core.Node;
+import main.origo.core.ui.NavigationElement;
+import main.origo.core.ui.UIElement;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Called before or after a root node is loaded. Modules can use this to modify a root node.
@@ -17,14 +22,13 @@ import java.lang.annotation.Target;
  * When type=NAVIGATION is called when the main navigation is loaded.
  * When type=NAVIGATION_ITEM is called for each navigation item being loaded.
  *
- * @see play.modules.origo.core.Node
- * @see play.modules.origo.core.ui.UIElement
- * @see play.modules.origo.core.ui.NavigationElement
+ * @see main.origo.core.Node
+ * @see main.origo.core.ui.UIElement
+ * @see main.origo.core.ui.NavigationElement
  * @see models.origo.core.navigation.BasicNavigation
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-@Component
 public @interface OnLoad {
 
     String type();
@@ -32,5 +36,44 @@ public @interface OnLoad {
     String with() default "";
 
     boolean after() default true;
+
+    public static class Context {
+        public Node node;
+        public Map<String, Object> args;
+        public Navigation navigation;
+        public NavigationElement navigationElement;
+        public List<NavigationElement> navigationElements;
+        public UIElement uiElement;
+
+        public Context(Node node, Map<String, Object> args) {
+            this.node = node;
+            this.args = args;
+        }
+
+        public Context(Node node, Navigation navigation, Map<String, Object> args) {
+            this.node = node;
+            this.navigation = navigation;
+            this.args = args;
+        }
+
+        public Context(Node node, List<NavigationElement> navigationElements, Map<String, Object> args) {
+            this.node = node;
+            this.navigationElements = navigationElements;
+            this.args = args;
+        }
+
+        public Context(Node node, UIElement uiElement, Map<String, Object> args) {
+            this.node = node;
+            this.uiElement = uiElement;
+            this.args = args;
+        }
+
+        public Context(Node node, Navigation navigation, NavigationElement navigationElement, Map<String, Object> args) {
+            this.node = node;
+            this.navigation = navigation;
+            this.navigationElement = navigationElement;
+            this.args = args;
+        }
+    }
 
 }

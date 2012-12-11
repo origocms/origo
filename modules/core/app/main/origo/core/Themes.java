@@ -1,5 +1,7 @@
 package main.origo.core;
 
+import java.lang.annotation.Annotation;
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,29 +24,29 @@ public class Themes {
     private static Map<String, String> themeVariantsToThemeMapping = new HashMap<String, String>();
 
     public static void addTheme(String themeId, Class declaringClass) {
-        if (themes.containsKey(themeId)) {
-            throw new RuntimeException("Theme [" + themeId + "] declared in both " + declaringClass.getName() + " and " + themes.get(themeId).getDeclaringClass().getName());
+        if (themes.containsKey(themeId) && themes.get(themeId).getDeclaringClass().equals(declaringClass)) {
+            throw new InitializationException("Theme [" + themeId + "] declared in both " +
+                    declaringClass.getName() + " and " + themes.get(themeId).getDeclaringClass().getName());
         }
         themes.put(themeId, new CachedTheme(themeId, declaringClass));
-
     }
 
-    public static void addThemeVariant(String themeId, String variantId, Method templateMethod, String[] regions) {
+    public static void addThemeVariant(String themeId, String variantId, String[] regions, Class declaringClass, MethodHandle templateMethod) {
         // Themes are declared on the class level and should be parsed first so we don't need to check if the themeId exists before accessing
         Map<String, CachedThemeVariant> themeVariants = themes.get(themeId).getThemeVariants();
 
         if (themeVariants.containsKey(variantId)) {
-            throw new RuntimeException("Duplicate theme variant id [" + variantId + "]");
+            throw new InitializationException("Duplicate theme variant id [" + variantId + "]");
         }
         themeVariantsToThemeMapping.put(variantId, themeId);
-        themeVariants.put(variantId, new CachedThemeVariant(themeId, variantId, templateMethod, new HashSet<String>(Arrays.asList(regions))));
+        themeVariants.put(variantId, new CachedThemeVariant(themeId, variantId, declaringClass, templateMethod, new HashSet<String>(Arrays.asList(regions))));
     }
 
-    public static void addDecorator(String themeId, String uiElementType, Method method) {
+    public static void addDecorator(String themeId, String uiElementType, Class declaringClass, MethodHandle method) {
         // Themes are declared on the class level and should be parsed first so we don't need to check if the themeId exists before accessing
         Map<String, CachedDecorator> themeDecorators = themes.get(themeId).getDecorators();
 
-        themeDecorators.put(uiElementType, new CachedDecorator(method));
+        themeDecorators.put(uiElementType, new CachedDecorator(declaringClass, method));
     }
 
     public static CachedTheme getTheme(String themeId) {
@@ -91,4 +93,7 @@ public class Themes {
         themes.clear();
     }
 
+    public static Map<String, CachedTheme> getThemesMap() {
+        return Collections.unmodifiableMap(themes);
+    }
 }

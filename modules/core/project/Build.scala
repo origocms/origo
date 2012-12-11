@@ -11,6 +11,7 @@ object ApplicationBuild extends Build {
     javaCore,
     javaJdbc,
     javaJpa,
+    "org.reflections" % "reflections" % "0.9.8",
     "org.springframework" % "spring-context" % "3.1.2.RELEASE"
   )
 

@@ -1,11 +1,15 @@
 package main.origo.core.annotations;
 
+import main.origo.core.Navigation;
+import main.origo.core.Node;
+import models.origo.core.RootNode;
 import org.springframework.stereotype.Component;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Map;
 
 /**
  * A method annotated with \@Provides will be called to instantiate a new instance of this type each time
@@ -18,17 +22,32 @@ import java.lang.annotation.Target;
  * When type=NAVIGATION it adds a different type of navigation than the standard one and the method should return a NavigationElement.
  * When type=NAVIGATION_ITEM it adds a navigation item to the current navigation type and the method should return a NavigationElement.
  *
- * @see play.modules.origo.core.Node
- * @see play.modules.origo.core.ui.UIElement
+ * @see main.origo.core.Node
+ * @see main.origo.core.ui.UIElement
  * @see models.origo.core.navigation.BasicNavigation
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-@Component
 public @interface Provides {
 
     String type();
 
     String with();
 
+    public static class Context {
+        public Node node;
+        public Navigation navigation;
+        public Map<String, Object> args;
+
+        public Context(Node node, Navigation navigation, Map<String, Object> args) {
+            this.node = node;
+            this.navigation = navigation;
+            this.args = args;
+        }
+
+        public Context(Node node, Map<String, Object> args) {
+            this.node = node;
+            this.args = args;
+        }
+    }
 }

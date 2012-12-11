@@ -4,6 +4,8 @@ import main.origo.core.CachedDecorator;
 import main.origo.core.CachedThemeVariant;
 import main.origo.core.Node;
 import main.origo.core.Themes;
+import main.origo.core.annotations.Decorates;
+import main.origo.core.annotations.ThemeVariant;
 import main.origo.core.ui.RenderedNode;
 import main.origo.core.ui.RenderingContext;
 import main.origo.core.ui.UIElement;
@@ -78,7 +80,12 @@ public class ThemeHelper {
         String decoratedOutput = null;
         if (decorators.containsKey(uiElement.getType())) {
             CachedDecorator decorator = decorators.get(uiElement.getType());
-            decoratedOutput = ReflectionHelper.invokeDecorator(decorator, null);
+            try {
+                decoratedOutput = (String)decorator.method.invokeExact(decorator.declaringClass, new Decorates.Context(uiElement, renderingContext));
+            } catch (Throwable e) {
+                throw new RuntimeException("", e);
+            }
+
         }
         if (decoratedOutput == null) {
             decoratedOutput = DefaultDecorator.decorate(uiElement, renderingContext);
@@ -118,6 +125,11 @@ public class ThemeHelper {
     }
 
     public static Result render(RenderedNode renderedNode) {
-        return ReflectionHelper.invokeTemplate(renderedNode);
+        CachedThemeVariant cachedThemeVariant = renderedNode.getTemplate();
+        try {
+            return (Result) cachedThemeVariant.templateMethod.invokeExact(cachedThemeVariant.declaringClass, new ThemeVariant.Context(renderedNode));
+        } catch (Throwable e) {
+            throw new RuntimeException("", e);
+        }
     }
 }
