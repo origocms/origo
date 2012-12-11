@@ -5,6 +5,7 @@ import play.db.jpa.JPA;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -32,24 +33,31 @@ public class Alias {
     }
 
     public static Alias findWithPath(String path) {
-        final TypedQuery<Alias> query = JPA.em().createQuery("from models.origo.core.Alias an where an.path=:path", Alias.class);
-        query.setParameter("path", path);
-        return query.getSingleResult();
+        try {
+            final Query query = JPA.em().createQuery("from models.origo.core.Alias an where an.path=:path");
+            query.setParameter("path", path);
+            return (Alias) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     public static List<Alias> findWithPageId(String pageId) {
-        final TypedQuery<Alias> query = JPA.em().createQuery("from models.origo.core.Alias an where an.pageId=:pageId", Alias.class);
-        query.setParameter("pageId", pageId);
-        return query.getResultList();
+        try {
+            final Query query = JPA.em().createQuery("from models.origo.core.Alias an where an.pageId=:pageId");
+            query.setParameter("pageId", pageId);
+            return query.getResultList();
+        } catch (NoResultException e) {
+            return Collections.emptyList();
+        }
     }
 
     public static Alias findFirstAliasForPageId(String pageId) {
         Collection<Alias> aliases = Alias.findWithPageId(pageId);
-        if (aliases == null || aliases.isEmpty()) {
+        if (aliases.isEmpty()) {
             return null;
-        } else {
-            return aliases.iterator().next();
         }
+        return aliases.iterator().next();
     }
 
     @Override

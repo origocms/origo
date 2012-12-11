@@ -11,6 +11,7 @@ import main.origo.core.ui.NavigationElement;
 import main.origo.core.ui.RenderedNode;
 import play.Logger;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 
 import java.util.Collection;
@@ -46,35 +47,50 @@ public class CoreLoader {
         } catch (NodeNotFoundException e) {
             return loadPageNotFoundErrorPage();
         } catch (Exception e) {
-            Logger.error("An exception occurred while loading the page [" + identifier + "] with specific version [" + version + "]: " + e.getMessage());
+            Logger.error("An exception occurred while loading the page [" + identifier + "] with version [" + version + "]: " + e.getMessage());
             return loadPageLoadErrorPage();
         }
     }
 
     private static Result loadPageNotFoundErrorPage() {
-        Logger.debug("Redirecting to Page-Not-Found Page");
         String pageNotFoundPage = SettingsHelper.Core.getPageNotFoundPage();
         Collection<Alias> aliases = Alias.findWithPageId(pageNotFoundPage);
+        String url;
         if (aliases.iterator().hasNext()) {
             Alias alias = aliases.iterator().next();
-            return Controller.redirect(SettingsHelper.Core.getBaseUrl() + "" + alias.path);
+            url = SettingsHelper.Core.getBaseUrl() + "" + alias.path;
         } else {
             // Defaulting to /page-not-found
-            return Controller.redirect(SettingsHelper.Core.getBaseUrl() + "page-not-found");
+            url = SettingsHelper.Core.getBaseUrl() + "page-not-found";
         }
+
+        // TODO: Could this be done without using the request?
+        if (url.equalsIgnoreCase(Http.Context.current().request().path())) {
+            Logger.warn("No page-not-found page defined, sending 404");
+            return Controller.notFound();
+        }
+        Logger.debug("Redirecting to Page-Not-Found Page");
+        return Controller.redirect(url);
     }
 
     private static Result loadPageLoadErrorPage() {
-        Logger.debug("Redirecting to Internal Error Page");
         String internalServerErrorPage = SettingsHelper.Core.getInternalServerErrorPage();
         Collection<Alias> aliases = Alias.findWithPageId(internalServerErrorPage);
+        String url;
         if (aliases.iterator().hasNext()) {
             Alias alias = aliases.iterator().next();
-            return Controller.redirect(SettingsHelper.Core.getBaseUrl() + "" + alias.path);
+            url = SettingsHelper.Core.getBaseUrl() + "" + alias.path;
         } else {
             // Defaulting to /error
-            return Controller.redirect(SettingsHelper.Core.getBaseUrl() + "error");
+            url = SettingsHelper.Core.getBaseUrl() + "error";
         }
+        // TODO: Could this be done without using the request?
+        if (url.equalsIgnoreCase(Http.Context.current().request().path())) {
+            Logger.warn("No page-load-error page defined, sending 500");
+            return Controller.internalServerError();
+        }
+        Logger.debug("Redirecting to Internal Error Page");
+        return Controller.redirect(url);
     }
 
     private static Result loadAndDecoratePage(String identifier, int version) throws NodeNotFoundException {
