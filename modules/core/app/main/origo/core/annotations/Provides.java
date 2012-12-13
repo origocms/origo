@@ -24,7 +24,6 @@ import java.util.Map;
  *
  * @see main.origo.core.Node
  * @see main.origo.core.ui.UIElement
- * @see models.origo.core.navigation.BasicNavigation
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
@@ -35,13 +34,14 @@ public @interface Provides {
     String with();
 
     public static class Context {
+        public RootNode rootNode;
+
         public Node node;
         public Navigation navigation;
         public Map<String, Object> args;
 
-        public Context(Node node, Navigation navigation, Map<String, Object> args) {
+        public Context(RootNode node, Map<String, Object> args) {
             this.node = node;
-            this.navigation = navigation;
             this.args = args;
         }
 
@@ -49,5 +49,12 @@ public @interface Provides {
             this.node = node;
             this.args = args;
         }
+
+        public Context(Node node, Navigation navigation, Map<String, Object> args) {
+            this.node = node;
+            this.navigation = navigation;
+            this.args = args;
+        }
     }
+
 }

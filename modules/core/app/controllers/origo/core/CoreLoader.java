@@ -25,7 +25,7 @@ public class CoreLoader {
         } catch (NodeNotFoundException e) {
             return loadPageNotFoundErrorPage();
         } catch (Exception e) {
-            Logger.error("An exception occurred while loading the start page: " + e.getMessage());
+            Logger.error("An exception occurred while loading the start page: " + e.getMessage(), e);
             return loadPageLoadErrorPage();
         }
     }
@@ -36,7 +36,7 @@ public class CoreLoader {
         } catch (NodeNotFoundException e) {
             return loadPageNotFoundErrorPage();
         } catch (Exception e) {
-            Logger.error("An exception occurred while loading the page [" + identifier + "]: " + e.getMessage());
+            Logger.error("An exception occurred while loading the page [" + identifier + "]: " + e.getMessage(), e);
             return loadPageLoadErrorPage();
         }
     }
@@ -47,7 +47,7 @@ public class CoreLoader {
         } catch (NodeNotFoundException e) {
             return loadPageNotFoundErrorPage();
         } catch (Exception e) {
-            Logger.error("An exception occurred while loading the page [" + identifier + "] with version [" + version + "]: " + e.getMessage());
+            Logger.error("An exception occurred while loading the page [" + identifier + "] with version [" + version + "]: " + e.getMessage(), e);
             return loadPageLoadErrorPage();
         }
     }

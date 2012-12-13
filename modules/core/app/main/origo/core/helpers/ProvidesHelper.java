@@ -2,12 +2,10 @@ package main.origo.core.helpers;
 
 import com.google.common.collect.Maps;
 import main.origo.core.CachedAnnotation;
-import main.origo.core.Listeners;
+import main.origo.core.InterceptorRepository;
 import main.origo.core.Navigation;
 import main.origo.core.Node;
 import main.origo.core.annotations.Provides;
-import main.origo.core.ui.NavigationElement;
-import models.origo.core.RootNode;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -31,17 +29,17 @@ public class ProvidesHelper {
             //noinspection unchecked
             return (T) cachedAnnotation.method.invokeExact(cachedAnnotation.declaringClass, new Provides.Context(node, args));
         } catch (Throwable e) {
-            throw new RuntimeException("", e);
+            throw new RuntimeException("Unable to invoke method", e.getCause());
         }
     }
 
-    public static <T> T triggerListener(String providesType, String withType, RootNode node, Navigation navigation, Map<String, Object> args) {
+    public static <T> T triggerListener(String providesType, String withType, Node node, Navigation navigation, Map<String, Object> args) {
         CachedAnnotation cachedAnnotation = findListener(providesType, withType);
         try {
             //noinspection unchecked
             return (T) cachedAnnotation.method.invokeExact(cachedAnnotation.declaringClass, new Provides.Context(node, navigation, args));
         } catch (Throwable e) {
-            throw new RuntimeException("", e);
+            throw new RuntimeException("Unable to invoke method", e.getCause());
         }
     }
 
@@ -62,7 +60,7 @@ public class ProvidesHelper {
     }
 
     private static List<CachedAnnotation> getAllProvidersForType(final String providesType) {
-        return Listeners.getListenersForAnnotationType(Provides.class, new CachedAnnotation.ListenerSelector() {
+        return InterceptorRepository.getInterceptor(Provides.class, new CachedAnnotation.ListenerSelector() {
             @Override
             public boolean isCorrectListener(CachedAnnotation listener) {
                 return ((Provides) listener.annotation).type().equals(providesType);
@@ -79,7 +77,7 @@ public class ProvidesHelper {
     }
 
     private static CachedAnnotation findProvidersForType(final String type, final String withType) {
-        List<CachedAnnotation> providers = Listeners.getListenersForAnnotationType(Provides.class, new CachedAnnotation.ListenerSelector() {
+        List<CachedAnnotation> providers = InterceptorRepository.getInterceptor(Provides.class, new CachedAnnotation.ListenerSelector() {
             @Override
             public boolean isCorrectListener(CachedAnnotation listener) {
                 Provides annotation = (Provides) listener.annotation;

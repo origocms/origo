@@ -15,7 +15,7 @@ import java.util.Set;
  *
  * @see Node
  * @see RootNode
- * @see origo.listeners.BasicPageProvider
+ * @see main.origo.core.interceptors.BasicPageProvider
  */
 @Entity
 @Table(name = "page_basic", uniqueConstraints = @UniqueConstraint(name = "pageVersion", columnNames = {"parentNodeId", "parentVersion"}))
@@ -180,7 +180,7 @@ public class BasicPage implements Node {
         return query.getSingleResult();
     }
 
-    public static BasicPage findWithNodeIdAndSpecificVersion(String nodeId, Long version) {
+    public static BasicPage findWithNodeIdAndSpecificVersion(String nodeId, Integer version) {
         String queryString = "select p from models.origo.core.BasicPage p " +
                 "where p.nodeId = :nodeId and p.version = :version";
         final TypedQuery<BasicPage> query = JPA.em().createQuery(queryString, BasicPage.class);

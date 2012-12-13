@@ -1,15 +1,9 @@
 package main.origo.core;
 
-import com.google.common.base.Predicates;
 import main.origo.core.annotations.*;
-import org.apache.commons.lang3.StringUtils;
 import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
-import org.reflections.util.FilterBuilder;
 import play.Logger;
-import play.Play;
 import play.mvc.Result;
 
 import java.lang.annotation.Annotation;
@@ -17,26 +11,25 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class AnnotationProcessor {
 
-    public static void scan() {
-        Listeners.invalidate();
-        String packagesToScan = Play.application().configuration().getString("origo.scan.packages");
-        scan(getFilterString(packagesToScan));
+    public static void initialize() {
+        InterceptorRepository.invalidate();
+        scan();
         if (Logger.isDebugEnabled()) {
             StringBuilder sb = new StringBuilder();
             int count = 0;
-            Map<Annotation,List<CachedAnnotation>> listenerMap = Listeners.getListenerMap();
-            for (Annotation a : listenerMap.keySet()) {
-                sb.append(" - ").append(a.annotationType().getSimpleName()).append(" ").append(listenerMap.get(a).size()).append("\n");
-                count += listenerMap.get(a).size();
+            Map<Class<? extends Annotation>,List<CachedAnnotation>> listenerMap = InterceptorRepository.getInterceptorMap();
+            for (Class<? extends Annotation> a : listenerMap.keySet()) {
+                List<CachedAnnotation> interceptors = listenerMap.get(a);
+                sb.append(" - ").append(a.getName()).append(" ").append(interceptors.size()).append("\n");
+                count += interceptors.size();
             }
-            Logger.debug("Listeners registered: " + count + "\n" + sb.toString());
+            Logger.debug("Interceptors registered: " + count + "\n" + sb.toString());
 
             Map<String,CachedTheme> themesMap = Themes.getThemesMap();
             sb = new StringBuilder("Themes registered: ").append(themesMap.size()).append("\n");
@@ -49,12 +42,12 @@ public class AnnotationProcessor {
         }
     }
 
-    private static void scan(String filter) {
+    private static void scan() {
         Reflections reflections = new Reflections("");
 
         Set<Class<?>> interceptors = reflections.getTypesAnnotatedWith(Interceptor.class);
-        scanInterceptors(interceptors, Provides.class, void.class, Provides.Context.class);
-        scanInterceptors(interceptors, OnLoad.class, void.class, OnLoad.Context.class);
+        scanInterceptors(interceptors, Provides.class, Provides.Context.class);
+        scanInterceptors(interceptors, OnLoad.class, OnLoad.Context.class);
 
         Set<Class<?>> themes = reflections.getTypesAnnotatedWith(Theme.class);
         scanThemes(themes);
@@ -75,16 +68,16 @@ public class AnnotationProcessor {
         });
     }
 
-    private static void scanInterceptors(Set<Class<?>> classes, Class<? extends Annotation> annotationClass, Class returnType, Class contextClass) {
+    private static void scanInterceptors(Set<Class<?>> classes, Class<? extends Annotation> annotationClass, Class contextClass) {
         MethodHandles.Lookup lookup = MethodHandles.lookup();
 
         for(Class c : classes) {
             Set<Method> methods = Reflections.getAllMethods(c, ReflectionUtils.withAnnotation(annotationClass));
             for (Method m : methods) {
-                MethodType methodType = MethodType.methodType(returnType, contextClass);
+                MethodType methodType = MethodType.methodType(m.getReturnType(), contextClass);
                 try {
                     MethodHandle methodHandle = lookup.findStatic(m.getDeclaringClass(), m.getName(), methodType);
-                    Listeners.addListener(m.getAnnotation(annotationClass), m.getDeclaringClass(), methodHandle);
+                    InterceptorRepository.add(m.getAnnotation(annotationClass), m.getDeclaringClass(), methodHandle);
                 } catch (NoSuchMethodException | IllegalAccessException e) {
                     throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() + "' in " +
                             " is annotated with '" + annotationClass.getName() +
@@ -129,14 +122,6 @@ public class AnnotationProcessor {
 
     private static interface AddThemePartFunction {
         public void add(Theme theme, Annotation annotation, Class declaringClass, MethodHandle methodHandle);
-    }
-
-    private static String getFilterString(String filter) {
-        StringBuilder result = new StringBuilder("+main.origo.core");
-        if (StringUtils.isNotBlank(filter)) {
-            result.append(",").append(filter);
-        }
-        return result.toString();
     }
 
 }

@@ -1,23 +1,58 @@
+@(node: main.origo.core.ui.RenderedNode, head: Html = Html(""), scripts: Html = Html(""))(content: Html)
+
+@import play.Routes
+
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 <head #{get 'node.head_attributes'/}>
-    <title>#{get 'title' /}</title>
-    <meta charset="${_response_encoding}">
-#{verbatim}${node.meta}#{/verbatim}
-#{verbatim}${node.link}#{/verbatim}
-    @*<link rel="stylesheet" media="screen" href="@{'/public/stylesheets/main.css'}">*@
-#{get 'moreStyles' /}
-#{verbatim}${node.style}#{/verbatim}
-    @*<link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">*@
-    @*<script src="@{'/public/javascripts/jquery-1.6.4.min.js'}" type="text/javascript"
-            charset="${_response_encoding}"></script>*@
-#{get 'moreScripts' /}
-#{verbatim}${node.script}#{/verbatim}
+    <title>@node.getTitle()</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="@routes.Assets.at("core/stylesheets/bootstrap-responsive.min.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("core/stylesheets/main.min.css")">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,700"/>
+    @head
+
+    @* HTML5 shim, for IE6-8 support of HTML5 elements *@
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    @* fav and touch icons *@
+    <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("core/images/favicon.png")">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="@routes.Assets.at("core/images/apple-touch-icon-114-precomposed.png")">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="@routes.Assets.at("core/images/apple-touch-icon-72-precomposed.png")">
+    <link rel="apple-touch-icon-precomposed" href="@routes.Assets.at("core/images/apple-touch-icon-57-precomposed.png")">
+
+    @* Meta and links from the content node *@
+    @node.getMeta()
+    @node.getLink()
+
+    @* Stylesheets from the content node *@
+    @node.getStyle()
+
+    @* Scripts and Stylesheets included in the theme template *@
+    @head
+
 </head>
 <body>
 
-#{doLayout /}
+    @content
+
+    @* Placed at the end of the document so the pages load faster *@
+    <script src="@routes.Assets.at("core/javascripts/jquery.min.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("core/javascripts/bootstrap.min.js")" type="text/javascript"></script>
+
+    @* Scripts included in the template *@
+    @scripts
+
+    @* Scripts from the content node *@
+    @node.getScript()
 
 </body>
 </html>

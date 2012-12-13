@@ -1,11 +1,13 @@
 @(context: main.origo.core.annotations.ThemeVariant.Context)
 
-#{extends 'themes/origo/DefaultTheme/theme.html' /}
-#{set title:node.title /}
+@head = {
+    <link rel='stylesheet' href='@routes.Assets.at("core/stylesheets/main_and_left_columns.min.css")' xmlns="http://www.w3.org/1999/html">
+}
 
-#{set 'moreStyles'}
-@*<link rel="stylesheet" media="screen" href="@{'/public/stylesheets/main_and_left_columns.css'}"/>*@
-#{/set}
+@scripts = {
+}
+
+@theme(context.renderedNode, head, scripts) {
 
 <div class="layout-main-and-left">
     <div class="head">
@@ -26,3 +28,5 @@
         </div>
     </div>
 </div>
+
+}

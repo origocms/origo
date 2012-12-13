@@ -39,7 +39,7 @@ public class InitialTestData {
         body.save();
 
         RootNode node = new RootNode("aa1755dd-18c4-4b78-956e-eef7e562c36c", 1);
-        node.nodeType = "com.origocms.core.models.BasicPage";
+        node.nodeType = "models.origo.core.BasicPage";
         node.save();
 
         BasicPage page = new BasicPage();
@@ -69,7 +69,7 @@ public class InitialTestData {
         body.save();
 
         RootNode node = new RootNode("c9615819-0556-4e70-b6a9-a66c5b8d4c1a", 1);
-        node.nodeType = "com.origocms.core.models.BasicPage";
+        node.nodeType = "models.origo.core.BasicPage";
         node.save();
 
         BasicPage page = new BasicPage();
@@ -97,7 +97,7 @@ public class InitialTestData {
         body.save();
 
         RootNode node = new RootNode("1cf699a7-a0c4-4be0-855f-466042a36a8d", 1);
-        node.nodeType = "com.origocms.core.models.BasicPage";
+        node.nodeType = "models.origo.core.BasicPage";
         node.save();
 
         BasicPage page = new BasicPage();

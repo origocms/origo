@@ -24,8 +24,7 @@ public class NavigationHelper {
     }
 
     public static void triggerBeforeNavigationLoaded(String withType, Node node, String section) {
-        Map<String, Object> args = new HashMap<String, Object>();
-        //TODO: Figure out how to do this with a complete type Collection<NavigationElement>.class? instead of Collection.class
+        Map<String, Object> args = Maps.newHashMap();
         args.put("section", section);
         OnLoadHelper.triggerBeforeListener(Types.NAVIGATION, withType, node, args);
     }
@@ -38,11 +37,11 @@ public class NavigationHelper {
     /*
      * Convenience methods for hooks with NAVIGATION_ITEM type
      */
-    public static NavigationElement triggerProvidesNavigationItemListener(String withType, RootNode node, Navigation navigation) {
+    public static NavigationElement triggerProvidesNavigationItemListener(String withType, Node node, Navigation navigation) {
         return ProvidesHelper.triggerListener(Types.NAVIGATION_ITEM, withType, node, navigation, Collections.<String, Object>emptyMap());
     }
 
-    public static NavigationElement triggerProvidesNavigationItemListener(String withType, RootNode node, Navigation navigation, NavigationElement navigationElement) {
+    public static NavigationElement triggerProvidesNavigationItemListener(String withType, Node node, Navigation navigation, NavigationElement navigationElement) {
         Map<String, Object> args = Maps.newHashMap();
         args.put("navigation", navigation);
         args.put("navigation_element", navigationElement);
