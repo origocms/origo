@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+
+<html>
+<head #{get 'node.head_attributes'/}>
+    <title>#{get 'title' /}</title>
+    <meta charset="${_response_encoding}">
+#{verbatim}${node.meta}#{/verbatim}
+#{verbatim}${node.link}#{/verbatim}
+    @*<link rel="stylesheet" media="screen" href="@{'/public/stylesheets/main.css'}">*@
+#{get 'moreStyles' /}
+#{verbatim}${node.style}#{/verbatim}
+    @*<link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">*@
+    @*<script src="@{'/public/javascripts/jquery-1.6.4.min.js'}" type="text/javascript"
+            charset="${_response_encoding}"></script>*@
+#{get 'moreScripts' /}
+#{verbatim}${node.script}#{/verbatim}
+</head>
+<body>
+
+#{doLayout /}
+
+</body>
+</html>
