@@ -20,7 +20,7 @@ public class BasicPageProvider {
     @Provides(type = "node", with = "models.origo.core.BasicPage")
     public static BasicPage loadPage(Provides.Context context) throws NodeNotFoundException {
 
-        BasicPage page = BasicPage.findWithNodeIdAndSpecificVersion(context.rootNode.nodeId, context.rootNode.version);
+        BasicPage page = BasicPage.findWithNodeIdAndSpecificVersion(context.node.getNodeId(), context.node.getVersion());
         if (page == null) {
             throw new NodeNotFoundException(context.node.getNodeId());
         }

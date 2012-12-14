@@ -31,7 +31,7 @@ public class Themes {
         themes.put(themeId, new CachedTheme(themeId, declaringClass));
     }
 
-    public static void addThemeVariant(String themeId, String variantId, String[] regions, Class declaringClass, MethodHandle templateMethod) {
+    public static void addThemeVariant(String themeId, String variantId, String[] regions, Method templateMethod) {
         // Themes are declared on the class level and should be parsed first so we don't need to check if the themeId exists before accessing
         Map<String, CachedThemeVariant> themeVariants = themes.get(themeId).getThemeVariants();
 
@@ -39,14 +39,14 @@ public class Themes {
             throw new InitializationException("Duplicate theme variant id [" + variantId + "]");
         }
         themeVariantsToThemeMapping.put(variantId, themeId);
-        themeVariants.put(variantId, new CachedThemeVariant(themeId, variantId, declaringClass, templateMethod, new HashSet<String>(Arrays.asList(regions))));
+        themeVariants.put(variantId, new CachedThemeVariant(themeId, variantId, templateMethod, new HashSet<String>(Arrays.asList(regions))));
     }
 
-    public static void addDecorator(String themeId, String uiElementType, Class declaringClass, MethodHandle method) {
+    public static void addDecorator(String themeId, String uiElementType, Method method) {
         // Themes are declared on the class level and should be parsed first so we don't need to check if the themeId exists before accessing
         Map<String, CachedDecorator> themeDecorators = themes.get(themeId).getDecorators();
 
-        themeDecorators.put(uiElementType, new CachedDecorator(declaringClass, method));
+        themeDecorators.put(uiElementType, new CachedDecorator(uiElementType, method));
     }
 
     public static CachedTheme getTheme(String themeId) {

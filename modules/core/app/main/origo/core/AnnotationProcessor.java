@@ -54,16 +54,16 @@ public class AnnotationProcessor {
 
         scanThemeParts(themes, Decorates.class, String.class, Decorates.Context.class, new AddThemePartFunction() {
             @Override
-            public void add(Theme theme, Annotation annotation, Class declaringClass, MethodHandle methodHandle) {
+            public void add(Theme theme, Annotation annotation, Method method) {
                 Decorates decorates = (Decorates) annotation;
-                Themes.addDecorator(theme.id(), decorates.type(), declaringClass, methodHandle);
+                Themes.addDecorator(theme.id(), decorates.type(), method);
             }
         });
         scanThemeParts(themes, ThemeVariant.class, Result.class, ThemeVariant.Context.class, new AddThemePartFunction() {
             @Override
-            public void add(Theme theme, Annotation annotation, Class declaringClass, MethodHandle methodHandle) {
+            public void add(Theme theme, Annotation annotation, Method method) {
                 ThemeVariant themeVariant = (ThemeVariant) annotation;
-                Themes.addThemeVariant(theme.id(), themeVariant.id(), themeVariant.regions(), declaringClass, methodHandle);
+                Themes.addThemeVariant(theme.id(), themeVariant.id(), themeVariant.regions(), method);
             }
         });
     }
@@ -74,15 +74,14 @@ public class AnnotationProcessor {
         for(Class c : classes) {
             Set<Method> methods = Reflections.getAllMethods(c, ReflectionUtils.withAnnotation(annotationClass));
             for (Method m : methods) {
-                MethodType methodType = MethodType.methodType(m.getReturnType(), contextClass);
-                try {
-                    MethodHandle methodHandle = lookup.findStatic(m.getDeclaringClass(), m.getName(), methodType);
-                    InterceptorRepository.add(m.getAnnotation(annotationClass), m.getDeclaringClass(), methodHandle);
-                } catch (NoSuchMethodException | IllegalAccessException e) {
+                Class[] pc = m.getParameterTypes();
+                if (pc.length > 1 || !pc[0].equals(contextClass)) {
                     throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() + "' in " +
                             " is annotated with '" + annotationClass.getName() +
-                            "' but the method signature does not match the required signature", e);
+                            "' but the method signature does not match the required signature");
                 }
+
+                InterceptorRepository.add(m.getAnnotation(annotationClass), m);
             }
         }
     }
@@ -106,22 +105,20 @@ public class AnnotationProcessor {
 
             for (Method m : methods) {
 
-                MethodType methodType = MethodType.methodType(returnType, contextClass);
-                try {
-                    MethodHandle methodHandle = lookup.findStatic(c, m.getName(), methodType);
-                    Annotation annotation = m.getAnnotation(annotationClass);
-                    addThemepartFunction.add(themeAnnotation, annotation, c, methodHandle);
-                } catch (NoSuchMethodException | IllegalAccessException e) {
-                    throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() +
-                            "' is annotated with '" + annotationClass.getName() +
-                            "' but the method signature does not match the required signature", e);
+                Class[] pc = m.getParameterTypes();
+                if (pc.length > 1 || !pc[0].equals(contextClass)) {
+                    throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() + "' in " +
+                            " is annotated with '" + annotationClass.getName() +
+                            "' but the method signature does not match the required signature");
                 }
+                Annotation annotation = m.getAnnotation(annotationClass);
+                addThemepartFunction.add(themeAnnotation, annotation, m);
             }
         }
     }
 
     private static interface AddThemePartFunction {
-        public void add(Theme theme, Annotation annotation, Class declaringClass, MethodHandle methodHandle);
+        public void add(Theme theme, Annotation annotation, Method method);
     }
 
 }

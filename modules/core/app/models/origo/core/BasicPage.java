@@ -149,7 +149,7 @@ public class BasicPage implements Node {
                 "(n2.publish = null or n2.publish < :today) and" +
                 "(n2.unPublish = null or n2.unPublish >= :today)" +
                 "))";
-        final TypedQuery<BasicPage> query = JPA.em().createQuery(queryString, BasicPage.class);
+        final Query query = JPA.em().createQuery(queryString);
         query.setParameter("today", asOfDate);
         return query.getResultList();
     }
@@ -163,10 +163,10 @@ public class BasicPage implements Node {
                 "(n2.publish = null or n2.publish < :today) and" +
                 "(n2.unPublish = null or n2.unPublish >= :today)" +
                 "))";
-        final TypedQuery<BasicPage> query = JPA.em().createQuery(queryString, BasicPage.class);
+        final Query query = JPA.em().createQuery(queryString);
         query.setParameter("nodeId", nodeId);
         query.setParameter("today", asOfDate);
-        return query.getSingleResult();
+        return (BasicPage) query.getSingleResult();
     }
 
     public static BasicPage findLatestVersion(String nodeId) {
@@ -175,18 +175,18 @@ public class BasicPage implements Node {
                 "select max(n.version) from models.origo.core.RootNode n " +
                 "where n.nodeId = p.nodeId" +
                 ")";
-        final TypedQuery<BasicPage> query = JPA.em().createQuery(queryString, BasicPage.class);
+        final Query query = JPA.em().createQuery(queryString);
         query.setParameter("nodeId", nodeId);
-        return query.getSingleResult();
+        return (BasicPage) query.getSingleResult();
     }
 
     public static BasicPage findWithNodeIdAndSpecificVersion(String nodeId, Integer version) {
         String queryString = "select p from models.origo.core.BasicPage p " +
                 "where p.nodeId = :nodeId and p.version = :version";
-        final TypedQuery<BasicPage> query = JPA.em().createQuery(queryString, BasicPage.class);
+        final Query query = JPA.em().createQuery(queryString);
         query.setParameter("nodeId", nodeId);
         query.setParameter("version", version);
-        return query.getSingleResult();
+        return (BasicPage) query.getSingleResult();
     }
 
     public static List<BasicPage> findAllLatestVersions() {
@@ -195,7 +195,7 @@ public class BasicPage implements Node {
                 "select max(n.version) from models.origo.core.RootNode n " +
                 "where n.nodeId = p.nodeId" +
                 ")";
-        final TypedQuery<BasicPage> query = JPA.em().createQuery(queryString, BasicPage.class);
+        final Query query = JPA.em().createQuery(queryString);
         return query.getResultList();
     }
 

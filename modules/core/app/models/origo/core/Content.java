@@ -4,15 +4,19 @@ import play.data.validation.Constraints;
 import play.db.jpa.JPA;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "content")
+@Table(name = "content", uniqueConstraints = @UniqueConstraint(name = "contentVersion", columnNames = {"identifier", "version"}))
 public class Content {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long id;
+
+    @Constraints.Required
+    public Integer version;
 
     @Constraints.Required
     @Column(unique = true)
@@ -28,7 +32,14 @@ public class Content {
     }
 
     public static Content findWithIdentifier(String identifier) {
-        return JPA.em().find(Content.class, identifier);
+        @SuppressWarnings("unchecked")
+        List<Content> contents = JPA.em().createQuery("from models.origo.core.Content where identifier=:identifier order by version desc").
+                setParameter("identifier", identifier).getResultList();
+        if (contents.isEmpty()) {
+            return null;
+        }
+        return contents.iterator().next();
+
     }
 
     public Content save() {

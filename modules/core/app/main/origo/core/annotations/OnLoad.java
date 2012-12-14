@@ -4,6 +4,7 @@ import main.origo.core.Navigation;
 import main.origo.core.Node;
 import main.origo.core.ui.NavigationElement;
 import main.origo.core.ui.UIElement;
+import models.origo.core.RootNode;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -38,6 +39,7 @@ public @interface OnLoad {
     boolean after() default true;
 
     public static class Context {
+        public RootNode rootNode;
         public Node node;
         public Map<String, Object> args;
         public Navigation navigation;
@@ -45,30 +47,40 @@ public @interface OnLoad {
         public List<NavigationElement> navigationElements;
         public UIElement uiElement;
 
-        public Context(Node node, Map<String, Object> args) {
+        public Context(RootNode rootNode, Map<String, Object> args) {
+            this.rootNode = rootNode;
+            this.args = args;
+        }
+
+        public Context(RootNode rootNode, Node node, Map<String, Object> args) {
+            this.rootNode = rootNode;
             this.node = node;
             this.args = args;
         }
 
-        public Context(Node node, Navigation navigation, Map<String, Object> args) {
+        public Context(RootNode rootNode, Node node, Navigation navigation, Map<String, Object> args) {
+            this.rootNode = rootNode;
             this.node = node;
             this.navigation = navigation;
             this.args = args;
         }
 
-        public Context(Node node, List<NavigationElement> navigationElements, Map<String, Object> args) {
+        public Context(RootNode rootNode, Node node, List<NavigationElement> navigationElements, Map<String, Object> args) {
+            this.rootNode = rootNode;
             this.node = node;
             this.navigationElements = navigationElements;
             this.args = args;
         }
 
-        public Context(Node node, UIElement uiElement, Map<String, Object> args) {
+        public Context(RootNode rootNode, Node node, UIElement uiElement, Map<String, Object> args) {
+            this.rootNode = rootNode;
             this.node = node;
             this.uiElement = uiElement;
             this.args = args;
         }
 
-        public Context(Node node, Navigation navigation, NavigationElement navigationElement, Map<String, Object> args) {
+        public Context(RootNode rootNode, Node node, Navigation navigation, NavigationElement navigationElement, Map<String, Object> args) {
+            this.rootNode = rootNode;
             this.node = node;
             this.navigation = navigation;
             this.navigationElement = navigationElement;

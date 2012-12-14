@@ -23,15 +23,15 @@ public class NavigationHelper {
         return ProvidesHelper.triggerListener(Types.NAVIGATION, withType, node, Collections.<String, Object>singletonMap("section", section));
     }
 
-    public static void triggerBeforeNavigationLoaded(String withType, Node node, String section) {
+    public static void triggerBeforeNavigationLoaded(String withType, RootNode rootNode, Node node, String section) {
         Map<String, Object> args = Maps.newHashMap();
         args.put("section", section);
-        OnLoadHelper.triggerBeforeListener(Types.NAVIGATION, withType, node, args);
+        OnLoadHelper.triggerBeforeListener(Types.NAVIGATION, withType, rootNode, node, args);
     }
 
-    public static void triggerAfterNavigationLoaded(String withType, Node node, List<NavigationElement> navigationElements, String section) {
+    public static void triggerAfterNavigationLoaded(String withType, RootNode rootNode, Node node, List<NavigationElement> navigationElements, String section) {
         //TODO: Figure out how to do this with a complete type Collection<NavigationElement>.class? instead of Collection.class
-        OnLoadHelper.triggerAfterListener(Types.NAVIGATION, withType, node, Collections.<String, Object>singletonMap("section", section), navigationElements);
+        OnLoadHelper.triggerAfterListener(Types.NAVIGATION, withType, rootNode, node, Collections.<String, Object>singletonMap("section", section), navigationElements);
     }
 
     /*
@@ -48,12 +48,12 @@ public class NavigationHelper {
         return ProvidesHelper.triggerListener(Types.NAVIGATION_ITEM, withType, node, args);
     }
 
-    public static void triggerBeforeNavigationItemLoaded(String withType, Node node, Navigation navigation) {
-        OnLoadHelper.triggerBeforeListener(Types.NAVIGATION_ITEM, withType, node, navigation, Collections.<String, Object>emptyMap());
+    public static void triggerBeforeNavigationItemLoaded(String withType, RootNode rootNode, Node node, Navigation navigation) {
+        OnLoadHelper.triggerBeforeListener(Types.NAVIGATION_ITEM, withType, rootNode, node, navigation, Collections.<String, Object>emptyMap());
     }
 
-    public static void triggerAfterNavigationItemLoaded(String withType, Node node, Navigation navigation, NavigationElement navigationElement) {
-        OnLoadHelper.triggerAfterListener(Types.NAVIGATION_ITEM, withType, node, Collections.<String, Object>emptyMap(), navigation, navigationElement);
+    public static void triggerAfterNavigationItemLoaded(String withType, RootNode rootNode, Node node, Navigation navigation, NavigationElement navigationElement) {
+        OnLoadHelper.triggerAfterListener(Types.NAVIGATION_ITEM, withType, rootNode, node, Collections.<String, Object>emptyMap(), navigation, navigationElement);
     }
 
 }

@@ -7,6 +7,7 @@ import main.origo.core.Node;
 import main.origo.core.annotations.OnLoad;
 import main.origo.core.ui.NavigationElement;
 import main.origo.core.ui.UIElement;
+import models.origo.core.RootNode;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -20,12 +21,12 @@ import java.util.Map;
  */
 public class OnLoadHelper {
 
-    public static void triggerBeforeListener(String type, String withType, Node node, Map<String, Object> args) {
-        List<CachedAnnotation> listeners = findListenerForType(type, withType, false);
+    private static void triggerBeforeListener(String type, String withType, Node node, OnLoad.Context context) {
+        List<CachedAnnotation> listeners = findListenerForType(type, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), false);
         if (listeners != null && !listeners.isEmpty()) {
             for (CachedAnnotation listener : listeners) {
                 try {
-                    listener.method.invokeExact(listener.declaringClass, new OnLoad.Context(node, args));
+                    listener.method.invoke(null, context);
                 } catch (Throwable e) {
                     throw new RuntimeException("", e);
                 }
@@ -33,25 +34,24 @@ public class OnLoadHelper {
         }
     }
 
-    public static void triggerBeforeListener(String type, String withType, Node node, Navigation navigation, Map<String, Object> args) {
-        List<CachedAnnotation> listeners = findListenerForType(type, withType, false);
-        if (listeners != null && !listeners.isEmpty()) {
-            for (CachedAnnotation listener : listeners) {
-                try {
-                    listener.method.invokeExact(listener.declaringClass, new OnLoad.Context(node, navigation, args));
-                } catch (Throwable e) {
-                    throw new RuntimeException("", e);
-                }
-            }
-        }
+    public static void triggerBeforeListener(String type, String withType, RootNode rootNode, Map<String, Object> args) {
+        triggerBeforeListener(type, withType, rootNode, new OnLoad.Context(rootNode, args));
     }
 
-    public static void triggerAfterListener(String onLoadType, String withType, Node node, Map<String, Object> args) {
+    public static void triggerBeforeListener(String type, String withType, RootNode rootNode, Node node, Map<String, Object> args) {
+        triggerBeforeListener(type, withType, node, new OnLoad.Context(rootNode, node, args));
+    }
+
+    public static void triggerBeforeListener(String type, String withType, RootNode rootNode, Node node, Navigation navigation, Map<String, Object> args) {
+        triggerBeforeListener(type, withType, node, new OnLoad.Context(rootNode, node, navigation, args));
+    }
+
+    private static void triggerAfterListener(String onLoadType, String withType, Node node, OnLoad.Context context) {
         List<CachedAnnotation> listeners = findListenerForType(onLoadType, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), true);
         if (listeners != null && !listeners.isEmpty()) {
             for (CachedAnnotation listener : listeners) {
                 try {
-                    listener.method.invokeExact(listener.declaringClass, new OnLoad.Context(node, args));
+                    listener.method.invoke(null, context);
                 } catch (Throwable e) {
                     throw new RuntimeException("", e);
                 }
@@ -59,56 +59,24 @@ public class OnLoadHelper {
         }
     }
 
-    public static void triggerAfterListener(String onLoadType, String withType, Node node, Map<String, Object> args, UIElement uiElement) {
-        List<CachedAnnotation> listeners = findListenerForType(onLoadType, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), true);
-        if (listeners != null && !listeners.isEmpty()) {
-            for (CachedAnnotation listener : listeners) {
-                try {
-                    listener.method.invokeExact(listener.declaringClass, new OnLoad.Context(node, uiElement, args));
-                } catch (Throwable e) {
-                    throw new RuntimeException("", e);
-                }
-            }
-        }
+    public static void triggerAfterListener(String onLoadType, String withType, RootNode rootNode, Node node, Map<String, Object> args) {
+        triggerAfterListener(onLoadType, withType, node, new OnLoad.Context(rootNode, node, args));
     }
 
-    public static void triggerAfterListener(String onLoadType, String withType, Node node, Map<String, Object> args, Navigation navigation) {
-        List<CachedAnnotation> listeners = findListenerForType(onLoadType, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), true);
-        if (listeners != null && !listeners.isEmpty()) {
-            for (CachedAnnotation listener : listeners) {
-                try {
-                    listener.method.invokeExact(listener.declaringClass, new OnLoad.Context(node, navigation, args));
-                } catch (Throwable e) {
-                    throw new RuntimeException("", e);
-                }
-            }
-        }
+    public static void triggerAfterListener(String onLoadType, String withType, RootNode rootNode, Node node, Map<String, Object> args, UIElement uiElement) {
+        triggerAfterListener(onLoadType, withType, node, new OnLoad.Context(rootNode, node, uiElement, args));
     }
 
-    public static void triggerAfterListener(String onLoadType, String withType, Node node, Map<String, Object> args, Navigation navigation, NavigationElement navigationElement) {
-        List<CachedAnnotation> listeners = findListenerForType(onLoadType, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), true);
-        if (listeners != null && !listeners.isEmpty()) {
-            for (CachedAnnotation listener : listeners) {
-                try {
-                    listener.method.invokeExact(listener.declaringClass, new OnLoad.Context(node, navigation, navigationElement, args));
-                } catch (Throwable e) {
-                    throw new RuntimeException("", e);
-                }
-            }
-        }
+    public static void triggerAfterListener(String onLoadType, String withType, RootNode rootNode, Node node, Map<String, Object> args, Navigation navigation) {
+        triggerAfterListener(onLoadType, withType, node, new OnLoad.Context(rootNode, node, navigation, args));
     }
 
-    public static void triggerAfterListener(String onLoadType, String withType, Node node, Map<String, Object> args, List<NavigationElement> navigationElements) {
-        List<CachedAnnotation> listeners = findListenerForType(onLoadType, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), true);
-        if (listeners != null && !listeners.isEmpty()) {
-            for (CachedAnnotation listener : listeners) {
-                try {
-                    listener.method.invokeExact(listener.declaringClass, new OnLoad.Context(node, navigationElements, args));
-                } catch (Throwable e) {
-                    throw new RuntimeException("", e);
-                }
-            }
-        }
+    public static void triggerAfterListener(String onLoadType, String withType, RootNode rootNode, Node node, Map<String, Object> args, Navigation navigation, NavigationElement navigationElement) {
+        triggerAfterListener(onLoadType, withType, node, new OnLoad.Context(rootNode, node, navigation, navigationElement, args));
+    }
+
+    public static void triggerAfterListener(String onLoadType, String withType, RootNode rootNode, Node node, Map<String, Object> args, List<NavigationElement> navigationElements) {
+        triggerAfterListener(onLoadType, withType, node, new OnLoad.Context(rootNode, node, navigationElements, args));
     }
 
     private static List<CachedAnnotation> findListenerForType(final String onLoadType, final String withType, final boolean after) {

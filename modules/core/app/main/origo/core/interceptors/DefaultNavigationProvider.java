@@ -1,7 +1,6 @@
 package main.origo.core.interceptors;
 
 import com.google.common.collect.Lists;
-import main.origo.core.Navigation;
 import main.origo.core.Node;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.Provides;
@@ -16,7 +15,6 @@ import models.origo.core.navigation.BasicNavigation;
 import models.origo.core.navigation.ExternalLinkNavigation;
 import models.origo.core.navigation.PageIdNavigation;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -38,27 +36,27 @@ public class DefaultNavigationProvider {
     public static Collection<NavigationElement> createNavigation(Provides.Context context) {
         List<NavigationElement> navigationElements = Lists.newArrayList();
         String section = (String) context.args.get("section");
-        NavigationHelper.triggerBeforeNavigationLoaded(BasicNavigation.class.getName(), context.node, section);
+        NavigationHelper.triggerBeforeNavigationLoaded(BasicNavigation.class.getName(), context.rootNode, context.node, section);
         List<BasicNavigation> navigationModels = BasicNavigation.findWithSection(section);
         for (BasicNavigation navigationModel : navigationModels) {
-            NavigationHelper.triggerBeforeNavigationItemLoaded(navigationModel.type, context.node, navigationModel);
+            NavigationHelper.triggerBeforeNavigationItemLoaded(navigationModel.type, context.rootNode, context.node, navigationModel);
             NavigationElement navigationElement = NavigationHelper.triggerProvidesNavigationItemListener(navigationModel.type, context.node, navigationModel);
-            NavigationHelper.triggerAfterNavigationItemLoaded(navigationModel.type, context.node, navigationModel, navigationElement);
-            List<NavigationElement> children = createNavigationChildren(context.node, section, navigationModel, navigationElement);
+            NavigationHelper.triggerAfterNavigationItemLoaded(navigationModel.type, context.rootNode, context.node, navigationModel, navigationElement);
+            List<NavigationElement> children = createNavigationChildren(context.rootNode, context.node, section, navigationModel, navigationElement);
             navigationElement.children.addAll(children);
             navigationElements.add(navigationElement);
         }
-        NavigationHelper.triggerAfterNavigationLoaded(BasicNavigation.class.getName(), context.node, navigationElements, section);
+        NavigationHelper.triggerAfterNavigationLoaded(BasicNavigation.class.getName(), context.rootNode, context.node, navigationElements, section);
         return navigationElements;
     }
 
-    public static List<NavigationElement> createNavigationChildren(Node node, String section, BasicNavigation navigationModel, NavigationElement parentNavigationElement) {
+    public static List<NavigationElement> createNavigationChildren(RootNode rootNode, Node node, String section, BasicNavigation navigationModel, NavigationElement parentNavigationElement) {
         List<NavigationElement> navigationElements = Lists.newArrayList();
         List<BasicNavigation> navigationModels = BasicNavigation.findWithSection(section, navigationModel);
         for (BasicNavigation childNavigation : navigationModels) {
-            NavigationHelper.triggerBeforeNavigationItemLoaded(childNavigation.type, node, childNavigation);
+            NavigationHelper.triggerBeforeNavigationItemLoaded(childNavigation.type, rootNode, node, childNavigation);
             NavigationElement childNavigationElement = NavigationHelper.triggerProvidesNavigationItemListener(childNavigation.type, node, childNavigation, parentNavigationElement);
-            NavigationHelper.triggerAfterNavigationItemLoaded(childNavigation.type, node, childNavigation, childNavigationElement);
+            NavigationHelper.triggerAfterNavigationItemLoaded(childNavigation.type, rootNode, node, childNavigation, childNavigationElement);
             if (childNavigationElement.selected) {
                 parentNavigationElement.selected = true;
             }

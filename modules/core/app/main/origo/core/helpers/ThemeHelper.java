@@ -81,7 +81,7 @@ public class ThemeHelper {
         if (decorators.containsKey(uiElement.getType())) {
             CachedDecorator decorator = decorators.get(uiElement.getType());
             try {
-                decoratedOutput = (String)decorator.method.invokeExact(decorator.declaringClass, new Decorates.Context(uiElement, renderingContext));
+                decoratedOutput = (String)decorator.method.invoke(null, new Decorates.Context(uiElement, renderingContext));
             } catch (Throwable e) {
                 throw new RuntimeException("", e);
             }
@@ -127,7 +127,7 @@ public class ThemeHelper {
     public static Result render(RenderedNode renderedNode) {
         CachedThemeVariant cachedThemeVariant = renderedNode.getTemplate();
         try {
-            return (Result) cachedThemeVariant.templateMethod.invokeExact(cachedThemeVariant.declaringClass, new ThemeVariant.Context(renderedNode));
+            return (Result) cachedThemeVariant.templateMethod.invoke(null, new ThemeVariant.Context(renderedNode));
         } catch (Throwable e) {
             throw new RuntimeException("", e);
         }

@@ -44,7 +44,7 @@ public class NodeHelper {
         }
 
         if (hasType) {
-            triggerAfterNodeLoaded(rootNode.nodeType, node);
+            triggerAfterNodeLoaded(rootNode.nodeType, rootNode, node);
         }
 
         return node;
@@ -61,8 +61,8 @@ public class NodeHelper {
         OnLoadHelper.triggerBeforeListener(Types.NODE, withType, rootNode, Collections.<String, Object>emptyMap());
     }
 
-    public static void triggerAfterNodeLoaded(String withType, Node node) {
-        OnLoadHelper.triggerAfterListener(Types.NODE, withType, node, Collections.<String, Object>emptyMap());
+    public static void triggerAfterNodeLoaded(String withType, RootNode rootNode, Node node) {
+        OnLoadHelper.triggerAfterListener(Types.NODE, withType, rootNode, node, Collections.<String, Object>emptyMap());
     }
 
 }

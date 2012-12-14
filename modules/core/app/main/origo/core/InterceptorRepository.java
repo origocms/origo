@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import java.lang.annotation.Annotation;
-import java.lang.invoke.MethodHandle;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -12,12 +12,12 @@ public class InterceptorRepository {
 
     public static Map<Class<? extends Annotation>, List<CachedAnnotation>> listeners = Maps.newHashMap();
 
-    public static void add(Annotation annotation, Class declaringClass, MethodHandle method) {
+    public static void add(Annotation annotation, Method method) {
         if (!listeners.containsKey(annotation.annotationType())) {
             listeners.put(annotation.annotationType(), new CopyOnWriteArrayList<CachedAnnotation>());
         }
         List<CachedAnnotation> annotationTypes = listeners.get(annotation.annotationType());
-        annotationTypes.add(new CachedAnnotation(annotation, declaringClass, method));
+        annotationTypes.add(new CachedAnnotation(annotation, method));
     }
 
     public static List<CachedAnnotation> getInterceptor(Class<? extends Annotation> annotationType) {

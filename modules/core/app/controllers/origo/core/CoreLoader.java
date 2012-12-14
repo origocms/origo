@@ -105,6 +105,7 @@ public class CoreLoader {
 
     private static Node loadNode(String identifier, int version) throws NodeNotFoundException {
         Logger.trace("Trying to find alias for [" + identifier + "]");
+
         Alias alias = Alias.findWithPath(identifier);
         if (alias != null) {
             Logger.debug("Found alias: " + alias.toString());

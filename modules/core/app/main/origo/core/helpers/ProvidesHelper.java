@@ -7,6 +7,7 @@ import main.origo.core.Navigation;
 import main.origo.core.Node;
 import main.origo.core.annotations.Provides;
 import org.apache.commons.lang3.StringUtils;
+import play.Logger;
 
 import java.util.*;
 
@@ -27,8 +28,9 @@ public class ProvidesHelper {
         CachedAnnotation cachedAnnotation = findListener(providesType, withType);
         try {
             //noinspection unchecked
-            return (T) cachedAnnotation.method.invokeExact(cachedAnnotation.declaringClass, new Provides.Context(node, args));
+            return (T) cachedAnnotation.method.invoke(null, new Provides.Context(node, args));
         } catch (Throwable e) {
+            Logger.error("", e);
             throw new RuntimeException("Unable to invoke method", e.getCause());
         }
     }
@@ -37,7 +39,7 @@ public class ProvidesHelper {
         CachedAnnotation cachedAnnotation = findListener(providesType, withType);
         try {
             //noinspection unchecked
-            return (T) cachedAnnotation.method.invokeExact(cachedAnnotation.declaringClass, new Provides.Context(node, navigation, args));
+            return (T) cachedAnnotation.method.invoke(null, new Provides.Context(node, navigation, args));
         } catch (Throwable e) {
             throw new RuntimeException("Unable to invoke method", e.getCause());
         }
