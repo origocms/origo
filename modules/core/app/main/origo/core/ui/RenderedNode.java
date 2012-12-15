@@ -1,5 +1,6 @@
 package main.origo.core.ui;
 
+import com.google.common.collect.Lists;
 import main.origo.core.CachedThemeVariant;
 import play.api.templates.Html;
 
@@ -20,13 +21,13 @@ public class RenderedNode {
     private List<Html> style;
 
     private CachedThemeVariant template;
-    private Map<String, Html> regions;
+    private Map<String, List<Html>> regions;
 
     private Collection<NavigationElement> navigation;
 
     public RenderedNode(String id) {
         this.id = id;
-        regions = new HashMap<String, Html>();
+        regions = new HashMap<>();
     }
 
     public String getId() {
@@ -85,15 +86,15 @@ public class RenderedNode {
         this.template = template;
     }
 
-    public Map<String, Html> getRegions() {
+    public Map<String, List<Html>> getRegions() {
         return regions;
     }
 
-    public void setRegions(Map<String, Html> regions) {
+    public void setRegions(Map<String, List<Html>> regions) {
         this.regions = regions;
     }
 
-    public Html get(String region) {
+    public List<Html> get(String region) {
         return regions.get(region);
     }
 
@@ -122,7 +123,7 @@ public class RenderedNode {
     }
 
     public void add(String region, Html additionalContent) {
-        regions.put(region, additionalContent);
+        regions.get(region).add(additionalContent);
     }
 
     @Override

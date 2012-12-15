@@ -19,7 +19,6 @@
         <header class="jumbotron subhead" id="overview">
             <div class="container">
                 <h1>@context.node.getTitle()</h1>
-                <p class="lead">Overview of the project, its contents, and how to get started with a simple template.</p>
             </div>
         </header>
 
@@ -27,15 +26,21 @@
 
             <div class="row">
                 <div class="span3">
-                    @{context.node.get("left")}
+                    @context.node.get("left").map { value =>
+                        @value
+                    }
                 </div>
 
                 <div class="span6">
-                    @{context.node.get("main")}
+                    @context.node.get("main").map { value =>
+                        @value
+                    }
                 </div>
 
                 <div class="span3">
-                    @{context.node.get("right")}
+                    @context.node.get("right").map { value =>
+                        @value
+                    }
                 </div>
 
             </div>

@@ -1,5 +1,6 @@
 package main.origo.core.helpers;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import main.origo.core.CachedDecorator;
 import main.origo.core.CachedThemeVariant;
@@ -16,6 +17,7 @@ import play.api.templates.Html;
 import play.mvc.Result;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ThemeHelper {
@@ -74,9 +76,9 @@ public class ThemeHelper {
      * @param renderedNode the node about to rendered
      */
     private static void setupRegions(CachedThemeVariant themeVariant, RenderedNode renderedNode) {
-        Map<String, Html> regions = Maps.newHashMap();
+        Map<String, List<Html>> regions = Maps.newHashMap();
         for (String region : themeVariant.regions) {
-            regions.put(region, new Html(""));
+            regions.put(region, Lists.<Html>newArrayList());
         }
         renderedNode.setRegions(regions);
     }
@@ -92,7 +94,6 @@ public class ThemeHelper {
             } catch (Throwable e) {
                 throw new RuntimeException("", e);
             }
-
         }
         if (decoratedOutput == null) {
             decoratedOutput = DefaultDecorator.decorate(uiElement, renderingContext);
