@@ -1,5 +1,6 @@
 package models.origo.core;
 
+import play.Logger;
 import play.data.validation.Constraints;
 import play.db.jpa.JPA;
 
@@ -16,32 +17,36 @@ public class Meta {
     @Constraints.Required
     public String nodeId;
 
-    // TODO: Should only have to be Integer but because of defect #521 in play that doesn't work. Should be fixed in 1.3 (2.0?)
     @Constraints.Required
-    public Long version;
+    public Integer version;
 
     @Constraints.Required
     public String referenceId;
 
-    // TODO: Should only have to be Integer but because of defect #521 in play that doesn't work. Should be fixed in 1.3 (2.0?)
     @Constraints.Required
-    public Long weight;
+    public Integer weight;
 
     @Constraints.Required
     public String region;
 
     public static Meta findWithNodeIdAndSpecificVersion(String nodeId, Integer version, String referenceId) {
-        String queryString = "select distinct m from models.origo.core.Meta m " +
-                "where m.nodeId = :nodeId and m.version = :version and m.referenceId = :referenceId";
-        final TypedQuery<Meta> query = JPA.em().createQuery(queryString, Meta.class);
-        return query.getSingleResult();
+        try {
+            String queryString = "select distinct m from models.origo.core.Meta m " +
+                    "where m.nodeId = :nodeId and m.version = :version and m.referenceId = :referenceId";
+            final Query query = JPA.em().createQuery(queryString);
+            query.setParameter("version", version).setParameter("nodeId", nodeId).setParameter("referenceId", referenceId);
+            return (Meta) query.getSingleResult();
+        } catch (NoResultException e) {
+            Logger.trace("No Meta found for node '"+nodeId+"' version '"+version+"' with reference '"+referenceId+"'");
+            return null;
+        }
     }
 
     // TODO: Make this loaded from the database instead
     public static Meta defaultMeta() {
         Meta meta = new Meta();
         meta.region = "main";
-        meta.weight = 100l;
+        meta.weight = 100;
         return meta;
     }
 }

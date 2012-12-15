@@ -1,5 +1,6 @@
 package main.origo.core.helpers;
 
+import com.google.common.collect.Maps;
 import main.origo.core.CachedDecorator;
 import main.origo.core.CachedThemeVariant;
 import main.origo.core.Node;
@@ -11,6 +12,7 @@ import main.origo.core.ui.RenderingContext;
 import main.origo.core.ui.UIElement;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
+import play.api.templates.Html;
 import play.mvc.Result;
 
 import java.util.HashMap;
@@ -26,33 +28,38 @@ public class ThemeHelper {
         RenderingContext renderingContext = new RenderingContext(themeVariant, node);
         for (String region : node.getRegions()) {
             for (UIElement uiElement : node.getUIElements(region)) {
-                String decoratedContent = decorate(uiElement, renderingContext);
-                if (UIElement.META.equalsIgnoreCase(uiElement.getType())) {
-                    if (Node.HEAD.equalsIgnoreCase(region)) {
-                        renderedNode.addMeta(decoratedContent);
-                    } else {
-                        throw new RuntimeException("META is not allowed outside of head");
+                Html decoratedContent = decorate(uiElement, renderingContext);
+                switch(uiElement.getType()) {
+                    case UIElement.META: {
+                        if (Node.HEAD.equalsIgnoreCase(region)) {
+                            renderedNode.addMeta(decoratedContent);
+                        } else {
+                            throw new RuntimeException("META is not allowed outside of head");
+                        }
                     }
-                } else if (UIElement.LINK.equalsIgnoreCase(uiElement.getType())) {
-                    if (Node.HEAD.equalsIgnoreCase(region)) {
-                        renderedNode.addLink(decoratedContent);
-                    } else {
-                        throw new RuntimeException("LINK is not allowed outside of head");
+                    case UIElement.LINK: {
+                        if (Node.HEAD.equalsIgnoreCase(region)) {
+                            renderedNode.addLink(decoratedContent);
+                        } else {
+                            throw new RuntimeException("LINK is not allowed outside of head");
+                        }
                     }
-                } else if (UIElement.SCRIPT.equalsIgnoreCase(uiElement.getType())) {
-                    if (Node.HEAD.equalsIgnoreCase(region)) {
-                        renderedNode.addScript(decoratedContent);
-                    } else {
+                    case UIElement.SCRIPT: {
+                        if (Node.HEAD.equalsIgnoreCase(region)) {
+                            renderedNode.addScript(decoratedContent);
+                        } else {
+                            renderedNode.add(region, decoratedContent);
+                        }
+                    }
+                    case UIElement.STYLE: {
+                        if (Node.HEAD.equalsIgnoreCase(region)) {
+                            renderedNode.addStyle(decoratedContent);
+                        } else {
+                            renderedNode.add(region, decoratedContent);
+                        }
+                    }
+                    default:
                         renderedNode.add(region, decoratedContent);
-                    }
-                } else if (UIElement.STYLE.equalsIgnoreCase(uiElement.getType())) {
-                    if (Node.HEAD.equalsIgnoreCase(region)) {
-                        renderedNode.addStyle(decoratedContent);
-                    } else {
-                        renderedNode.add(region, decoratedContent);
-                    }
-                } else {
-                    renderedNode.add(region, decoratedContent);
                 }
             }
         }
@@ -67,21 +74,21 @@ public class ThemeHelper {
      * @param renderedNode the node about to rendered
      */
     private static void setupRegions(CachedThemeVariant themeVariant, RenderedNode renderedNode) {
-        Map<String, String> regions = new HashMap<String, String>();
+        Map<String, Html> regions = Maps.newHashMap();
         for (String region : themeVariant.regions) {
-            regions.put(region, "");
+            regions.put(region, new Html(""));
         }
         renderedNode.setRegions(regions);
     }
 
-    public static String decorate(UIElement uiElement, RenderingContext renderingContext) {
+    public static Html decorate(UIElement uiElement, RenderingContext renderingContext) {
         Map<String, CachedDecorator> decorators = Themes.getDecoratorsForTheme(renderingContext.getThemeVariant().themeId);
-        renderingContext.nestle(uiElement);
-        String decoratedOutput = null;
+        renderingContext.nest(uiElement);
+        Html decoratedOutput = null;
         if (decorators.containsKey(uiElement.getType())) {
             CachedDecorator decorator = decorators.get(uiElement.getType());
             try {
-                decoratedOutput = (String)decorator.method.invoke(null, new Decorates.Context(uiElement, renderingContext));
+                decoratedOutput = (Html)decorator.method.invoke(null, new Decorates.Context(uiElement, renderingContext));
             } catch (Throwable e) {
                 throw new RuntimeException("", e);
             }
@@ -90,7 +97,7 @@ public class ThemeHelper {
         if (decoratedOutput == null) {
             decoratedOutput = DefaultDecorator.decorate(uiElement, renderingContext);
         }
-        renderingContext.unNestle();
+        renderingContext.unNest();
         return decoratedOutput;
     }
 
@@ -99,11 +106,11 @@ public class ThemeHelper {
             return null;
         }
         StringBuilder sb = new StringBuilder();
-        renderingContext.nestle(parent);
+        renderingContext.nest(parent);
         for (UIElement childElement : parent.getChildren()) {
             sb.append(decorate(childElement, renderingContext));
         }
-        renderingContext.unNestle();
+        renderingContext.unNest();
         return sb.toString();
     }
 

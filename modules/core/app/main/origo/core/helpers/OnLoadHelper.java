@@ -38,12 +38,12 @@ public class OnLoadHelper {
         triggerBeforeListener(type, withType, rootNode, new OnLoad.Context(rootNode, args));
     }
 
-    public static void triggerBeforeListener(String type, String withType, RootNode rootNode, Node node, Map<String, Object> args) {
-        triggerBeforeListener(type, withType, node, new OnLoad.Context(rootNode, node, args));
+    public static void triggerBeforeListener(String type, String withType, Node node, Map<String, Object> args) {
+        triggerBeforeListener(type, withType, node, new OnLoad.Context(node, args));
     }
 
-    public static void triggerBeforeListener(String type, String withType, RootNode rootNode, Node node, Navigation navigation, Map<String, Object> args) {
-        triggerBeforeListener(type, withType, node, new OnLoad.Context(rootNode, node, navigation, args));
+    public static void triggerBeforeListener(String type, String withType, Node node, Navigation navigation, Map<String, Object> args) {
+        triggerBeforeListener(type, withType, node, new OnLoad.Context(node, navigation, args));
     }
 
     private static void triggerAfterListener(String onLoadType, String withType, Node node, OnLoad.Context context) {
@@ -59,24 +59,24 @@ public class OnLoadHelper {
         }
     }
 
-    public static void triggerAfterListener(String onLoadType, String withType, RootNode rootNode, Node node, Map<String, Object> args) {
-        triggerAfterListener(onLoadType, withType, node, new OnLoad.Context(rootNode, node, args));
+    public static void triggerAfterListener(String onLoadType, String withType, Node node, Map<String, Object> args) {
+        triggerAfterListener(onLoadType, withType, node, new OnLoad.Context(node, args));
     }
 
-    public static void triggerAfterListener(String onLoadType, String withType, RootNode rootNode, Node node, Map<String, Object> args, UIElement uiElement) {
-        triggerAfterListener(onLoadType, withType, node, new OnLoad.Context(rootNode, node, uiElement, args));
+    public static void triggerAfterListener(String onLoadType, String withType, Node node, Map<String, Object> args, UIElement uiElement) {
+        triggerAfterListener(onLoadType, withType, node, new OnLoad.Context(node, uiElement, args));
     }
 
-    public static void triggerAfterListener(String onLoadType, String withType, RootNode rootNode, Node node, Map<String, Object> args, Navigation navigation) {
-        triggerAfterListener(onLoadType, withType, node, new OnLoad.Context(rootNode, node, navigation, args));
+    public static void triggerAfterListener(String onLoadType, String withType, Node node, Map<String, Object> args, Navigation navigation) {
+        triggerAfterListener(onLoadType, withType, node, new OnLoad.Context(node, navigation, args));
     }
 
-    public static void triggerAfterListener(String onLoadType, String withType, RootNode rootNode, Node node, Map<String, Object> args, Navigation navigation, NavigationElement navigationElement) {
-        triggerAfterListener(onLoadType, withType, node, new OnLoad.Context(rootNode, node, navigation, navigationElement, args));
+    public static void triggerAfterListener(String onLoadType, String withType, Node node, Map<String, Object> args, Navigation navigation, NavigationElement navigationElement) {
+        triggerAfterListener(onLoadType, withType, node, new OnLoad.Context(node, navigation, navigationElement, args));
     }
 
-    public static void triggerAfterListener(String onLoadType, String withType, RootNode rootNode, Node node, Map<String, Object> args, List<NavigationElement> navigationElements) {
-        triggerAfterListener(onLoadType, withType, node, new OnLoad.Context(rootNode, node, navigationElements, args));
+    public static void triggerAfterListener(String onLoadType, String withType, Node node, Map<String, Object> args, List<NavigationElement> navigationElements) {
+        triggerAfterListener(onLoadType, withType, node, new OnLoad.Context(node, navigationElements, args));
     }
 
     private static List<CachedAnnotation> findListenerForType(final String onLoadType, final String withType, final boolean after) {

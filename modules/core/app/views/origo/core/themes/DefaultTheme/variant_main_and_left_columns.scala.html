@@ -1,32 +1,37 @@
 @(context: main.origo.core.annotations.ThemeVariant.Context)
 
 @head = {
-    <link rel='stylesheet' href='@routes.Assets.at("core/stylesheets/main_and_left_columns.min.css")' xmlns="http://www.w3.org/1999/html">
+    <link rel='stylesheet' href='@routes.Assets.at("stylesheets/default_main_and_left_columns.min.css")' xmlns="http://www.w3.org/1999/html">
 }
 
 @scripts = {
 }
 
-@theme(context.renderedNode, head, scripts) {
+@theme(context.node, head, scripts) {
 
-<div class="layout-main-and-left">
-    <div class="head">
-        <h3>${node.title}</h3>
+    <div class="navbar">
+        #{origo.core.navigation links:navigation, as:'full'/}
     </div>
 
-#{origo.core.navigation links:navigation, as:'full'/}
+    <header class="jumbotron subhead" id="overview">
+        <div class="container">
+            <h1>@context.node.getTitle()</h1>
+            <p class="lead">Overview of the project, its contents, and how to get started with a simple template.</p>
+        </div>
+    </header>
 
-    <div class="left-column">
-        <div class="content">
-        #{verbatim}${node.get('left')}#{/verbatim}
+
+    <div class="container">
+
+       <div class="row">
+            <div class="span3">
+                @{context.node.get("left")}
+            </div>
+
+            <div class="span9">
+                @{context.node.get("main")}
+            </div>
         </div>
     </div>
-
-    <div class="main-column">
-        <div class="content">
-        #{verbatim}${node.get('main')}#{/verbatim}
-        </div>
-    </div>
-</div>
 
 }

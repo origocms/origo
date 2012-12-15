@@ -29,11 +29,11 @@ public class RenderingContext {
         return parents.peek();
     }
 
-    public void nestle(UIElement parent) {
+    public void nest(UIElement parent) {
         parents.push(parent);
     }
 
-    public void unNestle() {
+    public void unNest() {
         parents.pop();
     }
 }

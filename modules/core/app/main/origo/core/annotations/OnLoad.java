@@ -52,35 +52,30 @@ public @interface OnLoad {
             this.args = args;
         }
 
-        public Context(RootNode rootNode, Node node, Map<String, Object> args) {
-            this.rootNode = rootNode;
+        public Context(Node node, Map<String, Object> args) {
             this.node = node;
             this.args = args;
         }
 
-        public Context(RootNode rootNode, Node node, Navigation navigation, Map<String, Object> args) {
-            this.rootNode = rootNode;
+        public Context(Node node, Navigation navigation, Map<String, Object> args) {
             this.node = node;
             this.navigation = navigation;
             this.args = args;
         }
 
-        public Context(RootNode rootNode, Node node, List<NavigationElement> navigationElements, Map<String, Object> args) {
-            this.rootNode = rootNode;
+        public Context(Node node, List<NavigationElement> navigationElements, Map<String, Object> args) {
             this.node = node;
             this.navigationElements = navigationElements;
             this.args = args;
         }
 
-        public Context(RootNode rootNode, Node node, UIElement uiElement, Map<String, Object> args) {
-            this.rootNode = rootNode;
+        public Context(Node node, UIElement uiElement, Map<String, Object> args) {
             this.node = node;
             this.uiElement = uiElement;
             this.args = args;
         }
 
-        public Context(RootNode rootNode, Node node, Navigation navigation, NavigationElement navigationElement, Map<String, Object> args) {
-            this.rootNode = rootNode;
+        public Context(Node node, Navigation navigation, NavigationElement navigationElement, Map<String, Object> args) {
             this.node = node;
             this.navigation = navigation;
             this.navigationElement = navigationElement;

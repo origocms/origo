@@ -41,10 +41,10 @@ public @interface ThemeVariant {
     String output() default "HTML";
 
     public static class Context {
-        public RenderedNode renderedNode;
+        public RenderedNode node;
 
-        public Context(RenderedNode renderedNode) {
-            this.renderedNode = renderedNode;
+        public Context(RenderedNode node) {
+            this.node = node;
         }
     }
 }

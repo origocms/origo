@@ -34,16 +34,10 @@ public @interface Provides {
     String with();
 
     public static class Context {
-        public RootNode rootNode;
 
         public Node node;
         public Navigation navigation;
         public Map<String, Object> args;
-
-        public Context(RootNode node, Map<String, Object> args) {
-            this.node = node;
-            this.args = args;
-        }
 
         public Context(Node node, Map<String, Object> args) {
             this.node = node;

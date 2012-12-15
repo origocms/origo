@@ -4,12 +4,11 @@ import main.origo.core.annotations.*;
 import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
 import play.Logger;
+import play.api.templates.Html;
 import play.mvc.Result;
 
 import java.lang.annotation.Annotation;
-import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +51,7 @@ public class AnnotationProcessor {
         Set<Class<?>> themes = reflections.getTypesAnnotatedWith(Theme.class);
         scanThemes(themes);
 
-        scanThemeParts(themes, Decorates.class, String.class, Decorates.Context.class, new AddThemePartFunction() {
+        scanThemeParts(themes, Decorates.class, Html.class, Decorates.Context.class, new AddThemePartFunction() {
             @Override
             public void add(Theme theme, Annotation annotation, Method method) {
                 Decorates decorates = (Decorates) annotation;
@@ -69,7 +68,6 @@ public class AnnotationProcessor {
     }
 
     private static void scanInterceptors(Set<Class<?>> classes, Class<? extends Annotation> annotationClass, Class contextClass) {
-        MethodHandles.Lookup lookup = MethodHandles.lookup();
 
         for(Class c : classes) {
             Set<Method> methods = Reflections.getAllMethods(c, ReflectionUtils.withAnnotation(annotationClass));

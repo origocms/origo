@@ -1,9 +1,11 @@
 package main.origo.core.ui;
 
 import main.origo.core.CachedThemeVariant;
+import play.api.templates.Html;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RenderedNode {
@@ -12,19 +14,19 @@ public class RenderedNode {
 
     private String title;
 
-    private String meta;
-    private String link;
-    private String script;
-    private String style;
+    private List<Html> meta;
+    private List<Html> link;
+    private List<Html> script;
+    private List<Html> style;
 
     private CachedThemeVariant template;
-    private Map<String, String> regions;
+    private Map<String, Html> regions;
 
     private Collection<NavigationElement> navigation;
 
     public RenderedNode(String id) {
         this.id = id;
-        regions = new HashMap<String, String>();
+        regions = new HashMap<String, Html>();
     }
 
     public String getId() {
@@ -43,35 +45,35 @@ public class RenderedNode {
         this.title = title;
     }
 
-    public String getMeta() {
+    public List<Html> getMeta() {
         return meta;
     }
 
-    public void setMeta(String meta) {
+    public void setMeta(List<Html> meta) {
         this.meta = meta;
     }
 
-    public String getLink() {
+    public List<Html> getLink() {
         return link;
     }
 
-    public void setLink(String link) {
+    public void setLink(List<Html> link) {
         this.link = link;
     }
 
-    public String getStyle() {
+    public List<Html> getStyle() {
         return style;
     }
 
-    public void setStyle(String style) {
+    public void setStyle(List<Html> style) {
         this.style = style;
     }
 
-    public String getScript() {
+    public List<Html> getScript() {
         return script;
     }
 
-    public void setScript(String script) {
+    public void setScript(List<Html> script) {
         this.script = script;
     }
 
@@ -83,15 +85,15 @@ public class RenderedNode {
         this.template = template;
     }
 
-    public Map<String, String> getRegions() {
+    public Map<String, Html> getRegions() {
         return regions;
     }
 
-    public void setRegions(Map<String, String> regions) {
+    public void setRegions(Map<String, Html> regions) {
         this.regions = regions;
     }
 
-    public String get(String region) {
+    public Html get(String region) {
         return regions.get(region);
     }
 
@@ -103,34 +105,24 @@ public class RenderedNode {
         this.navigation = navigation;
     }
 
-    public void addMeta(String additionalContent) {
-        StringBuilder sb = new StringBuilder(meta != null ? meta : "");
-        sb.append(additionalContent);
-        meta = sb.toString();
+    public void addMeta(Html additionalContent) {
+        meta.add(additionalContent);
     }
 
-    public void addLink(String additionalContent) {
-        StringBuilder sb = new StringBuilder(link != null ? link : "");
-        sb.append(additionalContent);
-        link = sb.toString();
+    public void addLink(Html additionalContent) {
+        link.add(additionalContent);
     }
 
-    public void addScript(String additionalContent) {
-        StringBuilder sb = new StringBuilder(script != null ? script : "");
-        sb.append(additionalContent);
-        script = sb.toString();
+    public void addScript(Html additionalContent) {
+        script.add(additionalContent);
     }
 
-    public void addStyle(String additionalContent) {
-        StringBuilder sb = new StringBuilder(style != null ? style : "");
-        sb.append(additionalContent);
-        style = sb.toString();
+    public void addStyle(Html additionalContent) {
+        style.add(additionalContent);
     }
 
-    public void add(String region, String additionalContent) {
-        StringBuilder sb = new StringBuilder(regions.get(region));
-        sb.append(additionalContent);
-        regions.put(region, sb.toString());
+    public void add(String region, Html additionalContent) {
+        regions.put(region, additionalContent);
     }
 
     @Override

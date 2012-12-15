@@ -1,3 +1,3 @@
-@(uiElement:main.origo.core.ui.UIElement, attributes:Map[String, String])
+@(uiElement:main.origo.core.ui.UIElement, body:String, attributes:Map[String, String])
 
-#{verbatim}${body}#{/verbatim}
+@uiElement.getBody()

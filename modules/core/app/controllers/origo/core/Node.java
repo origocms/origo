@@ -18,7 +18,7 @@ public class Node extends Controller {
 
         //Load NodeModel
         List<RootNode> nodes = RootNode.findAllCurrentVersions(new Date());
-        return ok(views.html.origo.core.nodeList.render(nodes));
+        return ok(views.html.origo.core.node.list.render(nodes));
     }
 
     //@Get("/node/{nodeId}")
@@ -27,7 +27,7 @@ public class Node extends Controller {
 
         //Load NodeModel
         RootNode node = RootNode.findLatestPublishedVersionWithNodeId(nodeId, new Date());
-        return ok(views.html.origo.core.node.render(node));
+        return ok(views.html.origo.core.node.show.render(node));
     }
 
     //@Get("/node/{nodeId}/all")
@@ -36,7 +36,7 @@ public class Node extends Controller {
 
         List<RootNode> nodes = RootNode.findAllVersionsWithNodeId(nodeId);
 
-        return ok(views.html.origo.core.nodeList.render(nodes));
+        return ok(views.html.origo.core.node.list.render(nodes));
     }
 
     //@Get("/node/{nodeId}/{<[0-9]+>version}")
@@ -45,7 +45,7 @@ public class Node extends Controller {
 
         RootNode node = RootNode.findWithNodeIdAndSpecificVersion(nodeId, version);
 
-        return ok(views.html.origo.core.node.render(node));
+        return ok(views.html.origo.core.node.show.render(node));
     }
 
 }

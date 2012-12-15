@@ -1,7 +1,6 @@
 package main.origo.core.interceptors;
 
 
-import main.origo.core.Node;
 import main.origo.core.NodeNotFoundException;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnLoad;
@@ -9,6 +8,7 @@ import main.origo.core.annotations.Provides;
 import main.origo.core.ui.UIElement;
 import models.origo.core.BasicPage;
 import models.origo.core.Content;
+import models.origo.core.RootNode;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -24,7 +24,7 @@ public class BasicPageProvider {
         if (page == null) {
             throw new NodeNotFoundException(context.node.getNodeId());
         }
-        page.rootNode = context.rootNode;
+        page.rootNode = (RootNode)context.node;
 
         return page;
     }

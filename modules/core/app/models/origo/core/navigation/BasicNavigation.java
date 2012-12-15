@@ -55,7 +55,7 @@ public class BasicNavigation implements Navigation<BasicNavigation>, Comparable<
     }
 
     public static List<BasicNavigation> findWithSection(String section) {
-        final TypedQuery<BasicNavigation> query = JPA.em().createQuery("select bn from models.origo.core.navigation.BasicNavigation bn where bn.section.id=:section", BasicNavigation.class);
+        final Query query = JPA.em().createQuery("select bn from models.origo.core.navigation.BasicNavigation bn where bn.section=:section");
         query.setParameter("section", section);
         List<BasicNavigation> resultList = query.getResultList();
         Collections.sort(resultList);
@@ -64,7 +64,7 @@ public class BasicNavigation implements Navigation<BasicNavigation>, Comparable<
 
     public static List<BasicNavigation> findWithSection(String section, BasicNavigation parent) {
 
-        final TypedQuery<BasicNavigation> query = JPA.em().createQuery("select bn from models.origo.core.navigation.BasicNavigation bn where bn.section.id=:section and bn.parent=:parent", BasicNavigation.class);
+        final Query query = JPA.em().createQuery("select bn from models.origo.core.navigation.BasicNavigation bn where bn.section.id=:section and bn.parent=:parent");
         query.setParameter("section", section);
         query.setParameter("parent", parent);
         List<BasicNavigation> resultList = query.getResultList();
@@ -73,7 +73,7 @@ public class BasicNavigation implements Navigation<BasicNavigation>, Comparable<
     }
 
     public static List<BasicNavigation> findWithSection(String section, String parentId) {
-        final TypedQuery<BasicNavigation> query = JPA.em().createQuery("select bn from models.origo.core.navigation.BasicNavigation bn where bn.section.id=:section and bn.parent.id=:parentId", BasicNavigation.class);
+        final Query query = JPA.em().createQuery("select bn from models.origo.core.navigation.BasicNavigation bn where bn.section.id=:section and bn.parent.id=:parentId");
         query.setParameter("section", section);
         query.setParameter("parentId", parentId);
         List<BasicNavigation> resultList = query.getResultList();

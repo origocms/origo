@@ -25,7 +25,7 @@ public class ProvidesHelper {
     }
 
     public static <T> T triggerListener(String providesType, String withType, Node node, Map<String, Object> args) {
-        CachedAnnotation cachedAnnotation = findListener(providesType, withType);
+        CachedAnnotation cachedAnnotation = findInterceptor(providesType, withType);
         try {
             //noinspection unchecked
             return (T) cachedAnnotation.method.invoke(null, new Provides.Context(node, args));
@@ -36,7 +36,7 @@ public class ProvidesHelper {
     }
 
     public static <T> T triggerListener(String providesType, String withType, Node node, Navigation navigation, Map<String, Object> args) {
-        CachedAnnotation cachedAnnotation = findListener(providesType, withType);
+        CachedAnnotation cachedAnnotation = findInterceptor(providesType, withType);
         try {
             //noinspection unchecked
             return (T) cachedAnnotation.method.invoke(null, new Provides.Context(node, navigation, args));
@@ -70,7 +70,7 @@ public class ProvidesHelper {
         });
     }
 
-    private static CachedAnnotation findListener(String providesType, String withType) {
+    private static CachedAnnotation findInterceptor(String providesType, String withType) {
         CachedAnnotation listener = findProvidersForType(providesType, withType);
         if (listener == null) {
             throw new RuntimeException("Every type (specified by using attribute 'with') must have a class annotated with @Provides to instantiate an instance. Unable to find a provider for type \'" + withType + "\'");

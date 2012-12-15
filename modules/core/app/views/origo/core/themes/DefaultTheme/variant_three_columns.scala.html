@@ -1,28 +1,45 @@
 @(context: main.origo.core.annotations.ThemeVariant.Context)
 
-#{extends 'themes/origo/DefaultTheme/theme.html' /}
-#{set title:node.title /}
 
-<div class="head">
-    <h3>${node.title}</h3>
-</div>
+@head = {
+<link rel='stylesheet' href='@routes.Assets.at("stylesheets/default_three_columns.min.css")' xmlns="http://www.w3.org/1999/html">
+}
 
-#{origo.core.mainNavigation links:navigation/}
-#{origo.core.mainNavigation links:navigation, as:'second'/}
-#{origo.core.mainNavigation links:navigation, as:'third'/}
+@scripts = {
+}
 
-<div class="layout-three-columns">
+@theme(context.node, head, scripts) {
 
-    <div style="width: 25%; float: left; clear: none;">
-    #{verbatim}${node.get('left')}#{/verbatim}
-    </div>
+        <div class="navbar">
+            #{origo.core.mainNavigation links:navigation/}
+            #{origo.core.mainNavigation links:navigation, as:'second'/}
+            #{origo.core.mainNavigation links:navigation, as:'third'/}
+        </div>
 
-    <div style="width: 50%; float: right">
-    #{verbatim}${node.get('main')}#{/verbatim}
-    </div>
+        <header class="jumbotron subhead" id="overview">
+            <div class="container">
+                <h1>@context.node.getTitle()</h1>
+                <p class="lead">Overview of the project, its contents, and how to get started with a simple template.</p>
+            </div>
+        </header>
 
-    <div style="width: 25%; float: right; clear: none;">
-    #{verbatim}${node.get('right')}#{/verbatim}
-    </div>
+        <div class="container">
 
-</div>
+            <div class="row">
+                <div class="span3">
+                    @{context.node.get("left")}
+                </div>
+
+                <div class="span6">
+                    @{context.node.get("main")}
+                </div>
+
+                <div class="span3">
+                    @{context.node.get("right")}
+                </div>
+
+            </div>
+
+        </div>
+
+}
