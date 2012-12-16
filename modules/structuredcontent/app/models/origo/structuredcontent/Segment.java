@@ -3,13 +3,11 @@ package models.origo.structuredcontent;
 import play.data.validation.Constraints;
 import play.db.jpa.JPA;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Table(name="segments")
 public class Segment {
 
     @Id
@@ -29,6 +27,7 @@ public class Segment {
     public String referenceId;
 
     public static List<Segment> findWithNodeIdAndSpecificVersion(String nodeId, Integer version) {
+        //noinspection unchecked
         return JPA.em().
                 createQuery("select distinct s from models.origo.structuredcontent.Segment s where s.nodeId = :nodeId and s.version = :version").
                 setParameter("nodeId", nodeId).setParameter("version", version).
@@ -37,10 +36,11 @@ public class Segment {
 
     @Override
     public String toString() {
-        return new StringBuilder().
-                append("Segment {").
-                append("nodeId='").append(nodeId).append("', ").
-                append("version=").append(version).append(", ").
-                append('}').toString();
+        return "Segment {" + "nodeId='" + nodeId + "', " + "version=" + version + ", " + '}';
+    }
+
+    public Segment save() {
+        JPA.em().merge(this);
+        return this;
     }
 }

@@ -49,4 +49,9 @@ public class Meta {
         meta.weight = 100;
         return meta;
     }
+
+    public Meta save() {
+        JPA.em().merge(this);
+        return this;
+    }
 }

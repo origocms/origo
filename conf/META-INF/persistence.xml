@@ -6,6 +6,9 @@
     <persistence-unit name="defaultPersistenceUnit" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <non-jta-data-source>DefaultDS</non-jta-data-source>
+
+        <!-- Core Module -->
+
         <class>models.origo.core.Alias</class>
         <class>models.origo.core.BasicPage</class>
         <class>models.origo.core.Content</class>
@@ -16,6 +19,12 @@
         <class>models.origo.core.navigation.BasicNavigation</class>
         <class>models.origo.core.navigation.PageIdNavigation</class>
         <class>models.origo.core.navigation.ExternalLinkNavigation</class>
+
+        <!-- Strctured Content Module -->
+
+        <class>models.origo.structuredcontent.Segment</class>
+        <class>models.origo.structuredcontent.StructuredPage</class>
+
         <properties>
             <property name="hibernate.hbm2ddl.auto" value="update" />
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>

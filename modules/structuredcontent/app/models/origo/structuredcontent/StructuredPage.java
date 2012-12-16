@@ -12,8 +12,12 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(name = "pageVersion", columnNames = {"parentNodeId", "parentVersion"}))
+@Table(name="page_structured", uniqueConstraints = @UniqueConstraint(name = "pageVersion", columnNames = {"parentNodeId", "parentVersion"}))
 public class StructuredPage implements Node {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public Long id;
 
     @Constraints.Required
     @Column(name = "parentNodeId")
@@ -155,4 +159,8 @@ public class StructuredPage implements Node {
                 getSingleResult();
     }
 
+    public StructuredPage save() {
+        JPA.em().merge(this);
+        return this;
+    }
 }

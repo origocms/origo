@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "aliases")
@@ -23,6 +24,9 @@ public class Alias {
     @Constraints.Required
     public String pageId;
 
+    protected Alias() {
+    }
+
     public Alias(String path, String pageId) {
         this.path = path;
         this.pageId = pageId;
@@ -30,6 +34,16 @@ public class Alias {
 
     public static Alias findWithId(long id) {
         return JPA.em().find(Alias.class, id);
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder().
+                append("Alias {").
+                append("path='").append(path).append("\', ").
+                append("page='").append(pageId).append('\'').
+                append('}').
+                toString();
     }
 
     public static Alias findWithPath(String path) {
@@ -60,13 +74,8 @@ public class Alias {
         return aliases.iterator().next();
     }
 
-    @Override
-    public String toString() {
-        return new StringBuilder().
-                append("Alias {").
-                append("path='").append(path).append("\', ").
-                append("page='").append(pageId).append('\'').
-                append('}').
-                toString();
+    public Alias save() {
+        JPA.em().persist(this);
+        return this;
     }
 }
