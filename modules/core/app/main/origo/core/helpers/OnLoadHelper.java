@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Helper to trigger \@OnLoad listeners. Should not be used directly, use NodeHelper instead.
+ * Helper to trigger \@OnLoad interceptors. Should not be used directly, use NodeHelper instead.
  *
  * @see NodeHelper
  * @see main.origo.core.annotations.OnLoad

@@ -1,4 +1,4 @@
-package main.origo.listeners;
+package main.origo.structuredcontent.interceptors;
 
 import main.origo.core.Node;
 import main.origo.core.NodeNotFoundException;
@@ -6,7 +6,7 @@ import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.Provides;
 import main.origo.core.annotations.Types;
 import main.origo.core.ui.UIElement;
-import main.origo.helpers.SegmentHelper;
+import main.origo.structuredcontent.helpers.SegmentHelper;
 import models.origo.core.RootNode;
 import models.origo.structuredcontent.Segment;
 import models.origo.structuredcontent.StructuredPage;

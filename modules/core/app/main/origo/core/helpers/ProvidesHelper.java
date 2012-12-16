@@ -12,7 +12,7 @@ import play.Logger;
 import java.util.*;
 
 /**
- * Helper to trigger \@Provides origo listeners. Should not be used directly except in core and admin, use NodeHelper
+ * Helper to trigger \@Provides origo interceptors. Should not be used directly except in core and admin, use NodeHelper
  * instead when creating a new module.
  *
  * @see NodeHelper

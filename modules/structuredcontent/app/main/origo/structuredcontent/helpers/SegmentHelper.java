@@ -1,4 +1,4 @@
-package main.origo.helpers;
+package main.origo.structuredcontent.helpers;
 
 import main.origo.core.Node;
 import main.origo.core.helpers.OnLoadHelper;

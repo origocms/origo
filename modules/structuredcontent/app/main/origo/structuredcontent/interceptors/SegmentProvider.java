@@ -1,4 +1,4 @@
-package main.origo.listeners;
+package main.origo.structuredcontent.interceptors;
 
 import main.origo.core.annotations.Provides;
 import main.origo.core.ui.UIElement;
