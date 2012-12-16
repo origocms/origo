@@ -2,6 +2,7 @@ package main.origo.structuredcontent.interceptors;
 
 import main.origo.core.Node;
 import main.origo.core.NodeNotFoundException;
+import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.Provides;
 import main.origo.core.annotations.Types;
@@ -13,28 +14,29 @@ import models.origo.structuredcontent.StructuredPage;
 
 import java.util.List;
 
+@Interceptor
 public class StructuredPageProvider {
 
     @Provides(type = Types.NODE, with = "models.origo.structuredcontent.StructuredPage")
-    public static Node loadPage(RootNode rootNode) throws NodeNotFoundException {
-        StructuredPage page = StructuredPage.findWithNodeIdAndSpecificVersion(rootNode.nodeId, rootNode.version);
+    public static Node loadPage(Provides.Context context) throws NodeNotFoundException {
+        StructuredPage page = StructuredPage.findWithNodeIdAndSpecificVersion(context.node.getNodeId(), context.node.getVersion());
         if (page == null) {
-            throw new NodeNotFoundException(rootNode.nodeId);
+            throw new NodeNotFoundException(context.node.getNodeId());
         }
-        page.rootNode = rootNode;
+        page.rootNode = (RootNode) context.node;
 
         return page;
     }
 
     @OnLoad(type = Types.NODE, with = "models.origo.structuredcontent.StructuredPage")
-    public static void loadContent(Node node) {
+    public static void loadContent(OnLoad.Context context) {
 
-        List<Segment> segmentModels = Segment.findWithNodeIdAndSpecificVersion(node.getNodeId(), node.getVersion());
+        List<Segment> segmentModels = Segment.findWithNodeIdAndSpecificVersion(context.node.getNodeId(), context.node.getVersion());
         for (Segment segment : segmentModels) {
-            SegmentHelper.triggerBeforeSegmentLoaded(segment.type, node, segment);
-            UIElement element = SegmentHelper.triggerSegmentProvider(segment.type, node, segment);
-            SegmentHelper.triggerAfterSegmentLoaded(segment.type, node, segment, element);
-            node.addUIElement(element);
+            SegmentHelper.triggerBeforeSegmentLoaded(segment.type, context.node, segment);
+            UIElement element = SegmentHelper.triggerSegmentProvider(segment.type, context.node, segment);
+            SegmentHelper.triggerAfterSegmentLoaded(segment.type, context.node, segment, element);
+            context.node.addUIElement(element);
         }
 
     }
