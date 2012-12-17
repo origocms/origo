@@ -16,15 +16,15 @@ public class SegmentHelper {
      * Convenience methods for hooks with SEGMENT type
      */
     public static UIElement triggerSegmentProvider(String withType, Node node, Segment segment) {
-        return ProvidesHelper.triggerListener(TYPE_SEGMENT, withType, node, Collections.<String, Object>singletonMap("segment", segment));
+        return ProvidesHelper.triggerInterceptor(TYPE_SEGMENT, withType, node, Collections.<String, Object>singletonMap("segment", segment));
     }
 
     public static void triggerBeforeSegmentLoaded(String nodeType, Node node, Segment segment) {
-        OnLoadHelper.triggerBeforeListener(TYPE_SEGMENT, nodeType, node, Collections.<String, Object>singletonMap("segment", segment));
+        OnLoadHelper.triggerBeforeInterceptor(TYPE_SEGMENT, nodeType, node, Collections.<String, Object>singletonMap("segment", segment));
     }
 
     public static void triggerAfterSegmentLoaded(String withType, Node node, Segment segment, UIElement uiElement) {
-        OnLoadHelper.triggerAfterListener(TYPE_SEGMENT, withType, node, Collections.<String, Object>singletonMap("segment", segment), uiElement);
+        OnLoadHelper.triggerAfterInterceptor(TYPE_SEGMENT, withType, node, Collections.<String, Object>singletonMap("segment", segment), uiElement);
     }
 
 }

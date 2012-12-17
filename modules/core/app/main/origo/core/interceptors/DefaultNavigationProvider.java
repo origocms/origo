@@ -15,7 +15,6 @@ import models.origo.core.navigation.BasicNavigation;
 import models.origo.core.navigation.ExternalLinkNavigation;
 import models.origo.core.navigation.PageIdNavigation;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -40,7 +39,7 @@ public class DefaultNavigationProvider {
         List<BasicNavigation> navigationModels = BasicNavigation.findWithSection(section);
         for (BasicNavigation navigationModel : navigationModels) {
             NavigationHelper.triggerBeforeNavigationItemLoaded(navigationModel.type, context.node, navigationModel);
-            NavigationElement navigationElement = NavigationHelper.triggerProvidesNavigationItemListener(navigationModel.type, context.node, navigationModel);
+            NavigationElement navigationElement = NavigationHelper.triggerProvidesNavigationItemInterceptor(navigationModel.type, context.node, navigationModel);
             NavigationHelper.triggerAfterNavigationItemLoaded(navigationModel.type, context.node, navigationModel, navigationElement);
             List<NavigationElement> children = createNavigationChildren(context.node, section, navigationModel, navigationElement);
             navigationElement.children.addAll(children);
@@ -55,7 +54,7 @@ public class DefaultNavigationProvider {
         List<BasicNavigation> navigationModels = BasicNavigation.findWithSection(section, navigationModel);
         for (BasicNavigation childNavigation : navigationModels) {
             NavigationHelper.triggerBeforeNavigationItemLoaded(childNavigation.type, node, childNavigation);
-            NavigationElement childNavigationElement = NavigationHelper.triggerProvidesNavigationItemListener(childNavigation.type, node, childNavigation, parentNavigationElement);
+            NavigationElement childNavigationElement = NavigationHelper.triggerProvidesNavigationItemInterceptor(childNavigation.type, node, childNavigation, parentNavigationElement);
             if (childNavigationElement != null) {
                 NavigationHelper.triggerAfterNavigationItemLoaded(childNavigation.type, node, childNavigation, childNavigationElement);
                 if (childNavigationElement.selected) {
@@ -74,7 +73,7 @@ public class DefaultNavigationProvider {
         if (alias != null) {
             RootNode referencedRootNode = RootNode.findLatestPublishedVersionWithNodeId(alias.pageId, new Date());
             if (referencedRootNode != null) {
-                Node referencedNode = ProvidesHelper.triggerListener(Types.NODE, referencedRootNode.nodeType, referencedRootNode);
+                Node referencedNode = ProvidesHelper.triggerInterceptor(Types.NODE, referencedRootNode.nodeType, referencedRootNode);
                 boolean selected = referencedNode.getNodeId().equals(alias.pageId);
                 return new NavigationElement(context.navigation.getSection(), referencedNode.getTitle(), navigationModel.getLink(), selected);
             } else {
@@ -90,7 +89,7 @@ public class DefaultNavigationProvider {
         PageIdNavigation navigationModel = PageIdNavigation.findWithIdentifier(context.navigation.getReferenceId());
         RootNode referencedRootNode = RootNode.findLatestPublishedVersionWithNodeId(navigationModel.pageId, new Date());
         if (referencedRootNode != null) {
-            Node referencedNode = ProvidesHelper.triggerListener(Types.NODE, referencedRootNode.nodeType, referencedRootNode);
+            Node referencedNode = ProvidesHelper.triggerInterceptor(Types.NODE, referencedRootNode.nodeType, referencedRootNode);
             boolean selected = referencedRootNode.getNodeId().equals(referencedRootNode.getNodeId());
             return new NavigationElement(context.navigation.getSection(), referencedNode.getTitle(), navigationModel.getLink(), selected);
         } else {

@@ -37,8 +37,8 @@ public class CachedAnnotation implements Comparable<CachedAnnotation> {
         return new Integer(hashCode()).compareTo(cachedAnnotation.hashCode());
     }
 
-    public interface ListenerSelector {
-        boolean isCorrectListener(CachedAnnotation listener);
+    public interface InterceptorSelector {
+        boolean isCorrectInterceptor(CachedAnnotation cachedAnnotation);
     }
 
 }
