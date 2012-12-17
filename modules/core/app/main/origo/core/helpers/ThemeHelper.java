@@ -14,6 +14,7 @@ import main.origo.core.ui.UIElement;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
 import play.api.templates.Html;
+import play.api.templates.HtmlFormat;
 import play.mvc.Result;
 
 import java.util.HashMap;
@@ -102,17 +103,17 @@ public class ThemeHelper {
         return decoratedOutput;
     }
 
-    public static String decorateChildren(UIElement parent, RenderingContext renderingContext) {
+    public static Html decorateChildren(UIElement parent, RenderingContext renderingContext) {
         if (!parent.hasChildren()) {
             return null;
         }
-        StringBuilder sb = new StringBuilder();
+        Html decoratedOutput = HtmlFormat.raw("");
         renderingContext.nest(parent);
         for (UIElement childElement : parent.getChildren()) {
-            sb.append(decorate(childElement, renderingContext));
+            decoratedOutput.$plus(decorate(childElement, renderingContext));
         }
         renderingContext.unNest();
-        return sb.toString();
+        return decoratedOutput;
     }
 
     public static CachedThemeVariant loadTheme(Node node) {
