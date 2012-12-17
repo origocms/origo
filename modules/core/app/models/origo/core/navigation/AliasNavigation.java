@@ -32,7 +32,12 @@ public class AliasNavigation {
     }
 
     public static AliasNavigation findWithIdentifier(String identifier) {
-        return JPA.em().find(AliasNavigation.class, identifier);
+        try {
+            return (AliasNavigation) JPA.em().createQuery("from models.origo.core.navigation.AliasNavigation where identifier=:identifier").
+                    setParameter("identifier", identifier).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     @Override
@@ -43,5 +48,10 @@ public class AliasNavigation {
                 append(", alias='").append(alias).append('\'').
                 append('}').
                 toString();
+    }
+
+    public AliasNavigation save() {
+        JPA.em().persist(this);
+        return this;
     }
 }

@@ -15,6 +15,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 
 import java.util.Collection;
+import java.util.List;
 
 public class CoreLoader {
 
@@ -132,13 +133,13 @@ public class CoreLoader {
         return node;
     }
 
-    public static Collection<NavigationElement> getNavigation(String identifier) throws NodeNotFoundException {
+    public static List<NavigationElement> getNavigation(String identifier) throws NodeNotFoundException {
         return getNavigation(identifier, 0);
     }
 
-    public static Collection<NavigationElement> getNavigation(String identifier, int version) throws NodeNotFoundException {
+    public static List<NavigationElement> getNavigation(String identifier, int version) throws NodeNotFoundException {
         Node node = loadNode(identifier, version);
-        Collection<NavigationElement> navigationLinks = NavigationHelper.getNavigation(node, NavigationElement.FRONT);
+        List<NavigationElement> navigationLinks = NavigationHelper.getNavigation(node, NavigationElement.FRONT);
         if (Logger.isDebugEnabled()) {
             Logger.debug("Navigation loaded " + navigationLinks);
         }

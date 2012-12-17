@@ -28,6 +28,16 @@ public class ExternalLinkNavigation {
     }
 
     public static ExternalLinkNavigation findWithIdentifier(String identifier) {
-        return JPA.em().find(ExternalLinkNavigation.class, identifier);
+        try {
+            return (ExternalLinkNavigation) JPA.em().createQuery("from models.origo.core.navigation.ExternalLinkNavigation where identifier=:identifier").
+                    setParameter("identifier", identifier).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    public ExternalLinkNavigation save() {
+        JPA.em().persist(this);
+        return this;
     }
 }

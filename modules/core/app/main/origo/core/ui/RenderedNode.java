@@ -23,7 +23,7 @@ public class RenderedNode {
     private CachedThemeVariant template;
     private Map<String, List<Html>> regions;
 
-    private Collection<NavigationElement> navigation;
+    private List<NavigationElement> navigation;
 
     public RenderedNode(String id) {
         this.id = id;
@@ -98,11 +98,11 @@ public class RenderedNode {
         return regions.get(region);
     }
 
-    public Collection<NavigationElement> getNavigation() {
+    public List<NavigationElement> getNavigation() {
         return navigation;
     }
 
-    public void setNavigation(Collection<NavigationElement> navigation) {
+    public void setNavigation(List<NavigationElement> navigation) {
         this.navigation = navigation;
     }
 

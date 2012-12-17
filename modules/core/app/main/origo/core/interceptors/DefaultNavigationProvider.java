@@ -33,7 +33,7 @@ import java.util.List;
 public class DefaultNavigationProvider {
 
     @Provides(type = Types.NAVIGATION, with = "models.origo.core.navigation.BasicNavigation")
-    public static Collection<NavigationElement> createNavigation(Provides.Context context) {
+    public static List<NavigationElement> createNavigation(Provides.Context context) {
         List<NavigationElement> navigationElements = Lists.newArrayList();
         String section = (String) context.args.get("section");
         NavigationHelper.triggerBeforeNavigationLoaded(BasicNavigation.class.getName(), context.node, section);
@@ -56,11 +56,13 @@ public class DefaultNavigationProvider {
         for (BasicNavigation childNavigation : navigationModels) {
             NavigationHelper.triggerBeforeNavigationItemLoaded(childNavigation.type, node, childNavigation);
             NavigationElement childNavigationElement = NavigationHelper.triggerProvidesNavigationItemListener(childNavigation.type, node, childNavigation, parentNavigationElement);
-            NavigationHelper.triggerAfterNavigationItemLoaded(childNavigation.type, node, childNavigation, childNavigationElement);
-            if (childNavigationElement.selected) {
-                parentNavigationElement.selected = true;
+            if (childNavigationElement != null) {
+                NavigationHelper.triggerAfterNavigationItemLoaded(childNavigation.type, node, childNavigation, childNavigationElement);
+                if (childNavigationElement.selected) {
+                    parentNavigationElement.selected = true;
+                }
+                navigationElements.add(childNavigationElement);
             }
-            navigationElements.add(childNavigationElement);
         }
         return navigationElements;
     }
@@ -99,7 +101,10 @@ public class DefaultNavigationProvider {
     @Provides(type = Types.NAVIGATION_ITEM, with = "models.origo.core.navigation.ExternalLinkNavigation")
     public static NavigationElement createExternalLinkNavigation(Provides.Context context) {
         ExternalLinkNavigation navigationModel = ExternalLinkNavigation.findWithIdentifier(context.navigation.getReferenceId());
-        return new NavigationElement(context.navigation.getSection(), navigationModel.title, navigationModel.getLink());
+        if (navigationModel != null) {
+            return new NavigationElement(context.navigation.getSection(), navigationModel.title, navigationModel.getLink());
+        }
+        return null;
     }
 
 }

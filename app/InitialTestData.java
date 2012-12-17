@@ -1,5 +1,9 @@
 import models.origo.core.Settings;
 import models.origo.core.*;
+import models.origo.core.navigation.AliasNavigation;
+import models.origo.core.navigation.BasicNavigation;
+import models.origo.core.navigation.ExternalLinkNavigation;
+import models.origo.core.navigation.PageIdNavigation;
 import models.origo.structuredcontent.Segment;
 import models.origo.structuredcontent.StructuredPage;
 
@@ -13,6 +17,7 @@ public class InitialTestData {
             createPage3();
             createPage4();
             createAliases();
+            createNavigation();
         }
     }
 
@@ -253,5 +258,44 @@ public class InitialTestData {
 
     }
 
+    private void createNavigation() {
+        // Start Page
+        BasicNavigation startNavigation = new BasicNavigation();
+        startNavigation.type = "models.origo.core.navigation.PageIdNavigation";
+        startNavigation.section = "front";
+        startNavigation.referenceId = "3f2d9e2e-12dc-4917-9a58-40d325e9784e";
+        startNavigation.weight = 1;
+        startNavigation.save();
+        PageIdNavigation startPageId = new PageIdNavigation();
+        startPageId.identifier = startNavigation.getReferenceId();
+        startPageId.pageId = "aa1755dd-18c4-4b78-956e-eef7e562c36c";
+        startPageId.save();
+
+        // Fourth
+        BasicNavigation fourthNavigation = new BasicNavigation();
+        fourthNavigation.type = "models.origo.core.navigation.AliasNavigation";
+        fourthNavigation.section = "front";
+        fourthNavigation.referenceId = "a8129a97-70fa-40b7-93e4-2a1caf181a0d";
+        fourthNavigation.weight = 3;
+        fourthNavigation.save();
+        AliasNavigation fourthAlias = new AliasNavigation();
+        fourthAlias.identifier = fourthNavigation.getReferenceId();
+        fourthAlias.alias = "fourth";
+        fourthAlias.save();
+
+        // External - Google
+        BasicNavigation externalNavigation = new BasicNavigation();
+        externalNavigation.type = "models.origo.core.navigation.ExternalLinkNavigation";
+        externalNavigation.section = "front";
+        externalNavigation.referenceId = "58e15bfa-da4f-4f6b-a15a-51ab6c82e670";
+        externalNavigation.parent = fourthNavigation;
+        externalNavigation.weight = 2;
+        externalNavigation.save();
+        ExternalLinkNavigation external = new ExternalLinkNavigation();
+        external.identifier = externalNavigation.getReferenceId();
+        external.title = "Google";
+        external.link = "http://www.google.com";
+        external.save();
+    }
 
 }

@@ -63,17 +63,11 @@ public class BasicNavigation implements Navigation<BasicNavigation>, Comparable<
     }
 
     public static List<BasicNavigation> findWithSection(String section, BasicNavigation parent) {
-
-        final Query query = JPA.em().createQuery("select bn from models.origo.core.navigation.BasicNavigation bn where bn.section.id=:section and bn.parent=:parent");
-        query.setParameter("section", section);
-        query.setParameter("parent", parent);
-        List<BasicNavigation> resultList = query.getResultList();
-        Collections.sort(resultList);
-        return resultList;
+        return findWithSection(section, parent.id);
     }
 
-    public static List<BasicNavigation> findWithSection(String section, String parentId) {
-        final Query query = JPA.em().createQuery("select bn from models.origo.core.navigation.BasicNavigation bn where bn.section.id=:section and bn.parent.id=:parentId");
+    public static List<BasicNavigation> findWithSection(String section, Long parentId) {
+        final Query query = JPA.em().createQuery("select bn from models.origo.core.navigation.BasicNavigation bn where bn.section=:section and bn.parent.id=:parentId");
         query.setParameter("section", section);
         query.setParameter("parentId", parentId);
         List<BasicNavigation> resultList = query.getResultList();
@@ -86,4 +80,8 @@ public class BasicNavigation implements Navigation<BasicNavigation>, Comparable<
         return new Integer(weight).compareTo(navigation.weight);
     }
 
+    public BasicNavigation save() {
+        JPA.em().persist(this);
+        return this;
+    }
 }

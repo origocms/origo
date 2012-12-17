@@ -10,11 +10,7 @@
 
 @theme(context.node, head, scripts) {
 
-        <div class="navbar">
-            #{origo.core.mainNavigation links:navigation/}
-            #{origo.core.mainNavigation links:navigation, as:'second'/}
-            #{origo.core.mainNavigation links:navigation, as:'third'/}
-        </div>
+    @_navigation(context.node.getNavigation())
 
         <header class="jumbotron subhead" id="overview">
             <div class="container">

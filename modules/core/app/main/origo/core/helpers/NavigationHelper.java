@@ -11,7 +11,7 @@ import java.util.*;
 
 public class NavigationHelper {
 
-    public static Collection<NavigationElement> getNavigation(Node node, String section) {
+    public static List<NavigationElement> getNavigation(Node node, String section) {
         String navigationType = SettingsHelper.Core.getNavigationType();
         return triggerProvidesNavigationListener(navigationType, node, section);
     }
@@ -19,7 +19,7 @@ public class NavigationHelper {
     /*
      * Convenience methods for hooks with NAVIGATION type
      */
-    public static Collection<NavigationElement> triggerProvidesNavigationListener(String withType, Node node, String section) {
+    public static List<NavigationElement> triggerProvidesNavigationListener(String withType, Node node, String section) {
         return ProvidesHelper.triggerListener(Types.NAVIGATION, withType, node, Collections.<String, Object>singletonMap("section", section));
     }
 
@@ -41,11 +41,10 @@ public class NavigationHelper {
         return ProvidesHelper.triggerListener(Types.NAVIGATION_ITEM, withType, node, navigation, Collections.<String, Object>emptyMap());
     }
 
-    public static NavigationElement triggerProvidesNavigationItemListener(String withType, Node node, Navigation navigation, NavigationElement navigationElement) {
+    public static NavigationElement triggerProvidesNavigationItemListener(String withType, Node node, Navigation navigation, NavigationElement parentNavigationElement) {
         Map<String, Object> args = Maps.newHashMap();
-        args.put("navigation", navigation);
-        args.put("navigation_element", navigationElement);
-        return ProvidesHelper.triggerListener(Types.NAVIGATION_ITEM, withType, node, args);
+        args.put("parent", parentNavigationElement);
+        return ProvidesHelper.triggerListener(Types.NAVIGATION_ITEM, withType, node, navigation, args);
     }
 
     public static void triggerBeforeNavigationItemLoaded(String withType, Node node, Navigation navigation) {

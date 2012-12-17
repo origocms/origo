@@ -39,6 +39,16 @@ public class PageIdNavigation {
     }
 
     public static PageIdNavigation findWithIdentifier(String identifier) {
-        return JPA.em().find(PageIdNavigation.class, identifier);
+        try {
+            return (PageIdNavigation) JPA.em().createQuery("from models.origo.core.navigation.PageIdNavigation where identifier=:identifier").
+                    setParameter("identifier", identifier).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    public PageIdNavigation save() {
+        JPA.em().persist(this);
+        return this;
     }
 }
