@@ -74,7 +74,7 @@ public class DefaultNavigationProvider {
             RootNode referencedRootNode = RootNode.findLatestPublishedVersionWithNodeId(alias.pageId, new Date());
             if (referencedRootNode != null) {
                 Node referencedNode = ProvidesHelper.triggerInterceptor(Types.NODE, referencedRootNode.nodeType, referencedRootNode);
-                boolean selected = referencedNode.getNodeId().equals(alias.pageId);
+                boolean selected = context.node.getNodeId().equals(alias.pageId);
                 return new NavigationElement(context.navigation.getSection(), referencedNode.getTitle(), navigationModel.getLink(), selected);
             } else {
                 throw new RuntimeException("Page not found [" + alias.pageId + "]");
@@ -90,7 +90,7 @@ public class DefaultNavigationProvider {
         RootNode referencedRootNode = RootNode.findLatestPublishedVersionWithNodeId(navigationModel.pageId, new Date());
         if (referencedRootNode != null) {
             Node referencedNode = ProvidesHelper.triggerInterceptor(Types.NODE, referencedRootNode.nodeType, referencedRootNode);
-            boolean selected = referencedRootNode.getNodeId().equals(referencedRootNode.getNodeId());
+            boolean selected = context.node.getNodeId().equals(referencedRootNode.getNodeId());
             return new NavigationElement(context.navigation.getSection(), referencedNode.getTitle(), navigationModel.getLink(), selected);
         } else {
             throw new RuntimeException("Page not found [" + navigationModel.pageId + "]");
