@@ -7,10 +7,13 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Map;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
 @Interceptor
 public @interface SubmitHandler {
 
+    public class Context {
+    }
 }

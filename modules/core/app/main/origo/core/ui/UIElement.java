@@ -1,5 +1,6 @@
 package main.origo.core.ui;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public class UIElement {
 
     private int weight;
 
-    private List<UIElement> children = new ArrayList<UIElement>();
+    private List<UIElement> children = Lists.newArrayList();
 
     private String body;
 

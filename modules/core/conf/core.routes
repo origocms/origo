@@ -2,6 +2,8 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
+POST    /                                       @controllers.origo.core.Submit.submit()
+
 # Home page
 GET     /                                       @controllers.origo.core.Node.node()
 GET     /:identifier                            @controllers.origo.core.Node.nodeCurrent(identifier)

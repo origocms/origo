@@ -4,6 +4,7 @@ import main.origo.core.CachedAnnotation;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.annotations.forms.OnSubmit;
 import play.Logger;
+import play.data.DynamicForm;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,11 +12,11 @@ import java.util.Map;
 
 public class OnSubmitHelper {
 
-    public static void triggerInterceptors(String withType) {
-        triggerInterceptors(withType, Collections.<String, Object>emptyMap());
+    public static void triggerInterceptors(String withType, DynamicForm form) {
+        triggerInterceptors(withType, form, Collections.<String, Object>emptyMap());
     }
 
-    public static void triggerInterceptors(String withType, Map<String, Object> args) {
+    public static void triggerInterceptors(String withType, DynamicForm form, Map<String, Object> args) {
         List<CachedAnnotation> cachedAnnotations = findOnPostInterceptorsWithType(withType);
         try {
             for (CachedAnnotation cachedAnnotation : cachedAnnotations) {

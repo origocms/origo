@@ -3,6 +3,7 @@ package main.origo.core.helpers.forms;
 import main.origo.core.CachedAnnotation;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.annotations.forms.SubmitState;
+import play.data.Form;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,11 +12,11 @@ import java.util.Map;
 
 public class SubmitStateHelper {
 
-    public static void triggerInterceptor(String state, String withType) {
-        triggerInterceptor(state, withType, Collections.<String, Object>emptyMap());
+    public static void triggerInterceptor(String state, String withType, Form form) {
+        triggerInterceptor(state, withType, form, Collections.<String, Object>emptyMap());
     }
 
-    public static void triggerInterceptor(String state, String withType, Map<String, Object> args) {
+    public static void triggerInterceptor(String state, String withType, Form form, Map<String, Object> args) {
         triggerInterceptor(state, withType, new SubmitState.Context(args));
     }
 

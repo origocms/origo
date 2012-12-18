@@ -1,3 +1,5 @@
+import main.origo.core.interceptors.forms.DefaultFormProvider;
+import main.origo.core.interceptors.forms.DefaultSubmitHandler;
 import models.origo.core.Settings;
 import models.origo.core.*;
 import models.origo.core.navigation.AliasNavigation;
@@ -28,6 +30,8 @@ public class InitialTestData {
         settings.setValue(SettingsKeys.Core.PAGE_NOT_FOUND_PAGE, "c9615819-0556-4e70-b6a9-a66c5b8d4c1a"); // Page 2
         settings.setValue(SettingsKeys.Core.INTERNAL_SERVER_ERROR_PAGE, "1cf699a7-a0c4-4be0-855f-466042a36a8d"); // Page 3
         settings.setValue(SettingsKeys.Core.THEME_VARIANT, "default-main_and_left_columns");
+        settings.setValue(SettingsKeys.Core.SUBMIT_HANDLER, DefaultSubmitHandler.class.getName());
+        settings.setValue(SettingsKeys.Core.DEFAULT_FORM_TYPE, DefaultFormProvider.TYPE);
         settings.save();
     }
 

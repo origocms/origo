@@ -53,7 +53,7 @@ public class ProvidesFormHelper {
     private static CachedAnnotation findInterceptor(String withType) {
         CachedAnnotation Interceptor = findProvidersForType(withType);
         if (Interceptor == null) {
-            Interceptor = findProvidersForType(SettingsHelper.Core.getDefaultFormProviderType());
+            Interceptor = findProvidersForType(SettingsHelper.Core.getDefaultFormType());
             if (Interceptor == null) {
                 throw new RuntimeException("Unable to find a form provider for type \'" + withType + "\' and the default form provider from settings is also not available");
             }

@@ -1,10 +1,11 @@
 package main.origo.core.helpers.forms;
 
+import controllers.origo.core.routes;
 import main.origo.core.Node;
 import main.origo.core.helpers.SettingsHelper;
 import main.origo.core.ui.UIElement;
-
-import java.util.Collections;
+import play.api.mvc.Call;
+import play.data.DynamicForm;
 
 public class FormHelper {
 
@@ -12,20 +13,19 @@ public class FormHelper {
     private static final String NODE_VERSION = "_core_node_version";
 
     public static UIElement createFormElement(Node node, String withType) {
-        return createFormElement(SettingsHelper.Core.getDefaultFormProviderType(), node, withType);
+        return createFormElement(SettingsHelper.Core.getDefaultFormType(), node, withType);
     }
 
-    public static UIElement createFormElement(String formProviderType, Node node, String nodeType) {
-        OnLoadFormHelper.triggerBeforeInterceptor(formProviderType, node, nodeType);
-        UIElement formElement = ProvidesFormHelper.triggerInterceptor(formProviderType, node, nodeType);
+    public static UIElement createFormElement(String formType, Node node, String nodeType) {
+        OnLoadFormHelper.triggerBeforeInterceptor(formType, node, nodeType);
+        UIElement formElement = ProvidesFormHelper.triggerInterceptor(formType, node, nodeType);
         addNodeIdAndVersion(formElement, node);
-        OnLoadFormHelper.triggerAfterInterceptor(formProviderType, node, nodeType);
+        OnLoadFormHelper.triggerAfterInterceptor(formType, node, nodeType);
         return formElement;
     }
 
-    public static String getPostURL() {
-        //return URLHelper.getReverseURL(SubmitController.class, "submit");
-        return "";
+    public static Call getPostURL() {
+        return routes.Submit.submit();
     }
 
     public static String getNodeIdParamName() {
@@ -36,19 +36,17 @@ public class FormHelper {
         return NODE_VERSION;
     }
 
-    /*
-    public static String getNodeId(Scope.Params params) {
-        return params.get(NODE_ID);
+    public static String getNodeId(DynamicForm dynamicForm) {
+        return dynamicForm.get(NODE_ID);
     }
 
-    public static Long getNodeVersion(Scope.Params params) {
+    public static Long getNodeVersion(DynamicForm dynamicForm) {
         try {
-            return Long.parseLong(params.get(NODE_VERSION));
+            return Long.parseLong(dynamicForm.get(NODE_VERSION));
         } catch (NumberFormatException e) {
             throw new RuntimeException("Version is not a number: " + e.getLocalizedMessage(), e);
         }
     }
-    */
 
     public static void addNodeIdAndVersion(UIElement form, Node node) {
         form.
