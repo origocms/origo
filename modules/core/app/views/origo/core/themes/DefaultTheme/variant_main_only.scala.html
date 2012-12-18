@@ -1,0 +1,31 @@
+@(context: main.origo.core.annotations.ThemeVariant.Context)
+
+@head = {
+    <link rel='stylesheet' href='@routes.Assets.at("stylesheets/default_main_only.min.css")' xmlns="http://www.w3.org/1999/html">
+}
+
+@scripts = {
+}
+
+@theme(context.node, head, scripts) {
+
+    @_navigation(context.node.getNavigation())
+
+        <header class="jumbotron subhead" id="overview">
+            <div class="container">
+                <h1>@context.node.getTitle()</h1>
+            </div>
+        </header>
+
+
+        <div class="container">
+
+            <div class="row">
+                <div class="span12">
+                @context.node.get("main").map { value =>
+                    @value
+                }
+                </div>
+            </div>
+        </div>
+}
