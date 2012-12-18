@@ -18,21 +18,22 @@ public class TinyMCEEditorProvider {
     public static final String EDITOR_TYPE = "origo.admin.editor.tinymce";
 
     @Provides(type = Admin.RICHTEXT_EDITOR, with = EDITOR_TYPE)
-    public static UIElement createDashboardItem(Node node) {
+    public static UIElement createDashboardItem(Provides.Context context) {
 
 
         String script = routes.Assets.at("javascripts/tiny_mce/tiny_mce.js").url();
         if (script != null) {
-            node.addHeadUIElement(new UIElement(UIElement.SCRIPT, 10).addAttribute("type", "text/javascript").addAttribute("src", script));
-            node.addHeadUIElement(new UIElement(UIElement.SCRIPT, 20, "tinyMCE.init({ mode:\"textareas\" });</script>").addAttribute("type", "text/javascript"));
+            context.node.addHeadUIElement(new UIElement(UIElement.SCRIPT, 10).addAttribute("type", "text/javascript").addAttribute("src", script));
+            context.node.addHeadUIElement(new UIElement(UIElement.SCRIPT, 20, "tinyMCE.init({ mode:\"textareas\" });</script>").addAttribute("type", "text/javascript"));
         }
 
         return new UIElement(UIElement.INPUT_TEXTAREA);
     }
 
     @OnLoad(type = Admin.RICHTEXT_EDITOR, with = EDITOR_TYPE)
-    public static void addContent(Node node, UIElement uiElement, Content content) {
-        uiElement.setBody(content.value);
+    public static void addContent(OnLoad.Context context) {
+        Content content = (Content) context.args.get("content");
+        context.uiElement.setBody(content.value);
     }
 
 /*

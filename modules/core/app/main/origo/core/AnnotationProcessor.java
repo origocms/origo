@@ -73,10 +73,10 @@ public class AnnotationProcessor {
             Set<Method> methods = Reflections.getAllMethods(c, ReflectionUtils.withAnnotation(annotationClass));
             for (Method m : methods) {
                 Class[] pc = m.getParameterTypes();
-                if (pc.length > 1 || !pc[0].equals(contextClass)) {
+                if (pc.length > 1 && !pc[0].equals(contextClass)) {
                     throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() + "' in " +
                             " is annotated with '" + annotationClass.getName() +
-                            "' but the method signature does not match the required signature");
+                            "' but the method does not match the required signature");
                 }
 
                 InterceptorRepository.add(m.getAnnotation(annotationClass), m);
@@ -104,10 +104,10 @@ public class AnnotationProcessor {
             for (Method m : methods) {
 
                 Class[] pc = m.getParameterTypes();
-                if (pc.length > 1 || !pc[0].equals(contextClass)) {
+                if (pc.length > 1 && !pc[0].equals(contextClass)) {
                     throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() + "' in " +
                             " is annotated with '" + annotationClass.getName() +
-                            "' but the method signature does not match the required signature");
+                            "' but the method does not match the required signature");
                 }
                 Annotation annotation = m.getAnnotation(annotationClass);
                 addThemepartFunction.add(themeAnnotation, annotation, m);
