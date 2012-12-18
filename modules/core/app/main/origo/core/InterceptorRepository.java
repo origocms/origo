@@ -10,13 +10,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class InterceptorRepository {
 
-    public static Map<Class<? extends Annotation>, List<CachedAnnotation>> listeners = Maps.newHashMap();
+    public static Map<Class<? extends Annotation>, List<CachedAnnotation>> interceptor = Maps.newHashMap();
 
     public static void add(Annotation annotation, Method method) {
-        if (!listeners.containsKey(annotation.annotationType())) {
-            listeners.put(annotation.annotationType(), new CopyOnWriteArrayList<CachedAnnotation>());
+        if (!interceptor.containsKey(annotation.annotationType())) {
+            interceptor.put(annotation.annotationType(), new CopyOnWriteArrayList<CachedAnnotation>());
         }
-        List<CachedAnnotation> annotationTypes = listeners.get(annotation.annotationType());
+        List<CachedAnnotation> annotationTypes = interceptor.get(annotation.annotationType());
         annotationTypes.add(new CachedAnnotation(annotation, method));
     }
 
@@ -24,29 +24,29 @@ public class InterceptorRepository {
         return getInterceptor(annotationType, null);
     }
 
-    public static List<CachedAnnotation> getInterceptor(Class<? extends Annotation> annotationType, CachedAnnotation.ListenerSelector listenerSelector) {
-        if (listeners.containsKey(annotationType)) {
-            List<CachedAnnotation> listenerList = listeners.get(annotationType);
-            if (listenerSelector == null) {
-                return listenerList;
+    public static List<CachedAnnotation> getInterceptor(Class<? extends Annotation> annotationType, CachedAnnotation.InterceptorSelector interceptorSelector) {
+        if (interceptor.containsKey(annotationType)) {
+            List<CachedAnnotation> interceptorList = interceptor.get(annotationType);
+            if (interceptorSelector == null) {
+                return interceptorList;
             }
-            List<CachedAnnotation> matchingListeners = Lists.newArrayList();
-            for (CachedAnnotation listener : listenerList) {
-                if (listenerSelector.isCorrectListener(listener)) {
-                    matchingListeners.add(listener);
+            List<CachedAnnotation> matchingCachedAnnotations = Lists.newArrayList();
+            for (CachedAnnotation cachedAnnotation : interceptorList) {
+                if (interceptorSelector.isCorrectInterceptor(cachedAnnotation)) {
+                    matchingCachedAnnotations.add(cachedAnnotation);
                 }
             }
-            return matchingListeners;
+            return matchingCachedAnnotations;
         } else {
             return Collections.emptyList();
         }
     }
 
     public static void invalidate() {
-        listeners.clear();
+        interceptor.clear();
     }
 
     public static Map<Class<? extends Annotation>, List<CachedAnnotation>> getInterceptorMap() {
-        return Collections.unmodifiableMap(listeners);
+        return Collections.unmodifiableMap(interceptor);
     }
 }

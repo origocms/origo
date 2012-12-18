@@ -20,11 +20,11 @@ import java.util.*;
  */
 public class ProvidesHelper {
 
-    public static <T> T triggerListener(String providesType, String withType, Node node) {
-        return triggerListener(providesType, withType, node, Maps.<String, Object>newHashMap());
+    public static <T> T triggerInterceptor(String providesType, String withType, Node node) {
+        return triggerInterceptor(providesType, withType, node, Maps.<String, Object>newHashMap());
     }
 
-    public static <T> T triggerListener(String providesType, String withType, Node node, Map<String, Object> args) {
+    public static <T> T triggerInterceptor(String providesType, String withType, Node node, Map<String, Object> args) {
         CachedAnnotation cachedAnnotation = findInterceptor(providesType, withType);
         try {
             //noinspection unchecked
@@ -35,7 +35,7 @@ public class ProvidesHelper {
         }
     }
 
-    public static <T> T triggerListener(String providesType, String withType, Node node, Navigation navigation, Map<String, Object> args) {
+    public static <T> T triggerInterceptor(String providesType, String withType, Node node, Navigation navigation, Map<String, Object> args) {
         CachedAnnotation cachedAnnotation = findInterceptor(providesType, withType);
         try {
             //noinspection unchecked
@@ -62,27 +62,27 @@ public class ProvidesHelper {
     }
 
     private static List<CachedAnnotation> getAllProvidersForType(final String providesType) {
-        return InterceptorRepository.getInterceptor(Provides.class, new CachedAnnotation.ListenerSelector() {
+        return InterceptorRepository.getInterceptor(Provides.class, new CachedAnnotation.InterceptorSelector() {
             @Override
-            public boolean isCorrectListener(CachedAnnotation listener) {
-                return ((Provides) listener.annotation).type().equals(providesType);
+            public boolean isCorrectInterceptor(CachedAnnotation cacheAnnotation) {
+                return ((Provides) cacheAnnotation.annotation).type().equals(providesType);
             }
         });
     }
 
     private static CachedAnnotation findInterceptor(String providesType, String withType) {
-        CachedAnnotation listener = findProvidersForType(providesType, withType);
-        if (listener == null) {
+        CachedAnnotation cacheAnnotation = findProvidersForType(providesType, withType);
+        if (cacheAnnotation == null) {
             throw new RuntimeException("Every type (specified by using attribute 'with') must have a class annotated with @Provides to instantiate an instance. Unable to find a provider for type \'" + withType + "\'");
         }
-        return listener;
+        return cacheAnnotation;
     }
 
     private static CachedAnnotation findProvidersForType(final String type, final String withType) {
-        List<CachedAnnotation> providers = InterceptorRepository.getInterceptor(Provides.class, new CachedAnnotation.ListenerSelector() {
+        List<CachedAnnotation> providers = InterceptorRepository.getInterceptor(Provides.class, new CachedAnnotation.InterceptorSelector() {
             @Override
-            public boolean isCorrectListener(CachedAnnotation listener) {
-                Provides annotation = (Provides) listener.annotation;
+            public boolean isCorrectInterceptor(CachedAnnotation cachedAnnotation) {
+                Provides annotation = (Provides) cachedAnnotation.annotation;
                 return annotation.type().equals(type) && (annotation.with().equals(withType) || StringUtils.isBlank(withType));
             }
         });

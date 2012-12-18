@@ -21,12 +21,12 @@ import java.util.Map;
  */
 public class OnLoadHelper {
 
-    private static void triggerBeforeListener(String type, String withType, Node node, OnLoad.Context context) {
-        List<CachedAnnotation> listeners = findListenerForType(type, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), false);
-        if (listeners != null && !listeners.isEmpty()) {
-            for (CachedAnnotation listener : listeners) {
+    private static void triggerBeforeInterceptor(String type, String withType, Node node, OnLoad.Context context) {
+        List<CachedAnnotation> interceptors = findInterceptorForType(type, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), false);
+        if (interceptors != null && !interceptors.isEmpty()) {
+            for (CachedAnnotation interceptor : interceptors) {
                 try {
-                    listener.method.invoke(null, context);
+                    interceptor.method.invoke(null, context);
                 } catch (Throwable e) {
                     throw new RuntimeException("", e);
                 }
@@ -34,24 +34,24 @@ public class OnLoadHelper {
         }
     }
 
-    public static void triggerBeforeListener(String type, String withType, RootNode rootNode, Map<String, Object> args) {
-        triggerBeforeListener(type, withType, rootNode, new OnLoad.Context(rootNode, args));
+    public static void triggerBeforeInterceptor(String type, String withType, RootNode rootNode, Map<String, Object> args) {
+        triggerBeforeInterceptor(type, withType, rootNode, new OnLoad.Context(rootNode, args));
     }
 
-    public static void triggerBeforeListener(String type, String withType, Node node, Map<String, Object> args) {
-        triggerBeforeListener(type, withType, node, new OnLoad.Context(node, args));
+    public static void triggerBeforeInterceptor(String type, String withType, Node node, Map<String, Object> args) {
+        triggerBeforeInterceptor(type, withType, node, new OnLoad.Context(node, args));
     }
 
-    public static void triggerBeforeListener(String type, String withType, Node node, Navigation navigation, Map<String, Object> args) {
-        triggerBeforeListener(type, withType, node, new OnLoad.Context(node, navigation, args));
+    public static void triggerBeforeInterceptor(String type, String withType, Node node, Navigation navigation, Map<String, Object> args) {
+        triggerBeforeInterceptor(type, withType, node, new OnLoad.Context(node, navigation, args));
     }
 
-    private static void triggerAfterListener(String onLoadType, String withType, Node node, OnLoad.Context context) {
-        List<CachedAnnotation> listeners = findListenerForType(onLoadType, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), true);
-        if (listeners != null && !listeners.isEmpty()) {
-            for (CachedAnnotation listener : listeners) {
+    private static void triggerAfterInterceptor(String onLoadType, String withType, Node node, OnLoad.Context context) {
+        List<CachedAnnotation> interceptorList = findInterceptorForType(onLoadType, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), true);
+        if (interceptorList != null && !interceptorList.isEmpty()) {
+            for (CachedAnnotation interceptor : interceptorList) {
                 try {
-                    listener.method.invoke(null, context);
+                    interceptor.method.invoke(null, context);
                 } catch (Throwable e) {
                     throw new RuntimeException("", e);
                 }
@@ -59,31 +59,31 @@ public class OnLoadHelper {
         }
     }
 
-    public static void triggerAfterListener(String onLoadType, String withType, Node node, Map<String, Object> args) {
-        triggerAfterListener(onLoadType, withType, node, new OnLoad.Context(node, args));
+    public static void triggerAfterInterceptor(String onLoadType, String withType, Node node, Map<String, Object> args) {
+        triggerAfterInterceptor(onLoadType, withType, node, new OnLoad.Context(node, args));
     }
 
-    public static void triggerAfterListener(String onLoadType, String withType, Node node, Map<String, Object> args, UIElement uiElement) {
-        triggerAfterListener(onLoadType, withType, node, new OnLoad.Context(node, uiElement, args));
+    public static void triggerAfterInterceptor(String onLoadType, String withType, Node node, Map<String, Object> args, UIElement uiElement) {
+        triggerAfterInterceptor(onLoadType, withType, node, new OnLoad.Context(node, uiElement, args));
     }
 
-    public static void triggerAfterListener(String onLoadType, String withType, Node node, Map<String, Object> args, Navigation navigation) {
-        triggerAfterListener(onLoadType, withType, node, new OnLoad.Context(node, navigation, args));
+    public static void triggerAfterInterceptor(String onLoadType, String withType, Node node, Map<String, Object> args, Navigation navigation) {
+        triggerAfterInterceptor(onLoadType, withType, node, new OnLoad.Context(node, navigation, args));
     }
 
-    public static void triggerAfterListener(String onLoadType, String withType, Node node, Map<String, Object> args, Navigation navigation, NavigationElement navigationElement) {
-        triggerAfterListener(onLoadType, withType, node, new OnLoad.Context(node, navigation, navigationElement, args));
+    public static void triggerAfterInterceptor(String onLoadType, String withType, Node node, Map<String, Object> args, Navigation navigation, NavigationElement navigationElement) {
+        triggerAfterInterceptor(onLoadType, withType, node, new OnLoad.Context(node, navigation, navigationElement, args));
     }
 
-    public static void triggerAfterListener(String onLoadType, String withType, Node node, Map<String, Object> args, List<NavigationElement> navigationElements) {
-        triggerAfterListener(onLoadType, withType, node, new OnLoad.Context(node, navigationElements, args));
+    public static void triggerAfterInterceptor(String onLoadType, String withType, Node node, Map<String, Object> args, List<NavigationElement> navigationElements) {
+        triggerAfterInterceptor(onLoadType, withType, node, new OnLoad.Context(node, navigationElements, args));
     }
 
-    private static List<CachedAnnotation> findListenerForType(final String onLoadType, final String withType, final boolean after) {
-        return InterceptorRepository.getInterceptor(OnLoad.class, new CachedAnnotation.ListenerSelector() {
+    private static List<CachedAnnotation> findInterceptorForType(final String onLoadType, final String withType, final boolean after) {
+        return InterceptorRepository.getInterceptor(OnLoad.class, new CachedAnnotation.InterceptorSelector() {
             @Override
-            public boolean isCorrectListener(CachedAnnotation listener) {
-                OnLoad annotation = ((OnLoad) listener.annotation);
+            public boolean isCorrectInterceptor(CachedAnnotation cachedAnnotation) {
+                OnLoad annotation = ((OnLoad) cachedAnnotation.annotation);
                 return annotation.type().equals(onLoadType) && annotation.after() == after &&
                         (StringUtils.isBlank(annotation.with()) || annotation.with().equals(withType));
             }

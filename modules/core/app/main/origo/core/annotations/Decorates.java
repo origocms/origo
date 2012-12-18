@@ -11,7 +11,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Hooks/Listeners for each element of the UI rendering process.
+ * Hooks/Interceptors for each element of the UI rendering process.
  * <p/>
  * The \@Decorates can only be used in a class with \@Theme annotation.
  */

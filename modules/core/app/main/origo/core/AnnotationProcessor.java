@@ -22,9 +22,9 @@ public class AnnotationProcessor {
         if (Logger.isDebugEnabled()) {
             StringBuilder sb = new StringBuilder();
             int count = 0;
-            Map<Class<? extends Annotation>,List<CachedAnnotation>> listenerMap = InterceptorRepository.getInterceptorMap();
-            for (Class<? extends Annotation> a : listenerMap.keySet()) {
-                List<CachedAnnotation> interceptors = listenerMap.get(a);
+            Map<Class<? extends Annotation>,List<CachedAnnotation>> interceptorMap = InterceptorRepository.getInterceptorMap();
+            for (Class<? extends Annotation> a : interceptorMap.keySet()) {
+                List<CachedAnnotation> interceptors = interceptorMap.get(a);
                 sb.append(" - ").append(a.getName()).append(" ").append(interceptors.size()).append("\n");
                 count += interceptors.size();
             }

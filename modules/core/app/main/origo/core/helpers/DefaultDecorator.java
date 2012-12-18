@@ -3,6 +3,7 @@ package main.origo.core.helpers;
 import main.origo.core.ui.RenderingContext;
 import main.origo.core.ui.UIElement;
 import play.api.templates.Html;
+import play.api.templates.HtmlFormat;
 import views.html.origo.core.fragments.*;
 
 import java.util.Collections;
@@ -67,38 +68,38 @@ public class DefaultDecorator {
     }
 
     public static Html decorateMeta(UIElement uiElement, RenderingContext renderingContext) {
-        return meta.render(uiElement, uiElement.getBody(), Collections.<String, String>emptyMap());
+        return meta.render(uiElement, HtmlFormat.raw(uiElement.getBody()), Collections.<String, String>emptyMap());
     }
 
     public static Html decorateLink(UIElement uiElement, RenderingContext renderingContext) {
-        return link.render(uiElement, uiElement.getBody(), Collections.<String, String>emptyMap());
+        return link.render(uiElement, HtmlFormat.raw(uiElement.getBody()), Collections.<String, String>emptyMap());
     }
 
     public static Html decorateStyle(UIElement uiElement, RenderingContext renderingContext) {
-        return style.render(uiElement, uiElement.getBody(), Collections.<String, String>emptyMap());
+        return style.render(uiElement, HtmlFormat.raw(uiElement.getBody()), Collections.<String, String>emptyMap());
     }
 
     public static Html decorateScript(UIElement uiElement, RenderingContext renderingContext) {
-        return script.render(uiElement, uiElement.getBody(), Collections.<String, String>emptyMap());
+        return script.render(uiElement, HtmlFormat.raw(uiElement.getBody()), Collections.<String, String>emptyMap());
     }
 
     public static Html decorateForm(UIElement uiElement, RenderingContext renderingContext) {
-        String body = ThemeHelper.decorateChildren(uiElement, renderingContext);
+        Html body = ThemeHelper.decorateChildren(uiElement, renderingContext);
         return form.render(uiElement, body, Collections.<String, String>emptyMap());
     }
 
     public static Html decorateListBulleted(UIElement uiElement, RenderingContext renderingContext) {
-        String body = ThemeHelper.decorateChildren(uiElement, renderingContext);
+        Html body = ThemeHelper.decorateChildren(uiElement, renderingContext);
         return list.render("ul", uiElement, body, Collections.<String, String>emptyMap());
     }
 
     public static Html decorateListNumbered(UIElement uiElement, RenderingContext renderingContext) {
-        String body = ThemeHelper.decorateChildren(uiElement, renderingContext);
+        Html body = ThemeHelper.decorateChildren(uiElement, renderingContext);
         return list.render("ol", uiElement, body, Collections.<String, String>emptyMap());
     }
 
     public static Html decorateListItem(UIElement uiElement, RenderingContext renderingContext) {
-        String body = uiElement.getBody();
+        Html body = HtmlFormat.raw(uiElement.getBody());
         if (uiElement.hasChildren()) {
             body = ThemeHelper.decorateChildren(uiElement, renderingContext);
         }
@@ -114,13 +115,13 @@ public class DefaultDecorator {
     }
 
     public static Html decorateLabel(UIElement uiElement, RenderingContext renderingContext) {
-        return label.render(uiElement, uiElement.getBody(), Collections.<String, String>emptyMap());
+        return label.render(uiElement, HtmlFormat.raw(uiElement.getBody()), Collections.<String, String>emptyMap());
     }
 
     public static Html decorateInputTextArea(UIElement uiElement, RenderingContext renderingContext) {
-        String body = uiElement.getBody();
+        Html body = HtmlFormat.raw(uiElement.getBody());
         if (uiElement.hasChildren()) {
-            body = ThemeHelper.decorateChildren(uiElement, renderingContext);
+            body.$plus(ThemeHelper.decorateChildren(uiElement, renderingContext));
         }
         return textarea.render(uiElement, body, Collections.<String, String>emptyMap());
     }
@@ -130,14 +131,14 @@ public class DefaultDecorator {
     }
 
     public static Html decorateInputSelect(UIElement uiElement, RenderingContext renderingContext) {
-        String body = ThemeHelper.decorateChildren(uiElement, renderingContext);
+        Html body = ThemeHelper.decorateChildren(uiElement, renderingContext);
         return select.render(uiElement, body, Collections.<String, String>emptyMap());
     }
 
     public static Html decorateInputSelectOption(UIElement uiElement, RenderingContext renderingContext) {
-        String body = uiElement.getBody();
+        Html body = HtmlFormat.raw(uiElement.getBody());
         if (uiElement.hasChildren()) {
-            body = ThemeHelper.decorateChildren(uiElement, renderingContext);
+            body.$plus(ThemeHelper.decorateChildren(uiElement, renderingContext));
         }
         return select_option.render(uiElement, body, Collections.<String, String>emptyMap());
     }
@@ -167,20 +168,20 @@ public class DefaultDecorator {
     }
 
     public static Html decoratePanel(UIElement uiElement, RenderingContext renderingContext) {
-        String body = ThemeHelper.decorateChildren(uiElement, renderingContext);
+        Html body = ThemeHelper.decorateChildren(uiElement, renderingContext);
         return panel.render(uiElement, body, Collections.<String, String>emptyMap());
     }
 
     public static Html decorateText(UIElement uiElement, RenderingContext renderingContext) {
-        return text.render(uiElement, uiElement.getBody(), Collections.<String, String>emptyMap());
+        return text.render(uiElement, HtmlFormat.raw(uiElement.getBody()), Collections.<String, String>emptyMap());
     }
 
     public static Html decorateParagraph(UIElement uiElement, RenderingContext renderingContext) {
-        return paragraph.render(uiElement, uiElement.getBody(), Collections.<String, String>emptyMap());
+        return paragraph.render(uiElement, HtmlFormat.raw(uiElement.getBody()), Collections.<String, String>emptyMap());
     }
 
     public static Html decorateAnchor(UIElement uiElement, RenderingContext renderingContext) {
-        String body = uiElement.getBody();
+        Html body = HtmlFormat.raw(uiElement.getBody());
         if (uiElement.hasChildren()) {
             body = ThemeHelper.decorateChildren(uiElement, renderingContext);
         }

@@ -40,7 +40,7 @@ public class NodeHelper {
 
         Node node = rootNode;
         if (hasType) {
-            node = triggerProvidesNodeListener(rootNode.nodeType, rootNode);
+            node = triggerProvidesNodeInterceptor(rootNode.nodeType, rootNode);
         }
 
         if (hasType) {
@@ -53,16 +53,16 @@ public class NodeHelper {
     /*
      * Convenience methods for hooks with NODE type
      */
-    public static Node triggerProvidesNodeListener(String withType, RootNode rootNode) {
-        return ProvidesHelper.triggerListener(Types.NODE, withType, rootNode);
+    public static Node triggerProvidesNodeInterceptor(String withType, RootNode rootNode) {
+        return ProvidesHelper.triggerInterceptor(Types.NODE, withType, rootNode);
     }
 
     public static void triggerBeforeNodeLoaded(String withType, RootNode rootNode) {
-        OnLoadHelper.triggerBeforeListener(Types.NODE, withType, rootNode, Collections.<String, Object>emptyMap());
+        OnLoadHelper.triggerBeforeInterceptor(Types.NODE, withType, rootNode, Collections.<String, Object>emptyMap());
     }
 
     public static void triggerAfterNodeLoaded(String withType, Node node) {
-        OnLoadHelper.triggerAfterListener(Types.NODE, withType, node, Collections.<String, Object>emptyMap());
+        OnLoadHelper.triggerAfterInterceptor(Types.NODE, withType, node, Collections.<String, Object>emptyMap());
     }
 
 }
