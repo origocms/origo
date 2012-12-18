@@ -3,6 +3,7 @@ package main.origo.core.helpers;
 import models.origo.core.Settings;
 import models.origo.core.SettingsKeys;
 import models.origo.core.navigation.BasicNavigation;
+import org.apache.commons.lang3.StringUtils;
 import play.Logger;
 
 public class SettingsHelper {
@@ -75,4 +76,9 @@ public class SettingsHelper {
         return BasicNavigation.class.getName();
     }
 
+    public static void setValueIfMissing(Settings settings, String settingKey, String newValue) {
+        if (StringUtils.isBlank(settings.getValue(settingKey))) {
+            settings.setValue(settingKey, newValue);
+        }
+    }
 }

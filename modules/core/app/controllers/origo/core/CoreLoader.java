@@ -53,7 +53,7 @@ public class CoreLoader {
         }
     }
 
-    private static Result loadPageNotFoundErrorPage() {
+    public static Result loadPageNotFoundErrorPage() {
         String pageNotFoundPage = SettingsHelper.Core.getPageNotFoundPage();
         Collection<Alias> aliases = Alias.findWithPageId(pageNotFoundPage);
         String url;
@@ -74,7 +74,7 @@ public class CoreLoader {
         return Controller.redirect(url);
     }
 
-    private static Result loadPageLoadErrorPage() {
+    public static Result loadPageLoadErrorPage() {
         String internalServerErrorPage = SettingsHelper.Core.getInternalServerErrorPage();
         Collection<Alias> aliases = Alias.findWithPageId(internalServerErrorPage);
         String url;

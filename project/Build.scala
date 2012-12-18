@@ -21,13 +21,12 @@ object ApplicationBuild extends Build {
   val core = play.Project(
     appName + "-core", appVersion, appDependencies, path = file("modules/core")
   )
+  val admin = play.Project(
+    appName + "-admin", appVersion, appDependencies, path = file("modules/admin")
+  ).dependsOn( core ).aggregate( core )
   val structuredcontent = play.Project(
     appName + "-structuredcontent", appVersion, appDependencies, path = file("modules/structuredcontent")
-  ).dependsOn(
-    core
-  ).aggregate(
-    core
-  )
+  ).dependsOn( core ).aggregate( core )
 
 /*
     val adminArea = PlayProject(
@@ -38,9 +37,9 @@ object ApplicationBuild extends Build {
   val main = play.Project(
       appName, appVersion, appDependencies
   ).dependsOn(
-      core, structuredcontent
+      core, admin, structuredcontent
   ).aggregate(
-      core, structuredcontent
+      core, admin, structuredcontent
   ).settings(
   )
 

@@ -10,17 +10,17 @@ import views.html.origo.core.themes.DefaultTheme.*;
 public class DefaultTheme {
 
     @ThemeVariant(id = "default-main_only", regions = {"main"})
-    public static Result getDefaultMainOnlyTemplate(ThemeVariant.Context context) {
+    public static Result renderDefaultMainOnlyTemplate(ThemeVariant.Context context) {
         return Controller.ok(variant_main_only.render(context));
     }
 
     @ThemeVariant(id = "default-main_and_left_columns", regions = {"main", "left"})
-    public static Result getDefaultMainAndLeftColumnTemplate(ThemeVariant.Context context) {
+    public static Result renderDefaultMainAndLeftColumnTemplate(ThemeVariant.Context context) {
         return Controller.ok(variant_main_and_left_columns.render(context));
     }
 
     @ThemeVariant(id = "default-three_columns", regions = {"main", "left", "right"})
-    public static Result getDefaultThreeColumnTemplate(ThemeVariant.Context context) {
+    public static Result renderDefaultThreeColumnTemplate(ThemeVariant.Context context) {
         return Controller.ok(variant_three_columns.render(context));
     }
 

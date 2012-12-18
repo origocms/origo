@@ -40,9 +40,9 @@ public class FormHelper {
         return dynamicForm.get(NODE_ID);
     }
 
-    public static Long getNodeVersion(DynamicForm dynamicForm) {
+    public static Integer getNodeVersion(DynamicForm dynamicForm) {
         try {
-            return Long.parseLong(dynamicForm.get(NODE_VERSION));
+            return Integer.parseInt(dynamicForm.get(NODE_VERSION));
         } catch (NumberFormatException e) {
             throw new RuntimeException("Version is not a number: " + e.getLocalizedMessage(), e);
         }

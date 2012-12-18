@@ -1,3 +1,5 @@
+import main.origo.core.CoreBootStrap;
+import main.origo.core.helpers.SettingsHelper;
 import main.origo.core.interceptors.forms.DefaultFormProvider;
 import main.origo.core.interceptors.forms.DefaultSubmitHandler;
 import models.origo.core.Settings;
@@ -25,13 +27,10 @@ public class InitialTestData {
 
     private void createSettings() {
         Settings settings = Settings.load();
-        settings.setValue(SettingsKeys.Core.BASE_URL, "/");
-        settings.setValue(SettingsKeys.Core.START_PAGE, "aa1755dd-18c4-4b78-956e-eef7e562c36c"); // Page 1
-        settings.setValue(SettingsKeys.Core.PAGE_NOT_FOUND_PAGE, "c9615819-0556-4e70-b6a9-a66c5b8d4c1a"); // Page 2
-        settings.setValue(SettingsKeys.Core.INTERNAL_SERVER_ERROR_PAGE, "1cf699a7-a0c4-4be0-855f-466042a36a8d"); // Page 3
-        settings.setValue(SettingsKeys.Core.THEME_VARIANT, "default-main_and_left_columns");
-        settings.setValue(SettingsKeys.Core.SUBMIT_HANDLER, DefaultSubmitHandler.class.getName());
-        settings.setValue(SettingsKeys.Core.DEFAULT_FORM_TYPE, DefaultFormProvider.TYPE);
+        SettingsHelper.setValueIfMissing(settings, SettingsKeys.Core.BASE_URL, "/");
+        SettingsHelper.setValueIfMissing(settings, SettingsKeys.Core.START_PAGE, "aa1755dd-18c4-4b78-956e-eef7e562c36c"); // Page 1
+        SettingsHelper.setValueIfMissing(settings, SettingsKeys.Core.PAGE_NOT_FOUND_PAGE, "c9615819-0556-4e70-b6a9-a66c5b8d4c1a"); // Page 2
+        SettingsHelper.setValueIfMissing(settings, SettingsKeys.Core.INTERNAL_SERVER_ERROR_PAGE, "1cf699a7-a0c4-4be0-855f-466042a36a8d"); // Page 3
         settings.save();
     }
 

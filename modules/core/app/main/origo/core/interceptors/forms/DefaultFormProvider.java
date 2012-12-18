@@ -21,8 +21,8 @@ public class DefaultFormProvider {
     @ProvidesForm(with = TYPE)
     public static UIElement createBasicForm(Node node) {
         return new UIElement(UIElement.FORM).
-                // FIXME: This is not correct but a temporary fix to get through porting the playpal form handling
-                addAttribute("action", FormHelper.getPostURL().toString()).
+                // TODO: This is might not be the correct
+                addAttribute("action", FormHelper.getPostURL().url()).
                 addAttribute("method", "POST");
     }
 

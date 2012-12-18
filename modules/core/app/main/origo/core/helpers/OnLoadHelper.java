@@ -10,6 +10,7 @@ import main.origo.core.ui.UIElement;
 import models.origo.core.RootNode;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +47,10 @@ public class OnLoadHelper {
         triggerBeforeInterceptor(type, withType, node, new OnLoad.Context(node, navigation, args));
     }
 
+    public static void triggerBeforeInterceptor(String type, String withType, Node node) {
+        triggerBeforeInterceptor(type, withType, node, Collections.<String, Object>emptyMap());
+    }
+
     private static void triggerAfterInterceptor(String onLoadType, String withType, Node node, OnLoad.Context context) {
         List<CachedAnnotation> interceptorList = findInterceptorForType(onLoadType, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), true);
         if (interceptorList != null && !interceptorList.isEmpty()) {
@@ -79,6 +84,10 @@ public class OnLoadHelper {
         triggerAfterInterceptor(onLoadType, withType, node, new OnLoad.Context(node, navigationElements, args));
     }
 
+    public static void triggerAfterInterceptor(String onLoadType, String withType, Node node) {
+        triggerAfterInterceptor(onLoadType, withType, node, Collections.<String, Object>emptyMap());
+    }
+
     private static List<CachedAnnotation> findInterceptorForType(final String onLoadType, final String withType, final boolean after) {
         return InterceptorRepository.getInterceptor(OnLoad.class, new CachedAnnotation.InterceptorSelector() {
             @Override
@@ -89,4 +98,5 @@ public class OnLoadHelper {
             }
         });
     }
+
 }
