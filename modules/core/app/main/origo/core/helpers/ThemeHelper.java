@@ -48,7 +48,7 @@ public class ThemeHelper {
                         }
                     }
                     case UIElement.SCRIPT: {
-                        if (Node.HEAD.equalsIgnoreCase(region)) {
+                        if (Node.TAIL.equalsIgnoreCase(region)) {
                             renderedNode.addScript(decoratedContent);
                         } else {
                             renderedNode.add(region, decoratedContent);

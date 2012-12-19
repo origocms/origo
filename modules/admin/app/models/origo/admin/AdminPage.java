@@ -71,6 +71,11 @@ public class AdminPage implements Node {
     }
 
     @Override
+    public UIElement addTailUIElement(UIElement uiElement) {
+        return rootNode.addTailUIElement(uiElement);
+    }
+
+    @Override
     public UIElement addUIElement(UIElement uiElement) {
         return rootNode.addUIElement(uiElement);
     }
@@ -81,6 +86,11 @@ public class AdminPage implements Node {
     }
 
     @Override
+    public UIElement addTailUIElement(UIElement uiElement, boolean reorderElementsBelow) {
+        return rootNode.addTailUIElement(uiElement, reorderElementsBelow);
+    }
+
+    @Override
     public UIElement addUIElement(UIElement uiElement, boolean reorderElementsBelow) {
         return rootNode.addUIElement(uiElement, reorderElementsBelow);
     }
@@ -88,6 +98,11 @@ public class AdminPage implements Node {
     @Override
     public boolean removeHeadUIElement(UIElement uiElement) {
         return rootNode.removeHeadUIElement(uiElement);
+    }
+
+    @Override
+    public boolean removeTailUIElement(UIElement uiElement) {
+        return rootNode.removeTailUIElement(uiElement);
     }
 
     @Override

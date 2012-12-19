@@ -79,6 +79,11 @@ public class StructuredPage implements Node {
     }
 
     @Override
+    public UIElement addTailUIElement(UIElement uiElement) {
+        return rootNode.addTailUIElement(uiElement);
+    }
+
+    @Override
     public UIElement addUIElement(UIElement uiElement) {
         return rootNode.addUIElement(uiElement, false);
     }
@@ -89,6 +94,11 @@ public class StructuredPage implements Node {
     }
 
     @Override
+    public UIElement addTailUIElement(UIElement uiElement, boolean reorderElementsBelow) {
+        return rootNode.addTailUIElement(uiElement, reorderElementsBelow);
+    }
+
+    @Override
     public UIElement addUIElement(UIElement uiElement, boolean reorderElementsBelow) {
         return rootNode.addUIElement(uiElement, reorderElementsBelow);
     }
@@ -96,6 +106,11 @@ public class StructuredPage implements Node {
     @Override
     public boolean removeHeadUIElement(UIElement uiElement) {
         return rootNode.removeHeadUIElement(uiElement);
+    }
+
+    @Override
+    public boolean removeTailUIElement(UIElement uiElement) {
+        return rootNode.removeTailUIElement(uiElement);
     }
 
     @Override
@@ -115,6 +130,7 @@ public class StructuredPage implements Node {
     }
 
     public static List<StructuredPage> findAllCurrentVersions(Date asOfDate) {
+        //noinspection unchecked
         return JPA.em().
                 createQuery(
                         "select p from models.origo.structuredcontent.StructuredPage p " +

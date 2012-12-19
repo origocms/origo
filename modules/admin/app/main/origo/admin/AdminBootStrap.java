@@ -1,7 +1,7 @@
 package main.origo.admin;
 
 import main.origo.admin.interceptors.DefaultDashboardProvider;
-import main.origo.admin.interceptors.TinyMCEEditorProvider;
+import main.origo.core.interceptors.forms.TinyMCEEditorProvider;
 import main.origo.admin.themes.AdminTheme;
 import main.origo.core.helpers.SettingsHelper;
 import models.origo.core.Settings;

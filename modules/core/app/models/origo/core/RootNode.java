@@ -35,17 +35,22 @@ public final class RootNode implements Node {
     public String themeVariant;
 
     /**
-     * Only kept to make sure all elements added to the HEAD region are unique (we don't want duplicate javascript or css resources.)
+     * Only kept to make sure all elements added to the HEAD region are unique (we don't want duplicate javascript or css resources).
      */
     @Transient
     private Map<String, UIElement> headElement = new HashMap<String, UIElement>();
+    /**
+     * Only kept to make sure all scripts added to the bottom of PAGE are unique (we don't want duplicate javascript here either).
+     */
+    @Transient
+    private Map<String, UIElement> tailElement = new HashMap<String, UIElement>();
     /**
      * A list of UIElements for each region on the page. The key is the region name.
      */
     @Transient
     private Map<String, List<UIElement>> uiElements = new HashMap<String, List<UIElement>>();
 
-    private RootNode() {
+    protected RootNode() {
     }
 
     public RootNode(Integer version) {
@@ -104,6 +109,11 @@ public final class RootNode implements Node {
     }
 
     @Override
+    public UIElement addTailUIElement(UIElement uiElement) {
+        return addTailUIElement(uiElement, false);
+    }
+
+    @Override
     public UIElement addUIElement(UIElement uiElement) {
         return addUIElement(uiElement, false);
     }
@@ -116,6 +126,17 @@ public final class RootNode implements Node {
         } else {
             headElement.put(elementKey, uiElement);
             return addUIElement(uiElement, reorderElementsBelow, HEAD, uiElement.getWeight());
+        }
+    }
+
+    @Override
+    public UIElement addTailUIElement(UIElement uiElement, boolean reorderElementsBelow) {
+        String elementKey = String.valueOf(uiElement.hashCode());
+        if (tailElement.containsKey(elementKey)) {
+            return tailElement.get(elementKey);
+        } else {
+            tailElement.put(elementKey, uiElement);
+            return addUIElement(uiElement, reorderElementsBelow, TAIL, uiElement.getWeight());
         }
     }
 
@@ -146,6 +167,11 @@ public final class RootNode implements Node {
     @Override
     public boolean removeHeadUIElement(UIElement uiElement) {
         return removeUIElement(uiElement, HEAD);
+    }
+
+    @Override
+    public boolean removeTailUIElement(UIElement uiElement) {
+        return removeUIElement(uiElement, TAIL);
     }
 
     @Override
@@ -261,7 +287,7 @@ public final class RootNode implements Node {
     }
 
     public RootNode copy(boolean increaseVersion) {
-        RootNode copy = new RootNode(nodeId, increaseVersion ? version + 1 : version);
+        RootNode copy = new RootNode(nodeId, increaseVersion ? version : version);
         copy.publish = publish;
         copy.unPublish = unPublish;
         copy.nodeType = nodeType;

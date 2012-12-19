@@ -10,6 +10,7 @@ import main.origo.core.annotations.Types;
 import main.origo.core.annotations.forms.OnLoadForm;
 import main.origo.core.annotations.forms.OnSubmit;
 import main.origo.core.annotations.forms.SubmitState;
+import main.origo.core.helpers.forms.EditorHelper;
 import main.origo.core.helpers.forms.FormHelper;
 import main.origo.core.ui.UIElement;
 import models.origo.admin.AdminPage;
@@ -135,13 +136,13 @@ public class BasicPageAdminProvider {
 
         UIElement leadElement = new UIElement(UIElement.PANEL, 20).addAttribute("class", "field");
         leadElement.addChild(new UIElement(UIElement.LABEL, 10, "Lead").addAttribute("for", LEAD_PARAM));
-        leadElement.addChild(AdminHelper.createRichTextEditor(context.node, leadContent).setWeight(20).addAttribute("class", "editor richtext").
+        leadElement.addChild(EditorHelper.createRichTextEditor(context.node, leadContent).setWeight(20).addAttribute("class", "editor richtext").
                 addAttribute("name", LEAD_PARAM).addAttribute("cols", "80").addAttribute("rows", "10"));
         context.formElement.addChild(leadElement);
 
         UIElement bodyElement = new UIElement(UIElement.PANEL, 30).addAttribute("class", "field");
         bodyElement.addChild(new UIElement(UIElement.LABEL, 10, "Body").addAttribute("for", BODY_PARAM));
-        bodyElement.addChild(AdminHelper.createRichTextEditor(context.node, bodyContent).setWeight(20).addAttribute("class", "editor richtext").
+        bodyElement.addChild(EditorHelper.createRichTextEditor(context.node, bodyContent).setWeight(20).addAttribute("class", "editor richtext").
                 addAttribute("name", BODY_PARAM).addAttribute("cols", "80").addAttribute("rows", "20"));
         context.formElement.addChild(bodyElement);
 
