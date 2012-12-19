@@ -165,7 +165,9 @@ public class BasicPageAdminProvider {
             throw new RuntimeException("Root node with id=\'" + nodeId + "\' does not exist");
         }
 
-        BasicPage newPageVersion = BasicPage.findLatestVersion(nodeId).copy(oldRootNode);
+        BasicPage latestVersion = BasicPage.findLatestVersion(nodeId);
+        latestVersion.rootNode = oldRootNode;
+        BasicPage newPageVersion = latestVersion.copy();
 
         boolean changed = false;
         Content leadContent = Content.findWithIdentifier(newPageVersion.leadReferenceId);

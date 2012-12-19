@@ -115,9 +115,9 @@ public class BasicPage implements Node {
         return rootNode.removeUIElement(uiElement);
     }
 
-    public BasicPage copy(RootNode oldRootNode) {
+    public BasicPage copy() {
         BasicPage newPage = new BasicPage();
-        RootNode rootNodeCopy = oldRootNode.copy(true);
+        RootNode rootNodeCopy = rootNode.copy(true);
         newPage.rootNode = rootNodeCopy;
         newPage.nodeId = nodeId;
         newPage.version = rootNodeCopy.version;
@@ -200,7 +200,7 @@ public class BasicPage implements Node {
     }
 
     public BasicPage save() {
-        JPA.em().merge(this);
+        JPA.em().persist(this);
         return this;
     }
 

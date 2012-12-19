@@ -14,7 +14,7 @@ import models.origo.structuredcontent.StructuredPage;
 public class InitialTestData {
 
     public void create() {
-        if (Settings.load().id == null) {
+        if (Settings.load().getValue(SettingsKeys.Core.BASE_URL) == null) {
             createSettings();
             createPage1();
             createPage2();

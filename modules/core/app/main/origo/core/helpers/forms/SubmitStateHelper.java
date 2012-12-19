@@ -4,6 +4,7 @@ import main.origo.core.CachedAnnotation;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.annotations.forms.SubmitState;
 import play.data.Form;
+import play.mvc.Result;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,18 +13,18 @@ import java.util.Map;
 
 public class SubmitStateHelper {
 
-    public static void triggerInterceptor(String state, String withType, Form form) {
-        triggerInterceptor(state, withType, form, Collections.<String, Object>emptyMap());
+    public static Result triggerInterceptor(String state, String withType, Form form) {
+        return triggerInterceptor(state, withType, form, Collections.<String, Object>emptyMap());
     }
 
-    public static void triggerInterceptor(String state, String withType, Form form, Map<String, Object> args) {
-        triggerInterceptor(state, withType, new SubmitState.Context(args));
+    public static Result triggerInterceptor(String state, String withType, Form form, Map<String, Object> args) {
+        return triggerInterceptor(state, withType, new SubmitState.Context(args));
     }
 
-    public static void triggerInterceptor(String state, String withType, SubmitState.Context context) {
+    public static Result triggerInterceptor(String state, String withType, SubmitState.Context context) {
         CachedAnnotation cachedAnnotation = findOnPostInterceptorsWithType(state, withType);
         try {
-            cachedAnnotation.method.invoke(null, context);
+            return (Result) cachedAnnotation.method.invoke(null, context);
         } catch (Throwable e) {
             throw new RuntimeException("", e);
         }

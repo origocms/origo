@@ -10,6 +10,7 @@ import main.origo.core.helpers.forms.SubmitStateHelper;
 import main.origo.core.ui.UIElement;
 import play.Logger;
 import play.data.DynamicForm;
+import play.mvc.Result;
 
 /**
  * Default implementation of the submit handler. Alternate submit handlers can be used by changing the settings.
@@ -21,7 +22,7 @@ public class DefaultSubmitHandler {
     private static final String WITH_TYPE = "_core_with_type";
 
     @SubmitHandler
-    public static void handleSubmit(SubmitHandler.Context context) {
+    public static Result handleSubmit(SubmitHandler.Context context) {
 
         DynamicForm form = DynamicForm.form().bindFromRequest();
 
@@ -34,7 +35,7 @@ public class DefaultSubmitHandler {
 
         OnSubmitHelper.triggerInterceptors(withType, form);
 
-        SubmitStateHelper.triggerInterceptor(SubmitState.SUCCESS, withType, form);
+        return SubmitStateHelper.triggerInterceptor(SubmitState.SUCCESS, withType, form);
     }
 
     @OnLoadForm
