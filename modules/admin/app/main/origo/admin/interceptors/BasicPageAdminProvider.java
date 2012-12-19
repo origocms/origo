@@ -51,9 +51,9 @@ public class BasicPageAdminProvider {
 
         return new UIElement(Admin.DASHBOARD).addAttribute("class", "dashboard").
                 addChild(new UIElement(UIElement.PANEL, 10).
-                        addChild(new UIElement(UIElement.PARAGRAPH, 10, "Basic Page").addAttribute("class", "dashboard item title")).
-                        addChild(new UIElement(UIElement.PARAGRAPH, 20, "Basic pages have a lead and a body").addAttribute("class", "dashboard item description")).
-                        addChild(new UIElement(UIElement.ANCHOR, 30, "List All").addAttribute("href", url).addAttribute("class", "dashboard item link"))
+                        addChild(new UIElement(UIElement.HEADING4, 10, "Basic Page").addAttribute("class", "title")).
+                        addChild(new UIElement(UIElement.PARAGRAPH, 20, "Basic pages have a lead and a body").addAttribute("class", "description")).
+                        addChild(new UIElement(UIElement.ANCHOR, 30, "List All").addAttribute("href", url).addAttribute("class", "link"))
                 );
     }
 

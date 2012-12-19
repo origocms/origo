@@ -40,6 +40,13 @@ public class UIElement {
     public static final String TEXT = "text";
     public static final String ANCHOR = "anchor";
 
+    public static final String HEADING1= "h1";
+    public static final String HEADING2= "h2";
+    public static final String HEADING3= "h3";
+    public static final String HEADING4= "h4";
+    public static final String HEADING5= "h5";
+    public static final String HEADING6= "h6";
+
 
     public String id;
 
@@ -116,7 +123,11 @@ public class UIElement {
     }
 
     public UIElement addAttribute(String name, String value) {
-        this.attributes.put(name, value);
+        if (this.attributes.containsKey(name)) {
+            this.attributes.put(name, this.attributes.get(name).concat(" ").concat(value));
+        } else {
+            this.attributes.put(name, value);
+        }
         return this;
     }
 
@@ -188,4 +199,5 @@ public class UIElement {
         result = 31 * result + (body != null ? body.hashCode() : 0);
         return result;
     }
+
 }

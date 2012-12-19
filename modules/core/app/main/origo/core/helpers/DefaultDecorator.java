@@ -64,9 +64,25 @@ public class DefaultDecorator {
                 return decorateText(uiElement, renderingContext);
             case UIElement.PARAGRAPH:
                 return decorateParagraph(uiElement, renderingContext);
+            case UIElement.HEADING1:
+                return decorateHeading("1", uiElement, renderingContext);
+            case UIElement.HEADING2:
+                return decorateHeading("2", uiElement, renderingContext);
+            case UIElement.HEADING3:
+                return decorateHeading("3", uiElement, renderingContext);
+            case UIElement.HEADING4:
+                return decorateHeading("4", uiElement, renderingContext);
+            case UIElement.HEADING5:
+                return decorateHeading("5", uiElement, renderingContext);
+            case UIElement.HEADING6:
+                return decorateHeading("6", uiElement, renderingContext);
             default:
                 throw new RuntimeException("Unable to decorate unknown type '" + uiElement.getType() + "'");
         }
+    }
+
+    private static Html decorateHeading(String size, UIElement uiElement, RenderingContext renderingContext) {
+        return heading.render(uiElement, size, getHtmlFromBody(uiElement), uiElement.getAttributes());
     }
 
     public static Html decorateMeta(UIElement uiElement, RenderingContext renderingContext) {

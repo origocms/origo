@@ -4,14 +4,14 @@ import main.origo.admin.annotations.Admin;
 import main.origo.core.annotations.Decorates;
 import main.origo.core.annotations.Theme;
 import main.origo.core.annotations.ThemeVariant;
+import main.origo.core.helpers.DefaultDecorator;
 import main.origo.core.helpers.ThemeHelper;
-import main.origo.core.ui.RenderingContext;
 import main.origo.core.ui.UIElement;
 import play.api.templates.Html;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.origo.admin.decorators.dashboard_item;
-import views.html.origo.core.themes.DefaultTheme.variant_main_only;
+import views.html.origo.admin.themes.AdminTheme.variant_main_only;
 
 @Theme(id = "admin")
 public class AdminTheme {
@@ -27,6 +27,12 @@ public class AdminTheme {
     public static Html decorateDashboardItem(Decorates.Context context) {
         Html body = ThemeHelper.decorateChildren(context.uiElement, context.renderingContext);
         return dashboard_item.render(context.uiElement, body, context.uiElement.getAttributes());
+    }
+
+    @Decorates(type = UIElement.INPUT_BUTTON)
+    public static Html decorateButton(Decorates.Context context) {
+        context.uiElement.addAttribute("class", "btn");
+        return DefaultDecorator.decorateInputButton(context.uiElement, context.renderingContext);
     }
 
 }
