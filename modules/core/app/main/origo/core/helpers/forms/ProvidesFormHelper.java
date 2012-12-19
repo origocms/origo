@@ -11,27 +11,27 @@ import play.Logger;
 import java.util.*;
 
 /**
- * Helper to trigger \@Provides origo.Interceptors. Should not be used directly except in core and admin, use NodeHelper
+ * Helper to trigger \@ProvidesForm origo interceptors. Should not be used directly except in core and admin, use NodeHelper
  * instead when creating a new module.
  *
  * @see main.origo.core.helpers.NodeHelper
- * @see main.origo.core.annotations.Provides
+ * @see ProvidesForm
  */
 public class ProvidesFormHelper {
 
-    public static <T> T triggerInterceptor(String withType, Node node, String nodeType) {
+    public static <T> T triggerInterceptor(String withType, Node node) {
         //noinspection unchecked
-        return (T) triggerInterceptor(withType, node, nodeType, Collections.<String, Object>emptyMap());
+        return (T) triggerInterceptor(withType, node, Collections.<String, Object>emptyMap());
     }
 
-    public static <T> T triggerInterceptor(String withType, Node node, String nodeType, Map<String, Object> args) {
+    public static <T> T triggerInterceptor(String withType, Node node, Map<String, Object> args) {
         CachedAnnotation cachedAnnotation = findInterceptor(withType);
         try {
             //noinspection unchecked
-            return (T) cachedAnnotation.method.invoke(null, new ProvidesForm.Context(node, nodeType, args));
+            return (T) cachedAnnotation.method.invoke(null, new ProvidesForm.Context(node, args));
         } catch (Throwable e) {
             Logger.error("", e);
-            throw new RuntimeException("Unable to invoke method", e.getCause());
+            throw new RuntimeException("Unable to invoke method ["+cachedAnnotation.method.toString()+"]", e.getCause());
         }
     }
 

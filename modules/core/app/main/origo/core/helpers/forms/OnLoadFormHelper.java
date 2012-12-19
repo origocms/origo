@@ -4,6 +4,7 @@ import main.origo.core.CachedAnnotation;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.Node;
 import main.origo.core.annotations.forms.OnLoadForm;
+import main.origo.core.ui.UIElement;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
@@ -18,15 +19,15 @@ import java.util.Map;
  */
 public class OnLoadFormHelper {
 
-    public static void triggerBeforeInterceptor(String withType, Node node, String nodeType) {
-        triggerBeforeINterceptor(withType, new OnLoadForm.Context(node, nodeType, Collections.<String, Object>emptyMap()));
+    public static void triggerBeforeInterceptor(String nodeType, Node node) {
+        triggerBeforeInterceptor(nodeType, node, Collections.<String, Object>emptyMap());
     }
 
-    public static void triggerBeforeInterceptor(String withType, Node node, String nodeType, Map<String, Object> args) {
-        triggerBeforeINterceptor(withType, new OnLoadForm.Context(node, nodeType, args));
+    public static void triggerBeforeInterceptor(String withType, Node node, Map<String, Object> args) {
+        triggerBeforeInterceptor(withType, new OnLoadForm.Context(withType, node, args));
     }
 
-    public static void triggerBeforeINterceptor(String withType, OnLoadForm.Context context) {
+    public static void triggerBeforeInterceptor(String withType, OnLoadForm.Context context) {
         List<CachedAnnotation> interceptors = findInterceptorForType(withType, false);
         if (interceptors != null && !interceptors.isEmpty()) {
             for (CachedAnnotation interceptor : interceptors) {
@@ -49,12 +50,20 @@ public class OnLoadFormHelper {
     }
 */
 
-    public static void triggerAfterInterceptor(String withType, Node node, String nodeType) {
-        triggerAfterInterceptor(withType, new OnLoadForm.Context(node, nodeType, Collections.<String, Object>emptyMap()));
+    public static void triggerAfterInterceptor(String withType, Node node) {
+        triggerAfterInterceptor(withType, node, Collections.<String, Object>emptyMap());
     }
 
-    public static void triggerAfterInterceptor(String withType, Node node, String nodeType, Map<String, Object> args) {
-        triggerAfterInterceptor(withType, new OnLoadForm.Context(node, nodeType, args));
+    public static void triggerAfterInterceptor(String withType, Node node, UIElement uiElement) {
+        triggerAfterInterceptor(withType, node, Collections.<String, Object>emptyMap(), uiElement);
+    }
+
+    public static void triggerAfterInterceptor(String withType, Node node, Map<String, Object> args) {
+        triggerAfterInterceptor(withType, node, args, null);
+    }
+
+    public static void triggerAfterInterceptor(String withType, Node node, Map<String, Object> args, UIElement uiElement) {
+        triggerAfterInterceptor(withType, new OnLoadForm.Context(withType, node, args, uiElement));
     }
 
     public static void triggerAfterInterceptor(String withType, OnLoadForm.Context context) {

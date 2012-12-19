@@ -1,19 +1,17 @@
 package controllers.origo.admin;
 
 import controllers.origo.core.CoreLoader;
-import main.origo.core.NodeNotFoundException;
-import main.origo.core.helpers.ThemeHelper;
-import main.origo.core.ui.NavigationElement;
-import main.origo.core.ui.RenderedNode;
+import org.springframework.stereotype.Component;
 import play.Logger;
+import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-import java.util.Collection;
+@Component
+public class Dashboard extends Controller {
 
-public class Application extends Controller {
-
-    public Result dashboard() {
+    @Transactional
+    public Result index() {
         //TODO: Check if config !exists and redirect to wizard
 
         try {
@@ -24,6 +22,7 @@ public class Application extends Controller {
         }
     }
 
+    @Transactional
     public Result pageWithType(String type) {
         //TODO: Check if config !exists and redirect to wizard
 
@@ -35,6 +34,7 @@ public class Application extends Controller {
         }
     }
 
+    @Transactional
     public Result pageWithTypeAndIdentifier(String type, String identifier) {
         //TODO: Check if config !exists and redirect to wizard
 

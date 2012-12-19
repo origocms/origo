@@ -26,8 +26,8 @@ public class ThemeHelper {
     public static RenderedNode decorate(Node node, CachedThemeVariant themeVariant) {
         RenderedNode renderedNode = new RenderedNode(node.getNodeId());
         setupRegions(themeVariant, renderedNode);
-        renderedNode.setTemplate(themeVariant);
-        renderedNode.setTitle(node.getTitle());
+        renderedNode.template(themeVariant);
+        renderedNode.title(node.getTitle());
         RenderingContext renderingContext = new RenderingContext(themeVariant, node);
         for (String region : node.getRegions()) {
             for (UIElement uiElement : node.getUIElements(region)) {
@@ -81,7 +81,7 @@ public class ThemeHelper {
         for (String region : themeVariant.regions) {
             regions.put(region, Lists.<Html>newArrayList());
         }
-        renderedNode.setRegions(regions);
+        renderedNode.regions(regions);
     }
 
     public static Html decorate(UIElement uiElement, RenderingContext renderingContext) {
@@ -134,7 +134,7 @@ public class ThemeHelper {
     }
 
     public static Result render(RenderedNode renderedNode) {
-        CachedThemeVariant cachedThemeVariant = renderedNode.getTemplate();
+        CachedThemeVariant cachedThemeVariant = renderedNode.template();
         try {
             return (Result) cachedThemeVariant.templateMethod.invoke(null, new ThemeVariant.Context(renderedNode));
         } catch (Throwable e) {

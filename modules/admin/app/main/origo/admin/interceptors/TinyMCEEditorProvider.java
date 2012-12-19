@@ -1,8 +1,7 @@
-package main.origo.admin.listeners;
+package main.origo.admin.interceptors;
 
 import controllers.routes;
 import main.origo.admin.annotations.Admin;
-import main.origo.core.Node;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.Provides;

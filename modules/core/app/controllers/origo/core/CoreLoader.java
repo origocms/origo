@@ -97,7 +97,7 @@ public class CoreLoader {
     private static Result loadAndDecoratePage(String identifier, int version) throws NodeNotFoundException {
         Node node = loadNode(identifier, version);
         RenderedNode renderedNode = ThemeHelper.decorate(node, ThemeHelper.loadTheme(node));
-        renderedNode.setNavigation(getNavigation(identifier));
+        renderedNode.navigation(getNavigation(identifier));
         if (Logger.isDebugEnabled()) {
             Logger.debug("Decorated " + renderedNode);
         }

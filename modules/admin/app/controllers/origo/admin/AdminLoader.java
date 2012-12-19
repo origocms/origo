@@ -78,7 +78,7 @@ public class AdminLoader {
     private static Result decorateNode(Node node) {
         CachedThemeVariant themeVariant = Themes.getThemeVariant(SettingsHelper.Admin.getThemeVariant());
         RenderedNode renderedNode = ThemeHelper.decorate(node, themeVariant);
-        renderedNode.setNavigation(getNavigation(node.getNodeId()));
+        renderedNode.navigation(getNavigation(node.getNodeId()));
         if (Logger.isDebugEnabled()) {
             Logger.debug("Decorated " + renderedNode);
         }

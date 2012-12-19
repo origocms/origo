@@ -19,7 +19,7 @@ public class DefaultFormProvider {
     public static final String TYPE = "origo.core.basicform";
 
     @ProvidesForm(with = TYPE)
-    public static UIElement createBasicForm(Node node) {
+    public static UIElement createBasicForm(ProvidesForm.Context context) {
         return new UIElement(UIElement.FORM).
                 // TODO: This is might not be the correct
                 addAttribute("action", FormHelper.getPostURL().url()).

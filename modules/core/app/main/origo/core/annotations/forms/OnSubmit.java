@@ -13,7 +13,6 @@ import java.util.Map;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-@Interceptor
 public @interface OnSubmit {
 
     String with() default "";

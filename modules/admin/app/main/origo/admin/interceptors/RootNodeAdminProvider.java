@@ -1,4 +1,4 @@
-package main.origo.admin.listeners;
+package main.origo.admin.interceptors;
 
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.forms.OnSubmit;

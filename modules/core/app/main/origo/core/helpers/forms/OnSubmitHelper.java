@@ -18,14 +18,14 @@ public class OnSubmitHelper {
 
     public static void triggerInterceptors(String withType, DynamicForm form, Map<String, Object> args) {
         List<CachedAnnotation> cachedAnnotations = findOnPostInterceptorsWithType(withType);
-        try {
-            for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
+        for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
+            try {
                 //noinspection unchecked
                 cachedAnnotation.method.invoke(null, new OnSubmit.Context(args));
+            } catch (Throwable e) {
+                Logger.error("", e);
+                throw new RuntimeException("Unable to invoke method ["+cachedAnnotation.method.toString()+"]", e.getCause());
             }
-        } catch (Throwable e) {
-            Logger.error("", e);
-            throw new RuntimeException("Unable to invoke method", e.getCause());
         }
     }
 

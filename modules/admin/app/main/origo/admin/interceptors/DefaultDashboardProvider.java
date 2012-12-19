@@ -1,15 +1,17 @@
-package main.origo.admin.listeners;
+package main.origo.admin.interceptors;
 
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.AdminHelper;
 import main.origo.core.Node;
-import main.origo.core.annotations.Interceptor;
-import main.origo.core.annotations.OnLoad;
-import main.origo.core.annotations.Provides;
-import main.origo.core.annotations.Types;
+import main.origo.core.annotations.*;
 import main.origo.core.helpers.ProvidesHelper;
+import main.origo.core.helpers.ThemeHelper;
+import main.origo.core.ui.RenderingContext;
+import main.origo.core.ui.UIElement;
 import models.origo.admin.AdminPage;
 import models.origo.core.RootNode;
+import play.api.templates.Html;
+import views.html.origo.admin.decorators.dashboard_item;
 
 import java.util.Set;
 
@@ -24,22 +26,21 @@ public class DefaultDashboardProvider {
     public static final String TYPE = "origo.admin.dashboard";
 
     @Provides(type = Types.NODE, with = TYPE)
-    public static Node createPage(RootNode rootNode) {
-        AdminPage page = new AdminPage(rootNode.nodeId);
+    public static Node createPage(Provides.Context context) {
+        AdminPage page = new AdminPage(context.node.getNodeId());
         page.setTitle("Dashboard");
-        page.rootNode = rootNode;
+        page.rootNode = (RootNode)context.node;
         return page;
     }
 
     @OnLoad(type = Types.NODE, with = DefaultDashboardProvider.TYPE)
-    public static void addContent(Node node) {
+    public static void addContent(OnLoad.Context context) {
 
         Set<String> dashboardItemNames = ProvidesHelper.getAllProvidesWithForType(Admin.DASHBOARD);
 
         for (String dashboardItemName : dashboardItemNames) {
-            node.addUIElement(AdminHelper.createDashboardItem(dashboardItemName, node));
+            context.node.addUIElement(AdminHelper.createDashboardItem(dashboardItemName, context.node));
         }
-
     }
 
 }

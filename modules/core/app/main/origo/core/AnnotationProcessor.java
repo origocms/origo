@@ -1,6 +1,7 @@
 package main.origo.core;
 
 import main.origo.core.annotations.*;
+import main.origo.core.annotations.forms.*;
 import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
 import play.Logger;
@@ -47,6 +48,11 @@ public class AnnotationProcessor {
         Set<Class<?>> interceptors = reflections.getTypesAnnotatedWith(Interceptor.class);
         scanInterceptors(interceptors, Provides.class, Provides.Context.class);
         scanInterceptors(interceptors, OnLoad.class, OnLoad.Context.class);
+        scanInterceptors(interceptors, ProvidesForm.class, OnLoad.Context.class);
+        scanInterceptors(interceptors, OnLoadForm.class, OnLoad.Context.class);
+        scanInterceptors(interceptors, OnSubmit.class, OnLoad.Context.class);
+        scanInterceptors(interceptors, SubmitHandler.class, OnLoad.Context.class);
+        scanInterceptors(interceptors, SubmitState.class, OnLoad.Context.class);
 
         Set<Class<?>> themes = reflections.getTypesAnnotatedWith(Theme.class);
         scanThemes(themes);

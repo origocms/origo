@@ -7,6 +7,8 @@ import main.origo.core.ui.UIElement;
 import play.api.mvc.Call;
 import play.data.DynamicForm;
 
+import java.util.Collections;
+
 public class FormHelper {
 
     private static final String NODE_ID = "_core_node_id";
@@ -17,10 +19,12 @@ public class FormHelper {
     }
 
     public static UIElement createFormElement(String formType, Node node, String nodeType) {
-        OnLoadFormHelper.triggerBeforeInterceptor(formType, node, nodeType);
-        UIElement formElement = ProvidesFormHelper.triggerInterceptor(formType, node, nodeType);
+        OnLoadFormHelper.triggerBeforeInterceptor(formType, node);
+        OnLoadFormHelper.triggerBeforeInterceptor(nodeType, node);
+        UIElement formElement = ProvidesFormHelper.triggerInterceptor(formType, node);
         addNodeIdAndVersion(formElement, node);
-        OnLoadFormHelper.triggerAfterInterceptor(formType, node, nodeType);
+        OnLoadFormHelper.triggerAfterInterceptor(nodeType, node, formElement);
+        OnLoadFormHelper.triggerAfterInterceptor(formType, node, formElement);
         return formElement;
     }
 

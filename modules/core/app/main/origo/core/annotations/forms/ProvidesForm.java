@@ -11,19 +11,16 @@ import java.util.Map;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-@Interceptor
 public @interface ProvidesForm {
 
     String with();
 
     public class Context {
         private Node node;
-        private String nodeType;
         private Map<String, Object> args;
 
-        public Context(Node node, String nodeType, Map<String, Object> args) {
+        public Context(Node node, Map<String, Object> args) {
             this.node = node;
-            this.nodeType = nodeType;
             this.args = args;
         }
     }

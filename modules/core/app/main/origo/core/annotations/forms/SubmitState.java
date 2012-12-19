@@ -15,7 +15,6 @@ import java.util.Map;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-@Interceptor
 public @interface SubmitState {
 
     String state() default SUCCESS;

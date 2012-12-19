@@ -38,9 +38,9 @@ public class DefaultSubmitHandler {
     }
 
     @OnLoadForm
-    public static void addWithTypeField(UIElement uiElement, String withType) {
+    public static void addWithTypeField(OnLoadForm.Context context) {
         if (DefaultSubmitHandler.class.isAssignableFrom(SubmitHandlerHelper.getActiveSubmitHandler())) {
-            uiElement.addChild(new UIElement(UIElement.INPUT_HIDDEN).addAttribute("name", WITH_TYPE).addAttribute("value", withType));
+            context.formElement.addChild(new UIElement(UIElement.INPUT_HIDDEN).addAttribute("name", WITH_TYPE).addAttribute("value", context.withType));
         }
     }
 

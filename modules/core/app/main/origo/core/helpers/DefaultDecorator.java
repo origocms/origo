@@ -1,12 +1,14 @@
 package main.origo.core.helpers;
 
+import com.google.common.collect.Maps;
 import main.origo.core.ui.RenderingContext;
 import main.origo.core.ui.UIElement;
 import play.api.templates.Html;
 import play.api.templates.HtmlFormat;
-import views.html.origo.core.fragments.*;
+import views.html.origo.core.decorators.*;
 
 import java.util.Collections;
+import java.util.Map;
 
 public class DefaultDecorator {
 
@@ -68,125 +70,146 @@ public class DefaultDecorator {
     }
 
     public static Html decorateMeta(UIElement uiElement, RenderingContext renderingContext) {
-        return meta.render(uiElement, HtmlFormat.raw(uiElement.getBody()), Collections.<String, String>emptyMap());
+        return meta.render(uiElement, getHtmlFromBody(uiElement), uiElement.getAttributes());
     }
 
     public static Html decorateLink(UIElement uiElement, RenderingContext renderingContext) {
-        return link.render(uiElement, HtmlFormat.raw(uiElement.getBody()), Collections.<String, String>emptyMap());
+        return link.render(uiElement, getHtmlFromBody(uiElement), uiElement.getAttributes());
     }
 
     public static Html decorateStyle(UIElement uiElement, RenderingContext renderingContext) {
-        return style.render(uiElement, HtmlFormat.raw(uiElement.getBody()), Collections.<String, String>emptyMap());
+        return style.render(uiElement, getHtmlFromBody(uiElement), uiElement.getAttributes());
     }
 
     public static Html decorateScript(UIElement uiElement, RenderingContext renderingContext) {
-        return script.render(uiElement, HtmlFormat.raw(uiElement.getBody()), Collections.<String, String>emptyMap());
+        return script.render(uiElement, getHtmlFromBody(uiElement), uiElement.getAttributes());
     }
 
     public static Html decorateForm(UIElement uiElement, RenderingContext renderingContext) {
         Html body = ThemeHelper.decorateChildren(uiElement, renderingContext);
-        return form.render(uiElement, body, Collections.<String, String>emptyMap());
+        return form.render(uiElement, body, uiElement.getAttributes());
     }
 
     public static Html decorateListBulleted(UIElement uiElement, RenderingContext renderingContext) {
         Html body = ThemeHelper.decorateChildren(uiElement, renderingContext);
-        return list.render("ul", uiElement, body, Collections.<String, String>emptyMap());
+        return list.render("ul", uiElement, body, uiElement.getAttributes());
     }
 
     public static Html decorateListNumbered(UIElement uiElement, RenderingContext renderingContext) {
         Html body = ThemeHelper.decorateChildren(uiElement, renderingContext);
-        return list.render("ol", uiElement, body, Collections.<String, String>emptyMap());
+        return list.render("ol", uiElement, body, uiElement.getAttributes());
     }
 
     public static Html decorateListItem(UIElement uiElement, RenderingContext renderingContext) {
-        Html body = HtmlFormat.raw(uiElement.getBody());
+        Html body = getHtmlFromBody(uiElement);
         if (uiElement.hasChildren()) {
             body = ThemeHelper.decorateChildren(uiElement, renderingContext);
         }
-        return list_item.render(uiElement, body, Collections.<String, String>emptyMap());
+        return list_item.render(uiElement, body, uiElement.getAttributes());
     }
 
     public static Html decorateInputText(UIElement uiElement, RenderingContext renderingContext) {
-        return input.render(uiElement, null, Collections.singletonMap("type", "text"));
+        Map<String, String> attributes = combineAttributes(Collections.<String, String>singletonMap("type", "text"), uiElement.getAttributes());
+        return input.render(uiElement, null, attributes);
     }
 
     public static Html decorateInputHidden(UIElement uiElement, RenderingContext renderingContext) {
-        return input.render(uiElement, null, Collections.singletonMap("type", "hidden"));
+        Map<String, String> attributes = combineAttributes(Collections.<String, String>singletonMap("type", "hidden"), uiElement.getAttributes());
+        return input.render(uiElement, null, attributes);
     }
 
     public static Html decorateLabel(UIElement uiElement, RenderingContext renderingContext) {
-        return label.render(uiElement, HtmlFormat.raw(uiElement.getBody()), Collections.<String, String>emptyMap());
+        return label.render(uiElement, getHtmlFromBody(uiElement), uiElement.getAttributes());
     }
 
     public static Html decorateInputTextArea(UIElement uiElement, RenderingContext renderingContext) {
-        Html body = HtmlFormat.raw(uiElement.getBody());
+        Html body = getHtmlFromBody(uiElement);
         if (uiElement.hasChildren()) {
             body.$plus(ThemeHelper.decorateChildren(uiElement, renderingContext));
         }
-        return textarea.render(uiElement, body, Collections.<String, String>emptyMap());
+        return textarea.render(uiElement, body, uiElement.getAttributes());
     }
 
     public static Html decorateInputRadioButton(UIElement uiElement, RenderingContext renderingContext) {
-        return input.render(uiElement, null, Collections.singletonMap("type", "radiobutton"));
+        Map<String, String> attributes = combineAttributes(Collections.<String, String>singletonMap("type", "radiobutton"), uiElement.getAttributes());
+        return input.render(uiElement, null, attributes);
     }
 
     public static Html decorateInputSelect(UIElement uiElement, RenderingContext renderingContext) {
         Html body = ThemeHelper.decorateChildren(uiElement, renderingContext);
-        return select.render(uiElement, body, Collections.<String, String>emptyMap());
+        return select.render(uiElement, body, uiElement.getAttributes());
     }
 
     public static Html decorateInputSelectOption(UIElement uiElement, RenderingContext renderingContext) {
-        Html body = HtmlFormat.raw(uiElement.getBody());
+        Html body = getHtmlFromBody(uiElement);
         if (uiElement.hasChildren()) {
             body.$plus(ThemeHelper.decorateChildren(uiElement, renderingContext));
         }
-        return select_option.render(uiElement, body, Collections.<String, String>emptyMap());
+        return select_option.render(uiElement, body, uiElement.getAttributes());
     }
 
     public static Html decorateInputButton(UIElement uiElement, RenderingContext renderingContext) {
-        return input.render(uiElement, null, Collections.singletonMap("type", "button"));
+        Map<String, String> attributes = combineAttributes(Collections.<String, String>singletonMap("type", "button"), uiElement.getAttributes());
+        return input.render(uiElement, null, attributes);
     }
 
     public static Html decorateInputSubmit(UIElement uiElement, RenderingContext renderingContext) {
-        return input.render(uiElement, null, Collections.singletonMap("type", "submit"));
+        Map<String, String> attributes = combineAttributes(Collections.<String, String>singletonMap("type", "submit"), uiElement.getAttributes());
+        return input.render(uiElement, null, attributes);
     }
 
     public static Html decorateInputReset(UIElement uiElement, RenderingContext renderingContext) {
-        return input.render(uiElement, null, Collections.singletonMap("type", "reset"));
+        Map<String, String> attributes = combineAttributes(Collections.<String, String>singletonMap("type", "reset"), uiElement.getAttributes());
+        return input.render(uiElement, null, attributes);
     }
 
     public static Html decorateInputImage(UIElement uiElement, RenderingContext renderingContext) {
-        return input.render(uiElement, null, Collections.singletonMap("type", "image"));
+        Map<String, String> attributes = combineAttributes(Collections.<String, String>singletonMap("type", "image"), uiElement.getAttributes());
+        return input.render(uiElement, null, attributes);
     }
 
     public static Html decorateInputFile(UIElement uiElement, RenderingContext renderingContext) {
-        return input.render(uiElement, null, Collections.singletonMap("type", "file"));
+        Map<String, String> attributes = combineAttributes(Collections.<String, String>singletonMap("type", "file"), uiElement.getAttributes());
+        return input.render(uiElement, null, attributes);
     }
 
     public static Html decorateInputPassword(UIElement uiElement, RenderingContext renderingContext) {
-        return input.render(uiElement, null, Collections.singletonMap("type", "password"));
+        Map<String, String> attributes = combineAttributes(Collections.<String, String>singletonMap("type", "password"), uiElement.getAttributes());
+        return input.render(uiElement, null, attributes);
     }
 
     public static Html decoratePanel(UIElement uiElement, RenderingContext renderingContext) {
         Html body = ThemeHelper.decorateChildren(uiElement, renderingContext);
-        return panel.render(uiElement, body, Collections.<String, String>emptyMap());
+        return panel.render(uiElement, body, uiElement.getAttributes());
     }
 
     public static Html decorateText(UIElement uiElement, RenderingContext renderingContext) {
-        return text.render(uiElement, HtmlFormat.raw(uiElement.getBody()), Collections.<String, String>emptyMap());
+        return text.render(uiElement, getHtmlFromBody(uiElement), uiElement.getAttributes());
     }
 
     public static Html decorateParagraph(UIElement uiElement, RenderingContext renderingContext) {
-        return paragraph.render(uiElement, HtmlFormat.raw(uiElement.getBody()), Collections.<String, String>emptyMap());
+        return paragraph.render(uiElement, getHtmlFromBody(uiElement), uiElement.getAttributes());
     }
 
     public static Html decorateAnchor(UIElement uiElement, RenderingContext renderingContext) {
-        Html body = HtmlFormat.raw(uiElement.getBody());
+        Html body = getHtmlFromBody(uiElement);
         if (uiElement.hasChildren()) {
             body = ThemeHelper.decorateChildren(uiElement, renderingContext);
         }
-        return anchor.render(uiElement, body, Collections.<String, String>emptyMap());
+        return anchor.render(uiElement, body, uiElement.getAttributes());
     }
 
+    private static Html getHtmlFromBody(UIElement uiElement) {
+        if (uiElement.hasBody()) {
+            return HtmlFormat.raw(uiElement.getBody());
+        } else {
+            return Html.empty();
+        }
+    }
 
+    public static Map<String, String> combineAttributes(Map<String, String> map1, Map<String, String> map2) {
+        Map<String, String> map = Maps.newHashMap(map1);
+        map.putAll(map2);
+        return map;
+    }
 }

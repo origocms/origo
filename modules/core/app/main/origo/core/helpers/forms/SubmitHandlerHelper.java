@@ -22,7 +22,7 @@ public class SubmitHandlerHelper {
         try {
             return (Result)cachedAnnotation.method.invoke(null, new SubmitHandler.Context());
         } catch (Throwable e) {
-            throw new RuntimeException("Unable to invoke method", e.getCause());
+            throw new RuntimeException("Unable to invoke method ["+cachedAnnotation.method.toString()+"]", e.getCause());
         }
     }
 

@@ -1,4 +1,4 @@
-package main.origo.admin.listeners;
+package main.origo.admin.interceptors;
 
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.AdminHelper;
@@ -45,7 +45,7 @@ public class BasicPageAdminProvider {
      * @return a UIElement that contains a dashboard element.
      */
     @Provides(type = Admin.DASHBOARD, with = DASHBOARD_TYPE)
-    public static UIElement createDashboardItem() {
+    public static UIElement createDashboardItem(Provides.Context context) {
 
         String url = AdminHelper.getURLForAdminAction(BASE_TYPE + ".list");
 
@@ -60,24 +60,24 @@ public class BasicPageAdminProvider {
     /**
      * Provides a type with the static name 'origo.admin.basicpage.list'.
      *
-     * @param rootNode a root node with an node id
+     * @param context contains a root node with an node id
      * @return a node to be presented as part of the admin UI
      */
     @Provides(type = Types.NODE, with = LIST_TYPE)
-    public static Node createListPage(RootNode rootNode) {
-        AdminPage page = new AdminPage(rootNode.nodeId);
+    public static Node createListPage(Provides.Context context) {
+        AdminPage page = new AdminPage(context.node.getNodeId());
         page.setTitle("List Basic Pages");
-        page.rootNode = rootNode;
+        page.rootNode = (RootNode) context.node;
         return page;
     }
 
     /**
      * Adds content to the nodes with the static name 'origo.admin.basicpage.list'.
      *
-     * @param node a node of the type 'origo.admin.basicpage.list'.
+     * @param context contains a node of the type 'origo.admin.basicpage.list'.
      */
     @OnLoad(type = Types.NODE, with = LIST_TYPE)
-    public static void createListPage(Node node) {
+    public static void createListPage(OnLoad.Context context) {
         List<BasicPage> basicPages = BasicPage.findAllLatestVersions();
 
         UIElement panelElement = new UIElement(UIElement.PANEL, 10).addAttribute("class", "panel pages");
@@ -88,23 +88,23 @@ public class BasicPageAdminProvider {
                     addChild(new UIElement(UIElement.TEXT, 20, " (" + page.nodeId + " / " + page.getVersion() + ")"));
             panelElement.addChild(panel);
         }
-        node.addUIElement(panelElement);
+        context.node.addUIElement(panelElement);
     }
 
     /**
      * Provides a type with the static name 'origo.admin.basicpage.edit'.
      *
-     * @param rootNode a root node with an node id
+     * @param context containing a root node with an node id
      * @return a node to be presented as part of the admin UI
      */
     @Provides(type = Types.NODE, with = EDIT_TYPE)
-    public static Node createEditPage(RootNode rootNode) {
-        AdminPage page = new AdminPage(rootNode.nodeId);
+    public static Node createEditPage(Provides.Context context) {
+        AdminPage page = new AdminPage(context.node.getNodeId());
         page.setTitle("Edit Basic Page");
-        if (rootNode.version == null || rootNode.version == 0) {
-            page.rootNode = RootNode.findLatestVersionWithNodeId(rootNode.nodeId).copy();
+        if (context.node.getVersion() == null || context.node.getVersion() == 0) {
+            page.rootNode = RootNode.findLatestVersionWithNodeId(context.node.getNodeId()).copy();
         } else {
-            page.rootNode = rootNode;
+            page.rootNode = (RootNode) context.node;
         }
         page.addUIElement(FormHelper.createFormElement(page, BASE_TYPE));
         return page;
@@ -113,42 +113,41 @@ public class BasicPageAdminProvider {
     /**
      * Adds content to the nodes with the static name 'origo.admin.basicpage.edit'.
      *
-     * @param node        a node of the type 'origo.admin.basicpage.edit'.
-     * @param formElement the form element created with \@ProvidesForm
+     * @param context       a node of the type 'origo.admin.basicpage.edit'.
      */
     @OnLoadForm(with = BASE_TYPE)
-    public static void loadEditForm(Node node, UIElement formElement) {
-        BasicPage basicPage = BasicPage.findLatestVersion(node.getNodeId());
+    public static void loadEditForm(OnLoadForm.Context context) {
+        BasicPage basicPage = BasicPage.findLatestVersion(context.node.getNodeId());
         if (basicPage == null) {
-            node.addUIElement(new UIElement(UIElement.PARAGRAPH, 10, "Page '" + node.getNodeId() + "' does not exist."));
+            context.node.addUIElement(new UIElement(UIElement.PARAGRAPH, 10, "Page '" + context.node.getNodeId() + "' does not exist."));
             return;
         }
 
         Content leadContent = Content.findWithIdentifier(basicPage.leadReferenceId);
         Content bodyContent = Content.findWithIdentifier(basicPage.bodyReferenceId);
 
-        formElement.setId("basicpageform").addAttribute("class", "origo-basicpageform, form");
+        context.formElement.setId("basicpageform").addAttribute("class", "origo-basicpageform, form");
 
         UIElement titleElement = new UIElement(UIElement.PANEL, 10).addAttribute("class", "field");
         titleElement.addChild(new UIElement(UIElement.LABEL, 10, "Title").addAttribute("for", TITLE_PARAM));
         titleElement.addChild(new UIElement(UIElement.INPUT_TEXT, 20).addAttribute("name", TITLE_PARAM).addAttribute("value", basicPage.getTitle()));
-        formElement.addChild(titleElement);
+        context.formElement.addChild(titleElement);
 
         UIElement leadElement = new UIElement(UIElement.PANEL, 20).addAttribute("class", "field");
         leadElement.addChild(new UIElement(UIElement.LABEL, 10, "Lead").addAttribute("for", LEAD_PARAM));
-        leadElement.addChild(AdminHelper.createRichTextEditor(node, leadContent).setWeight(20).addAttribute("class", "editor richtext").
+        leadElement.addChild(AdminHelper.createRichTextEditor(context.node, leadContent).setWeight(20).addAttribute("class", "editor richtext").
                 addAttribute("name", LEAD_PARAM).addAttribute("cols", "80").addAttribute("rows", "10"));
-        formElement.addChild(leadElement);
+        context.formElement.addChild(leadElement);
 
         UIElement bodyElement = new UIElement(UIElement.PANEL, 30).addAttribute("class", "field");
         bodyElement.addChild(new UIElement(UIElement.LABEL, 10, "Body").addAttribute("for", BODY_PARAM));
-        bodyElement.addChild(AdminHelper.createRichTextEditor(node, bodyContent).setWeight(20).addAttribute("class", "editor richtext").
+        bodyElement.addChild(AdminHelper.createRichTextEditor(context.node, bodyContent).setWeight(20).addAttribute("class", "editor richtext").
                 addAttribute("name", BODY_PARAM).addAttribute("cols", "80").addAttribute("rows", "20"));
-        formElement.addChild(bodyElement);
+        context.formElement.addChild(bodyElement);
 
         UIElement actionPanel = new UIElement(UIElement.PANEL, 40).addAttribute("class", "field");
         actionPanel.addChild(new UIElement(UIElement.INPUT_BUTTON, 10, "Save").addAttribute("type", "submit"));
-        formElement.addChild(actionPanel);
+        context.formElement.addChild(actionPanel);
     }
 
     /**
