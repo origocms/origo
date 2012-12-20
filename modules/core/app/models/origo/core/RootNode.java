@@ -50,7 +50,7 @@ public final class RootNode implements Node {
     @Transient
     private Map<String, List<UIElement>> uiElements = new HashMap<String, List<UIElement>>();
 
-    protected RootNode() {
+    private RootNode() {
     }
 
     public RootNode(Integer version) {

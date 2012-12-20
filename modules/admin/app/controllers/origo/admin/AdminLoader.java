@@ -53,7 +53,7 @@ public class AdminLoader {
         return loadByType(withType, identifier);
     }
 
-    private static Node loadByType(final String withType) {
+    private static Node loadByType(String withType) {
         RootNode rootNode = loadRootNode(withType);
         return NodeHelper.load(rootNode);
     }

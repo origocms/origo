@@ -10,8 +10,11 @@ import main.origo.core.ui.UIElement;
 import play.api.templates.Html;
 import play.mvc.Controller;
 import play.mvc.Result;
+import views.html.origo.admin.decorators.dashboard;
 import views.html.origo.admin.decorators.dashboard_item;
 import views.html.origo.admin.themes.AdminTheme.variant_main_only;
+
+import java.util.Collections;
 
 @Theme(id = "admin")
 public class AdminTheme {
@@ -23,10 +26,28 @@ public class AdminTheme {
         return Controller.ok(variant_main_only.render(context));
     }
 
+    private static String defaultDashboardClasses() {
+        return "dashboard";
+    }
+
     @Decorates(type = Admin.DASHBOARD)
+    public static Html decorateDashboard(Decorates.Context context) {
+        Html body = ThemeHelper.decorateChildren(context.uiElement, context.renderingContext);
+        return dashboard.render(context.uiElement, body,
+                DefaultDecorator.combineAttributes(context.uiElement.getAttributes(),
+                        Collections.singletonMap("class", defaultDashboardClasses() + " row-fluid")));
+    }
+
+    public static String defaultDashboardItemClasses() {
+        return "dashboard-item item";
+    }
+
+    @Decorates(type = Admin.DASHBOARD_ITEM)
     public static Html decorateDashboardItem(Decorates.Context context) {
         Html body = ThemeHelper.decorateChildren(context.uiElement, context.renderingContext);
-        return dashboard_item.render(context.uiElement, body, context.uiElement.getAttributes());
+        return dashboard_item.render(context.uiElement, body,
+                DefaultDecorator.combineAttributes(context.uiElement.getAttributes(),
+                        Collections.singletonMap("class", defaultDashboardItemClasses() + " span3")));
     }
 
     @Decorates(type = UIElement.INPUT_BUTTON)

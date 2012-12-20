@@ -45,12 +45,12 @@ public class BasicPageAdminProvider {
      *
      * @return a UIElement that contains a dashboard element.
      */
-    @Provides(type = Admin.DASHBOARD, with = DASHBOARD_TYPE)
+    @Provides(type = Admin.DASHBOARD_ITEM, with = DASHBOARD_TYPE)
     public static UIElement createDashboardItem(Provides.Context context) {
 
         String url = AdminHelper.getURLForAdminAction(BASE_TYPE + ".list");
 
-        return new UIElement(Admin.DASHBOARD).addAttribute("class", "dashboard").
+        return new UIElement(Admin.DASHBOARD_ITEM).addAttribute("class", "dashboard").
                 addChild(new UIElement(UIElement.PANEL, 10).
                         addChild(new UIElement(UIElement.HEADING4, 10, "Basic Page").addAttribute("class", "title")).
                         addChild(new UIElement(UIElement.PARAGRAPH, 20, "Basic pages have a lead and a body").addAttribute("class", "description")).
