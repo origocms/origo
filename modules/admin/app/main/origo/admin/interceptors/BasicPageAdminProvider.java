@@ -147,7 +147,7 @@ public class BasicPageAdminProvider {
         context.formElement.addChild(bodyElement);
 
         UIElement actionPanel = new UIElement(UIElement.PANEL, 40).addAttribute("class", "field");
-        actionPanel.addChild(new UIElement(UIElement.INPUT_BUTTON, 10, "Save").addAttribute("type", "submit"));
+        actionPanel.addChild(new UIElement(UIElement.INPUT_BUTTON, 10).addAttribute("type", "submit").addAttribute("value", "Save"));
         context.formElement.addChild(actionPanel);
     }
 
