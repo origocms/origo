@@ -1,17 +1,26 @@
 package main.origo.core;
 
+import main.origo.core.annotations.Relationship;
+
 import java.lang.annotation.Annotation;
-import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
 
 public class CachedAnnotation implements Comparable<CachedAnnotation> {
 
     public final Annotation annotation;
     public final Method method;
+    public final Relationship relationship;
 
     public CachedAnnotation(Annotation annotation, Method method) {
         this.annotation = annotation;
         this.method = method;
+        this.relationship = null;
+    }
+
+    public CachedAnnotation(Annotation annotation, Method method, Relationship relationship) {
+        this.annotation = annotation;
+        this.method = method;
+        this.relationship = relationship;
     }
 
     @Override

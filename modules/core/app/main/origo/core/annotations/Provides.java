@@ -2,8 +2,6 @@ package main.origo.core.annotations;
 
 import main.origo.core.Navigation;
 import main.origo.core.Node;
-import models.origo.core.RootNode;
-import org.springframework.stereotype.Component;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -22,8 +20,11 @@ import java.util.Map;
  * When type=NAVIGATION it adds a different type of navigation than the standard one and the method should return a NavigationElement.
  * When type=NAVIGATION_ITEM it adds a navigation item to the current navigation type and the method should return a NavigationElement.
  *
+ * Any module can also define a custom type.
+ *
  * @see main.origo.core.Node
  * @see main.origo.core.ui.UIElement
+ * @see Relationship
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})

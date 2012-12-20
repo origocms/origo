@@ -17,8 +17,12 @@ import java.util.List;
 
 public class AdminLoader {
 
-    public static Result getStartPage() {
-        return loadAndDecorateStartPage();
+    public static Result getFrontDashboard() {
+        return loadAndDecoratePage(SettingsHelper.Admin.getDashboardType());
+    }
+
+    public static Result getDashboard(String dashboard) {
+        return loadAndDecoratePage(dashboard);
     }
 
     public static Result getPage(String withType) {
@@ -27,10 +31,6 @@ public class AdminLoader {
 
     public static Result getPage(String withType, String identifier) {
         return loadAndDecoratePage(withType, identifier);
-    }
-
-    private static Result loadAndDecorateStartPage() {
-        return loadAndDecoratePage(SettingsHelper.Admin.getDashboardType());
     }
 
     private static Result loadAndDecoratePage(String withType) {
@@ -93,6 +93,5 @@ public class AdminLoader {
         }
         return navigationLinks;
     }
-
 
 }

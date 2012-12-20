@@ -85,7 +85,12 @@ public class AnnotationProcessor {
                             "' but the method does not match the required signature");
                 }
 
-                InterceptorRepository.add(m.getAnnotation(annotationClass), m);
+                Relationship relationship = m.getAnnotation(Relationship.class);
+                if (relationship != null) {
+                    InterceptorRepository.add(m.getAnnotation(annotationClass), m, relationship);
+                } else {
+                    InterceptorRepository.add(m.getAnnotation(annotationClass), m);
+                }
             }
         }
     }

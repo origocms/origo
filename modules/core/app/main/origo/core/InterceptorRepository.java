@@ -2,22 +2,29 @@ package main.origo.core;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import main.origo.core.annotations.Relationship;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class InterceptorRepository {
 
-    public static Map<Class<? extends Annotation>, List<CachedAnnotation>> interceptor = Maps.newHashMap();
+    public static Map<Class<? extends Annotation>, List<CachedAnnotation>> interceptors = Maps.newHashMap();
 
     public static void add(Annotation annotation, Method method) {
-        if (!interceptor.containsKey(annotation.annotationType())) {
-            interceptor.put(annotation.annotationType(), new CopyOnWriteArrayList<CachedAnnotation>());
+        add(annotation, method, null);
+    }
+
+    public static void add(Annotation annotation, Method method, Relationship relationship) {
+        if (!interceptors.containsKey(annotation.annotationType())) {
+            interceptors.put(annotation.annotationType(), new CopyOnWriteArrayList<CachedAnnotation>());
         }
-        List<CachedAnnotation> annotationTypes = interceptor.get(annotation.annotationType());
-        annotationTypes.add(new CachedAnnotation(annotation, method));
+        List<CachedAnnotation> annotationTypes = interceptors.get(annotation.annotationType());
+        annotationTypes.add(new CachedAnnotation(annotation, method, relationship));
     }
 
     public static List<CachedAnnotation> getInterceptor(Class<? extends Annotation> annotationType) {
@@ -25,8 +32,8 @@ public class InterceptorRepository {
     }
 
     public static List<CachedAnnotation> getInterceptor(Class<? extends Annotation> annotationType, CachedAnnotation.InterceptorSelector interceptorSelector) {
-        if (interceptor.containsKey(annotationType)) {
-            List<CachedAnnotation> interceptorList = interceptor.get(annotationType);
+        if (interceptors.containsKey(annotationType)) {
+            List<CachedAnnotation> interceptorList = interceptors.get(annotationType);
             if (interceptorSelector == null) {
                 return interceptorList;
             }
@@ -43,10 +50,10 @@ public class InterceptorRepository {
     }
 
     public static void invalidate() {
-        interceptor.clear();
+        interceptors.clear();
     }
 
     public static Map<Class<? extends Annotation>, List<CachedAnnotation>> getInterceptorMap() {
-        return Collections.unmodifiableMap(interceptor);
+        return Collections.unmodifiableMap(interceptors);
     }
 }

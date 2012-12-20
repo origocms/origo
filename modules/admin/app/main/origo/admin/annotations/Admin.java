@@ -7,6 +7,11 @@ import java.lang.annotation.Target;
 
 public class Admin {
 
+    public static final String FRONT_PAGE_TYPE = "origo.admin.dashboard";
+    public static final String USER_PAGE_TYPE = "origo.admin.dashboard.user";
+    public static final String CONTENT_PAGE_TYPE = "origo.admin.dashboard.content";
+    public static final String SETTINGS_PAGE_TYPE = "origo.admin.dashboard.settings";
+
     public static final String DASHBOARD = "dashboard";
     public static final String DASHBOARD_ITEM = "dashboard_item";
 

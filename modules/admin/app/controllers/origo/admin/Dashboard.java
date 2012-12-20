@@ -15,7 +15,7 @@ public class Dashboard extends Controller {
         //TODO: Check if config !exists and redirect to wizard
 
         try {
-            return AdminLoader.getStartPage();
+            return AdminLoader.getFrontDashboard();
         } catch (Exception e) {
             Logger.error("Error: " + e.getMessage(), e);
             return CoreLoader.loadPageLoadErrorPage();
@@ -23,7 +23,19 @@ public class Dashboard extends Controller {
     }
 
     @Transactional
-    public Result pageWithType(String type) {
+    public Result dashboard(String dashboard) {
+        //TODO: Check if config !exists and redirect to wizard
+
+        try {
+            return AdminLoader.getDashboard(dashboard);
+        } catch (Exception e) {
+            Logger.error("Error: " + e.getMessage(), e);
+            return CoreLoader.loadPageLoadErrorPage();
+        }
+    }
+
+    @Transactional
+    public Result pageWithType(String dashboard, String type) {
         //TODO: Check if config !exists and redirect to wizard
 
         try {
@@ -35,7 +47,7 @@ public class Dashboard extends Controller {
     }
 
     @Transactional
-    public Result pageWithTypeAndIdentifier(String type, String identifier) {
+    public Result pageWithTypeAndIdentifier(String dashboard, String type, String identifier) {
         //TODO: Check if config !exists and redirect to wizard
 
         try {

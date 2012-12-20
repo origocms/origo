@@ -3,10 +3,7 @@ package main.origo.admin.interceptors;
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.AdminHelper;
 import main.origo.core.Node;
-import main.origo.core.annotations.Interceptor;
-import main.origo.core.annotations.OnLoad;
-import main.origo.core.annotations.Provides;
-import main.origo.core.annotations.Types;
+import main.origo.core.annotations.*;
 import main.origo.core.annotations.forms.OnLoadForm;
 import main.origo.core.annotations.forms.OnSubmit;
 import main.origo.core.annotations.forms.SubmitState;
@@ -31,26 +28,26 @@ import java.util.List;
 @Interceptor
 public class BasicPageAdminProvider {
 
-    private static final String BASE_TYPE = "origo.admin.basicpage";
+    private static final String BASE_TYPE = "origo.admin.content.basicpage";
     private static final String LIST_TYPE = BASE_TYPE + ".list";
     private static final String EDIT_TYPE = BASE_TYPE + ".edit";
-    private static final String DASHBOARD_TYPE = BASE_TYPE + ".dashboard";
 
     private static final String TITLE_PARAM = "origo-basicpageform-title";
     private static final String LEAD_PARAM = "origo-basicpageform-lead";
     private static final String BODY_PARAM = "origo-basicpageform-body";
 
     /**
-     * Dashboard element for the admin front page.
+     * Dashboard element for the content dashboard page.
      *
      * @return a UIElement that contains a dashboard element.
      */
-    @Provides(type = Admin.DASHBOARD_ITEM, with = DASHBOARD_TYPE)
+    @Provides(type = Admin.DASHBOARD_ITEM, with = BASE_TYPE)
+    @Relationship(parent = Admin.CONTENT_PAGE_TYPE)
     public static UIElement createDashboardItem(Provides.Context context) {
 
-        String url = AdminHelper.getURLForAdminAction(BASE_TYPE + ".list");
+        String url = AdminHelper.getURLForAdminAction(Admin.CONTENT_PAGE_TYPE, LIST_TYPE);
 
-        return new UIElement(Admin.DASHBOARD_ITEM).addAttribute("class", "dashboard").
+        return new UIElement(Admin.DASHBOARD_ITEM).addAttribute("class", "item").
                 addChild(new UIElement(UIElement.PANEL, 10).
                         addChild(new UIElement(UIElement.HEADING4, 10, "Basic Page").addAttribute("class", "title")).
                         addChild(new UIElement(UIElement.PARAGRAPH, 20, "Basic pages have a lead and a body").addAttribute("class", "description")).
@@ -83,7 +80,7 @@ public class BasicPageAdminProvider {
 
         UIElement panelElement = new UIElement(UIElement.PANEL, 10).addAttribute("class", "panel pages");
         for (BasicPage page : basicPages) {
-            String editURL = AdminHelper.getURLForAdminAction(EDIT_TYPE, page.getNodeId());
+            String editURL = AdminHelper.getURLForAdminAction(Admin.CONTENT_PAGE_TYPE, EDIT_TYPE, page.getNodeId());
             UIElement panel = new UIElement(UIElement.PANEL).
                     addChild(new UIElement(UIElement.ANCHOR, 10, page.getTitle()).addAttribute("href", editURL)).
                     addChild(new UIElement(UIElement.TEXT, 20, " (" + page.nodeId + " / " + page.getVersion() + ")"));
@@ -205,7 +202,7 @@ public class BasicPageAdminProvider {
      */
     @SubmitState(with = BASE_TYPE)
     public static Result handleSuccess(SubmitState.Context context) {
-        String endpointURL = AdminHelper.getURLForAdminAction(LIST_TYPE);
+        String endpointURL = AdminHelper.getURLForAdminAction(Admin.CONTENT_PAGE_TYPE, LIST_TYPE);
         return Controller.redirect(endpointURL);
     }
 }
