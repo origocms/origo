@@ -287,7 +287,7 @@ public final class RootNode implements Node {
     }
 
     public RootNode copy(boolean increaseVersion) {
-        RootNode copy = new RootNode(nodeId, increaseVersion ? version : version);
+        RootNode copy = new RootNode(nodeId, increaseVersion ? version + 1 : version);
         copy.publish = publish;
         copy.unPublish = unPublish;
         copy.nodeType = nodeType;
