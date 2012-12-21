@@ -2,13 +2,13 @@ package main.origo.core.ui;
 
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
+import play.api.templates.Html;
+import play.api.templates.HtmlFormat;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-// TODO: Should UIElement's be separated into two types, one with body and one without?
 public class UIElement {
 
     public static final String META = "meta";
@@ -58,36 +58,48 @@ public class UIElement {
 
     private List<UIElement> children = Lists.newArrayList();
 
-    private String body;
+    private Html body;
 
     public UIElement(String type) {
-        this("", type, 0, null);
+        this("", type, 0, Html.empty());
     }
 
     public UIElement(String type, int weight) {
-        this("", type, weight, null);
+        this("", type, weight, Html.empty());
     }
 
     public UIElement(String type, int weight, String body) {
+        this("", type, weight, HtmlFormat.raw(body));
+    }
+
+    public UIElement(String type, int weight, Html body) {
         this("", type, weight, body);
     }
 
     public UIElement(String id, String type) {
-        this(id, type, 0, null);
+        this(id, type, 0, Html.empty());
     }
 
     public UIElement(String id, String type, int weight) {
-        this(id, type, weight, null);
+        this(id, type, weight, Html.empty());
     }
 
     public UIElement(String id, String type, String body) {
+        this(id, type, 0, HtmlFormat.raw(body));
+    }
+
+    public UIElement(String id, String type, Html body) {
         this(id, type, 0, body);
     }
 
     public UIElement(String id, String type, int weight, String body) {
+        this(id, type, weight, HtmlFormat.raw(body));
+    }
+
+    public UIElement(String id, String type, int weight, Html body) {
         this.id = id;
         this.type = type;
-        this.attributes = new WeakHashMap<String, String>();
+        this.attributes = new WeakHashMap<>();
         this.weight = weight;
         this.body = body;
     }
@@ -162,14 +174,18 @@ public class UIElement {
     }
 
     public boolean hasBody() {
-        return !StringUtils.isBlank(getBody());
+        return !StringUtils.isBlank(getBody().body());
     }
 
-    public String getBody() {
+    public Html getBody() {
         return body;
     }
 
     public UIElement setBody(String body) {
+        return setBody(HtmlFormat.raw(body));
+    }
+
+    public UIElement setBody(Html body) {
         this.body = body;
         return this;
     }

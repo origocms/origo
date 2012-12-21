@@ -4,7 +4,6 @@ import com.google.common.collect.Maps;
 import main.origo.core.ui.RenderingContext;
 import main.origo.core.ui.UIElement;
 import play.api.templates.Html;
-import play.api.templates.HtmlFormat;
 import views.html.origo.core.decorators.*;
 
 import java.util.Collections;
@@ -217,7 +216,7 @@ public class DefaultDecorator {
 
     private static Html getHtmlFromBody(UIElement uiElement) {
         if (uiElement.hasBody()) {
-            return HtmlFormat.raw(uiElement.getBody());
+            return uiElement.getBody();
         } else {
             return Html.empty();
         }
