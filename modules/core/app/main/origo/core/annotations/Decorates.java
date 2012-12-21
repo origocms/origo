@@ -2,8 +2,6 @@ package main.origo.core.annotations;
 
 import main.origo.core.ui.RenderingContext;
 import main.origo.core.ui.UIElement;
-import models.origo.core.RootNode;
-import org.springframework.stereotype.Component;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -19,7 +17,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 public @interface Decorates {
 
-    String type();
+    String[] type();
 
     public static class Context {
         public UIElement uiElement;

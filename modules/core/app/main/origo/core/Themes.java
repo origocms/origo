@@ -1,7 +1,5 @@
 package main.origo.core;
 
-import java.lang.annotation.Annotation;
-import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -42,11 +40,13 @@ public class Themes {
         themeVariants.put(variantId, new CachedThemeVariant(themeId, variantId, templateMethod, new HashSet<String>(Arrays.asList(regions))));
     }
 
-    public static void addDecorator(String themeId, String uiElementType, Method method) {
+    public static void addDecorator(String themeId, String[] uiElementType, Method method) {
         // Themes are declared on the class level and should be parsed first so we don't need to check if the themeId exists before accessing
         Map<String, CachedDecorator> themeDecorators = themes.get(themeId).getDecorators();
 
-        themeDecorators.put(uiElementType, new CachedDecorator(uiElementType, method));
+        for (String type : uiElementType) {
+            themeDecorators.put(type, new CachedDecorator(type, method));
+        }
     }
 
     public static CachedTheme getTheme(String themeId) {

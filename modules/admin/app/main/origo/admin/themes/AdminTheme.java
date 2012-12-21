@@ -50,7 +50,7 @@ public class AdminTheme {
                         Collections.singletonMap("class", defaultDashboardItemClasses() + " span3")));
     }
 
-    @Decorates(type = UIElement.INPUT_BUTTON)
+    @Decorates(type = {UIElement.INPUT_SUBMIT, UIElement.INPUT_BUTTON, UIElement.INPUT_RESET})
     public static Html decorateButton(Decorates.Context context) {
         context.uiElement.addAttribute("class", "btn");
         return DefaultDecorator.decorateInputButton(context.uiElement, context.renderingContext);
