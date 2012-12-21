@@ -1,11 +1,11 @@
 package controllers.origo.admin;
 
+import main.origo.admin.helpers.SettingsAdminHelper;
 import main.origo.core.CachedThemeVariant;
 import main.origo.core.Node;
 import main.origo.core.Themes;
 import main.origo.core.helpers.NavigationHelper;
 import main.origo.core.helpers.NodeHelper;
-import main.origo.core.helpers.SettingsHelper;
 import main.origo.core.helpers.ThemeHelper;
 import main.origo.core.ui.NavigationElement;
 import main.origo.core.ui.RenderedNode;
@@ -18,7 +18,7 @@ import java.util.List;
 public class AdminLoader {
 
     public static Result getFrontDashboard() {
-        return loadAndDecoratePage(SettingsHelper.Admin.getDashboardType());
+        return loadAndDecoratePage(SettingsAdminHelper.getDashboardType());
     }
 
     public static Result getDashboard(String dashboard) {
@@ -76,7 +76,7 @@ public class AdminLoader {
     }
 
     private static Result decorateNode(Node node) {
-        CachedThemeVariant themeVariant = Themes.getThemeVariant(SettingsHelper.Admin.getThemeVariant());
+        CachedThemeVariant themeVariant = Themes.getThemeVariant(SettingsAdminHelper.getThemeVariant());
         RenderedNode renderedNode = ThemeHelper.decorate(node, themeVariant);
         renderedNode.navigation(getNavigation(node.getNodeId()));
         if (Logger.isDebugEnabled()) {

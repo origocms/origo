@@ -6,12 +6,14 @@ import main.origo.core.Node;
 import main.origo.core.annotations.Types;
 import main.origo.core.ui.NavigationElement;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class NavigationHelper {
 
     public static List<NavigationElement> getNavigation(Node node, String section) {
-        String navigationType = SettingsHelper.Core.getNavigationType();
+        String navigationType = SettingsCoreHelper.getNavigationType();
         return triggerProvidesNavigationInterceptor(navigationType, node, section);
     }
 

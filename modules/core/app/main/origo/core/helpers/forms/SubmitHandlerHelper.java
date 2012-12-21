@@ -3,7 +3,7 @@ package main.origo.core.helpers.forms;
 import main.origo.core.CachedAnnotation;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.annotations.forms.SubmitHandler;
-import main.origo.core.helpers.SettingsHelper;
+import main.origo.core.helpers.SettingsCoreHelper;
 import org.apache.commons.lang3.StringUtils;
 import play.mvc.Result;
 
@@ -43,7 +43,7 @@ public class SubmitHandlerHelper {
     }
 
     public static String getRegisteredSubmitHandlerName() {
-        final String postHandler = SettingsHelper.Core.getSubmitHandler();
+        final String postHandler = SettingsCoreHelper.getSubmitHandler();
         if (StringUtils.isBlank(postHandler)) {
             throw new RuntimeException("No SubmitHandler defined in settings");
         }

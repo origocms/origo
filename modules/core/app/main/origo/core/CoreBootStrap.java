@@ -1,10 +1,9 @@
 package main.origo.core;
 
-import main.origo.core.helpers.SettingsHelper;
+import main.origo.core.helpers.SettingsCoreHelper;
 import main.origo.core.interceptors.forms.DefaultFormProvider;
 import main.origo.core.interceptors.forms.DefaultSubmitHandler;
 import models.origo.core.Settings;
-import models.origo.core.SettingsKeys;
 import org.springframework.stereotype.Component;
 import play.db.jpa.JPA;
 import play.libs.F;
@@ -20,9 +19,9 @@ public class CoreBootStrap {
             @Override
             public void invoke() throws Throwable {
                 Settings settings = Settings.load();
-                SettingsHelper.setValueIfMissing(settings, SettingsKeys.Core.THEME_VARIANT, "default-main_and_left_columns");
-                SettingsHelper.setValueIfMissing(settings, SettingsKeys.Core.SUBMIT_HANDLER, DefaultSubmitHandler.class.getName());
-                SettingsHelper.setValueIfMissing(settings, SettingsKeys.Core.DEFAULT_FORM_TYPE, DefaultFormProvider.TYPE);
+                SettingsCoreHelper.setValueIfMissing(settings, SettingsCoreHelper.Keys.THEME_VARIANT, "default-main_and_left_columns");
+                SettingsCoreHelper.setValueIfMissing(settings, SettingsCoreHelper.Keys.SUBMIT_HANDLER, DefaultSubmitHandler.class.getName());
+                SettingsCoreHelper.setValueIfMissing(settings, SettingsCoreHelper.Keys.DEFAULT_FORM_TYPE, DefaultFormProvider.TYPE);
                 settings.save();
             }
         });

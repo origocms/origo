@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Key/Value based store for system-wide settings.
  *
- * @see models.origo.core.SettingsKeys
+ * @see main.origo.core.helpers.SettingsCoreHelper
  */
 @Entity
 @Table(name = "settings")

@@ -4,7 +4,7 @@ import main.origo.core.CachedAnnotation;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.Node;
 import main.origo.core.annotations.forms.ProvidesForm;
-import main.origo.core.helpers.SettingsHelper;
+import main.origo.core.helpers.SettingsCoreHelper;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
 
@@ -53,7 +53,7 @@ public class ProvidesFormHelper {
     private static CachedAnnotation findInterceptor(String withType) {
         CachedAnnotation Interceptor = findProvidersForType(withType);
         if (Interceptor == null) {
-            Interceptor = findProvidersForType(SettingsHelper.Core.getDefaultFormType());
+            Interceptor = findProvidersForType(SettingsCoreHelper.getDefaultFormType());
             if (Interceptor == null) {
                 throw new RuntimeException("Unable to find a form provider for type \'" + withType + "\' and the default form provider from settings is also not available");
             }

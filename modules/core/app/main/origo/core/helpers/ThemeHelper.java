@@ -17,7 +17,6 @@ import play.api.templates.Html;
 import play.api.templates.HtmlFormat;
 import play.mvc.Result;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -119,7 +118,7 @@ public class ThemeHelper {
     public static CachedThemeVariant loadTheme(Node node) {
         CachedThemeVariant themeVariant = Themes.getThemeVariant(node.getThemeVariant());
         if (themeVariant == null) {
-            String themeVariantId = SettingsHelper.Core.getThemeVariant();
+            String themeVariantId = SettingsCoreHelper.getThemeVariant();
             if (StringUtils.isEmpty(themeVariantId)) {
                 throw new RuntimeException("No theme set for node and no default theme variant set");
             }

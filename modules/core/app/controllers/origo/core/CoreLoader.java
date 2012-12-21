@@ -4,11 +4,11 @@ import main.origo.core.Node;
 import main.origo.core.NodeNotFoundException;
 import main.origo.core.helpers.NavigationHelper;
 import main.origo.core.helpers.NodeHelper;
-import main.origo.core.helpers.SettingsHelper;
+import main.origo.core.helpers.SettingsCoreHelper;
 import main.origo.core.helpers.ThemeHelper;
-import models.origo.core.Alias;
 import main.origo.core.ui.NavigationElement;
 import main.origo.core.ui.RenderedNode;
+import models.origo.core.Alias;
 import play.Logger;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -20,7 +20,7 @@ import java.util.List;
 public class CoreLoader {
 
     public static Result getStartPage() {
-        String startPage = SettingsHelper.Core.getStartPage();
+        String startPage = SettingsCoreHelper.getStartPage();
         try {
             return loadAndDecoratePage(startPage, 0);
         } catch (NodeNotFoundException e) {
@@ -54,15 +54,15 @@ public class CoreLoader {
     }
 
     public static Result loadPageNotFoundErrorPage() {
-        String pageNotFoundPage = SettingsHelper.Core.getPageNotFoundPage();
+        String pageNotFoundPage = SettingsCoreHelper.getPageNotFoundPage();
         Collection<Alias> aliases = Alias.findWithPageId(pageNotFoundPage);
         String url;
         if (aliases.iterator().hasNext()) {
             Alias alias = aliases.iterator().next();
-            url = SettingsHelper.Core.getBaseUrl() + "" + alias.path;
+            url = SettingsCoreHelper.getBaseUrl() + "" + alias.path;
         } else {
             // Defaulting to /page-not-found
-            url = SettingsHelper.Core.getBaseUrl() + "page-not-found";
+            url = SettingsCoreHelper.getBaseUrl() + "page-not-found";
         }
 
         // TODO: Could this be done without using the request?
@@ -75,15 +75,15 @@ public class CoreLoader {
     }
 
     public static Result loadPageLoadErrorPage() {
-        String internalServerErrorPage = SettingsHelper.Core.getInternalServerErrorPage();
+        String internalServerErrorPage = SettingsCoreHelper.getInternalServerErrorPage();
         Collection<Alias> aliases = Alias.findWithPageId(internalServerErrorPage);
         String url;
         if (aliases.iterator().hasNext()) {
             Alias alias = aliases.iterator().next();
-            url = SettingsHelper.Core.getBaseUrl() + "" + alias.path;
+            url = SettingsCoreHelper.getBaseUrl() + "" + alias.path;
         } else {
             // Defaulting to /error
-            url = SettingsHelper.Core.getBaseUrl() + "error";
+            url = SettingsCoreHelper.getBaseUrl() + "error";
         }
         // TODO: Could this be done without using the request?
         if (url.equalsIgnoreCase(Http.Context.current().request().path())) {
