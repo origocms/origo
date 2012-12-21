@@ -1,15 +1,19 @@
 package main.origo.core.ui;
 
 import com.google.common.collect.Lists;
+import main.origo.core.helpers.ElementHelper;
 import org.apache.commons.lang3.StringUtils;
 import play.api.templates.Html;
 import play.api.templates.HtmlFormat;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.WeakHashMap;
 
 public class UIElement {
+
+    public static final String RAW = "raw";
 
     public static final String META = "meta";
     public static final String SCRIPT = "script";
@@ -60,8 +64,20 @@ public class UIElement {
 
     private Html body;
 
+    public UIElement() {
+        this("", RAW, 0, Html.empty());
+    }
+
     public UIElement(String type) {
         this("", type, 0, Html.empty());
+    }
+
+    public UIElement(String type, Html body) {
+        this("", type, 0, body);
+    }
+
+    public UIElement(Html body) {
+        this("", RAW, 0, body);
     }
 
     public UIElement(String type, int weight) {
@@ -97,7 +113,11 @@ public class UIElement {
     }
 
     public UIElement(String id, String type, int weight, Html body) {
-        this.id = id;
+        if (StringUtils.isBlank(id)) {
+            this.id = UUID.randomUUID().toString();
+        } else {
+            this.id = id;
+        }
         this.type = type;
         this.attributes = new WeakHashMap<>();
         this.weight = weight;
@@ -165,12 +185,17 @@ public class UIElement {
     }
 
     public UIElement addChild(UIElement uiElement) {
+        ElementHelper.triggerBeforeInsert(this, uiElement);
         this.children.add(uiElement);
+        ElementHelper.triggerAfterInsert(this, uiElement);
         return this;
     }
 
     public boolean removeChild(UIElement uiElement) {
-        return this.children.remove(uiElement);
+        ElementHelper.triggerBeforeRemove(this, uiElement);
+        boolean ret = this.children.remove(uiElement);
+        ElementHelper.triggerAfterRemove(this, uiElement);
+        return ret;
     }
 
     public boolean hasBody() {

@@ -13,6 +13,8 @@ public class DefaultDecorator {
 
     public static Html decorate(UIElement uiElement, RenderingContext renderingContext) {
         switch (uiElement.getType()) {
+            case UIElement.RAW:
+                return uiElement.getBody();
             case UIElement.META:
                 return decorateMeta(uiElement, renderingContext);
             case UIElement.SCRIPT:

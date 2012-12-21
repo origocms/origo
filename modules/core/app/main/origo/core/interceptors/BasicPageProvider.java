@@ -35,7 +35,7 @@ public class BasicPageProvider {
         context.node.addUIElement(loadContent(((BasicPage) context.node).bodyReferenceId));
     }
 
-    public static UIElement loadContent(String referenceId) {
+    private static UIElement loadContent(String referenceId) {
         if (!StringUtils.isBlank(referenceId)) {
             Content content = Content.findWithIdentifier(referenceId);
             if (content != null) {

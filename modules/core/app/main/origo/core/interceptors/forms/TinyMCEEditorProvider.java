@@ -16,8 +16,8 @@ public class TinyMCEEditorProvider {
 
     public static final String EDITOR_TYPE = "origo.admin.editor.tinymce";
 
-    @Provides(type = Types.RICHTEXT_EDITOR, with = EDITOR_TYPE)
-    public static UIElement createEditor(Provides.Context context) {
+    @OnLoad(type = Types.RICHTEXT_EDITOR, with = EDITOR_TYPE)
+    public static void setupEditor(OnLoad.Context context) {
 
         String jqueryTinyMCEScript = routes.Assets.at("javascripts/tiny_mce/jquery.tiny_mce.js").url();
         if (jqueryTinyMCEScript != null) {
@@ -26,30 +26,33 @@ public class TinyMCEEditorProvider {
             context.node.addTailUIElement(new UIElement(UIElement.SCRIPT, 10000).addAttribute("type", "text/javascript").
                     setBody(
                             "$().ready(function() {\n" +
-                            "\t$('textarea.tinymce').tinymce({\n" +
-                            "\t\tscript_url : '"+tinyMCEScript+"',\n" +
+                            "  $('textarea.tinymce').tinymce({\n" +
+                            "    script_url : '"+tinyMCEScript+"',\n" +
                             "// General options\n" +
-                            "\t\t\ttheme : \"advanced\",\n" +
-                            "\t\t\tplugins : \"autolink,lists,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,advlist\",\n" +
+                            "      theme : \"advanced\",\n" +
+                            "      plugins : \"autolink,lists,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,advlist\",\n" +
                             "\n" +
-                            "\t\t\t// Theme options\n" +
-                            //"\t\t\ttheme_advanced_buttons1 : \"save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,styleselect,formatselect,fontselect,fontsizeselect\",\n" +
-                            "\t\t\ttheme_advanced_buttons1 : \"save,|,bold,italic,underline,strikethrough,|,styleselect,formatselect,fontselect,fontsizeselect\",\n" +
-                            //"\t\t\ttheme_advanced_buttons2 : \"cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor\",\n" +
-                            "\t\t\ttheme_advanced_buttons2 : \"cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor\",\n" +
-                            //"\t\t\ttheme_advanced_buttons3 : \"tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,emotions,iespell,media,advhr,|,print,|,ltr,rtl,|,fullscreen\",\n" +
-                            "\t\t\ttheme_advanced_buttons3 : \"hr,removeformat,visualaid,|,sub,sup,|,iespell,\",\n" +
-                            //"\t\t\ttheme_advanced_buttons4 : \"insertlayer,moveforward,movebackward,absolute,|,styleprops,|,cite,abbr,acronym,del,ins,attribs,|,visualchars,nonbreaking,template,pagebreak\",\n" +
-                            "\t\t\ttheme_advanced_toolbar_location : \"top\",\n" +
-                            "\t\t\ttheme_advanced_toolbar_align : \"left\",\n" +
-                            "\t\t\ttheme_advanced_statusbar_location : \"bottom\",\n" +
-                            "\t\t\ttheme_advanced_resizing : true,\n" +
-                            "\t});\n" +
+                            "      // Theme options\n" +
+                            //"      theme_advanced_buttons1 : \"save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,styleselect,formatselect,fontselect,fontsizeselect\",\n" +
+                            "      theme_advanced_buttons1 : \"save,|,bold,italic,underline,strikethrough,|,styleselect,formatselect,fontselect,fontsizeselect\",\n" +
+                            //"      theme_advanced_buttons2 : \"cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor\",\n" +
+                            "      theme_advanced_buttons2 : \"cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor\",\n" +
+                            //"      theme_advanced_buttons3 : \"tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,emotions,iespell,media,advhr,|,print,|,ltr,rtl,|,fullscreen\",\n" +
+                            "      theme_advanced_buttons3 : \"hr,removeformat,visualaid,|,sub,sup,|,iespell,\",\n" +
+                            //"      theme_advanced_buttons4 : \"insertlayer,moveforward,movebackward,absolute,|,styleprops,|,cite,abbr,acronym,del,ins,attribs,|,visualchars,nonbreaking,template,pagebreak\",\n" +
+                            "      theme_advanced_toolbar_location : \"top\",\n" +
+                            "      theme_advanced_toolbar_align : \"left\",\n" +
+                            "      theme_advanced_statusbar_location : \"bottom\",\n" +
+                            "      theme_advanced_resizing : true,\n" +
+                            "  });\n" +
                             "})\n"
                     )
             );
         }
+    }
 
+    @Provides(type = Types.RICHTEXT_EDITOR, with = EDITOR_TYPE)
+    public static UIElement createEditor(Provides.Context context) {
         return new UIElement(UIElement.INPUT_TEXTAREA).addAttribute("class", "tinymce");
     }
 

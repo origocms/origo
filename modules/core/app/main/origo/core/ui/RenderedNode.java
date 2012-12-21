@@ -28,11 +28,11 @@ public class RenderedNode {
         this._id = id;
     }
 
-    public String getId() {
+    public String id() {
         return _id;
     }
 
-    public void setId(String id) {
+    public void id(String id) {
         this._id = id;
     }
 

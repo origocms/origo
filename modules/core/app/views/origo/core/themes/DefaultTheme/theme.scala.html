@@ -16,7 +16,6 @@
     @* Styles *@
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap.min.css")">
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap-responsive.min.css")">
-    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/jquery.min.css")">
 
     @* HTML5 shim, for IE6-8 support of HTML5 elements *@
     <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
@@ -38,7 +37,7 @@
     @head
 
 </head>
-<body>
+<body id="@node.id">
 
     @content
 

@@ -48,11 +48,13 @@ public class AnnotationProcessor {
         Set<Class<?>> interceptors = reflections.getTypesAnnotatedWith(Interceptor.class);
         scanInterceptors(interceptors, Provides.class, Provides.Context.class);
         scanInterceptors(interceptors, OnLoad.class, OnLoad.Context.class);
-        scanInterceptors(interceptors, ProvidesForm.class, OnLoad.Context.class);
-        scanInterceptors(interceptors, OnLoadForm.class, OnLoad.Context.class);
-        scanInterceptors(interceptors, OnSubmit.class, OnLoad.Context.class);
-        scanInterceptors(interceptors, SubmitHandler.class, OnLoad.Context.class);
-        scanInterceptors(interceptors, SubmitState.class, OnLoad.Context.class);
+        scanInterceptors(interceptors, ProvidesForm.class, ProvidesForm.Context.class);
+        scanInterceptors(interceptors, OnLoadForm.class, OnLoadForm.Context.class);
+        scanInterceptors(interceptors, OnSubmit.class, OnSubmit.Context.class);
+        scanInterceptors(interceptors, SubmitHandler.class, SubmitHandler.Context.class);
+        scanInterceptors(interceptors, SubmitState.class, SubmitState.Context.class);
+        scanInterceptors(interceptors, OnInsertElement.class, OnInsertElement.Context.class);
+        scanInterceptors(interceptors, OnRemoveElement.class, OnRemoveElement.Context.class);
 
         Set<Class<?>> themes = reflections.getTypesAnnotatedWith(Theme.class);
         scanThemes(themes);
@@ -75,15 +77,20 @@ public class AnnotationProcessor {
 
     private static void scanInterceptors(Set<Class<?>> classes, Class<? extends Annotation> annotationClass, Class contextClass) {
 
+        Logger.debug("Processing ["+annotationClass.getSimpleName()+"]");
+        Logger.debug("------------------------------------------------");
+
         for(Class c : classes) {
             Set<Method> methods = Reflections.getAllMethods(c, ReflectionUtils.withAnnotation(annotationClass));
             for (Method m : methods) {
                 Class[] pc = m.getParameterTypes();
-                if (pc.length > 1 && !pc[0].equals(contextClass)) {
+                if (pc.length > 1 || !pc[0].equals(contextClass)) {
                     throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() + "' in " +
                             " is annotated with '" + annotationClass.getName() +
                             "' but the method does not match the required signature");
                 }
+
+                Logger.debug("Analyzing '"+m.getDeclaringClass()+"."+m.getName()+"'");
 
                 Relationship relationship = m.getAnnotation(Relationship.class);
                 if (relationship != null) {
@@ -93,6 +100,7 @@ public class AnnotationProcessor {
                 }
             }
         }
+        Logger.debug(" ");
     }
 
     private static void scanThemes(Set<Class<?>> classes) {
