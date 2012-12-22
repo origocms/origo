@@ -53,7 +53,7 @@ public class AdminTheme {
     @Decorates(type = {UIElement.INPUT_SUBMIT, UIElement.INPUT_BUTTON, UIElement.INPUT_RESET})
     public static Html decorateButton(Decorates.Context context) {
         context.uiElement.addAttribute("class", "btn");
-        return DefaultDecorator.decorateInputButton(context.uiElement, context.renderingContext);
+        return DefaultDecorator.decorate(context.uiElement, context.renderingContext);
     }
 
 }
