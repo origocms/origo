@@ -25,6 +25,7 @@ public class UIElement {
     public static final String LIST_ITEM = "list_item";
 
     public static final String FORM = "form";
+    public static final String LEGEND = "legend";
     public static final String LABEL = "label";
     public static final String INPUT_HIDDEN = "input_hidden";
     public static final String INPUT_TEXT = "input_text";
@@ -63,6 +64,8 @@ public class UIElement {
     private List<UIElement> children = Lists.newArrayList();
 
     private Html body;
+
+    private Class expectedInputType;
 
     public UIElement() {
         this("", RAW, 0, Html.empty());

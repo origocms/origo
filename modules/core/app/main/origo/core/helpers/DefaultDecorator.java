@@ -25,6 +25,8 @@ public class DefaultDecorator {
                 return decorateLink(uiElement, renderingContext);
             case UIElement.FORM:
                 return decorateForm(uiElement, renderingContext);
+            case UIElement.LEGEND:
+                return decorateLegend(uiElement, renderingContext);
             case UIElement.INPUT_TEXT:
                 return decorateInputText(uiElement, renderingContext);
             case UIElement.LABEL:
@@ -105,6 +107,11 @@ public class DefaultDecorator {
     public static Html decorateForm(UIElement uiElement, RenderingContext renderingContext) {
         Html body = ThemeHelper.decorateChildren(uiElement, renderingContext);
         return form.render(uiElement, body, uiElement.getAttributes());
+    }
+
+    public static Html decorateLegend(UIElement uiElement, RenderingContext renderingContext) {
+        Html body = ThemeHelper.decorateChildren(uiElement, renderingContext);
+        return legend.render(uiElement, body, uiElement.getAttributes());
     }
 
     public static Html decorateListBulleted(UIElement uiElement, RenderingContext renderingContext) {
