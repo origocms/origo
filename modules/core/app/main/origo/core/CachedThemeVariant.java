@@ -1,6 +1,5 @@
 package main.origo.core;
 
-import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
 import java.util.Set;
 

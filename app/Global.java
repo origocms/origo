@@ -14,11 +14,11 @@ public class Global extends GlobalSettings {
     public void onStart(play.Application application) {
         applicationContext = new ClassPathXmlApplicationContext("components.xml");
         JPA.withTransaction(new F.Callback0() {
-        @Override
-        public void invoke() throws Throwable {
-            new InitialTestData().create();
-        }
-    });
+            @Override
+            public void invoke() throws Throwable {
+                new InitialTestData().create();
+            }
+        });
         AnnotationProcessor.initialize();
     }
 

@@ -1,7 +1,5 @@
 package main.origo.core.annotations.forms;
 
-import main.origo.core.annotations.Interceptor;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

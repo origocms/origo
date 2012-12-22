@@ -31,7 +31,7 @@ public class ThemeHelper {
         for (String region : node.getRegions()) {
             for (UIElement uiElement : node.getUIElements(region)) {
                 Html decoratedContent = decorate(uiElement, renderingContext);
-                switch(uiElement.getType()) {
+                switch (uiElement.getType()) {
                     case UIElement.META: {
                         if (Node.HEAD.equalsIgnoreCase(region)) {
                             renderedNode.addMeta(decoratedContent);
@@ -90,7 +90,7 @@ public class ThemeHelper {
         if (decorators.containsKey(uiElement.getType())) {
             CachedDecorator decorator = decorators.get(uiElement.getType());
             try {
-                decoratedOutput = (Html)decorator.method.invoke(null, new Decorates.Context(uiElement, renderingContext));
+                decoratedOutput = (Html) decorator.method.invoke(null, new Decorates.Context(uiElement, renderingContext));
             } catch (Throwable e) {
                 throw new RuntimeException("", e);
             }

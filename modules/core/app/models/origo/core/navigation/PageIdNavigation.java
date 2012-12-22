@@ -10,8 +10,8 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.Date;
 
-@Entity(name="pageIdNavigation")
-@Table(name="navigation_page_id")
+@Entity(name = "pageIdNavigation")
+@Table(name = "navigation_page_id")
 public class PageIdNavigation {
 
     @Id

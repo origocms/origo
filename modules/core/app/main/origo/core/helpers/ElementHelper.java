@@ -20,7 +20,7 @@ public class ElementHelper {
                 annotation.method.invoke(null, new OnInsertElement.Context(parent, uiElement));
             } catch (Throwable e) {
                 Logger.error("", e);
-                throw new RuntimeException("Unable to invoke method ["+annotation.method.toString()+"]", e.getCause());
+                throw new RuntimeException("Unable to invoke method [" + annotation.method.toString() + "]", e.getCause());
             }
         }
     }
@@ -33,7 +33,7 @@ public class ElementHelper {
                 annotation.method.invoke(null, new OnInsertElement.Context(parent, uiElement));
             } catch (Throwable e) {
                 Logger.error("", e);
-                throw new RuntimeException("Unable to invoke method ["+annotation.method.toString()+"]", e.getCause());
+                throw new RuntimeException("Unable to invoke method [" + annotation.method.toString() + "]", e.getCause());
             }
         }
     }
@@ -46,7 +46,7 @@ public class ElementHelper {
                 annotation.method.invoke(null, new OnInsertElement.Context(parent, uiElement));
             } catch (Throwable e) {
                 Logger.error("", e);
-                throw new RuntimeException("Unable to invoke method ["+annotation.method.toString()+"]", e.getCause());
+                throw new RuntimeException("Unable to invoke method [" + annotation.method.toString() + "]", e.getCause());
             }
         }
     }
@@ -59,7 +59,7 @@ public class ElementHelper {
                 annotation.method.invoke(null, new OnInsertElement.Context(parent, uiElement));
             } catch (Throwable e) {
                 Logger.error("", e);
-                throw new RuntimeException("Unable to invoke method ["+annotation.method.toString()+"]", e.getCause());
+                throw new RuntimeException("Unable to invoke method [" + annotation.method.toString() + "]", e.getCause());
             }
         }
     }

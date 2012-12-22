@@ -111,7 +111,7 @@ public class BasicPageAdminProvider {
     /**
      * Adds content to the nodes with the static name 'origo.admin.basicpage.edit'.
      *
-     * @param context       a node of the type 'origo.admin.basicpage.edit'.
+     * @param context a node of the type 'origo.admin.basicpage.edit'.
      */
     @OnLoadForm(with = BASE_TYPE)
     public static void loadEditForm(OnLoadForm.Context context) {

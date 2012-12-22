@@ -9,7 +9,10 @@ import main.origo.core.annotations.Provides;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Helper to trigger \@Provides origo interceptors. Should not be used directly except in core and admin, use NodeHelper
@@ -31,7 +34,7 @@ public class ProvidesHelper {
             return (T) cachedAnnotation.method.invoke(null, new Provides.Context(node, args));
         } catch (Throwable e) {
             Logger.error("", e);
-            throw new RuntimeException("Unable to invoke method ["+cachedAnnotation.method.toString()+"]", e.getCause());
+            throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
         }
     }
 
@@ -41,7 +44,7 @@ public class ProvidesHelper {
             //noinspection unchecked
             return (T) cachedAnnotation.method.invoke(null, new Provides.Context(node, navigation, args));
         } catch (Throwable e) {
-            throw new RuntimeException("Unable to invoke method ["+cachedAnnotation.method.toString()+"]", e.getCause());
+            throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
         }
     }
 

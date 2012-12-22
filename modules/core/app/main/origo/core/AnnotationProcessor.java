@@ -23,7 +23,7 @@ public class AnnotationProcessor {
         if (Logger.isDebugEnabled()) {
             StringBuilder sb = new StringBuilder();
             int count = 0;
-            Map<Class<? extends Annotation>,List<CachedAnnotation>> interceptorMap = InterceptorRepository.getInterceptorMap();
+            Map<Class<? extends Annotation>, List<CachedAnnotation>> interceptorMap = InterceptorRepository.getInterceptorMap();
             for (Class<? extends Annotation> a : interceptorMap.keySet()) {
                 List<CachedAnnotation> interceptors = interceptorMap.get(a);
                 sb.append(" - ").append(a.getName()).append(" ").append(interceptors.size()).append("\n");
@@ -31,7 +31,7 @@ public class AnnotationProcessor {
             }
             Logger.debug("Interceptors registered: " + count + "\n" + sb.toString());
 
-            Map<String,CachedTheme> themesMap = Themes.getThemesMap();
+            Map<String, CachedTheme> themesMap = Themes.getThemesMap();
             sb = new StringBuilder("Themes registered: ").append(themesMap.size()).append("\n");
             for (String themeId : themesMap.keySet()) {
                 sb.append(" - ").append(themeId).append("\n");
@@ -77,10 +77,10 @@ public class AnnotationProcessor {
 
     private static void scanInterceptors(Set<Class<?>> classes, Class<? extends Annotation> annotationClass, Class contextClass) {
 
-        Logger.debug("Processing ["+annotationClass.getSimpleName()+"]");
+        Logger.debug("Processing [" + annotationClass.getSimpleName() + "]");
         Logger.debug("------------------------------------------------");
 
-        for(Class c : classes) {
+        for (Class c : classes) {
             Set<Method> methods = Reflections.getAllMethods(c, ReflectionUtils.withAnnotation(annotationClass));
             for (Method m : methods) {
                 Class[] pc = m.getParameterTypes();
@@ -90,7 +90,7 @@ public class AnnotationProcessor {
                             "' but the method does not match the required signature");
                 }
 
-                Logger.debug("Analyzing '"+m.getDeclaringClass()+"."+m.getName()+"'");
+                Logger.debug("Analyzing '" + m.getDeclaringClass() + "." + m.getName() + "'");
 
                 Relationship relationship = m.getAnnotation(Relationship.class);
                 if (relationship != null) {
@@ -105,8 +105,8 @@ public class AnnotationProcessor {
 
     private static void scanThemes(Set<Class<?>> classes) {
 
-        for(Class c : classes) {
-            Theme themeAnnotation = (Theme)c.getAnnotation(Theme.class);
+        for (Class c : classes) {
+            Theme themeAnnotation = (Theme) c.getAnnotation(Theme.class);
             Themes.addTheme(themeAnnotation.id(), c);
         }
     }
@@ -115,10 +115,10 @@ public class AnnotationProcessor {
 
         MethodHandles.Lookup lookup = MethodHandles.lookup();
 
-        for(Class c : classes) {
+        for (Class c : classes) {
             Set<Method> methods = Reflections.getAllMethods(c, ReflectionUtils.withAnnotation(annotationClass));
 
-            Theme themeAnnotation = (Theme)c.getAnnotation(Theme.class);
+            Theme themeAnnotation = (Theme) c.getAnnotation(Theme.class);
 
             for (Method m : methods) {
 

@@ -44,12 +44,12 @@ public class UIElement {
     public static final String TEXT = "text";
     public static final String ANCHOR = "anchor";
 
-    public static final String HEADING1= "h1";
-    public static final String HEADING2= "h2";
-    public static final String HEADING3= "h3";
-    public static final String HEADING4= "h4";
-    public static final String HEADING5= "h5";
-    public static final String HEADING6= "h6";
+    public static final String HEADING1 = "h1";
+    public static final String HEADING2 = "h2";
+    public static final String HEADING3 = "h3";
+    public static final String HEADING4 = "h4";
+    public static final String HEADING5 = "h5";
+    public static final String HEADING6 = "h6";
 
 
     public String id;

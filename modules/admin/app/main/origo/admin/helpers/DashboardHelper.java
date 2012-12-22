@@ -26,7 +26,7 @@ public class DashboardHelper {
         DashboardHelper.triggerBeforeDashboardLoaded(withType, node);
         UIElement uiElement = DashboardHelper.triggerProvidesDashboardInterceptor(withType, node);
         if (uiElement == null) {
-            throw new NodeLoadException(node.getNodeId(), "The provider for type ["+ withType +"] did not return a UIElement");
+            throw new NodeLoadException(node.getNodeId(), "The provider for type [" + withType + "] did not return a UIElement");
         }
 
         List<UIElement> dashboardItems = createDashboardItems(withType, node);
@@ -66,11 +66,11 @@ public class DashboardHelper {
         List<UIElement> items = Lists.newArrayList();
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
             try {
-                    //noinspection unchecked
-                    items.add((UIElement) cachedAnnotation.method.invoke(null, new Provides.Context(node, Collections.<String, Object>emptyMap())));
+                //noinspection unchecked
+                items.add((UIElement) cachedAnnotation.method.invoke(null, new Provides.Context(node, Collections.<String, Object>emptyMap())));
             } catch (Throwable e) {
                 Logger.error("", e);
-                throw new RuntimeException("Unable to invoke method ["+cachedAnnotation.method.toString()+"]", e.getCause());
+                throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
             }
         }
         return items;

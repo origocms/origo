@@ -20,9 +20,9 @@ public class SubmitHandlerHelper {
     public static Result triggerSubmitHandler(String postHandlerName) {
         CachedAnnotation cachedAnnotation = getPostHandler(postHandlerName);
         try {
-            return (Result)cachedAnnotation.method.invoke(null, new SubmitHandler.Context());
+            return (Result) cachedAnnotation.method.invoke(null, new SubmitHandler.Context());
         } catch (Throwable e) {
-            throw new RuntimeException("Unable to invoke method ["+cachedAnnotation.method.toString()+"]", e.getCause());
+            throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
         }
     }
 

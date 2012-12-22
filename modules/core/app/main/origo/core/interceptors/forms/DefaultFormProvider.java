@@ -1,6 +1,5 @@
 package main.origo.core.interceptors.forms;
 
-import main.origo.core.Node;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.forms.ProvidesForm;
 import main.origo.core.helpers.forms.FormHelper;
@@ -22,7 +21,7 @@ public class DefaultFormProvider {
     public static UIElement createBasicForm(ProvidesForm.Context context) {
         return new UIElement(UIElement.FORM).
                 // TODO: This is might not be the correct
-                addAttribute("action", FormHelper.getPostURL().url()).
+                        addAttribute("action", FormHelper.getPostURL().url()).
                 addAttribute("method", "POST");
     }
 

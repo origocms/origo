@@ -95,9 +95,8 @@ public class Settings {
 
 
     public static Settings load() {
-        try
-        {
-            return (Settings)JPA.em().createQuery("select s from models.origo.core.Settings s", Settings.class).getSingleResult();
+        try {
+            return (Settings) JPA.em().createQuery("select s from models.origo.core.Settings s", Settings.class).getSingleResult();
         } catch (NoResultException ignored) {
         }
         return new Settings();
@@ -109,8 +108,7 @@ public class Settings {
     }
 
     public Settings save() {
-        try
-        {
+        try {
             Settings settings = load();
             if (settings.id == null || settings.id.equals(id)) {
                 JPA.em().merge(this);

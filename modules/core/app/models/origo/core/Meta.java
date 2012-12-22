@@ -7,7 +7,7 @@ import play.db.jpa.JPA;
 import javax.persistence.*;
 
 @Entity
-@Table(name="meta")
+@Table(name = "meta")
 public class Meta {
 
     @Id
@@ -37,7 +37,7 @@ public class Meta {
             query.setParameter("version", version).setParameter("nodeId", nodeId).setParameter("referenceId", referenceId);
             return (Meta) query.getSingleResult();
         } catch (NoResultException e) {
-            Logger.trace("No Meta found for node '"+nodeId+"' version '"+version+"' with reference '"+referenceId+"'");
+            Logger.trace("No Meta found for node '" + nodeId + "' version '" + version + "' with reference '" + referenceId + "'");
             return null;
         }
     }

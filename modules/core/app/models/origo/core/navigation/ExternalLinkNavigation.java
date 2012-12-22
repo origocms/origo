@@ -5,8 +5,8 @@ import play.db.jpa.JPA;
 
 import javax.persistence.*;
 
-@Entity(name="exeternalLinkNavigation")
-@Table(name="navigation_external_link")
+@Entity(name = "exeternalLinkNavigation")
+@Table(name = "navigation_external_link")
 public class ExternalLinkNavigation {
 
     @Id

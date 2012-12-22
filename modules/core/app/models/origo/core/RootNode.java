@@ -29,7 +29,7 @@ public final class RootNode implements Node {
     @Temporal(value = TemporalType.TIMESTAMP)
     public Date unPublish;
 
-    @Column(name="type")
+    @Column(name = "type")
     public String nodeType;
 
     public String themeVariant;
@@ -194,7 +194,7 @@ public final class RootNode implements Node {
 
     @Override
     public String toString() {
-        return "Node ("+ nodeType +" - " + nodeId + "," + version + ")";
+        return "Node (" + nodeType + " - " + nodeId + "," + version + ")";
     }
 
     private static void initializeNode(RootNode node) {
@@ -231,7 +231,7 @@ public final class RootNode implements Node {
         final Query query = JPA.em().createQuery(queryString);
         query.setParameter("nodeId", nodeId);
         query.setParameter("version", version);
-        RootNode node = (RootNode)query.getSingleResult();
+        RootNode node = (RootNode) query.getSingleResult();
         if (node != null) {
             initializeNode(node);
         }

@@ -8,7 +8,7 @@ import play.db.jpa.JPA;
 import javax.persistence.*;
 
 @Entity
-@Table(name="navigation_alias")
+@Table(name = "navigation_alias")
 public class AliasNavigation {
 
     @Id

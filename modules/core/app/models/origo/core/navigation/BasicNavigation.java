@@ -8,8 +8,8 @@ import javax.persistence.*;
 import java.util.Collections;
 import java.util.List;
 
-@Entity(name="basicNavigation")
-@Table(name="navigation_basic")
+@Entity(name = "basicNavigation")
+@Table(name = "navigation_basic")
 public class BasicNavigation implements Navigation<BasicNavigation>, Comparable<BasicNavigation> {
 
     @Id

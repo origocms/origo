@@ -1,7 +1,5 @@
 package main.origo.core;
 
-import main.origo.core.ui.UIElement;
-
 import java.lang.reflect.Method;
 
 public class CachedDecorator {

@@ -24,7 +24,7 @@ public class BasicPageProvider {
         if (page == null) {
             throw new NodeNotFoundException(context.node.getNodeId());
         }
-        page.rootNode = (RootNode)context.node;
+        page.rootNode = (RootNode) context.node;
 
         return page;
     }

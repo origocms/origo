@@ -29,7 +29,7 @@ public class DefaultDashboardProvider {
     public static Node createPage(Provides.Context context) throws NodeLoadException {
         AdminPage page = new AdminPage(context.node.getNodeId());
         page.setTitle("Dashboard");
-        page.rootNode = (RootNode)context.node;
+        page.rootNode = (RootNode) context.node;
 
         page.addUIElement(DashboardHelper.createDashboard(Admin.FRONT_PAGE_TYPE, page));
 
@@ -80,7 +80,7 @@ public class DefaultDashboardProvider {
     public static Node addContentDashboard(Provides.Context context) throws NodeLoadException {
         AdminPage page = new AdminPage(context.node.getNodeId());
         page.setTitle("Content - Dashboard");
-        page.rootNode = (RootNode)context.node;
+        page.rootNode = (RootNode) context.node;
 
         page.addUIElement(DashboardHelper.createDashboard(Admin.CONTENT_PAGE_TYPE, page));
 
@@ -102,7 +102,7 @@ public class DefaultDashboardProvider {
     public static Node addSettingsDashboard(Provides.Context context) throws NodeLoadException {
         AdminPage page = new AdminPage(context.node.getNodeId());
         page.setTitle("Content - Dashboard");
-        page.rootNode = (RootNode)context.node;
+        page.rootNode = (RootNode) context.node;
 
         page.addUIElement(DashboardHelper.createDashboard(Admin.CONTENT_PAGE_TYPE, page));
 
@@ -123,7 +123,7 @@ public class DefaultDashboardProvider {
     public static Node createUserDashboard(Provides.Context context) throws NodeLoadException {
         AdminPage page = new AdminPage(context.node.getNodeId());
         page.setTitle("User Management - Dashboard");
-        page.rootNode = (RootNode)context.node;
+        page.rootNode = (RootNode) context.node;
 
         page.addUIElement(DashboardHelper.createDashboard(Admin.USER_PAGE_TYPE, page));
 

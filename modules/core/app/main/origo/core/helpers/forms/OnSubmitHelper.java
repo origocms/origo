@@ -24,7 +24,7 @@ public class OnSubmitHelper {
                 cachedAnnotation.method.invoke(null, new OnSubmit.Context(args));
             } catch (Throwable e) {
                 Logger.error("", e);
-                throw new RuntimeException("Unable to invoke method ["+cachedAnnotation.method.toString()+"]", e.getCause());
+                throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
             }
         }
     }
