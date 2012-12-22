@@ -15,6 +15,7 @@ public class SettingsCoreHelper {
         public static final String PAGE_NOT_FOUND_PAGE = "page_not_found_page";
         public static final String INTERNAL_SERVER_ERROR_PAGE = "internal_server_error_page";
 
+        public static final String THEME = "theme";
         public static final String THEME_VARIANT = "theme_variant";
         public static final String NAVIGATION_TYPE = "navigation_type";
 
@@ -37,6 +38,10 @@ public class SettingsCoreHelper {
 
     public static String getInternalServerErrorPage() {
         return Settings.load().getValue(Keys.INTERNAL_SERVER_ERROR_PAGE);
+    }
+
+    public static String getTheme() {
+        return Settings.load().getValue(Keys.THEME);
     }
 
     public static String getThemeVariant() {

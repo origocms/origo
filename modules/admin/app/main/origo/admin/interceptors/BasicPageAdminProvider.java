@@ -2,11 +2,14 @@ package main.origo.admin.interceptors;
 
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.AdminHelper;
+import main.origo.core.CachedThemeVariant;
 import main.origo.core.Node;
+import main.origo.core.Themes;
 import main.origo.core.annotations.*;
 import main.origo.core.annotations.forms.OnLoadForm;
 import main.origo.core.annotations.forms.OnSubmit;
 import main.origo.core.annotations.forms.SubmitState;
+import main.origo.core.helpers.SettingsCoreHelper;
 import main.origo.core.helpers.forms.EditorHelper;
 import main.origo.core.helpers.forms.FormHelper;
 import main.origo.core.ui.UIElement;
@@ -14,11 +17,20 @@ import models.origo.admin.AdminPage;
 import models.origo.core.BasicPage;
 import models.origo.core.Content;
 import models.origo.core.RootNode;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import play.data.DynamicForm;
+import play.data.Form;
+import play.i18n.Messages;
 import play.mvc.Controller;
 import play.mvc.Result;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Admin provider for the BasicPage type. It provides a dashboard element, a method to list existing pages, a method
@@ -33,6 +45,11 @@ public class BasicPageAdminProvider {
     private static final String EDIT_TYPE = BASE_TYPE + ".edit";
 
     private static final String TITLE_PARAM = "origo-basicpageform-title";
+    private static final String PUBLISH_DATE_PARAM = "origo-basicpageform-publish-date";
+    private static final String PUBLISH_TIME_PARAM = "origo-basicpageform-publish-time";
+    private static final String UNPUBLISH_DATE_PARAM = "origo-basicpageform-unpublish-date";
+    private static final String UNPUBLISH_TIME_PARAM = "origo-basicpageform-unpublish-time";
+    private static final String THEME_VARIANT_PARAM = "origo-basicpageform-theme-variant";
     private static final String LEAD_PARAM = "origo-basicpageform-lead";
     private static final String BODY_PARAM = "origo-basicpageform-body";
 
@@ -120,32 +137,104 @@ public class BasicPageAdminProvider {
             context.node.addUIElement(new UIElement(UIElement.PARAGRAPH, 10, "Page '" + context.node.getNodeId() + "' does not exist."));
             return;
         }
+        basicPage.rootNode = RootNode.findWithNodeIdAndSpecificVersion(context.node.getNodeId(), context.node.getVersion());
 
         Content leadContent = Content.findWithIdentifier(basicPage.leadReferenceId);
         Content bodyContent = Content.findWithIdentifier(basicPage.bodyReferenceId);
 
         context.formElement.setId("basicpageform").addAttribute("class", "origo-basicpageform, form");
 
-        UIElement titleElement = new UIElement(UIElement.PANEL, 10).addAttribute("class", "field");
-        titleElement.addChild(new UIElement(UIElement.LABEL, 10, "Title").addAttribute("for", TITLE_PARAM));
-        titleElement.addChild(new UIElement(UIElement.INPUT_TEXT, 20).addAttribute("name", TITLE_PARAM).addAttribute("value", basicPage.getTitle()));
+        /**
+         * Basic Options
+         */
+
+        context.formElement.addChild(new UIElement(UIElement.LEGEND).setBody("Basic Information"));
+
+        UIElement titleElement = new UIElement(UIElement.PANEL, 10).addAttribute("class", "field").
+                addChild(new UIElement(UIElement.LABEL, 10, "Title").addAttribute("for", TITLE_PARAM)).
+                addChild(new UIElement(UIElement.INPUT_TEXT, 20).addAttribute("name", TITLE_PARAM).addAttribute("value", basicPage.getTitle()));
         context.formElement.addChild(titleElement);
 
-        UIElement leadElement = new UIElement(UIElement.PANEL, 20).addAttribute("class", "field");
-        leadElement.addChild(new UIElement(UIElement.LABEL, 10, "Lead").addAttribute("for", LEAD_PARAM));
-        leadElement.addChild(EditorHelper.createRichTextEditor(context.node, leadContent).setWeight(20).addAttribute("class", "editor richtext").
-                addAttribute("name", LEAD_PARAM).addAttribute("cols", "80").addAttribute("rows", "10"));
+        UIElement themeInputSelectElement = new UIElement(UIElement.INPUT_SELECT);
+        for (CachedThemeVariant themeVariant : Themes.getAvailableThemeVariants()) {
+            UIElement optionElement = new UIElement(UIElement.INPUT_SELECT_OPTION).setBody(themeVariant.variantId);
+            if (themeVariant.variantId.equals(SettingsCoreHelper.getThemeVariant())) {
+                optionElement.addAttribute("selected", "selected");
+            }
+            themeInputSelectElement.addChild(optionElement);
+        }
+        UIElement themeVariantElement = new UIElement(UIElement.PANEL, 20).addAttribute("class", "field").
+                addChild(new UIElement(UIElement.LABEL, 10, "Theme Variant").addAttribute("for", THEME_VARIANT_PARAM)).
+                addChild(themeInputSelectElement.setWeight(25).addAttribute("class", "themeSelector").
+                        addAttribute("name", THEME_VARIANT_PARAM));
+        context.formElement.addChild(themeVariantElement);
+
+        /**
+         * Publishing options
+         */
+        context.formElement.addChild(new UIElement(UIElement.LEGEND).setBody("Publish"));
+
+        String datePattern = Messages.get("date.format");
+        DateFormat dateFormat = new SimpleDateFormat(datePattern);
+        UIElement publishElement = new UIElement(UIElement.PANEL, 15).addAttribute("class", "field").
+                addChild(new UIElement(UIElement.PANEL).addAttribute("class", "panel split-left").
+                        addChild(new UIElement(UIElement.LABEL, 10, "From Date")).
+                        addChild(new UIElement(UIElement.INPUT_TEXT).addAttribute("name", PUBLISH_DATE_PARAM).
+                                addAttribute("value", formattedIfNotNull(dateFormat, basicPage.getDatePublished())).
+                                addAttribute("placeholder", datePattern.toLowerCase()))).
+                addChild(new UIElement(UIElement.PANEL).addAttribute("class", "panel split-right").
+                        addChild(new UIElement(UIElement.LABEL, 10, "Until Date")).
+                        addChild(new UIElement(UIElement.INPUT_TEXT).addAttribute("name", UNPUBLISH_DATE_PARAM).
+                                addAttribute("value", formattedIfNotNull(dateFormat, basicPage.getDateUnpublished())).
+                                addAttribute("placeholder", datePattern.toLowerCase()))
+                );
+        context.formElement.addChild(publishElement);
+
+        String timePattern = Messages.get("time.format");
+        DateFormat timeFormat = new SimpleDateFormat(timePattern);
+        UIElement publishTimeElement = new UIElement(UIElement.PANEL, 15).addAttribute("class", "field").
+                addChild(new UIElement(UIElement.PANEL).addAttribute("class", "panel split-left").
+                        addChild(new UIElement(UIElement.LABEL, 10, "From Time")).
+                        addChild(new UIElement(UIElement.INPUT_TEXT).addAttribute("name", PUBLISH_TIME_PARAM).
+                                addAttribute("value", formattedIfNotNull(timeFormat, basicPage.getDatePublished())).
+                                addAttribute("placeholder", timePattern.toLowerCase()))).
+                addChild(new UIElement(UIElement.PANEL).addAttribute("class", "panel split-right").
+                        addChild(new UIElement(UIElement.LABEL, 10, "Until Time")).
+                        addChild(new UIElement(UIElement.INPUT_TEXT).addAttribute("name", UNPUBLISH_TIME_PARAM).
+                                addAttribute("value", formattedIfNotNull(timeFormat, basicPage.getDateUnpublished())).
+                                addAttribute("placeholder", timePattern.toLowerCase()))
+                );
+        context.formElement.addChild(publishTimeElement);
+
+        /**
+         * Content
+         */
+        context.formElement.addChild(new UIElement(UIElement.LEGEND).setBody("Content"));
+
+        UIElement leadElement = new UIElement(UIElement.PANEL, 20).addAttribute("class", "field").
+                addChild(new UIElement(UIElement.LABEL, 10, "Lead").addAttribute("for", LEAD_PARAM)).
+                addChild(EditorHelper.createRichTextEditor(context.node, leadContent).setWeight(20).addAttribute("class", "editor richtext").
+                        addAttribute("name", LEAD_PARAM).addAttribute("cols", "80").addAttribute("rows", "10"));
         context.formElement.addChild(leadElement);
 
-        UIElement bodyElement = new UIElement(UIElement.PANEL, 30).addAttribute("class", "field");
-        bodyElement.addChild(new UIElement(UIElement.LABEL, 10, "Body").addAttribute("for", BODY_PARAM));
-        bodyElement.addChild(EditorHelper.createRichTextEditor(context.node, bodyContent).setWeight(20).addAttribute("class", "editor richtext").
-                addAttribute("name", BODY_PARAM).addAttribute("cols", "80").addAttribute("rows", "20"));
+        UIElement bodyElement = new UIElement(UIElement.PANEL, 30).addAttribute("class", "field").
+                addChild(new UIElement(UIElement.LABEL, 10, "Body").addAttribute("for", BODY_PARAM)).
+                addChild(EditorHelper.createRichTextEditor(context.node, bodyContent).setWeight(20).addAttribute("class", "editor richtext").
+                        addAttribute("name", BODY_PARAM).addAttribute("cols", "80").addAttribute("rows", "20"));
         context.formElement.addChild(bodyElement);
 
-        UIElement actionPanel = new UIElement(UIElement.PANEL, 40).addAttribute("class", "field");
-        actionPanel.addChild(new UIElement(UIElement.INPUT_SUBMIT, 10).addAttribute("value", "Save"));
+        UIElement actionPanel = new UIElement(UIElement.PANEL, 40).addAttribute("class", "field").
+                addChild(new UIElement(UIElement.INPUT_SUBMIT, 10).addAttribute("value", "Save")).
+                addChild(new UIElement(UIElement.INPUT_RESET, 15).addAttribute("value", "Reset"));
         context.formElement.addChild(actionPanel);
+
+    }
+
+    private static String formattedIfNotNull(DateFormat dateFormat, Date date) {
+        if (date != null) {
+            return dateFormat.format(date);
+        }
+        return "";
     }
 
     /**
@@ -154,10 +243,11 @@ public class BasicPageAdminProvider {
     @OnSubmit(with = BASE_TYPE)
     public static void storePage(OnSubmit.Context context) {
 
-        DynamicForm form = DynamicForm.form().bindFromRequest();
+        Form form = DynamicForm.form().bindFromRequest();
+        Map<String,String> data = form.data();
 
-        String nodeId = FormHelper.getNodeId(form);
-        Integer version = FormHelper.getNodeVersion(form);
+        String nodeId = FormHelper.getNodeId(data);
+        Integer version = FormHelper.getNodeVersion(data);
         RootNode oldRootNode = RootNode.findWithNodeIdAndSpecificVersion(nodeId, version);
         if (oldRootNode == null) {
             throw new RuntimeException("Root node with id=\'" + nodeId + "\' does not exist");
@@ -165,36 +255,75 @@ public class BasicPageAdminProvider {
 
         BasicPage latestVersion = BasicPage.findLatestVersion(nodeId);
         latestVersion.rootNode = oldRootNode;
-        BasicPage newPageVersion = latestVersion.copy();
 
-        boolean changed = false;
-        Content leadContent = Content.findWithIdentifier(newPageVersion.leadReferenceId);
-        if (!leadContent.value.equals(form.get(LEAD_PARAM))) {
+        // TODO: Validation
+
+        boolean newVersion = false;
+
+        if (!latestVersion.title.equals(data.get(TITLE_PARAM))) {
+            newVersion = true;
+        }
+
+        if(latestVersion.getThemeVariant() == null || !latestVersion.getThemeVariant().equalsIgnoreCase(data.get(THEME_VARIANT_PARAM))) {
+            newVersion = true;
+        }
+
+        Content leadContent = Content.findWithIdentifier(latestVersion.leadReferenceId);
+        if (!leadContent.value.equals(data.get(LEAD_PARAM))) {
+            newVersion = true;
+        }
+
+        Content bodyContent = Content.findWithIdentifier(latestVersion.bodyReferenceId);
+        if (!bodyContent.value.equals(data.get(BODY_PARAM))) {
+            newVersion = true;
+        }
+
+        if (newVersion) {
+
+            BasicPage newPageVersion = latestVersion.copy();
+
+            // Properties
+            newPageVersion.title = data.get(TITLE_PARAM);
+            newPageVersion.rootNode.themeVariant = data.get(THEME_VARIANT_PARAM);
+            newPageVersion.rootNode.publish = parseDate(data.get(PUBLISH_DATE_PARAM), data.get(PUBLISH_TIME_PARAM));
+            newPageVersion.rootNode.unPublish = parseDate(data.get(UNPUBLISH_DATE_PARAM), data.get(UNPUBLISH_TIME_PARAM));
+
+            // Lead Content
             Content newLeadContent = new Content();
-            newLeadContent.value = form.get(LEAD_PARAM);
+            newLeadContent.value = data.get(LEAD_PARAM);
             newPageVersion.leadReferenceId = newLeadContent.identifier;
             newLeadContent.save();
-            changed = true;
-        }
-        Content bodyContent = Content.findWithIdentifier(newPageVersion.bodyReferenceId);
-        if (!bodyContent.value.equals(form.get(BODY_PARAM))) {
+
+            // Body Content
             Content newBodyContent = new Content();
-            newBodyContent.value = form.get(BODY_PARAM);
+            newBodyContent.value = data.get(BODY_PARAM);
             newPageVersion.bodyReferenceId = newBodyContent.identifier;
             newBodyContent.save();
-            changed = true;
-        }
 
-        if (!newPageVersion.title.equals(form.get(TITLE_PARAM))) {
-            newPageVersion.title = form.get(TITLE_PARAM);
-            changed = true;
-        }
-
-        if (changed) {
             newPageVersion.rootNode.save();
             newPageVersion.save();
+        } else {
+
+            // Properties
+            latestVersion.rootNode.publish = parseDate(data.get(PUBLISH_DATE_PARAM), data.get(PUBLISH_TIME_PARAM));
+            latestVersion.rootNode.unPublish = parseDate(data.get(UNPUBLISH_DATE_PARAM), data.get(UNPUBLISH_TIME_PARAM));
+
+            latestVersion.rootNode.save();
+            latestVersion.save();
         }
 
+    }
+
+    private static Date parseDate(String dateValue, String timeValue) {
+        String datePattern = Messages.get("date.format");
+        DateTimeFormatter dateFormatter = DateTimeFormat.forPattern(datePattern);
+        DateTime date = dateFormatter.parseDateTime(dateValue);
+
+        String timePattern = Messages.get("time.format");
+        DateTimeFormatter timeFormatter = DateTimeFormat.forPattern(timePattern);
+        DateTime time = timeFormatter.parseDateTime(timeValue);
+
+        return DateTime.now().withDate(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth()).withTime(time.getHourOfDay(), time.getMinuteOfHour(), 0, 0).toDate();
     }
 
     /**

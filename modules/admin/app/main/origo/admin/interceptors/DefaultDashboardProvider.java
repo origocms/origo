@@ -22,7 +22,7 @@ import models.origo.core.RootNode;
 public class DefaultDashboardProvider {
 
     /*
-     * FRONT page dashboard
+     * FRONT dashboard
      */
 
     @Provides(type = Types.NODE, with = Admin.FRONT_PAGE_TYPE)
@@ -73,7 +73,7 @@ public class DefaultDashboardProvider {
     }
 
     /*
-     * CONTENT page dashboard
+     * CONTENT dashboard
      */
 
     @Provides(type = Types.NODE, with = Admin.CONTENT_PAGE_TYPE)
@@ -95,7 +95,7 @@ public class DefaultDashboardProvider {
 
 
     /*
-     * SETTINGS page dashboard
+     * SETTINGS dashboard
      */
 
     @Provides(type = Types.NODE, with = Admin.SETTINGS_PAGE_TYPE)
@@ -116,7 +116,7 @@ public class DefaultDashboardProvider {
     }
 
     /*
-     * USER page dashboard
+     * USER dashboard
      */
 
     @Provides(type = Types.NODE, with = Admin.USER_PAGE_TYPE)

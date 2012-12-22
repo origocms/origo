@@ -8,8 +8,10 @@ import views.html.origo.core.themes.DefaultTheme.variant_main_and_left_columns;
 import views.html.origo.core.themes.DefaultTheme.variant_main_only;
 import views.html.origo.core.themes.DefaultTheme.variant_three_columns;
 
-@Theme(id = "default")
+@Theme(id = DefaultTheme.ID)
 public class DefaultTheme {
+
+    public static final String ID = "default";
 
     @ThemeVariant(id = "default-main_only", regions = {"main"})
     public static Result renderDefaultMainOnlyTemplate(ThemeVariant.Context context) {

@@ -1,8 +1,13 @@
 package main.origo.core;
 
+import com.google.common.collect.Maps;
+import main.origo.core.helpers.SettingsCoreHelper;
+import main.origo.core.themes.DefaultTheme;
+import org.apache.commons.lang3.StringUtils;
+import play.Logger;
+
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Themes are used to render Nodes. A theme has multiple theme variants, for example 2-columns, 3-columns, top-middle-bottom, etc.
@@ -14,12 +19,12 @@ public class Themes {
     /**
      * Collection of theme variants id's that a theme offers.
      */
-    public static Map<String, CachedTheme> themes = new ConcurrentHashMap<String, CachedTheme>();
+    public static Map<String, CachedTheme> themes = Maps.newConcurrentMap();
 
     /**
      * Maps variant id's to it's parent theme id.
      */
-    private static Map<String, String> themeVariantsToThemeMapping = new HashMap<String, String>();
+    private static Map<String, String> themeVariantsToThemeMapping = Maps.newHashMap();
 
     public static void addTheme(String themeId, Class declaringClass) {
         if (themes.containsKey(themeId) && themes.get(themeId).getDeclaringClass().equals(declaringClass)) {
@@ -95,5 +100,15 @@ public class Themes {
 
     public static Map<String, CachedTheme> getThemesMap() {
         return Collections.unmodifiableMap(themes);
+    }
+
+    public static Collection<CachedThemeVariant> getAvailableThemeVariants() {
+
+        String theme = SettingsCoreHelper.getTheme();
+        if (!StringUtils.isBlank(theme)) {
+            return getThemeVariants(theme);
+        }
+        Logger.debug("No theme set, using default.");
+        return getThemeVariants(DefaultTheme.ID);
     }
 }

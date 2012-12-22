@@ -5,7 +5,8 @@ import main.origo.core.Node;
 import main.origo.core.helpers.SettingsCoreHelper;
 import main.origo.core.ui.UIElement;
 import play.api.mvc.Call;
-import play.data.DynamicForm;
+
+import java.util.Map;
 
 public class FormHelper {
 
@@ -38,13 +39,13 @@ public class FormHelper {
         return NODE_VERSION;
     }
 
-    public static String getNodeId(DynamicForm dynamicForm) {
-        return dynamicForm.get(NODE_ID);
+    public static String getNodeId(Map<String,String> data) {
+        return data.get(NODE_ID);
     }
 
-    public static Integer getNodeVersion(DynamicForm dynamicForm) {
+    public static Integer getNodeVersion(Map<String,String> data) {
         try {
-            return Integer.parseInt(dynamicForm.get(NODE_VERSION));
+            return Integer.parseInt(data.get(NODE_VERSION));
         } catch (NumberFormatException e) {
             throw new RuntimeException("Version is not a number: " + e.getLocalizedMessage(), e);
         }

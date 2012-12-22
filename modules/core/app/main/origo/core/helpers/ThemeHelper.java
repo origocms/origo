@@ -103,15 +103,19 @@ public class ThemeHelper {
     }
 
     public static Html decorateChildren(UIElement parent, RenderingContext renderingContext) {
-        if (!parent.hasChildren()) {
-            return null;
+        Html decoratedOutput;
+        if (parent.hasBody()) {
+            decoratedOutput = parent.getBody();
+        } else {
+            decoratedOutput = HtmlFormat.raw("");
         }
-        Html decoratedOutput = HtmlFormat.raw("");
-        renderingContext.nest(parent);
-        for (UIElement childElement : parent.getChildren()) {
-            decoratedOutput.$plus(decorate(childElement, renderingContext));
+        if (parent.hasChildren()) {
+            renderingContext.nest(parent);
+            for (UIElement childElement : parent.getChildren()) {
+                decoratedOutput.$plus(decorate(childElement, renderingContext));
+            }
+            renderingContext.unNest();
         }
-        renderingContext.unNest();
         return decoratedOutput;
     }
 
@@ -140,4 +144,5 @@ public class ThemeHelper {
             throw new RuntimeException("", e);
         }
     }
+
 }
