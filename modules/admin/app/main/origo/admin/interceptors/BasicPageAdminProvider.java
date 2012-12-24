@@ -67,7 +67,7 @@ public class BasicPageAdminProvider {
 
         return new Admin.DashboardItem().addAttribute("class", "item").
                 addChild(new Element.Panel().setWeight(10).
-                        addChild(new Element.H4().setWeight(10).setBody("Basic Page").addAttribute("class", "title")).
+                        addChild(new Element.Heading4().setWeight(10).setBody("Basic Page").addAttribute("class", "title")).
                         addChild(new Element.Paragraph().setWeight(20).setBody("Basic pages have a lead and a body").addAttribute("class", "description")).
                         addChild(new Element.Anchor().setWeight(30).setBody("List All").addAttribute("href", url).addAttribute("class", "link"))
                 );

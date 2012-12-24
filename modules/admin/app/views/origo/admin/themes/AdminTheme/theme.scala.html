@@ -27,14 +27,10 @@
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="@routes.Assets.at("images/apple-touch-icon-72-precomposed.png")">
     <link rel="apple-touch-icon-precomposed" href="@routes.Assets.at("images/apple-touch-icon-57-precomposed.png")">
 
-    @* Meta and links from the content node *@
-    @_content(node.meta)
-    @_content(node.link)
+    @* Scripts, Meta and Links from the content node *@
+    @_content(node.head)
 
-    @* Stylesheets from the content node *@
-    @_content(node.style)
-
-    @* Scripts and Stylesheets included in the theme template *@
+    @* Stylesheets (and Meta) included in the theme template *@
     @head
 
 </head>
@@ -50,7 +46,7 @@
     @scripts
 
     @* Scripts from the content node *@
-    @_content(node.script)
+    @_content(node.tail)
 
 </body>
 </html>

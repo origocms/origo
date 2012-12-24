@@ -16,10 +16,9 @@ import java.util.WeakHashMap;
 public class Element {
 
     public static class Raw extends Element {
-        public static final String TYPE = "raw";
 
         public Raw() {
-            super(TYPE);
+            super("raw");
         }
 
         @Override
@@ -29,10 +28,14 @@ public class Element {
     }
 
     public static class Meta extends Element {
-        public static final String TYPE = "meta";
 
         public Meta() {
-            super(TYPE);
+            super("meta");
+        }
+
+        @Override
+        public boolean isAlwaysInHead() {
+            return true;
         }
 
         @Override
@@ -43,10 +46,14 @@ public class Element {
     }
 
     public static class Script extends Element {
-        public static final String TYPE = "script";
 
         public Script() {
-            super(TYPE);
+            super("script");
+        }
+
+        @Override
+        public boolean isAlwaysInHead() {
+            return false;
         }
 
         @Override
@@ -57,10 +64,14 @@ public class Element {
     }
 
     public static class Style extends Element {
-        public static final String TYPE = "style";
 
         public Style() {
-            super(TYPE);
+            super("style");
+        }
+
+        @Override
+        public boolean isAlwaysInHead() {
+            return true;
         }
 
         @Override
@@ -71,10 +82,14 @@ public class Element {
     }
 
     public static class Link extends Element {
-        public static final String TYPE = "link";
 
         public Link() {
-            super(TYPE);
+            super("link");
+        }
+
+        @Override
+        public boolean isAlwaysInHead() {
+            return true;
         }
 
         @Override
@@ -85,10 +100,9 @@ public class Element {
     }
 
     public static class ListBulleted extends Element {
-        public static final String TYPE = "list_bulleted";
 
         public ListBulleted() {
-            super(TYPE);
+            super("list_bulleted");
         }
 
         @Override
@@ -100,10 +114,9 @@ public class Element {
     }
 
     public static class ListOrdered extends Element {
-        public static final String TYPE = "list_ordered";
 
         public ListOrdered() {
-            super(TYPE);
+            super("list_ordered");
         }
 
         @Override
@@ -115,10 +128,9 @@ public class Element {
     }
 
     public static class ListItem extends Element {
-        public static final String TYPE = "list_item";
 
         public ListItem() {
-            super(TYPE);
+            super("list_item");
         }
 
         @Override
@@ -133,10 +145,9 @@ public class Element {
     }
 
     public static class Form extends Element {
-        public static final String TYPE = "form";
 
         public Form() {
-            super(TYPE);
+            super("form");
         }
 
         @Override
@@ -148,10 +159,9 @@ public class Element {
     }
 
     public static class Legend extends Element {
-        public static final String TYPE = "legend";
 
         public Legend() {
-            super(TYPE);
+            super("legend");
         }
 
         @Override
@@ -163,10 +173,9 @@ public class Element {
     }
 
     public static class Label extends Element {
-        public static final String TYPE = "label";
 
         public Label() {
-            super(TYPE);
+            super("label");
         }
 
         @Override
@@ -177,13 +186,12 @@ public class Element {
     }
 
     public static class InputHidden extends Element {
-        public static final String TYPE = "input_hidden";
 
         public InputHidden() {
-            super(TYPE, String.class);
+            super("input_hidden", String.class);
         }
         public InputHidden(Class c) {
-            super(TYPE, c);
+            super("input_hidden", c);
         }
 
         @Override
@@ -195,13 +203,12 @@ public class Element {
     }
 
     public static class InputText extends Element {
-        public static final String TYPE = "input_text";
 
         public InputText() {
-            super(TYPE, String.class);
+            super("input_text", String.class);
         }
         public InputText(Class c) {
-            super(TYPE, c);
+            super("input_text", c);
         }
 
         @Override
@@ -213,13 +220,12 @@ public class Element {
     }
 
     public static class InputTextArea extends Element {
-        public static final String TYPE = "input_textarea";
 
         public InputTextArea() {
-            super(TYPE, String.class);
+            super("input_textarea", String.class);
         }
         public InputTextArea(Class c) {
-            super(TYPE, c);
+            super("input_textarea", c);
         }
 
         @Override
@@ -234,13 +240,12 @@ public class Element {
     }
 
     public static class InputRadioButton extends Element {
-        public static final String TYPE = "input_radiobutton";
 
         public InputRadioButton() {
-            super(TYPE, String.class);
+            super("input_radiobutton", String.class);
         }
         public InputRadioButton(Class c) {
-            super(TYPE, c);
+            super("input_radiobutton", c);
         }
 
         @Override
@@ -252,13 +257,12 @@ public class Element {
     }
 
     public static class InputSelect extends Element {
-        public static final String TYPE = "input_select";
 
         public InputSelect() {
-            super(TYPE, String.class);
+            super("input_select", String.class);
         }
         public InputSelect(Class c) {
-            super(TYPE, c);
+            super("input_select", c);
         }
 
         @Override
@@ -270,14 +274,13 @@ public class Element {
     }
 
     public static class InputSelectOption extends Element {
-        public static final String TYPE = "input_select_option";
 
         public InputSelectOption() {
-            super(TYPE, String.class);
+            super("input_select_option", String.class);
         }
 
         public InputSelectOption(Class c) {
-            super(TYPE, c);
+            super("input_select_option", c);
         }
 
         @Override
@@ -292,10 +295,9 @@ public class Element {
     }
 
     public static class InputButton extends Element {
-        public static final String TYPE = "input_button";
 
         public InputButton() {
-            super(TYPE);
+            super("input_button");
         }
 
         @Override
@@ -307,10 +309,9 @@ public class Element {
     }
 
     public static class InputSubmit extends Element {
-        public static final String TYPE = "input_submit";
 
         public InputSubmit() {
-            super(TYPE);
+            super("input_submit");
         }
 
         @Override
@@ -322,10 +323,9 @@ public class Element {
     }
 
     public static class InputReset extends Element {
-        public static final String TYPE = "input_reset";
 
         public InputReset() {
-            super(TYPE);
+            super("input_reset");
         }
 
         @Override
@@ -337,13 +337,12 @@ public class Element {
     }
 
     public static class InputImage extends Element {
-        public static final String TYPE = "input_image";
 
         public InputImage() {
-            super(TYPE, String.class);
+            super("input_image", String.class);
         }
         public InputImage(Class c) {
-            super(TYPE, c);
+            super("input_image", c);
         }
 
         @Override
@@ -355,10 +354,9 @@ public class Element {
     }
 
     public static class InputFile extends Element {
-        public static final String TYPE = "input_file";
 
         public InputFile() {
-            super(TYPE, String.class);
+            super("input_file", String.class);
         }
 
         @Override
@@ -370,10 +368,9 @@ public class Element {
     }
 
     public static class InputPassword extends Element {
-        public static final String TYPE = "input_password";
 
         public InputPassword() {
-            super(TYPE, String.class);
+            super("input_password", String.class);
         }
 
         @Override
@@ -385,10 +382,9 @@ public class Element {
     }
 
     public static class Panel extends Element {
-        public static final String TYPE = "panel";
 
         public Panel() {
-            super(TYPE);
+            super("panel");
         }
 
         @Override
@@ -399,10 +395,9 @@ public class Element {
     }
 
     public static class Paragraph extends Element {
-        public static final String TYPE = "paragaph";
 
         public Paragraph() {
-            super(TYPE);
+            super("paragaph");
         }
 
         @Override
@@ -413,13 +408,12 @@ public class Element {
     }
 
     public static class Text extends Element {
-        public static final String TYPE = "text";
 
         public Text() {
-            super(TYPE);
+            super("text");
         }
         public Text(Class c) {
-            super(TYPE, c);
+            super("text", c);
         }
 
         @Override
@@ -430,10 +424,9 @@ public class Element {
     }
 
     public static class Anchor extends Element {
-        public static final String TYPE = "anchor";
 
         public Anchor() {
-            super(TYPE);
+            super("anchor");
         }
 
         @Override
@@ -446,10 +439,10 @@ public class Element {
         }
     }
 
-    private static class H extends Element {
+    private static class Heading extends Element {
         private String size;
 
-        private H(String type, String size) {
+        private Heading(String type, String size) {
             super(type);
             this.size = size;
         }
@@ -461,57 +454,51 @@ public class Element {
         }
     }
 
-    public static class H1 extends H {
-        public static final String TYPE = "heading_1";
+    public static class Heading1 extends Heading {
 
-        public H1() {
+        public Heading1() {
             //noinspection unchecked
-            super(TYPE, "1");
+            super("heading_1", "1");
         }
     }
 
-    public static class H2 extends H {
-        public static final String TYPE = "heading_2";
+    public static class Heading2 extends Heading {
 
-        public H2() {
+        public Heading2() {
             //noinspection unchecked
-            super(TYPE, "2");
+            super("heading_2", "2");
         }
     }
 
-    public static class H3 extends H {
-        public static final String TYPE = "heading_3";
+    public static class Heading3 extends Heading {
 
-        public H3() {
+        public Heading3() {
             //noinspection unchecked
-            super(TYPE, "3");
+            super("heading_3", "3");
         }
     }
 
-    public static class H4 extends H {
-        public static final String TYPE = "heading_4";
+    public static class Heading4 extends Heading {
 
-        public H4() {
+        public Heading4() {
             //noinspection unchecked
-            super(TYPE, "4");
+            super("heading_4", "4");
         }
     }
 
-    public static class H5 extends H {
-        public static final String TYPE = "heading_5";
+    public static class Heading5 extends Heading {
 
-        public H5() {
+        public Heading5() {
             //noinspection unchecked
-            super(TYPE, "5");
+            super("heading_5", "5");
         }
     }
 
-    public static class H6 extends H {
-        public static final String TYPE = "heading_6";
+    public static class Heading6 extends Heading {
 
-        public H6() {
+        public Heading6() {
             //noinspection unchecked
-            super(TYPE, "5");
+            super("heading_6", "5");
         }
     }
 
@@ -630,6 +617,14 @@ public class Element {
     public Element setBody(Html body) {
         this.body = body;
         return this;
+    }
+
+    public boolean isAlwaysInHead() {
+        return false;
+    }
+
+    public boolean isAlwaysInBody() {
+        return true;
     }
 
     @Override

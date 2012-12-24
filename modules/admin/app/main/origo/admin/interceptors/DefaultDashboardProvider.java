@@ -50,7 +50,7 @@ public class DefaultDashboardProvider {
     public static Element addContentDashboardItemToFrontPage(Provides.Context context) {
         return AdminHelper.createBasicDashboardItem().
                 addChild(new Element.Panel().setWeight(10).
-                        addChild(new Element.H4().setWeight(10).setBody("Content").addAttribute("class", "title")).
+                        addChild(new Element.Heading4().setWeight(10).setBody("Content").addAttribute("class", "title")).
                         addChild(new Element.Anchor().setWeight(10).setBody("View").addAttribute("href", DashboardHelper.getDashBoardURL(Admin.CONTENT_PAGE_TYPE))));
     }
 
@@ -59,7 +59,7 @@ public class DefaultDashboardProvider {
     public static Element addUserDashboardItemToFrontPage(Provides.Context context) {
         return AdminHelper.createBasicDashboardItem().
                 addChild(new Element.Panel().setWeight(20).
-                        addChild(new Element.H4().setWeight(10).setBody("User Management").addAttribute("class", "title")).
+                        addChild(new Element.Heading4().setWeight(10).setBody("User Management").addAttribute("class", "title")).
                         addChild(new Element.Anchor().setWeight(10).setBody("View").addAttribute("href", DashboardHelper.getDashBoardURL(Admin.USER_PAGE_TYPE))));
     }
 
@@ -68,7 +68,7 @@ public class DefaultDashboardProvider {
     public static Element addSettingsDashboardItemToFrontPage(Provides.Context context) {
         return AdminHelper.createBasicDashboardItem().
                 addChild(new Element.Panel().setWeight(100).
-                        addChild(new Element.H4().setWeight(10).setBody("Settings").addAttribute("class", "title")).
+                        addChild(new Element.Heading4().setWeight(10).setBody("Settings").addAttribute("class", "title")).
                         addChild(new Element.Anchor().setWeight(10).setBody("View").addAttribute("href", DashboardHelper.getDashBoardURL(Admin.SETTINGS_PAGE_TYPE))));
     }
 

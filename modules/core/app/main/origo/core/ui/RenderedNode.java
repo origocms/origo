@@ -14,10 +14,8 @@ public class RenderedNode {
 
     private String _title;
 
-    private List<Html> _meta = Lists.newArrayList();
-    private List<Html> _link = Lists.newArrayList();
-    private List<Html> _script = Lists.newArrayList();
-    private List<Html> _style = Lists.newArrayList();
+    private List<Html> _head = Lists.newArrayList();
+    private List<Html> _tail = Lists.newArrayList();
 
     private CachedThemeVariant _template;
     private Map<String, List<Html>> regions = Maps.newHashMap();
@@ -44,36 +42,20 @@ public class RenderedNode {
         this._title = title;
     }
 
-    public List<Html> meta() {
-        return _meta;
+    public List<Html> head() {
+        return _head;
     }
 
-    public void meta(List<Html> meta) {
-        this._meta = meta;
+    public void head(List<Html> head) {
+        this._head = head;
     }
 
-    public List<Html> link() {
-        return _link;
+    public List<Html> tail() {
+        return _tail;
     }
 
-    public void link(List<Html> link) {
-        this._link = link;
-    }
-
-    public List<Html> style() {
-        return _style;
-    }
-
-    public void style(List<Html> style) {
-        this._style = style;
-    }
-
-    public List<Html> script() {
-        return _script;
-    }
-
-    public void script(List<Html> script) {
-        this._script = script;
+    public void tail(List<Html> tail) {
+        this._tail = tail;
     }
 
     public CachedThemeVariant template() {
@@ -104,20 +86,12 @@ public class RenderedNode {
         this._navigation = navigation;
     }
 
-    public void addMeta(Html additionalContent) {
-        _meta.add(additionalContent);
+    public void addHead(Html additionalContent) {
+        _head.add(additionalContent);
     }
 
-    public void addLink(Html additionalContent) {
-        _link.add(additionalContent);
-    }
-
-    public void addScript(Html additionalContent) {
-        _script.add(additionalContent);
-    }
-
-    public void addStyle(Html additionalContent) {
-        _style.add(additionalContent);
+    public void addTail(Html additionalContent) {
+        _tail.add(additionalContent);
     }
 
     public void add(String region, Html additionalContent) {

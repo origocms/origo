@@ -16,7 +16,7 @@ public class BasicUserAdminProvider {
     public static Element createDashboardItem(Provides.Context context) {
         return new Admin.DashboardItem().addAttribute("class", "item").
                 addChild(new Element.Panel().setWeight(20).
-                        addChild(new Element.H4().setWeight(10).setBody("User").addAttribute("class", "title")));
+                        addChild(new Element.Heading4().setWeight(10).setBody("User").addAttribute("class", "title")));
     }
 
 }

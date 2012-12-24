@@ -28,35 +28,33 @@ public class ThemeHelper {
         renderedNode.template(themeVariant);
         renderedNode.title(node.getTitle());
         RenderingContext renderingContext = new RenderingContext(themeVariant, node);
-        for (String region : node.getRegions()) {
-            for (Element element : node.getUIElements(region)) {
+        for (String pageRegion : node.getRegions()) {
+            for (Element element : node.getUIElements(pageRegion)) {
                 Html decoratedContent = decorate(element, renderingContext);
-                if (element instanceof Element.Meta) {
-                    if (Node.HEAD.equalsIgnoreCase(region)) {
-                        renderedNode.addMeta(decoratedContent);
-                    } else {
-                        throw new RuntimeException("META is not allowed outside of head");
+
+                switch(pageRegion) {
+
+                    case Node.HEAD: {
+                        if (!element.isAlwaysInBody()) {
+                            throw new RuntimeException("Element ["+element.getType()+"] is not allowed in the head");
+                        }
+                        renderedNode.addHead(decoratedContent);
                     }
-                } else if (element instanceof Element.Link) {
-                    if (Node.HEAD.equalsIgnoreCase(region)) {
-                        renderedNode.addLink(decoratedContent);
-                    } else {
-                        throw new RuntimeException("LINK is not allowed outside of head");
+
+                    case Node.TAIL: {
+                        if (element.isAlwaysInHead()) {
+                            throw new RuntimeException("Element ["+element.getType()+"] is not allowed in the body");
+                        }
+                        renderedNode.addTail(decoratedContent);
+
                     }
-                } else if (element instanceof Element.Script) {
-                    if (Node.TAIL.equalsIgnoreCase(region)) {
-                        renderedNode.addScript(decoratedContent);
-                    } else {
-                        renderedNode.add(region, decoratedContent);
+
+                    default: {
+                        if (element.isAlwaysInHead()) {
+                            throw new RuntimeException("Element ["+element.getType()+"] is not allowed in the body");
+                        }
+                        renderedNode.add(pageRegion, decoratedContent);
                     }
-                } else if (element instanceof Element.Style) {
-                    if (Node.HEAD.equalsIgnoreCase(region)) {
-                        renderedNode.addStyle(decoratedContent);
-                    } else {
-                        renderedNode.add(region, decoratedContent);
-                    }
-                } else {
-                    renderedNode.add(region, decoratedContent);
                 }
             }
         }
