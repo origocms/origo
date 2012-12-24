@@ -1,7 +1,7 @@
 package main.origo.core.annotations;
 
+import main.origo.core.ui.Element;
 import main.origo.core.ui.RenderingContext;
-import main.origo.core.ui.UIElement;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -17,14 +17,16 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 public @interface Decorates {
 
-    String[] type();
+    Class[] type();
+
+    Class input() default String.class;
 
     public static class Context {
-        public UIElement uiElement;
+        public Element element;
         public RenderingContext renderingContext;
 
-        public Context(UIElement uiElement, RenderingContext renderingContext) {
-            this.uiElement = uiElement;
+        public Context(Element element, RenderingContext renderingContext) {
+            this.element = element;
             this.renderingContext = renderingContext;
         }
     }

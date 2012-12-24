@@ -7,7 +7,7 @@ import main.origo.core.annotations.forms.SubmitState;
 import main.origo.core.helpers.forms.OnSubmitHelper;
 import main.origo.core.helpers.forms.SubmitHandlerHelper;
 import main.origo.core.helpers.forms.SubmitStateHelper;
-import main.origo.core.ui.UIElement;
+import main.origo.core.ui.Element;
 import play.Logger;
 import play.data.DynamicForm;
 import play.mvc.Result;
@@ -41,7 +41,7 @@ public class DefaultSubmitHandler {
     @OnLoadForm
     public static void addWithTypeField(OnLoadForm.Context context) {
         if (DefaultSubmitHandler.class.isAssignableFrom(SubmitHandlerHelper.getActiveSubmitHandler())) {
-            context.formElement.addChild(new UIElement(UIElement.INPUT_HIDDEN).addAttribute("name", WITH_TYPE).addAttribute("value", context.withType));
+            context.formElement.addChild(new Element.InputHidden().addAttribute("name", WITH_TYPE).addAttribute("value", context.withType));
         }
     }
 

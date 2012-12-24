@@ -5,8 +5,8 @@ import main.origo.core.InterceptorRepository;
 import main.origo.core.Navigation;
 import main.origo.core.Node;
 import main.origo.core.annotations.OnLoad;
+import main.origo.core.ui.Element;
 import main.origo.core.ui.NavigationElement;
-import main.origo.core.ui.UIElement;
 import models.origo.core.RootNode;
 import org.apache.commons.lang3.StringUtils;
 
@@ -68,8 +68,8 @@ public class OnLoadHelper {
         triggerAfterInterceptor(onLoadType, withType, node, new OnLoad.Context(node, args));
     }
 
-    public static void triggerAfterInterceptor(String onLoadType, String withType, Node node, Map<String, Object> args, UIElement uiElement) {
-        triggerAfterInterceptor(onLoadType, withType, node, new OnLoad.Context(node, uiElement, args));
+    public static void triggerAfterInterceptor(String onLoadType, String withType, Node node, Map<String, Object> args, Element element) {
+        triggerAfterInterceptor(onLoadType, withType, node, new OnLoad.Context(node, element, args));
     }
 
     public static void triggerAfterInterceptor(String onLoadType, String withType, Node node, Map<String, Object> args, Navigation navigation) {

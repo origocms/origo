@@ -1,2 +1,2 @@
-@(listType:String, uiElement:main.origo.core.ui.UIElement, body:Html, attributes:Map[String, String])
-<@{listType} id="@uiElement.id" @views.html.origo.core.tags._attributes(attributes)>body</@{listType}>
+@(listType:String, element:main.origo.core.ui.Element, body:Html, attributes:Map[String, String])
+<@{listType} id="@element.id" @views.html.origo.core.tags._attributes(attributes)>body</@{listType}>

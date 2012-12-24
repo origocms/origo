@@ -1,7 +1,7 @@
 package models.origo.core;
 
 import main.origo.core.Node;
-import main.origo.core.ui.UIElement;
+import main.origo.core.ui.Element;
 import play.data.validation.Constraints;
 import play.db.jpa.JPA;
 
@@ -81,53 +81,53 @@ public class BasicPage implements Node {
     }
 
     @Override
-    public List<UIElement> getUIElements(String region) {
+    public List<Element> getUIElements(String region) {
         return rootNode.getUIElements(region);
     }
 
     @Override
-    public UIElement addHeadUIElement(UIElement uiElement) {
-        return rootNode.addHeadUIElement(uiElement);
+    public Element addHeadUIElement(Element element) {
+        return rootNode.addHeadUIElement(element);
     }
 
     @Override
-    public UIElement addTailUIElement(UIElement uiElement) {
-        return rootNode.addTailUIElement(uiElement);
+    public Element addTailUIElement(Element element) {
+        return rootNode.addTailUIElement(element);
     }
 
     @Override
-    public UIElement addUIElement(UIElement uiElement) {
-        return rootNode.addUIElement(uiElement, false);
+    public Element addUIElement(Element element) {
+        return rootNode.addUIElement(element, false);
     }
 
     @Override
-    public UIElement addHeadUIElement(UIElement uiElement, boolean reorderElementsBelow) {
-        return rootNode.addHeadUIElement(uiElement, reorderElementsBelow);
+    public Element addHeadUIElement(Element element, boolean reorderElementsBelow) {
+        return rootNode.addHeadUIElement(element, reorderElementsBelow);
     }
 
     @Override
-    public UIElement addTailUIElement(UIElement uiElement, boolean reorderElementsBelow) {
-        return rootNode.addTailUIElement(uiElement, reorderElementsBelow);
+    public Element addTailUIElement(Element element, boolean reorderElementsBelow) {
+        return rootNode.addTailUIElement(element, reorderElementsBelow);
     }
 
     @Override
-    public UIElement addUIElement(UIElement uiElement, boolean reorderElementsBelow) {
-        return rootNode.addUIElement(uiElement, reorderElementsBelow);
+    public Element addUIElement(Element element, boolean reorderElementsBelow) {
+        return rootNode.addUIElement(element, reorderElementsBelow);
     }
 
     @Override
-    public boolean removeHeadUIElement(UIElement uiElement) {
-        return rootNode.removeHeadUIElement(uiElement);
+    public boolean removeHeadUIElement(Element element) {
+        return rootNode.removeHeadUIElement(element);
     }
 
     @Override
-    public boolean removeTailUIElement(UIElement uiElement) {
-        return rootNode.removeTailUIElement(uiElement);
+    public boolean removeTailUIElement(Element element) {
+        return rootNode.removeTailUIElement(element);
     }
 
     @Override
-    public boolean removeUIElement(UIElement uiElement) {
-        return rootNode.removeUIElement(uiElement);
+    public boolean removeUIElement(Element element) {
+        return rootNode.removeUIElement(element);
     }
 
     public BasicPage copy() {

@@ -10,7 +10,7 @@ import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Provides;
 import main.origo.core.helpers.OnLoadHelper;
 import main.origo.core.helpers.ProvidesHelper;
-import main.origo.core.ui.UIElement;
+import main.origo.core.ui.Element;
 import play.Logger;
 
 import java.util.Collections;
@@ -22,23 +22,23 @@ public class DashboardHelper {
     * Convenience methods for hooks with DASHBOARD type
     */
 
-    public static UIElement createDashboard(String withType, Node node) throws NodeLoadException {
+    public static Element createDashboard(String withType, Node node) throws NodeLoadException {
         DashboardHelper.triggerBeforeDashboardLoaded(withType, node);
-        UIElement uiElement = DashboardHelper.triggerProvidesDashboardInterceptor(withType, node);
-        if (uiElement == null) {
-            throw new NodeLoadException(node.getNodeId(), "The provider for type [" + withType + "] did not return a UIElement");
+        Element element = DashboardHelper.triggerProvidesDashboardInterceptor(withType, node);
+        if (element == null) {
+            throw new NodeLoadException(node.getNodeId(), "The provider for type [" + withType + "] did not return a Element");
         }
 
-        List<UIElement> dashboardItems = createDashboardItems(withType, node);
-        for (UIElement dashboardItem : dashboardItems) {
-            uiElement.addChild(dashboardItem);
+        List<Element> dashboardItems = createDashboardItems(withType, node);
+        for (Element dashboardItem : dashboardItems) {
+            element.addChild(dashboardItem);
         }
 
         DashboardHelper.triggerAfterDashboardLoaded(withType, node);
-        return uiElement;
+        return element;
     }
 
-    public static UIElement triggerProvidesDashboardInterceptor(String withType, Node node) {
+    public static Element triggerProvidesDashboardInterceptor(String withType, Node node) {
         return ProvidesHelper.triggerInterceptor(Admin.DASHBOARD, withType, node);
     }
 
@@ -54,20 +54,20 @@ public class DashboardHelper {
     * Convenience methods for hooks with DASHBOARD_ITEM type
     */
 
-    public static List<UIElement> createDashboardItems(String withType, Node node) {
+    public static List<Element> createDashboardItems(String withType, Node node) {
         DashboardHelper.triggerBeforeDashboardItemLoaded(withType, node);
-        List<UIElement> uiElement = DashboardHelper.triggerProvidesDashboardItemInterceptor(withType, node);
+        List<Element> element = DashboardHelper.triggerProvidesDashboardItemInterceptor(withType, node);
         DashboardHelper.triggerAfterDashboardItemLoaded(withType, node);
-        return uiElement;
+        return element;
     }
 
-    public static List<UIElement> triggerProvidesDashboardItemInterceptor(String withType, Node node) {
+    public static List<Element> triggerProvidesDashboardItemInterceptor(String withType, Node node) {
         List<CachedAnnotation> cachedAnnotations = findProvidersWithParent(Admin.DASHBOARD_ITEM, withType);
-        List<UIElement> items = Lists.newArrayList();
+        List<Element> items = Lists.newArrayList();
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
             try {
                 //noinspection unchecked
-                items.add((UIElement) cachedAnnotation.method.invoke(null, new Provides.Context(node, Collections.<String, Object>emptyMap())));
+                items.add((Element) cachedAnnotation.method.invoke(null, new Provides.Context(node, Collections.<String, Object>emptyMap())));
             } catch (Throwable e) {
                 Logger.error("", e);
                 throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
@@ -84,25 +84,6 @@ public class DashboardHelper {
         OnLoadHelper.triggerAfterInterceptor(Admin.DASHBOARD_ITEM, withType, node);
     }
 
-    private static CachedAnnotation findProvidersWithTypeAndParent(final String type, final String withType, final String parent) {
-        List<CachedAnnotation> providers = InterceptorRepository.getInterceptor(Provides.class, new CachedAnnotation.InterceptorSelector() {
-            @Override
-            public boolean isCorrectInterceptor(CachedAnnotation cachedAnnotation) {
-                Provides annotation = (Provides) cachedAnnotation.annotation;
-                return annotation.type().equals(type) && (annotation.with().equals(withType)) &&
-                        cachedAnnotation.relationship != null && cachedAnnotation.relationship.parent().equals(parent);
-            }
-        });
-        if (!providers.isEmpty()) {
-            if (providers.size() > 1) {
-                throw new RuntimeException("Only one @Provides per type (attribute 'with') is allowed");
-            }
-            return providers.iterator().next();
-        } else {
-            return null;
-        }
-    }
-
     private static List<CachedAnnotation> findProvidersWithParent(final String withType, final String parent) {
         List<CachedAnnotation> providers = InterceptorRepository.getInterceptor(Provides.class, new CachedAnnotation.InterceptorSelector() {
             @Override
@@ -113,10 +94,9 @@ public class DashboardHelper {
             }
         });
         if (providers.isEmpty()) {
-            throw new RuntimeException("Every type (specified by using attribute 'with') must have a class annotated with @Provides to instantiate an instance. Unable to find a provider for type \'" + withType + "\'");
-        } else {
-            return providers;
+            Logger.warn("Every type (specified by using attribute 'with') must have a class annotated with @Provides to instantiate an instance. Unable to find a provider for type \'" + withType + "\'");
         }
+        return providers;
     }
 
     public static String getDashBoardURL(String dashboard) {

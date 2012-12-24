@@ -3,6 +3,7 @@ package main.origo.core;
 import main.origo.core.helpers.SettingsCoreHelper;
 import main.origo.core.interceptors.forms.DefaultFormProvider;
 import main.origo.core.interceptors.forms.DefaultSubmitHandler;
+import main.origo.core.interceptors.forms.TinyMCEEditorProvider;
 import models.origo.core.Settings;
 import org.springframework.stereotype.Component;
 import play.db.jpa.JPA;
@@ -22,6 +23,7 @@ public class CoreBootStrap {
                 SettingsCoreHelper.setValueIfMissing(settings, SettingsCoreHelper.Keys.THEME_VARIANT, "default-main_and_left_columns");
                 SettingsCoreHelper.setValueIfMissing(settings, SettingsCoreHelper.Keys.SUBMIT_HANDLER, DefaultSubmitHandler.class.getName());
                 SettingsCoreHelper.setValueIfMissing(settings, SettingsCoreHelper.Keys.DEFAULT_FORM_TYPE, DefaultFormProvider.TYPE);
+                SettingsCoreHelper.setValueIfMissing(settings, SettingsCoreHelper.Keys.RICHTEXT_EDITOR_TYPE, TinyMCEEditorProvider.EDITOR_TYPE);
                 settings.save();
             }
         });

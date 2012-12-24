@@ -6,7 +6,6 @@ import main.origo.core.InterceptorRepository;
 import main.origo.core.Navigation;
 import main.origo.core.Node;
 import main.origo.core.annotations.Provides;
-import org.apache.commons.lang3.StringUtils;
 import play.Logger;
 
 import java.util.HashSet;
@@ -86,12 +85,12 @@ public class ProvidesHelper {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation cachedAnnotation) {
                 Provides annotation = (Provides) cachedAnnotation.annotation;
-                return annotation.type().equals(type) && (annotation.with().equals(withType) || StringUtils.isBlank(withType));
+                return annotation.type().equals(type) && annotation.with().equals(withType);
             }
         });
         if (!providers.isEmpty()) {
             if (providers.size() > 1) {
-                throw new RuntimeException("Only one @Provides per type (attribute 'with') is allowed");
+                throw new RuntimeException("Only one @Provides per type (attribute 'with') is allowed, offending type is ["+withType+"]");
             }
             return providers.iterator().next();
         } else {

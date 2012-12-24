@@ -1,6 +1,8 @@
 package main.origo.core;
 
-import java.util.HashMap;
+import com.google.common.collect.Maps;
+import main.origo.core.ui.Element;
+
 import java.util.Map;
 
 public class CachedTheme {
@@ -20,15 +22,15 @@ public class CachedTheme {
      *
      * @see CachedThemeVariant
      */
-    public final Map<String, CachedThemeVariant> themeVariants = new HashMap<String, CachedThemeVariant>();
+    public final Map<String, CachedThemeVariant> themeVariants = Maps.newHashMap();
 
     /**
      * Collection of decorators for each theme that can transform UIElements into elements in a RenderedNode.
      *
-     * @see main.origo.core.ui.UIElement
+     * @see main.origo.core.ui.Element
      * @see main.origo.core.ui.RenderedNode
      */
-    public final Map<String, CachedDecorator> decorators = new HashMap<String, CachedDecorator>();
+    public final Map<Class<? extends Element>, CachedDecorator> decorators = Maps.newHashMap();
 
     public CachedTheme(String themeId, Class declaringClass) {
         this.themeId = themeId;
@@ -47,7 +49,7 @@ public class CachedTheme {
         return themeVariants;
     }
 
-    public Map<String, CachedDecorator> getDecorators() {
+    public Map<Class<? extends Element>, CachedDecorator> getDecorators() {
         return decorators;
     }
 

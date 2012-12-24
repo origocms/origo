@@ -3,6 +3,7 @@ package main.origo.core;
 import com.google.common.collect.Maps;
 import main.origo.core.helpers.SettingsCoreHelper;
 import main.origo.core.themes.DefaultTheme;
+import main.origo.core.ui.Element;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
 
@@ -12,7 +13,7 @@ import java.util.*;
 /**
  * Themes are used to render Nodes. A theme has multiple theme variants, for example 2-columns, 3-columns, top-middle-bottom, etc.
  * Each rootNode has a chosen theme variant to use for rendering.
- * Decorators are applied to each UIElement a RootNode has before rendering.
+ * Decorators are applied to each Element a RootNode has before rendering.
  */
 public class Themes {
 
@@ -42,14 +43,14 @@ public class Themes {
             throw new InitializationException("Duplicate theme variant id [" + variantId + "]");
         }
         themeVariantsToThemeMapping.put(variantId, themeId);
-        themeVariants.put(variantId, new CachedThemeVariant(themeId, variantId, templateMethod, new HashSet<String>(Arrays.asList(regions))));
+        themeVariants.put(variantId, new CachedThemeVariant(themeId, variantId, templateMethod, new HashSet<>(Arrays.asList(regions))));
     }
 
-    public static void addDecorator(String themeId, String[] uiElementType, Method method) {
+    public static void addDecorator(String themeId, Class[] uiElementType, Method method) {
         // Themes are declared on the class level and should be parsed first so we don't need to check if the themeId exists before accessing
-        Map<String, CachedDecorator> themeDecorators = themes.get(themeId).getDecorators();
+        Map<Class<? extends Element>, CachedDecorator> themeDecorators = themes.get(themeId).getDecorators();
 
-        for (String type : uiElementType) {
+        for (Class type : uiElementType) {
             themeDecorators.put(type, new CachedDecorator(type, method));
         }
     }
@@ -77,9 +78,9 @@ public class Themes {
         return Collections.emptyList();
     }
 
-    public static Map<String, CachedDecorator> getDecoratorsForTheme(String themeId) {
+    public static Map<Class<? extends Element>, CachedDecorator> getDecoratorsForTheme(String themeId) {
         if (themes.containsKey(themeId)) {
-            Map<String, CachedDecorator> decorators = themes.get(themeId).getDecorators();
+            Map<Class<? extends Element>, CachedDecorator> decorators = themes.get(themeId).getDecorators();
             if (decorators != null) {
                 return decorators;
             }
@@ -87,8 +88,8 @@ public class Themes {
         return Collections.emptyMap();
     }
 
-    public static CachedDecorator getDecoratorForTheme(String themeId, String uiElementType) {
-        return getDecoratorsForTheme(themeId).get(uiElementType);
+    public static CachedDecorator getDecoratorForTheme(String themeId, Class<? extends Element> elementType) {
+        return getDecoratorsForTheme(themeId).get(elementType);
     }
 
     /**

@@ -3,7 +3,7 @@ package main.origo.core.helpers.forms;
 import controllers.origo.core.routes;
 import main.origo.core.Node;
 import main.origo.core.helpers.SettingsCoreHelper;
-import main.origo.core.ui.UIElement;
+import main.origo.core.ui.Element;
 import play.api.mvc.Call;
 
 import java.util.Map;
@@ -13,14 +13,14 @@ public class FormHelper {
     private static final String NODE_ID = "_core_node_id";
     private static final String NODE_VERSION = "_core_node_version";
 
-    public static UIElement createFormElement(Node node, String withType) {
+    public static Element createFormElement(Node node, String withType) {
         return createFormElement(SettingsCoreHelper.getDefaultFormType(), node, withType);
     }
 
-    public static UIElement createFormElement(String formType, Node node, String nodeType) {
+    public static Element createFormElement(String formType, Node node, String nodeType) {
         OnLoadFormHelper.triggerBeforeInterceptor(formType, node);
         OnLoadFormHelper.triggerBeforeInterceptor(nodeType, node);
-        UIElement formElement = ProvidesFormHelper.triggerInterceptor(formType, node);
+        Element formElement = ProvidesFormHelper.triggerInterceptor(formType, node);
         addNodeIdAndVersion(formElement, node);
         OnLoadFormHelper.triggerAfterInterceptor(nodeType, node, formElement);
         OnLoadFormHelper.triggerAfterInterceptor(formType, node, formElement);
@@ -51,9 +51,9 @@ public class FormHelper {
         }
     }
 
-    public static void addNodeIdAndVersion(UIElement form, Node node) {
+    public static void addNodeIdAndVersion(Element form, Node node) {
         form.
-                addChild(new UIElement(UIElement.INPUT_HIDDEN).addAttribute("name", FormHelper.getNodeIdParamName()).addAttribute("value", node.getNodeId())).
-                addChild(new UIElement(UIElement.INPUT_HIDDEN).addAttribute("name", FormHelper.getNodeVersionParamName()).addAttribute("value", String.valueOf(node.getVersion())));
+                addChild(new Element.InputHidden().addAttribute("name", FormHelper.getNodeIdParamName()).addAttribute("value", node.getNodeId())).
+                addChild(new Element.InputHidden().addAttribute("name", FormHelper.getNodeVersionParamName()).addAttribute("value", String.valueOf(node.getVersion())));
     }
 }

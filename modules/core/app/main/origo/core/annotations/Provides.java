@@ -16,14 +16,14 @@ import java.util.Map;
  * <p/>
  * A method annotated with \@Provides should return the type it provides as listed below:
  * When type=NODE it adds a new Node to the system and the method should return a Node.
- * When type=FORM it adds a form to edit a Node type and the method should return a UIElement.
+ * When type=FORM it adds a form to edit a Node type and the method should return a Element.
  * When type=NAVIGATION it adds a different type of navigation than the standard one and the method should return a NavigationElement.
  * When type=NAVIGATION_ITEM it adds a navigation item to the current navigation type and the method should return a NavigationElement.
  * <p/>
  * Any module can also define a custom type.
  *
  * @see main.origo.core.Node
- * @see main.origo.core.ui.UIElement
+ * @see main.origo.core.ui.Element
  * @see Relationship
  */
 @Retention(RetentionPolicy.RUNTIME)

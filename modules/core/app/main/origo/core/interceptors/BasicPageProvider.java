@@ -5,7 +5,7 @@ import main.origo.core.NodeNotFoundException;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.Provides;
-import main.origo.core.ui.UIElement;
+import main.origo.core.ui.Element;
 import models.origo.core.BasicPage;
 import models.origo.core.Content;
 import models.origo.core.RootNode;
@@ -35,14 +35,14 @@ public class BasicPageProvider {
         context.node.addUIElement(loadContent(((BasicPage) context.node).bodyReferenceId));
     }
 
-    private static UIElement loadContent(String referenceId) {
+    private static Element loadContent(String referenceId) {
         if (!StringUtils.isBlank(referenceId)) {
             Content content = Content.findWithIdentifier(referenceId);
             if (content != null) {
-                return new UIElement(content.identifier, UIElement.PARAGRAPH, content.value);
+                return new Element.Paragraph().setId(content.identifier).setBody(content.value);
             }
         }
-        //TODO: Handle this somehow, in dev/admin maybe show a UIElement with a warning message and in prod swallow error?
+        //TODO: Handle this somehow, in dev/admin maybe show a Element with a warning message and in prod swallow error?
         return null;
     }
 

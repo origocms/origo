@@ -2,8 +2,8 @@ package main.origo.core.annotations;
 
 import main.origo.core.Navigation;
 import main.origo.core.Node;
+import main.origo.core.ui.Element;
 import main.origo.core.ui.NavigationElement;
-import main.origo.core.ui.UIElement;
 import models.origo.core.RootNode;
 
 import java.lang.annotation.ElementType;
@@ -24,7 +24,7 @@ import java.util.Map;
  * When type=NAVIGATION_ITEM is called for each navigation item being loaded.
  *
  * @see main.origo.core.Node
- * @see main.origo.core.ui.UIElement
+ * @see main.origo.core.ui.Element
  * @see main.origo.core.ui.NavigationElement
  * @see models.origo.core.navigation.BasicNavigation
  */
@@ -45,7 +45,7 @@ public @interface OnLoad {
         public Navigation navigation;
         public NavigationElement navigationElement;
         public List<NavigationElement> navigationElements;
-        public UIElement uiElement;
+        public Element element;
 
         public Context(RootNode rootNode, Map<String, Object> args) {
             this.rootNode = rootNode;
@@ -69,9 +69,9 @@ public @interface OnLoad {
             this.args = args;
         }
 
-        public Context(Node node, UIElement uiElement, Map<String, Object> args) {
+        public Context(Node node, Element element, Map<String, Object> args) {
             this.node = node;
-            this.uiElement = uiElement;
+            this.element = element;
             this.args = args;
         }
 

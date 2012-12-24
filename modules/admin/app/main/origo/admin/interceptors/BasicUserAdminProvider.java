@@ -4,7 +4,7 @@ import main.origo.admin.annotations.Admin;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.Provides;
 import main.origo.core.annotations.Relationship;
-import main.origo.core.ui.UIElement;
+import main.origo.core.ui.Element;
 
 @Interceptor
 public class BasicUserAdminProvider {
@@ -13,10 +13,10 @@ public class BasicUserAdminProvider {
 
     @Provides(type = Admin.DASHBOARD_ITEM, with = BASE_TYPE)
     @Relationship(parent = Admin.USER_PAGE_TYPE)
-    public static UIElement createDashboardItem(Provides.Context context) {
-        return new UIElement(Admin.DASHBOARD_ITEM).addAttribute("class", "item").
-                addChild(new UIElement(UIElement.PANEL, 20).
-                        addChild(new UIElement(UIElement.HEADING4, 10, "User").addAttribute("class", "title")));
+    public static Element createDashboardItem(Provides.Context context) {
+        return new Admin.DashboardItem().addAttribute("class", "item").
+                addChild(new Element.Panel().setWeight(20).
+                        addChild(new Element.H4().setWeight(10).setBody("User").addAttribute("class", "title")));
     }
 
 }

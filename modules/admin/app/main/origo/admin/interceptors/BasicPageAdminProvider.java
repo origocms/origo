@@ -12,11 +12,12 @@ import main.origo.core.annotations.forms.SubmitState;
 import main.origo.core.helpers.SettingsCoreHelper;
 import main.origo.core.helpers.forms.EditorHelper;
 import main.origo.core.helpers.forms.FormHelper;
-import main.origo.core.ui.UIElement;
+import main.origo.core.ui.Element;
 import models.origo.admin.AdminPage;
 import models.origo.core.BasicPage;
 import models.origo.core.Content;
 import models.origo.core.RootNode;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -56,19 +57,19 @@ public class BasicPageAdminProvider {
     /**
      * Dashboard element for the content dashboard page.
      *
-     * @return a UIElement that contains a dashboard element.
+     * @return a Element that contains a dashboard element.
      */
     @Provides(type = Admin.DASHBOARD_ITEM, with = BASE_TYPE)
     @Relationship(parent = Admin.CONTENT_PAGE_TYPE)
-    public static UIElement createDashboardItem(Provides.Context context) {
+    public static Element createDashboardItem(Provides.Context context) {
 
         String url = AdminHelper.getURLForAdminAction(Admin.CONTENT_PAGE_TYPE, LIST_TYPE);
 
-        return new UIElement(Admin.DASHBOARD_ITEM).addAttribute("class", "item").
-                addChild(new UIElement(UIElement.PANEL, 10).
-                        addChild(new UIElement(UIElement.HEADING4, 10, "Basic Page").addAttribute("class", "title")).
-                        addChild(new UIElement(UIElement.PARAGRAPH, 20, "Basic pages have a lead and a body").addAttribute("class", "description")).
-                        addChild(new UIElement(UIElement.ANCHOR, 30, "List All").addAttribute("href", url).addAttribute("class", "link"))
+        return new Admin.DashboardItem().addAttribute("class", "item").
+                addChild(new Element.Panel().setWeight(10).
+                        addChild(new Element.H4().setWeight(10).setBody("Basic Page").addAttribute("class", "title")).
+                        addChild(new Element.Paragraph().setWeight(20).setBody("Basic pages have a lead and a body").addAttribute("class", "description")).
+                        addChild(new Element.Anchor().setWeight(30).setBody("List All").addAttribute("href", url).addAttribute("class", "link"))
                 );
     }
 
@@ -95,12 +96,12 @@ public class BasicPageAdminProvider {
     public static void createListPage(OnLoad.Context context) {
         List<BasicPage> basicPages = BasicPage.findAllLatestVersions();
 
-        UIElement panelElement = new UIElement(UIElement.PANEL, 10).addAttribute("class", "panel pages");
+        Element panelElement = new Element.Panel().setWeight(10).addAttribute("class", "panel pages");
         for (BasicPage page : basicPages) {
             String editURL = AdminHelper.getURLForAdminAction(Admin.CONTENT_PAGE_TYPE, EDIT_TYPE, page.getNodeId());
-            UIElement panel = new UIElement(UIElement.PANEL).
-                    addChild(new UIElement(UIElement.ANCHOR, 10, page.getTitle()).addAttribute("href", editURL)).
-                    addChild(new UIElement(UIElement.TEXT, 20, " (" + page.nodeId + " / " + page.getVersion() + ")"));
+            Element panel = new Element.Panel().
+                    addChild(new Element.Anchor().setWeight(10).setBody(page.getTitle()).addAttribute("href", editURL)).
+                    addChild(new Element.Text().setWeight(20).setBody(" (" + page.nodeId + " / " + page.getVersion() + ")"));
             panelElement.addChild(panel);
         }
         context.node.addUIElement(panelElement);
@@ -134,7 +135,7 @@ public class BasicPageAdminProvider {
     public static void loadEditForm(OnLoadForm.Context context) {
         BasicPage basicPage = BasicPage.findLatestVersion(context.node.getNodeId());
         if (basicPage == null) {
-            context.node.addUIElement(new UIElement(UIElement.PARAGRAPH, 10, "Page '" + context.node.getNodeId() + "' does not exist."));
+            context.node.addUIElement(new Element.Paragraph().setWeight(10).setBody("Page '" + context.node.getNodeId() + "' does not exist."));
             return;
         }
         basicPage.rootNode = RootNode.findWithNodeIdAndSpecificVersion(context.node.getNodeId(), context.node.getVersion());
@@ -148,23 +149,29 @@ public class BasicPageAdminProvider {
          * Basic Options
          */
 
-        context.formElement.addChild(new UIElement(UIElement.LEGEND).setBody("Basic Information"));
+        context.formElement.addChild(new Element.Legend().setBody("Basic Information"));
 
-        UIElement titleElement = new UIElement(UIElement.PANEL, 10).addAttribute("class", "field").
-                addChild(new UIElement(UIElement.LABEL, 10, "Title").addAttribute("for", TITLE_PARAM)).
-                addChild(new UIElement(UIElement.INPUT_TEXT, 20).addAttribute("name", TITLE_PARAM).addAttribute("value", basicPage.getTitle()));
+        Element titleElement = new Element.Panel().setWeight(10).addAttribute("class", "field").
+                addChild(new Element.Label().setWeight(10).setBody("Title").addAttribute("for", TITLE_PARAM)).
+                addChild(new Element.InputText().setWeight(20).addAttribute("name", TITLE_PARAM).addAttribute("value", basicPage.getTitle()));
         context.formElement.addChild(titleElement);
 
-        UIElement themeInputSelectElement = new UIElement(UIElement.INPUT_SELECT);
+        Element themeInputSelectElement = new Element.InputSelect();
         for (CachedThemeVariant themeVariant : Themes.getAvailableThemeVariants()) {
-            UIElement optionElement = new UIElement(UIElement.INPUT_SELECT_OPTION).setBody(themeVariant.variantId);
-            if (themeVariant.variantId.equals(SettingsCoreHelper.getThemeVariant())) {
-                optionElement.addAttribute("selected", "selected");
+            Element optionElement = new Element.InputSelectOption().setBody(themeVariant.variantId);
+            if (StringUtils.isEmpty(basicPage.rootNode.themeVariant)) {
+                if (themeVariant.variantId.equals(SettingsCoreHelper.getThemeVariant())) {
+                    optionElement.addAttribute("selected", "selected");
+                }
+            } else {
+                if (themeVariant.variantId.equals(basicPage.rootNode.themeVariant)) {
+                    optionElement.addAttribute("selected", "selected");
+                }
             }
             themeInputSelectElement.addChild(optionElement);
         }
-        UIElement themeVariantElement = new UIElement(UIElement.PANEL, 20).addAttribute("class", "field").
-                addChild(new UIElement(UIElement.LABEL, 10, "Theme Variant").addAttribute("for", THEME_VARIANT_PARAM)).
+        Element themeVariantElement = new Element.Panel().setWeight(20).addAttribute("class", "field").
+                addChild(new Element.Label().setWeight(10).setBody("Theme Variant").addAttribute("for", THEME_VARIANT_PARAM)).
                 addChild(themeInputSelectElement.setWeight(25).addAttribute("class", "themeSelector").
                         addAttribute("name", THEME_VARIANT_PARAM));
         context.formElement.addChild(themeVariantElement);
@@ -172,35 +179,37 @@ public class BasicPageAdminProvider {
         /**
          * Publishing options
          */
-        context.formElement.addChild(new UIElement(UIElement.LEGEND).setBody("Publish"));
+        context.formElement.addChild(new Element.Legend().setBody("Publish"));
 
         String datePattern = Messages.get("date.format");
         DateFormat dateFormat = new SimpleDateFormat(datePattern);
-        UIElement publishElement = new UIElement(UIElement.PANEL, 15).addAttribute("class", "field").
-                addChild(new UIElement(UIElement.PANEL).addAttribute("class", "panel split-left").
-                        addChild(new UIElement(UIElement.LABEL, 10, "From Date")).
-                        addChild(new UIElement(UIElement.INPUT_TEXT).addAttribute("name", PUBLISH_DATE_PARAM).
+        Element publishElement = new Element.Panel().setWeight(15).addAttribute("class", "field").
+                addChild(new Element.Panel().addAttribute("class", "panel split-left").
+                        addChild(new Element.Label().setWeight(10).setBody("From Date")).
+                        addChild(new Element.InputText(Date.class).
+                                addAttribute("name", PUBLISH_DATE_PARAM).
                                 addAttribute("value", formattedIfNotNull(dateFormat, basicPage.getDatePublished())).
                                 addAttribute("placeholder", datePattern.toLowerCase()))).
-                addChild(new UIElement(UIElement.PANEL).addAttribute("class", "panel split-right").
-                        addChild(new UIElement(UIElement.LABEL, 10, "Until Date")).
-                        addChild(new UIElement(UIElement.INPUT_TEXT).addAttribute("name", UNPUBLISH_DATE_PARAM).
+                addChild(new Element.Panel().addAttribute("class", "panel split-right").
+                        addChild(new Element.Label().setWeight(10).setBody("Until Date")).
+                        addChild(new Element.InputText(Date.class).
+                                addAttribute("name", UNPUBLISH_DATE_PARAM).
                                 addAttribute("value", formattedIfNotNull(dateFormat, basicPage.getDateUnpublished())).
-                                addAttribute("placeholder", datePattern.toLowerCase()))
-                );
+                                addAttribute("placeholder", datePattern.toLowerCase())));
         context.formElement.addChild(publishElement);
 
         String timePattern = Messages.get("time.format");
         DateFormat timeFormat = new SimpleDateFormat(timePattern);
-        UIElement publishTimeElement = new UIElement(UIElement.PANEL, 15).addAttribute("class", "field").
-                addChild(new UIElement(UIElement.PANEL).addAttribute("class", "panel split-left").
-                        addChild(new UIElement(UIElement.LABEL, 10, "From Time")).
-                        addChild(new UIElement(UIElement.INPUT_TEXT).addAttribute("name", PUBLISH_TIME_PARAM).
+        Element publishTimeElement = new Element.Panel().setWeight(15).addAttribute("class", "field").
+                addChild(new Element.Panel().addAttribute("class", "panel split-left").
+                        addChild(new Element.Label().setWeight(10).setBody("From Time")).
+                        addChild(new Element.InputText(Date.class).addAttribute("name", PUBLISH_TIME_PARAM).
                                 addAttribute("value", formattedIfNotNull(timeFormat, basicPage.getDatePublished())).
-                                addAttribute("placeholder", timePattern.toLowerCase()))).
-                addChild(new UIElement(UIElement.PANEL).addAttribute("class", "panel split-right").
-                        addChild(new UIElement(UIElement.LABEL, 10, "Until Time")).
-                        addChild(new UIElement(UIElement.INPUT_TEXT).addAttribute("name", UNPUBLISH_TIME_PARAM).
+                                addAttribute("placeholder", timePattern.toLowerCase()))
+                ).
+                addChild(new Element.Panel().addAttribute("class", "panel split-right").
+                        addChild(new Element.Label().setWeight(10).setBody("Until Time")).
+                        addChild(new Element.InputText(Date.class).addAttribute("name", UNPUBLISH_TIME_PARAM).
                                 addAttribute("value", formattedIfNotNull(timeFormat, basicPage.getDateUnpublished())).
                                 addAttribute("placeholder", timePattern.toLowerCase()))
                 );
@@ -209,23 +218,23 @@ public class BasicPageAdminProvider {
         /**
          * Content
          */
-        context.formElement.addChild(new UIElement(UIElement.LEGEND).setBody("Content"));
+        context.formElement.addChild(new Element.Legend().setBody("Content"));
 
-        UIElement leadElement = new UIElement(UIElement.PANEL, 20).addAttribute("class", "field").
-                addChild(new UIElement(UIElement.LABEL, 10, "Lead").addAttribute("for", LEAD_PARAM)).
+        Element leadElement = new Element.Panel().setWeight(20).addAttribute("class", "field").
+                addChild(new Element.Label().setWeight(10).setBody("Lead").addAttribute("for", LEAD_PARAM)).
                 addChild(EditorHelper.createRichTextEditor(context.node, leadContent).setWeight(20).addAttribute("class", "editor richtext").
                         addAttribute("name", LEAD_PARAM).addAttribute("cols", "80").addAttribute("rows", "10"));
         context.formElement.addChild(leadElement);
 
-        UIElement bodyElement = new UIElement(UIElement.PANEL, 30).addAttribute("class", "field").
-                addChild(new UIElement(UIElement.LABEL, 10, "Body").addAttribute("for", BODY_PARAM)).
+        Element bodyElement = new Element.Panel().setWeight(30).addAttribute("class", "field").
+                addChild(new Element.Label().setWeight(10).setBody("Body").addAttribute("for", BODY_PARAM)).
                 addChild(EditorHelper.createRichTextEditor(context.node, bodyContent).setWeight(20).addAttribute("class", "editor richtext").
                         addAttribute("name", BODY_PARAM).addAttribute("cols", "80").addAttribute("rows", "20"));
         context.formElement.addChild(bodyElement);
 
-        UIElement actionPanel = new UIElement(UIElement.PANEL, 40).addAttribute("class", "field").
-                addChild(new UIElement(UIElement.INPUT_SUBMIT, 10).addAttribute("value", "Save")).
-                addChild(new UIElement(UIElement.INPUT_RESET, 15).addAttribute("value", "Reset"));
+        Element actionPanel = new Element.Panel().setWeight(40).addAttribute("class", "field").
+                addChild(new Element.InputSubmit().setWeight(10).addAttribute("value", "Save")).
+                addChild(new Element.InputReset().setWeight(15).addAttribute("value", "Reset"));
         context.formElement.addChild(actionPanel);
 
     }
@@ -244,7 +253,7 @@ public class BasicPageAdminProvider {
     public static void storePage(OnSubmit.Context context) {
 
         Form form = DynamicForm.form().bindFromRequest();
-        Map<String,String> data = form.data();
+        Map<String, String> data = form.data();
 
         String nodeId = FormHelper.getNodeId(data);
         Integer version = FormHelper.getNodeVersion(data);
@@ -264,7 +273,7 @@ public class BasicPageAdminProvider {
             newVersion = true;
         }
 
-        if(latestVersion.getThemeVariant() == null || !latestVersion.getThemeVariant().equalsIgnoreCase(data.get(THEME_VARIANT_PARAM))) {
+        if (latestVersion.getThemeVariant() == null || !latestVersion.getThemeVariant().equalsIgnoreCase(data.get(THEME_VARIANT_PARAM))) {
             newVersion = true;
         }
 
@@ -315,15 +324,22 @@ public class BasicPageAdminProvider {
     }
 
     private static Date parseDate(String dateValue, String timeValue) {
-        String datePattern = Messages.get("date.format");
-        DateTimeFormatter dateFormatter = DateTimeFormat.forPattern(datePattern);
-        DateTime date = dateFormatter.parseDateTime(dateValue);
+        if (StringUtils.isNotBlank(dateValue)) {
+            String datePattern = Messages.get("date.format");
+            DateTimeFormatter dateFormatter = DateTimeFormat.forPattern(datePattern);
+            DateTime date = dateFormatter.parseDateTime(dateValue);
 
-        String timePattern = Messages.get("time.format");
-        DateTimeFormatter timeFormatter = DateTimeFormat.forPattern(timePattern);
-        DateTime time = timeFormatter.parseDateTime(timeValue);
+            if (StringUtils.isNotBlank(timeValue)) {
+                String timePattern = Messages.get("time.format");
+                DateTimeFormatter timeFormatter = DateTimeFormat.forPattern(timePattern);
+                DateTime time = timeFormatter.parseDateTime(timeValue);
 
-        return DateTime.now().withDate(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth()).withTime(time.getHourOfDay(), time.getMinuteOfHour(), 0, 0).toDate();
+                return DateTime.now().withDate(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth()).withTime(time.getHourOfDay(), time.getMinuteOfHour(), 0, 0).toDate();
+            }
+            return DateTime.now().withDate(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth()).toDate();
+        }
+
+        return null;
     }
 
     /**

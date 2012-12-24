@@ -6,7 +6,7 @@ import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.Provides;
 import main.origo.core.annotations.Types;
-import main.origo.core.ui.UIElement;
+import main.origo.core.ui.Element;
 import main.origo.structuredcontent.helpers.SegmentHelper;
 import models.origo.core.RootNode;
 import models.origo.structuredcontent.Segment;
@@ -34,7 +34,7 @@ public class StructuredPageProvider {
         List<Segment> segmentModels = Segment.findWithNodeIdAndSpecificVersion(context.node.getNodeId(), context.node.getVersion());
         for (Segment segment : segmentModels) {
             SegmentHelper.triggerBeforeSegmentLoaded(segment.type, context.node, segment);
-            UIElement element = SegmentHelper.triggerSegmentProvider(segment.type, context.node, segment);
+            Element element = SegmentHelper.triggerSegmentProvider(segment.type, context.node, segment);
             SegmentHelper.triggerAfterSegmentLoaded(segment.type, context.node, segment, element);
             context.node.addUIElement(element);
         }

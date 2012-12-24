@@ -3,7 +3,7 @@ package main.origo.core.interceptors.forms;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.forms.ProvidesForm;
 import main.origo.core.helpers.forms.FormHelper;
-import main.origo.core.ui.UIElement;
+import main.origo.core.ui.Element;
 
 /**
  * Default implementation for a form provider, a different form provider can be used at any time by creating a
@@ -18,8 +18,8 @@ public class DefaultFormProvider {
     public static final String TYPE = "origo.core.basicform";
 
     @ProvidesForm(with = TYPE)
-    public static UIElement createBasicForm(ProvidesForm.Context context) {
-        return new UIElement(UIElement.FORM).
+    public static Element createBasicForm(ProvidesForm.Context context) {
+        return new Element.Form().
                 // TODO: This is might not be the correct
                         addAttribute("action", FormHelper.getPostURL().url()).
                 addAttribute("method", "POST");

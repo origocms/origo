@@ -4,9 +4,9 @@ import main.origo.admin.annotations.Admin;
 import main.origo.core.annotations.Decorates;
 import main.origo.core.annotations.Theme;
 import main.origo.core.annotations.ThemeVariant;
-import main.origo.core.helpers.DefaultDecorator;
+import main.origo.core.helpers.ElementHelper;
 import main.origo.core.helpers.ThemeHelper;
-import main.origo.core.ui.UIElement;
+import main.origo.core.ui.Element;
 import play.api.templates.Html;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -30,11 +30,11 @@ public class AdminTheme {
         return "dashboard";
     }
 
-    @Decorates(type = Admin.DASHBOARD)
+    @Decorates(type = Admin.Dashboard.class)
     public static Html decorateDashboard(Decorates.Context context) {
-        Html body = ThemeHelper.decorateChildren(context.uiElement, context.renderingContext);
-        return dashboard.render(context.uiElement, body,
-                DefaultDecorator.combineAttributes(context.uiElement.getAttributes(),
+        Html body = ThemeHelper.decorateChildren(context.element, context.renderingContext);
+        return dashboard.render(context.element, body,
+                ElementHelper.combineAttributes(context.element.getAttributes(),
                         Collections.singletonMap("class", defaultDashboardClasses() + " row-fluid")));
     }
 
@@ -42,18 +42,18 @@ public class AdminTheme {
         return "dashboard-item item";
     }
 
-    @Decorates(type = Admin.DASHBOARD_ITEM)
+    @Decorates(type = Admin.DashboardItem.class)
     public static Html decorateDashboardItem(Decorates.Context context) {
-        Html body = ThemeHelper.decorateChildren(context.uiElement, context.renderingContext);
-        return dashboard_item.render(context.uiElement, body,
-                DefaultDecorator.combineAttributes(context.uiElement.getAttributes(),
+        Html body = ThemeHelper.decorateChildren(context.element, context.renderingContext);
+        return dashboard_item.render(context.element, body,
+                ElementHelper.combineAttributes(context.element.getAttributes(),
                         Collections.singletonMap("class", defaultDashboardItemClasses() + " span3")));
     }
 
-    @Decorates(type = {UIElement.INPUT_SUBMIT, UIElement.INPUT_BUTTON, UIElement.INPUT_RESET})
+    @Decorates(type = {Element.InputSubmit.class, Element.InputButton.class, Element.InputReset.class})
     public static Html decorateButton(Decorates.Context context) {
-        context.uiElement.addAttribute("class", "btn");
-        return DefaultDecorator.decorate(context.uiElement, context.renderingContext);
+        context.element.addAttribute("class", "btn");
+        return context.element.decorate(context.renderingContext);
     }
 
 }

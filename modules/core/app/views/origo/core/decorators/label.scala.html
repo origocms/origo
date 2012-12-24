@@ -1,7 +1,7 @@
-@(uiElement:main.origo.core.ui.UIElement, body:Html, attributes:Map[String, String])
+@(element:main.origo.core.ui.Element, body:Html, attributes:Map[String, String])
 
-@if(uiElement.hasBody()) {
-<label id="@uiElement.id" @views.html.origo.core.tags._attributes(attributes)>@body</label>
+@if(element.hasBody()) {
+<label id="@element.id" @views.html.origo.core.tags._attributes(attributes)>@body</label>
 } else {
-<label id="@uiElement.id" @views.html.origo.core.tags._attributes(attributes)/>
+<label id="@element.id" @views.html.origo.core.tags._attributes(attributes)/>
 }

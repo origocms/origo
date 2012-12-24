@@ -2,7 +2,7 @@ package models.origo.core;
 
 import main.origo.core.Node;
 import main.origo.core.helpers.UIElementHelper;
-import main.origo.core.ui.UIElement;
+import main.origo.core.ui.Element;
 import play.data.validation.Constraints;
 import play.db.jpa.JPA;
 
@@ -38,17 +38,17 @@ public final class RootNode implements Node {
      * Only kept to make sure all elements added to the HEAD region are unique (we don't want duplicate javascript or css resources).
      */
     @Transient
-    private Map<String, UIElement> headElement = new HashMap<String, UIElement>();
+    private Map<String, Element> headElement = new HashMap<String, Element>();
     /**
      * Only kept to make sure all scripts added to the bottom of PAGE are unique (we don't want duplicate javascript here either).
      */
     @Transient
-    private Map<String, UIElement> tailElement = new HashMap<String, UIElement>();
+    private Map<String, Element> tailElement = new HashMap<String, Element>();
     /**
      * A list of UIElements for each region on the page. The key is the region name.
      */
     @Transient
-    private Map<String, List<UIElement>> uiElements = new HashMap<String, List<UIElement>>();
+    private Map<String, List<Element>> uiElements = new HashMap<String, List<Element>>();
 
     private RootNode() {
     }
@@ -99,93 +99,93 @@ public final class RootNode implements Node {
 
     /* Interface methods */
     @Override
-    public List<UIElement> getUIElements(String region) {
+    public List<Element> getUIElements(String region) {
         return this.uiElements.get(region.toLowerCase());
     }
 
     @Override
-    public UIElement addHeadUIElement(UIElement uiElement) {
-        return addHeadUIElement(uiElement, false);
+    public Element addHeadUIElement(Element element) {
+        return addHeadUIElement(element, false);
     }
 
     @Override
-    public UIElement addTailUIElement(UIElement uiElement) {
-        return addTailUIElement(uiElement, false);
+    public Element addTailUIElement(Element element) {
+        return addTailUIElement(element, false);
     }
 
     @Override
-    public UIElement addUIElement(UIElement uiElement) {
-        return addUIElement(uiElement, false);
+    public Element addUIElement(Element element) {
+        return addUIElement(element, false);
     }
 
     @Override
-    public UIElement addHeadUIElement(UIElement uiElement, boolean reorderElementsBelow) {
-        String elementKey = String.valueOf(uiElement.hashCode());
+    public Element addHeadUIElement(Element element, boolean reorderElementsBelow) {
+        String elementKey = String.valueOf(element.hashCode());
         if (headElement.containsKey(elementKey)) {
             return headElement.get(elementKey);
         } else {
-            headElement.put(elementKey, uiElement);
-            return addUIElement(uiElement, reorderElementsBelow, HEAD, uiElement.getWeight());
+            headElement.put(elementKey, element);
+            return addUIElement(element, reorderElementsBelow, HEAD, element.getWeight());
         }
     }
 
     @Override
-    public UIElement addTailUIElement(UIElement uiElement, boolean reorderElementsBelow) {
-        String elementKey = String.valueOf(uiElement.hashCode());
+    public Element addTailUIElement(Element element, boolean reorderElementsBelow) {
+        String elementKey = String.valueOf(element.hashCode());
         if (tailElement.containsKey(elementKey)) {
             return tailElement.get(elementKey);
         } else {
-            tailElement.put(elementKey, uiElement);
-            return addUIElement(uiElement, reorderElementsBelow, TAIL, uiElement.getWeight());
+            tailElement.put(elementKey, element);
+            return addUIElement(element, reorderElementsBelow, TAIL, element.getWeight());
         }
     }
 
     @Override
-    public UIElement addUIElement(UIElement uiElement, boolean reorderElementsBelow) {
-        Meta meta = Meta.findWithNodeIdAndSpecificVersion(nodeId, version, uiElement.id);
+    public Element addUIElement(Element element, boolean reorderElementsBelow) {
+        Meta meta = Meta.findWithNodeIdAndSpecificVersion(nodeId, version, element.id);
         if (meta == null) {
             meta = Meta.defaultMeta();
         }
 
         String regionKey = meta.region.toLowerCase();
-        return addUIElement(uiElement, reorderElementsBelow, regionKey, meta.weight.intValue());
+        return addUIElement(element, reorderElementsBelow, regionKey, meta.weight.intValue());
     }
 
-    private UIElement addUIElement(UIElement uiElement, boolean reorderElementsBelow, String regionKey, int weight) {
+    private Element addUIElement(Element element, boolean reorderElementsBelow, String regionKey, int weight) {
         if (!uiElements.containsKey(regionKey)) {
-            uiElements.put(regionKey, new ArrayList<UIElement>());
+            uiElements.put(regionKey, new ArrayList<Element>());
         }
-        uiElement.setWeight(weight);
-        uiElements.get(regionKey).add(uiElement);
+        element.setWeight(weight);
+        uiElements.get(regionKey).add(element);
         if (reorderElementsBelow) {
-            UIElementHelper.repositionUIElements(uiElements.get(regionKey), uiElement);
+            UIElementHelper.repositionUIElements(uiElements.get(regionKey), element);
         }
         UIElementHelper.reorderUIElements(uiElements.get(regionKey));
-        return uiElement;
+        return element;
     }
 
     @Override
-    public boolean removeHeadUIElement(UIElement uiElement) {
-        return removeUIElement(uiElement, HEAD);
+    public boolean removeHeadUIElement(Element element) {
+        return removeUIElement(element, HEAD);
     }
 
     @Override
-    public boolean removeTailUIElement(UIElement uiElement) {
-        return removeUIElement(uiElement, TAIL);
+    public boolean removeTailUIElement(Element element) {
+        return removeUIElement(element, TAIL);
     }
 
     @Override
-    public boolean removeUIElement(UIElement uiElement) {
-        Meta meta = Meta.findWithNodeIdAndSpecificVersion(nodeId, version, uiElement.id);
+    public boolean removeUIElement(Element element) {
+        Meta meta = Meta.findWithNodeIdAndSpecificVersion(nodeId, version, element.id);
         if (meta == null) {
             meta = Meta.defaultMeta();
         }
         String regionKey = meta.region.toLowerCase();
-        return removeUIElement(uiElement, regionKey);
+        return removeUIElement(element, regionKey);
     }
 
-    private boolean removeUIElement(UIElement uiElement, String regionKey) {
-        if (uiElements.get(regionKey).remove(uiElement)) {
+    private boolean removeUIElement(Element element, String regionKey) {
+        if (uiElements.get(regionKey).remove(element)) {
             UIElementHelper.reorderUIElements(uiElements.get(regionKey));
             return true;
         }
@@ -198,9 +198,9 @@ public final class RootNode implements Node {
     }
 
     private static void initializeNode(RootNode node) {
-        node.uiElements = new HashMap<String, List<UIElement>>();
-        node.uiElements.put(HEAD, new ArrayList<UIElement>());
-        node.headElement = new HashMap<String, UIElement>();
+        node.uiElements = new HashMap<String, List<Element>>();
+        node.uiElements.put(HEAD, new ArrayList<Element>());
+        node.headElement = new HashMap<String, Element>();
     }
 
 

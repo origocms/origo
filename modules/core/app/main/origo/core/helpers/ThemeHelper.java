@@ -8,9 +8,9 @@ import main.origo.core.Node;
 import main.origo.core.Themes;
 import main.origo.core.annotations.Decorates;
 import main.origo.core.annotations.ThemeVariant;
+import main.origo.core.ui.Element;
 import main.origo.core.ui.RenderedNode;
 import main.origo.core.ui.RenderingContext;
-import main.origo.core.ui.UIElement;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
 import play.api.templates.Html;
@@ -29,39 +29,34 @@ public class ThemeHelper {
         renderedNode.title(node.getTitle());
         RenderingContext renderingContext = new RenderingContext(themeVariant, node);
         for (String region : node.getRegions()) {
-            for (UIElement uiElement : node.getUIElements(region)) {
-                Html decoratedContent = decorate(uiElement, renderingContext);
-                switch (uiElement.getType()) {
-                    case UIElement.META: {
-                        if (Node.HEAD.equalsIgnoreCase(region)) {
-                            renderedNode.addMeta(decoratedContent);
-                        } else {
-                            throw new RuntimeException("META is not allowed outside of head");
-                        }
+            for (Element element : node.getUIElements(region)) {
+                Html decoratedContent = decorate(element, renderingContext);
+                if (element instanceof Element.Meta) {
+                    if (Node.HEAD.equalsIgnoreCase(region)) {
+                        renderedNode.addMeta(decoratedContent);
+                    } else {
+                        throw new RuntimeException("META is not allowed outside of head");
                     }
-                    case UIElement.LINK: {
-                        if (Node.HEAD.equalsIgnoreCase(region)) {
-                            renderedNode.addLink(decoratedContent);
-                        } else {
-                            throw new RuntimeException("LINK is not allowed outside of head");
-                        }
+                } else if (element instanceof Element.Link) {
+                    if (Node.HEAD.equalsIgnoreCase(region)) {
+                        renderedNode.addLink(decoratedContent);
+                    } else {
+                        throw new RuntimeException("LINK is not allowed outside of head");
                     }
-                    case UIElement.SCRIPT: {
-                        if (Node.TAIL.equalsIgnoreCase(region)) {
-                            renderedNode.addScript(decoratedContent);
-                        } else {
-                            renderedNode.add(region, decoratedContent);
-                        }
-                    }
-                    case UIElement.STYLE: {
-                        if (Node.HEAD.equalsIgnoreCase(region)) {
-                            renderedNode.addStyle(decoratedContent);
-                        } else {
-                            renderedNode.add(region, decoratedContent);
-                        }
-                    }
-                    default:
+                } else if (element instanceof Element.Script) {
+                    if (Node.TAIL.equalsIgnoreCase(region)) {
+                        renderedNode.addScript(decoratedContent);
+                    } else {
                         renderedNode.add(region, decoratedContent);
+                    }
+                } else if (element instanceof Element.Style) {
+                    if (Node.HEAD.equalsIgnoreCase(region)) {
+                        renderedNode.addStyle(decoratedContent);
+                    } else {
+                        renderedNode.add(region, decoratedContent);
+                    }
+                } else {
+                    renderedNode.add(region, decoratedContent);
                 }
             }
         }
@@ -83,26 +78,26 @@ public class ThemeHelper {
         renderedNode.regions(regions);
     }
 
-    public static Html decorate(UIElement uiElement, RenderingContext renderingContext) {
-        Map<String, CachedDecorator> decorators = Themes.getDecoratorsForTheme(renderingContext.getThemeVariant().themeId);
-        renderingContext.nest(uiElement);
+    public static Html decorate(Element element, RenderingContext renderingContext) {
+        Map<Class<? extends Element>, CachedDecorator> decorators = Themes.getDecoratorsForTheme(renderingContext.getThemeVariant().themeId);
+        renderingContext.nest(element);
         Html decoratedOutput = null;
-        if (decorators.containsKey(uiElement.getType())) {
-            CachedDecorator decorator = decorators.get(uiElement.getType());
+        if (decorators.containsKey(element.getClass())) {
+            CachedDecorator decorator = decorators.get(element.getClass());
             try {
-                decoratedOutput = (Html) decorator.method.invoke(null, new Decorates.Context(uiElement, renderingContext));
+                decoratedOutput = (Html) decorator.method.invoke(null, new Decorates.Context(element, renderingContext));
             } catch (Throwable e) {
                 throw new RuntimeException("", e);
             }
         }
         if (decoratedOutput == null) {
-            decoratedOutput = DefaultDecorator.decorate(uiElement, renderingContext);
+            decoratedOutput = element.decorate(renderingContext);
         }
         renderingContext.unNest();
         return decoratedOutput;
     }
 
-    public static Html decorateChildren(UIElement parent, RenderingContext renderingContext) {
+    public static Html decorateChildren(Element parent, RenderingContext renderingContext) {
         Html decoratedOutput;
         if (parent.hasBody()) {
             decoratedOutput = parent.getBody();
@@ -111,7 +106,7 @@ public class ThemeHelper {
         }
         if (parent.hasChildren()) {
             renderingContext.nest(parent);
-            for (UIElement childElement : parent.getChildren()) {
+            for (Element childElement : parent.getChildren()) {
                 decoratedOutput.$plus(decorate(childElement, renderingContext));
             }
             renderingContext.unNest();

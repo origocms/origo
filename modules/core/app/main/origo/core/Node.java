@@ -1,6 +1,6 @@
 package main.origo.core;
 
-import main.origo.core.ui.UIElement;
+import main.origo.core.ui.Element;
 
 import java.util.Date;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.Set;
  *
  * @see main.origo.core.annotations.Provides
  * @see main.origo.core.annotations.ThemeVariant
- * @see UIElement
+ * @see main.origo.core.ui.Element
  */
 public interface Node {
 
@@ -77,87 +77,87 @@ public interface Node {
      * @param region the area of the screen where this element should be rendered
      * @return all uiElements for the region
      */
-    List<UIElement> getUIElements(String region);
+    List<Element> getUIElements(String region);
 
     /**
      * Add an element that should be rendered in the head region of the page. The head region always exists.
      *
-     * @param uiElement the element to be rendered
-     * @return the newly added UIElement
+     * @param element the element to be rendered
+     * @return the newly added Element
      * @see main.origo.core.annotations.ThemeVariant
      */
-    UIElement addHeadUIElement(UIElement uiElement);
+    Element addHeadUIElement(Element element);
 
     /**
      * Add an element that should be rendered in the tail of the page. The head region always exists.
      *
-     * @param uiElement the element to be rendered
-     * @return the newly added UIElement
+     * @param element the element to be rendered
+     * @return the newly added Element
      * @see main.origo.core.annotations.ThemeVariant
      */
-    UIElement addTailUIElement(UIElement uiElement);
+    Element addTailUIElement(Element element);
 
     /**
      * Add an element that should be rendered on the page. Regions are determined by the theme variant used.
      *
-     * @param uiElement the element to be rendered
-     * @return the newly added UIElement
+     * @param element the element to be rendered
+     * @return the newly added Element
      * @see main.origo.core.annotations.ThemeVariant
      */
-    UIElement addUIElement(UIElement uiElement);
+    Element addUIElement(Element element);
 
     /**
      * Add an element that should be rendered in the head region of the page. The head region always exists.
      *
-     * @param uiElement            the element to be rendered
+     * @param element            the element to be rendered
      * @param reorderElementsBelow if true then all elements below this new element will be reordered according to their individual weight
-     * @return the newly added UIElement
+     * @return the newly added Element
      * @see main.origo.core.annotations.ThemeVariant
      */
-    UIElement addHeadUIElement(UIElement uiElement, boolean reorderElementsBelow);
+    Element addHeadUIElement(Element element, boolean reorderElementsBelow);
 
     /**
      * Add an element that should be rendered in the tail of the page. The head region always exists.
      *
-     * @param uiElement            the element to be rendered
+     * @param element            the element to be rendered
      * @param reorderElementsBelow if true then all elements below this new element will be reordered according to their individual weight
-     * @return the newly added UIElement
+     * @return the newly added Element
      * @see main.origo.core.annotations.ThemeVariant
      */
-    UIElement addTailUIElement(UIElement uiElement, boolean reorderElementsBelow);
+    Element addTailUIElement(Element element, boolean reorderElementsBelow);
 
     /**
      * Add an element that should be rendered on the page. Regions are determined by the theme variant used.
      *
-     * @param uiElement            the element to be rendered
+     * @param element            the element to be rendered
      * @param reorderElementsBelow if true then all elements below this new element will be reordered according to their individual weight
-     * @return the newly added UIElement
+     * @return the newly added Element
      * @see main.origo.core.annotations.ThemeVariant
      */
-    UIElement addUIElement(UIElement uiElement, boolean reorderElementsBelow);
+    Element addUIElement(Element element, boolean reorderElementsBelow);
 
     /**
      * Removes an element so it is not rendered in the head region of the page. The head region always exists.
      *
-     * @param uiElement the element to be rendered
-     * @return if an object matching the region and the uiElement could be found and removed
+     * @param element the element to be rendered
+     * @return if an object matching the region and the element could be found and removed
      */
-    boolean removeHeadUIElement(UIElement uiElement);
+    boolean removeHeadUIElement(Element element);
 
     /**
      * Removes an element so it is not rendered in the tail of the page. The head region always exists.
      *
-     * @param uiElement the element to be rendered
-     * @return if an object matching the region and the uiElement could be found and removed
+     * @param element the element to be rendered
+     * @return if an object matching the region and the element could be found and removed
      */
-    boolean removeTailUIElement(UIElement uiElement);
+    boolean removeTailUIElement(Element element);
 
     /**
      * Removes an element so it is not rendered. Will force a reordering of all elements below.
      *
-     * @param uiElement the element to be rendered
-     * @return if an object matching the region and the uiElement could be found and removed
+     * @param element the element to be rendered
+     * @return if an object matching the region and the element could be found and removed
      */
-    boolean removeUIElement(UIElement uiElement);
+    boolean removeUIElement(Element element);
 
 }

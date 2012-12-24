@@ -19,6 +19,7 @@ public class AnnotationProcessor {
 
     public static void initialize() {
         InterceptorRepository.invalidate();
+        Themes.invalidate();
         scan();
         if (Logger.isDebugEnabled()) {
             StringBuilder sb = new StringBuilder();

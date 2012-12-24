@@ -1,6 +1,6 @@
 package main.origo.core.annotations;
 
-import main.origo.core.ui.UIElement;
+import main.origo.core.ui.Element;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,15 +11,15 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 public @interface OnInsertElement {
 
-    String with() default "";
+    Class<? extends Element> with();
 
     boolean after() default false;
 
     public static class Context {
-        public UIElement parent;
-        public UIElement element;
+        public Element parent;
+        public Element element;
 
-        public Context(UIElement parent, UIElement element) {
+        public Context(Element parent, Element element) {
             this.parent = parent;
             this.element = element;
         }

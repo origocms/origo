@@ -5,7 +5,7 @@ import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.Provides;
 import main.origo.core.annotations.Types;
-import main.origo.core.ui.UIElement;
+import main.origo.core.ui.Element;
 import models.origo.core.Content;
 
 /**
@@ -22,8 +22,8 @@ public class TinyMCEEditorProvider {
         String jqueryTinyMCEScript = routes.Assets.at("javascripts/tiny_mce/jquery.tiny_mce.js").url();
         if (jqueryTinyMCEScript != null) {
             String tinyMCEScript = routes.Assets.at("javascripts/tiny_mce/tiny_mce.js").url();
-            context.node.addTailUIElement(new UIElement(UIElement.SCRIPT, 9999).addAttribute("type", "text/javascript").addAttribute("src", jqueryTinyMCEScript));
-            context.node.addTailUIElement(new UIElement(UIElement.SCRIPT, 10000).addAttribute("type", "text/javascript").
+            context.node.addTailUIElement(new Element.Script().setWeight(9999).addAttribute("type", "text/javascript").addAttribute("src", jqueryTinyMCEScript));
+            context.node.addTailUIElement(new Element.Script().setWeight(10000).addAttribute("type", "text/javascript").
                     setBody(
                             "$().ready(function() {\n" +
                                     "  $('textarea.tinymce').tinymce({\n" +
@@ -52,14 +52,14 @@ public class TinyMCEEditorProvider {
     }
 
     @Provides(type = Types.RICHTEXT_EDITOR, with = EDITOR_TYPE)
-    public static UIElement createEditor(Provides.Context context) {
-        return new UIElement(UIElement.INPUT_TEXTAREA).addAttribute("class", "tinymce");
+    public static Element createEditor(Provides.Context context) {
+        return new Element.InputTextArea().addAttribute("class", "tinymce");
     }
 
     @OnLoad(type = Types.RICHTEXT_EDITOR, with = EDITOR_TYPE)
     public static void addContent(OnLoad.Context context) {
         Content content = (Content) context.args.get("content");
-        context.uiElement.setBody(content.value);
+        context.element.setBody(content.value);
     }
 
 }

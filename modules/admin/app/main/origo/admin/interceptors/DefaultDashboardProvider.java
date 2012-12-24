@@ -9,7 +9,7 @@ import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.Provides;
 import main.origo.core.annotations.Relationship;
 import main.origo.core.annotations.Types;
-import main.origo.core.ui.UIElement;
+import main.origo.core.ui.Element;
 import models.origo.admin.AdminPage;
 import models.origo.core.RootNode;
 
@@ -37,7 +37,7 @@ public class DefaultDashboardProvider {
     }
 
     @Provides(type = Admin.DASHBOARD, with = Admin.FRONT_PAGE_TYPE)
-    public static UIElement addFrontPageContent(Provides.Context context) {
+    public static Element addFrontPageContent(Provides.Context context) {
         return AdminHelper.createBasicDashboard();
     }
 
@@ -47,29 +47,29 @@ public class DefaultDashboardProvider {
 
     @Provides(type = Admin.DASHBOARD_ITEM, with = Admin.CONTENT_PAGE_TYPE)
     @Relationship(parent = Admin.FRONT_PAGE_TYPE)
-    public static UIElement addContentDashboardItemToFrontPage(Provides.Context context) {
+    public static Element addContentDashboardItemToFrontPage(Provides.Context context) {
         return AdminHelper.createBasicDashboardItem().
-                addChild(new UIElement(UIElement.PANEL, 10).
-                        addChild(new UIElement(UIElement.HEADING4, 10, "Content").addAttribute("class", "title")).
-                        addChild(new UIElement(UIElement.ANCHOR, 10, "View").addAttribute("href", DashboardHelper.getDashBoardURL(Admin.CONTENT_PAGE_TYPE))));
+                addChild(new Element.Panel().setWeight(10).
+                        addChild(new Element.H4().setWeight(10).setBody("Content").addAttribute("class", "title")).
+                        addChild(new Element.Anchor().setWeight(10).setBody("View").addAttribute("href", DashboardHelper.getDashBoardURL(Admin.CONTENT_PAGE_TYPE))));
     }
 
     @Provides(type = Admin.DASHBOARD_ITEM, with = Admin.USER_PAGE_TYPE)
     @Relationship(parent = Admin.FRONT_PAGE_TYPE)
-    public static UIElement addUserDashboardItemToFrontPage(Provides.Context context) {
+    public static Element addUserDashboardItemToFrontPage(Provides.Context context) {
         return AdminHelper.createBasicDashboardItem().
-                addChild(new UIElement(UIElement.PANEL, 20).
-                        addChild(new UIElement(UIElement.HEADING4, 10, "User Management").addAttribute("class", "title")).
-                        addChild(new UIElement(UIElement.ANCHOR, 10, "View").addAttribute("href", DashboardHelper.getDashBoardURL(Admin.USER_PAGE_TYPE))));
+                addChild(new Element.Panel().setWeight(20).
+                        addChild(new Element.H4().setWeight(10).setBody("User Management").addAttribute("class", "title")).
+                        addChild(new Element.Anchor().setWeight(10).setBody("View").addAttribute("href", DashboardHelper.getDashBoardURL(Admin.USER_PAGE_TYPE))));
     }
 
     @Provides(type = Admin.DASHBOARD_ITEM, with = Admin.SETTINGS_PAGE_TYPE)
     @Relationship(parent = Admin.FRONT_PAGE_TYPE)
-    public static UIElement addSettingsDashboardItemToFrontPage(Provides.Context context) {
+    public static Element addSettingsDashboardItemToFrontPage(Provides.Context context) {
         return AdminHelper.createBasicDashboardItem().
-                addChild(new UIElement(UIElement.PANEL, 100).
-                        addChild(new UIElement(UIElement.HEADING4, 10, "Settings").addAttribute("class", "title")).
-                        addChild(new UIElement(UIElement.ANCHOR, 10, "View").addAttribute("href", DashboardHelper.getDashBoardURL(Admin.SETTINGS_PAGE_TYPE))));
+                addChild(new Element.Panel().setWeight(100).
+                        addChild(new Element.H4().setWeight(10).setBody("Settings").addAttribute("class", "title")).
+                        addChild(new Element.Anchor().setWeight(10).setBody("View").addAttribute("href", DashboardHelper.getDashBoardURL(Admin.SETTINGS_PAGE_TYPE))));
     }
 
     /*
@@ -89,7 +89,7 @@ public class DefaultDashboardProvider {
 
     @Provides(type = Admin.DASHBOARD, with = Admin.CONTENT_PAGE_TYPE)
     @Relationship(parent = Admin.FRONT_PAGE_TYPE)
-    public static UIElement addContentDashboardContent(Provides.Context context) {
+    public static Element addContentDashboardContent(Provides.Context context) {
         return AdminHelper.createBasicDashboard();
     }
 
@@ -111,7 +111,7 @@ public class DefaultDashboardProvider {
 
     @Provides(type = Admin.DASHBOARD, with = Admin.SETTINGS_PAGE_TYPE)
     @Relationship(parent = Admin.FRONT_PAGE_TYPE)
-    public static UIElement addSettingsDashboardContent(Provides.Context context) {
+    public static Element addSettingsDashboardContent(Provides.Context context) {
         return AdminHelper.createBasicDashboard();
     }
 
@@ -132,7 +132,7 @@ public class DefaultDashboardProvider {
 
     @Provides(type = Admin.DASHBOARD, with = Admin.USER_PAGE_TYPE)
     @Relationship(parent = Admin.FRONT_PAGE_TYPE)
-    public static UIElement addUserDashboardContent(Provides.Context context) {
+    public static Element addUserDashboardContent(Provides.Context context) {
         return AdminHelper.createBasicDashboard();
     }
 }

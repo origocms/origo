@@ -9,12 +9,12 @@ public class RenderingContext {
 
     private CachedThemeVariant themeVariant;
     private final Node rootNode;
-    private final Stack<UIElement> parents;
+    private final Stack<Element> parents;
 
     public RenderingContext(CachedThemeVariant themeVariant, Node rootNode) {
         this.themeVariant = themeVariant;
         this.rootNode = rootNode;
-        this.parents = new Stack<UIElement>();
+        this.parents = new Stack<Element>();
     }
 
     public CachedThemeVariant getThemeVariant() {
@@ -25,11 +25,11 @@ public class RenderingContext {
         return rootNode;
     }
 
-    public UIElement getParent() {
+    public Element getParent() {
         return parents.peek();
     }
 
-    public void nest(UIElement parent) {
+    public void nest(Element parent) {
         parents.push(parent);
     }
 

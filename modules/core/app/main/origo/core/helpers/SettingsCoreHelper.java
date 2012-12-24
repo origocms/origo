@@ -21,7 +21,7 @@ public class SettingsCoreHelper {
 
         public static final String DEFAULT_FORM_TYPE = "default_form_type";
         public static final String SUBMIT_HANDLER = "submit_handler";
-        public static final String RICHTEXT_EDITOR_TYPE = "admin_editor_type";
+        public static final String RICHTEXT_EDITOR_TYPE = "richtext_editor_type";
     }
 
     public static String getBaseUrl() {

@@ -1,7 +1,7 @@
 package main.origo.core.annotations.forms;
 
 import main.origo.core.Node;
-import main.origo.core.ui.UIElement;
+import main.origo.core.ui.Element;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -22,7 +22,7 @@ public @interface OnLoadForm {
         public String withType;
         public Node node;
         public Map<String, Object> args;
-        public UIElement formElement;
+        public Element formElement;
 
         public Context(String withType, Node node, Map<String, Object> args) {
             this.withType = withType;
@@ -30,7 +30,7 @@ public @interface OnLoadForm {
             this.args = args;
         }
 
-        public Context(String withType, Node node, Map<String, Object> args, UIElement formElement) {
+        public Context(String withType, Node node, Map<String, Object> args, Element formElement) {
             this.withType = withType;
             this.node = node;
             this.args = args;
