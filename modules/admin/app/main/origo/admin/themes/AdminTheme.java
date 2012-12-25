@@ -26,7 +26,7 @@ public class AdminTheme {
         return Controller.ok(variant_main_only.render(context));
     }
 
-    private static String defaultDashboardClasses() {
+    public static String defaultDashboardClasses() {
         return "dashboard";
     }
 

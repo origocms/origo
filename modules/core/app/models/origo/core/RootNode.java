@@ -2,7 +2,7 @@ package models.origo.core;
 
 import com.google.common.collect.Maps;
 import main.origo.core.Node;
-import main.origo.core.helpers.UIElementHelper;
+import main.origo.core.helpers.ElementHelper;
 import main.origo.core.ui.Element;
 import play.data.validation.Constraints;
 import play.db.jpa.JPA;
@@ -157,9 +157,9 @@ public final class RootNode implements Node {
         element.setWeight(weight);
         uiElements.get(regionKey).add(element);
         if (reorderElementsBelow) {
-            UIElementHelper.repositionUIElements(uiElements.get(regionKey), element);
+            ElementHelper.repositionUIElements(uiElements.get(regionKey), element);
         }
-        UIElementHelper.reorderUIElements(uiElements.get(regionKey));
+        ElementHelper.reorderUIElements(uiElements.get(regionKey));
         return element;
     }
 
@@ -185,7 +185,7 @@ public final class RootNode implements Node {
 
     private boolean removeUIElement(Element element, String regionKey) {
         if (uiElements.get(regionKey).remove(element)) {
-            UIElementHelper.reorderUIElements(uiElements.get(regionKey));
+            ElementHelper.reorderUIElements(uiElements.get(regionKey));
             return true;
         }
         return false;
