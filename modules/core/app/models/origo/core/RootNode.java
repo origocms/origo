@@ -1,5 +1,6 @@
 package models.origo.core;
 
+import com.google.common.collect.Maps;
 import main.origo.core.Node;
 import main.origo.core.helpers.UIElementHelper;
 import main.origo.core.ui.Element;
@@ -38,17 +39,17 @@ public final class RootNode implements Node {
      * Only kept to make sure all elements added to the HEAD region are unique (we don't want duplicate javascript or css resources).
      */
     @Transient
-    private Map<String, Element> headElement = new HashMap<String, Element>();
+    private Map<String, Element> headElement = Maps.newHashMap();
     /**
      * Only kept to make sure all scripts added to the bottom of PAGE are unique (we don't want duplicate javascript here either).
      */
     @Transient
-    private Map<String, Element> tailElement = new HashMap<String, Element>();
+    private Map<String, Element> tailElement = Maps.newHashMap();
     /**
      * A list of UIElements for each region on the page. The key is the region name.
      */
     @Transient
-    private Map<String, List<Element>> uiElements = new HashMap<String, List<Element>>();
+    private Map<String, List<Element>> uiElements = Maps.newHashMap();
 
     private RootNode() {
     }
@@ -123,10 +124,9 @@ public final class RootNode implements Node {
         String elementKey = String.valueOf(element.hashCode());
         if (headElement.containsKey(elementKey)) {
             return headElement.get(elementKey);
-        } else {
-            headElement.put(elementKey, element);
-            return addUIElement(element, reorderElementsBelow, HEAD, element.getWeight());
         }
+        headElement.put(elementKey, element);
+        return addUIElement(element, reorderElementsBelow, HEAD, element.getWeight());
     }
 
     @Override
@@ -134,10 +134,9 @@ public final class RootNode implements Node {
         String elementKey = String.valueOf(element.hashCode());
         if (tailElement.containsKey(elementKey)) {
             return tailElement.get(elementKey);
-        } else {
-            tailElement.put(elementKey, element);
-            return addUIElement(element, reorderElementsBelow, TAIL, element.getWeight());
         }
+        tailElement.put(elementKey, element);
+        return addUIElement(element, reorderElementsBelow, TAIL, element.getWeight());
     }
 
     @Override

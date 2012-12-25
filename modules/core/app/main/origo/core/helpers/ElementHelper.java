@@ -16,7 +16,7 @@ import java.util.Map;
 public class ElementHelper {
 
     public static void triggerBeforeInsert(Element parent, Element element) {
-        List<CachedAnnotation> interceptors = findOnInsertInterceptors(element.getType(), true);
+        List<CachedAnnotation> interceptors = findOnInsertInterceptors(element.getClass(), true);
         for (CachedAnnotation annotation : interceptors) {
             try {
                 //noinspection unchecked
@@ -29,7 +29,7 @@ public class ElementHelper {
     }
 
     public static void triggerAfterInsert(Element parent, Element element) {
-        List<CachedAnnotation> interceptors = findOnInsertInterceptors(element.getType(), false);
+        List<CachedAnnotation> interceptors = findOnInsertInterceptors(element.getClass(), false);
         for (CachedAnnotation annotation : interceptors) {
             try {
                 //noinspection unchecked
@@ -42,7 +42,7 @@ public class ElementHelper {
     }
 
     public static void triggerBeforeRemove(Element parent, Element element) {
-        List<CachedAnnotation> interceptors = findOnInsertInterceptors(element.getType(), true);
+        List<CachedAnnotation> interceptors = findOnInsertInterceptors(element.getClass(), true);
         for (CachedAnnotation annotation : interceptors) {
             try {
                 //noinspection unchecked
@@ -67,12 +67,12 @@ public class ElementHelper {
         }
     }
 
-    private static List<CachedAnnotation> findOnInsertInterceptors(final String withType, final boolean before) {
+    private static List<CachedAnnotation> findOnInsertInterceptors(final Class withType, final boolean before) {
         return InterceptorRepository.getInterceptor(OnInsertElement.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation cachedAnnotation) {
                 OnInsertElement annotation = (OnInsertElement) cachedAnnotation.annotation;
-                return before != annotation.after() && (annotation.with().equals(withType) || StringUtils.isBlank(withType));
+                return before != annotation.after() && (annotation.with().equals(withType) || withType == null);
             }
         });
     }

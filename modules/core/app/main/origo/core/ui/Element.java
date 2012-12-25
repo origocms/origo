@@ -7,11 +7,9 @@ import org.apache.commons.lang3.StringUtils;
 import play.api.templates.Html;
 import play.api.templates.HtmlFormat;
 import views.html.origo.core.decorators.*;
+import views.html.origo.core.decorators.forms.*;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
 
 public class Element {
 
@@ -519,10 +517,12 @@ public class Element {
     private Class inputType;
 
     protected Element(String type) {
+        this.id = UUID.randomUUID().toString();
         this.type = type;
     }
 
     protected Element(String type, Class t) {
+        this.id = UUID.randomUUID().toString();
         this.type = type;
         this.inputType = t;
     }
@@ -649,7 +649,7 @@ public class Element {
         result = 31 * result + (attributes != null ? attributes.size() : 0);
         result = 31 * result + weight;
         result = 31 * result + (children != null ? children.size() : 0);
-        result = 31 * result + (body != null ? body.hashCode() : 0);
+        result = 31 * result + (body != null ? body.body().length() : 0);
         return result;
     }
 

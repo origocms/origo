@@ -1,4 +1,4 @@
-package main.origo.admin.interceptors;
+package main.origo.core.interceptors.forms;
 
 import controllers.routes;
 import main.origo.core.annotations.*;
@@ -6,7 +6,7 @@ import main.origo.core.ui.Element;
 import main.origo.core.ui.RenderingContext;
 import models.origo.core.Content;
 import play.api.templates.Html;
-import views.html.origo.admin.decorators.forms.wysi.wysihtml5;
+import views.html.origo.core.decorators.forms.wysi.wysihtml5;
 
 @Interceptor
 public class WysiHTML5EditorProvider {
@@ -35,7 +35,7 @@ public class WysiHTML5EditorProvider {
 
     @OnInsertElement(with = Element.InputTextArea.class)
     public static void insertToolbar(OnInsertElement.Context context) {
-        context.parent.addChild(new WysiHtml5EditorElement());
+        context.parent.addChild(new WysiHtml5EditorElement().setId(context.element.id));
     }
 
     @OnInsertElement(with = Element.InputTextArea.class, after = true)
@@ -52,13 +52,14 @@ public class WysiHTML5EditorProvider {
 
     @Provides(type = Types.RICHTEXT_EDITOR, with = EDITOR_TYPE)
     public static Element createEditor(Provides.Context context) {
-        return new Element.InputTextArea();
+        Content content = (Content) context.args.get("content");
+        return new Element.InputTextArea().setId(content.identifier);
     }
 
     @OnLoad(type = Types.RICHTEXT_EDITOR, with = EDITOR_TYPE)
     public static Element addContent(OnLoad.Context context) {
         Content content = (Content) context.args.get("content");
-        context.element.setBody(content.value);
+        context.element.setId(content.identifier).setBody(content.value);
         return null;
     }
 
