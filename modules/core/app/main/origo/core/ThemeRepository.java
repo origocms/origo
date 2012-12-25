@@ -2,6 +2,9 @@ package main.origo.core;
 
 import com.google.common.collect.Maps;
 import main.origo.core.helpers.SettingsCoreHelper;
+import main.origo.core.internal.CachedDecorator;
+import main.origo.core.internal.CachedTheme;
+import main.origo.core.internal.CachedThemeVariant;
 import main.origo.core.themes.DefaultTheme;
 import main.origo.core.ui.Element;
 import org.apache.commons.lang3.StringUtils;
@@ -15,7 +18,7 @@ import java.util.*;
  * Each rootNode has a chosen theme variant to use for rendering.
  * Decorators are applied to each Element a RootNode has before rendering.
  */
-public class Themes {
+public class ThemeRepository {
 
     /**
      * Collection of theme variants id's that a theme offers.

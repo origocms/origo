@@ -1,8 +1,8 @@
-package main.origo.core.helpers.forms;
+package main.origo.core.event.forms;
 
-import main.origo.core.CachedAnnotation;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.annotations.forms.SubmitState;
+import main.origo.core.internal.CachedAnnotation;
 import play.data.Form;
 import play.mvc.Result;
 
@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class SubmitStateHelper {
+public class SubmitStateEventGenerator {
 
     public static Result triggerInterceptor(String state, String withType, Form form) {
         return triggerInterceptor(state, withType, form, Collections.<String, Object>emptyMap());

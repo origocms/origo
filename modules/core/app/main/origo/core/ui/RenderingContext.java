@@ -1,7 +1,7 @@
 package main.origo.core.ui;
 
-import main.origo.core.CachedThemeVariant;
 import main.origo.core.Node;
+import main.origo.core.internal.CachedThemeVariant;
 
 import java.util.Stack;
 

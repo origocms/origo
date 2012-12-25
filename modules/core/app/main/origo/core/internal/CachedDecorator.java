@@ -1,4 +1,4 @@
-package main.origo.core;
+package main.origo.core.internal;
 
 import java.lang.reflect.Method;
 

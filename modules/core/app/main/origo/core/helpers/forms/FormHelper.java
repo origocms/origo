@@ -2,6 +2,8 @@ package main.origo.core.helpers.forms;
 
 import controllers.origo.core.routes;
 import main.origo.core.Node;
+import main.origo.core.event.forms.OnLoadFormEventGenerator;
+import main.origo.core.event.forms.ProvidesFormEventGenerator;
 import main.origo.core.helpers.SettingsCoreHelper;
 import main.origo.core.ui.Element;
 import play.api.mvc.Call;
@@ -18,12 +20,12 @@ public class FormHelper {
     }
 
     public static Element createFormElement(String formType, Node node, String nodeType) {
-        OnLoadFormHelper.triggerBeforeInterceptor(formType, node);
-        OnLoadFormHelper.triggerBeforeInterceptor(nodeType, node);
-        Element formElement = ProvidesFormHelper.triggerInterceptor(formType, node);
+        OnLoadFormEventGenerator.triggerBeforeInterceptor(formType, node);
+        OnLoadFormEventGenerator.triggerBeforeInterceptor(nodeType, node);
+        Element formElement = ProvidesFormEventGenerator.triggerInterceptor(formType, node);
         addNodeIdAndVersion(formElement, node);
-        OnLoadFormHelper.triggerAfterInterceptor(nodeType, node, formElement);
-        OnLoadFormHelper.triggerAfterInterceptor(formType, node, formElement);
+        OnLoadFormEventGenerator.triggerAfterInterceptor(nodeType, node, formElement);
+        OnLoadFormEventGenerator.triggerAfterInterceptor(formType, node, formElement);
         return formElement;
     }
 

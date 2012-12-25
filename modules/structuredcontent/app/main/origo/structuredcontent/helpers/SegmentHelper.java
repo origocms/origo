@@ -1,8 +1,8 @@
 package main.origo.structuredcontent.helpers;
 
 import main.origo.core.Node;
-import main.origo.core.helpers.OnLoadHelper;
-import main.origo.core.helpers.ProvidesHelper;
+import main.origo.core.event.OnLoadEventGenerator;
+import main.origo.core.event.ProvidesEventGenerator;
 import main.origo.core.ui.Element;
 import models.origo.structuredcontent.Segment;
 
@@ -16,15 +16,15 @@ public class SegmentHelper {
      * Convenience methods for hooks with SEGMENT type
      */
     public static Element triggerSegmentProvider(String withType, Node node, Segment segment) {
-        return ProvidesHelper.triggerInterceptor(TYPE_SEGMENT, withType, node, Collections.<String, Object>singletonMap("segment", segment));
+        return ProvidesEventGenerator.triggerInterceptor(TYPE_SEGMENT, withType, node, Collections.<String, Object>singletonMap("segment", segment));
     }
 
     public static void triggerBeforeSegmentLoaded(String nodeType, Node node, Segment segment) {
-        OnLoadHelper.triggerBeforeInterceptor(TYPE_SEGMENT, nodeType, node, Collections.<String, Object>singletonMap("segment", segment));
+        OnLoadEventGenerator.triggerBeforeInterceptor(TYPE_SEGMENT, nodeType, node, Collections.<String, Object>singletonMap("segment", segment));
     }
 
     public static void triggerAfterSegmentLoaded(String withType, Node node, Segment segment, Element element) {
-        OnLoadHelper.triggerAfterInterceptor(TYPE_SEGMENT, withType, node, Collections.<String, Object>singletonMap("segment", segment), element);
+        OnLoadEventGenerator.triggerAfterInterceptor(TYPE_SEGMENT, withType, node, Collections.<String, Object>singletonMap("segment", segment), element);
     }
 
 }

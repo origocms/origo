@@ -1,10 +1,10 @@
-package main.origo.core.helpers.forms;
+package main.origo.core.event.forms;
 
-import main.origo.core.CachedAnnotation;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.Node;
 import main.origo.core.annotations.forms.ProvidesForm;
 import main.origo.core.helpers.SettingsCoreHelper;
+import main.origo.core.internal.CachedAnnotation;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
 
@@ -17,7 +17,7 @@ import java.util.*;
  * @see main.origo.core.helpers.NodeHelper
  * @see ProvidesForm
  */
-public class ProvidesFormHelper {
+public class ProvidesFormEventGenerator {
 
     public static <T> T triggerInterceptor(String withType, Node node) {
         //noinspection unchecked

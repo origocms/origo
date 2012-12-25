@@ -2,7 +2,7 @@ package main.origo.core.ui;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import main.origo.core.CachedThemeVariant;
+import main.origo.core.internal.CachedThemeVariant;
 import play.api.templates.Html;
 
 import java.util.List;

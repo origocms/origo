@@ -1,11 +1,11 @@
-package main.origo.core.helpers;
+package main.origo.core.event;
 
 import com.google.common.collect.Maps;
-import main.origo.core.CachedAnnotation;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.Navigation;
 import main.origo.core.Node;
 import main.origo.core.annotations.Provides;
+import main.origo.core.internal.CachedAnnotation;
 import play.Logger;
 
 import java.util.HashSet;
@@ -17,10 +17,10 @@ import java.util.Set;
  * Helper to trigger \@Provides origo interceptors. Should not be used directly except in core and admin, use NodeHelper
  * instead when creating a new module.
  *
- * @see NodeHelper
+ * @see main.origo.core.helpers.NodeHelper
  * @see Provides
  */
-public class ProvidesHelper {
+public class ProvidesEventGenerator {
 
     public static <T> T triggerInterceptor(String providesType, String withType, Node node) {
         return triggerInterceptor(providesType, withType, node, Maps.<String, Object>newHashMap());

@@ -1,4 +1,4 @@
-package main.origo.core;
+package main.origo.core.internal;
 
 import com.google.common.collect.Maps;
 import main.origo.core.ui.Element;

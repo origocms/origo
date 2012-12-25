@@ -3,6 +3,7 @@ package main.origo.core;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import main.origo.core.annotations.Relationship;
+import main.origo.core.internal.CachedAnnotation;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

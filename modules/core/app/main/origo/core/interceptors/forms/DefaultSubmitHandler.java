@@ -4,9 +4,9 @@ import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.forms.OnLoadForm;
 import main.origo.core.annotations.forms.SubmitHandler;
 import main.origo.core.annotations.forms.SubmitState;
-import main.origo.core.helpers.forms.OnSubmitHelper;
-import main.origo.core.helpers.forms.SubmitHandlerHelper;
-import main.origo.core.helpers.forms.SubmitStateHelper;
+import main.origo.core.event.forms.OnSubmitEventGenerator;
+import main.origo.core.event.forms.SubmitHandlerEventGenerator;
+import main.origo.core.event.forms.SubmitStateEventGenerator;
 import main.origo.core.ui.Element;
 import play.Logger;
 import play.data.DynamicForm;
@@ -33,14 +33,14 @@ public class DefaultSubmitHandler {
 
         // TODO: insert validation here
 
-        OnSubmitHelper.triggerInterceptors(withType, form);
+        OnSubmitEventGenerator.triggerInterceptors(withType, form);
 
-        return SubmitStateHelper.triggerInterceptor(SubmitState.SUCCESS, withType, form);
+        return SubmitStateEventGenerator.triggerInterceptor(SubmitState.SUCCESS, withType, form);
     }
 
     @OnLoadForm
     public static void addWithTypeField(OnLoadForm.Context context) {
-        if (DefaultSubmitHandler.class.isAssignableFrom(SubmitHandlerHelper.getActiveSubmitHandler())) {
+        if (DefaultSubmitHandler.class.isAssignableFrom(SubmitHandlerEventGenerator.getActiveSubmitHandler())) {
             context.formElement.addChild(new Element.InputHidden().addAttribute("name", WITH_TYPE).addAttribute("value", context.withType));
         }
     }

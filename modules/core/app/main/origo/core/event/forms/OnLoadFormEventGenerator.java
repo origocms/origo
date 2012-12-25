@@ -1,9 +1,9 @@
-package main.origo.core.helpers.forms;
+package main.origo.core.event.forms;
 
-import main.origo.core.CachedAnnotation;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.Node;
 import main.origo.core.annotations.forms.OnLoadForm;
+import main.origo.core.internal.CachedAnnotation;
 import main.origo.core.ui.Element;
 import org.apache.commons.lang3.StringUtils;
 
@@ -17,7 +17,7 @@ import java.util.Map;
  * @see main.origo.core.helpers.NodeHelper
  * @see main.origo.core.annotations.OnLoad
  */
-public class OnLoadFormHelper {
+public class OnLoadFormEventGenerator {
 
     public static void triggerBeforeInterceptor(String nodeType, Node node) {
         triggerBeforeInterceptor(nodeType, node, Collections.<String, Object>emptyMap());

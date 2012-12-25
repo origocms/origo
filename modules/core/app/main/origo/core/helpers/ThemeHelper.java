@@ -2,12 +2,12 @@ package main.origo.core.helpers;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import main.origo.core.CachedDecorator;
-import main.origo.core.CachedThemeVariant;
 import main.origo.core.Node;
-import main.origo.core.Themes;
+import main.origo.core.ThemeRepository;
 import main.origo.core.annotations.Decorates;
 import main.origo.core.annotations.ThemeVariant;
+import main.origo.core.internal.CachedDecorator;
+import main.origo.core.internal.CachedThemeVariant;
 import main.origo.core.ui.Element;
 import main.origo.core.ui.RenderedNode;
 import main.origo.core.ui.RenderingContext;
@@ -77,7 +77,7 @@ public class ThemeHelper {
     }
 
     public static Html decorate(Element element, RenderingContext renderingContext) {
-        Map<Class<? extends Element>, CachedDecorator> decorators = Themes.getDecoratorsForTheme(renderingContext.getThemeVariant().themeId);
+        Map<Class<? extends Element>, CachedDecorator> decorators = ThemeRepository.getDecoratorsForTheme(renderingContext.getThemeVariant().themeId);
         renderingContext.nest(element);
         Html decoratedOutput = null;
         if (decorators.containsKey(element.getClass())) {
@@ -113,14 +113,14 @@ public class ThemeHelper {
     }
 
     public static CachedThemeVariant loadTheme(Node node) {
-        CachedThemeVariant themeVariant = Themes.getThemeVariant(node.getThemeVariant());
+        CachedThemeVariant themeVariant = ThemeRepository.getThemeVariant(node.getThemeVariant());
         if (themeVariant == null) {
             String themeVariantId = SettingsCoreHelper.getThemeVariant();
             if (StringUtils.isEmpty(themeVariantId)) {
                 throw new RuntimeException("No theme set for node and no default theme variant set");
             }
             Logger.debug("Using default theme variant [" + themeVariantId + "]");
-            themeVariant = Themes.getThemeVariant(themeVariantId);
+            themeVariant = ThemeRepository.getThemeVariant(themeVariantId);
         }
         if (themeVariant == null) {
             // TODO: Add some sort of fallback for when a theme is removed

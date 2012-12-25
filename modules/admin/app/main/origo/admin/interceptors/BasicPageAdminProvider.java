@@ -2,9 +2,8 @@ package main.origo.admin.interceptors;
 
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.AdminHelper;
-import main.origo.core.CachedThemeVariant;
 import main.origo.core.Node;
-import main.origo.core.Themes;
+import main.origo.core.ThemeRepository;
 import main.origo.core.annotations.*;
 import main.origo.core.annotations.forms.OnLoadForm;
 import main.origo.core.annotations.forms.OnSubmit;
@@ -12,6 +11,7 @@ import main.origo.core.annotations.forms.SubmitState;
 import main.origo.core.helpers.SettingsCoreHelper;
 import main.origo.core.helpers.forms.EditorHelper;
 import main.origo.core.helpers.forms.FormHelper;
+import main.origo.core.internal.CachedThemeVariant;
 import main.origo.core.ui.Element;
 import models.origo.admin.AdminPage;
 import models.origo.core.BasicPage;
@@ -157,7 +157,7 @@ public class BasicPageAdminProvider {
         context.formElement.addChild(titleElement);
 
         Element themeInputSelectElement = new Element.InputSelect();
-        for (CachedThemeVariant themeVariant : Themes.getAvailableThemeVariants()) {
+        for (CachedThemeVariant themeVariant : ThemeRepository.getAvailableThemeVariants()) {
             Element optionElement = new Element.InputSelectOption().setBody(themeVariant.variantId);
             if (StringUtils.isEmpty(basicPage.rootNode.themeVariant)) {
                 if (themeVariant.variantId.equals(SettingsCoreHelper.getThemeVariant())) {

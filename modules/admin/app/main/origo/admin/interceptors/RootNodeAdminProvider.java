@@ -19,12 +19,12 @@ public class RootNodeAdminProvider {
         Integer version = FormHelper.getNodeVersion(data);
         RootNode oldRootNode = RootNode.findWithNodeIdAndSpecificVersion(nodeId, version);
         if (oldRootNode == null) {
-            throw new RuntimeException("Root node with id=\'" + nodeId + "\' does not exist");
+            throw new RuntimeException("Root node with id='" + nodeId + "' does not exist");
         }
 
         RootNode oldNodeVersion = RootNode.findLatestVersionWithNodeId(nodeId);
         if (!oldNodeVersion.version.equals(version)) {
-            throw new RuntimeException("Root node with id=\'" + nodeId + "\' and version =\'" + version + "\' has a newer version stored.");
+            throw new RuntimeException("Root node with id='" + nodeId + "' and version ='" + version + "' has a newer version stored.");
         }
     }
 

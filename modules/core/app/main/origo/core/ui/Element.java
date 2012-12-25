@@ -1,6 +1,7 @@
 package main.origo.core.ui;
 
 import com.google.common.collect.Lists;
+import main.origo.core.event.ElementEventGenerator;
 import main.origo.core.helpers.ElementHelper;
 import main.origo.core.helpers.ThemeHelper;
 import org.apache.commons.lang3.StringUtils;
@@ -589,16 +590,16 @@ public class Element {
     }
 
     public Element addChild(Element element) {
-        ElementHelper.triggerBeforeInsert(this, element);
+        ElementEventGenerator.triggerBeforeInsert(this, element);
         this.children.add(element);
-        ElementHelper.triggerAfterInsert(this, element);
+        ElementEventGenerator.triggerAfterInsert(this, element);
         return this;
     }
 
     public boolean removeChild(Element element) {
-        ElementHelper.triggerBeforeRemove(this, element);
+        ElementEventGenerator.triggerBeforeRemove(this, element);
         boolean ret = this.children.remove(element);
-        ElementHelper.triggerAfterRemove(this, element);
+        ElementEventGenerator.triggerAfterRemove(this, element);
         return ret;
     }
 

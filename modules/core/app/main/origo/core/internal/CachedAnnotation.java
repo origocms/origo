@@ -1,4 +1,4 @@
-package main.origo.core;
+package main.origo.core.internal;
 
 import main.origo.core.annotations.Relationship;
 

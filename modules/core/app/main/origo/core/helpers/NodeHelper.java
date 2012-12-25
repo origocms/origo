@@ -4,6 +4,8 @@ package main.origo.core.helpers;
 import main.origo.core.Node;
 import main.origo.core.NodeNotFoundException;
 import main.origo.core.annotations.Types;
+import main.origo.core.event.OnLoadEventGenerator;
+import main.origo.core.event.ProvidesEventGenerator;
 import models.origo.core.RootNode;
 import org.apache.commons.lang3.StringUtils;
 
@@ -35,34 +37,19 @@ public class NodeHelper {
     public static Node load(RootNode rootNode) {
         boolean hasType = !StringUtils.isBlank(rootNode.nodeType) && !rootNode.nodeType.equals(RootNode.class.getName());
         if (hasType) {
-            triggerBeforeNodeLoaded(rootNode.nodeType, rootNode);
+            OnLoadEventGenerator.triggerBeforeInterceptor(Types.NODE, rootNode.nodeType, rootNode, Collections.<String, Object>emptyMap());
         }
 
         Node node = rootNode;
         if (hasType) {
-            node = triggerProvidesNodeInterceptor(rootNode.nodeType, rootNode);
+            node = ProvidesEventGenerator.triggerInterceptor(Types.NODE, rootNode.nodeType, rootNode);
         }
 
         if (hasType) {
-            triggerAfterNodeLoaded(rootNode.nodeType, node);
+            OnLoadEventGenerator.triggerAfterInterceptor(Types.NODE, rootNode.nodeType, node, Collections.<String, Object>emptyMap());
         }
 
         return node;
-    }
-
-    /*
-     * Convenience methods for hooks with NODE type
-     */
-    public static Node triggerProvidesNodeInterceptor(String withType, RootNode rootNode) {
-        return ProvidesHelper.triggerInterceptor(Types.NODE, withType, rootNode);
-    }
-
-    public static void triggerBeforeNodeLoaded(String withType, RootNode rootNode) {
-        OnLoadHelper.triggerBeforeInterceptor(Types.NODE, withType, rootNode, Collections.<String, Object>emptyMap());
-    }
-
-    public static void triggerAfterNodeLoaded(String withType, Node node) {
-        OnLoadHelper.triggerAfterInterceptor(Types.NODE, withType, node, Collections.<String, Object>emptyMap());
     }
 
 }

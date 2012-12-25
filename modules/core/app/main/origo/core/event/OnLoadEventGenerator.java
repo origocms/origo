@@ -1,10 +1,10 @@
-package main.origo.core.helpers;
+package main.origo.core.event;
 
-import main.origo.core.CachedAnnotation;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.Navigation;
 import main.origo.core.Node;
 import main.origo.core.annotations.OnLoad;
+import main.origo.core.internal.CachedAnnotation;
 import main.origo.core.ui.Element;
 import main.origo.core.ui.NavigationElement;
 import models.origo.core.RootNode;
@@ -17,10 +17,10 @@ import java.util.Map;
 /**
  * Helper to trigger \@OnLoad interceptors. Should not be used directly, use NodeHelper instead.
  *
- * @see NodeHelper
+ * @see main.origo.core.helpers.NodeHelper
  * @see main.origo.core.annotations.OnLoad
  */
-public class OnLoadHelper {
+public class OnLoadEventGenerator {
 
     private static void triggerBeforeInterceptor(String type, String withType, Node node, OnLoad.Context context) {
         List<CachedAnnotation> interceptors = findInterceptorForType(type, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), false);

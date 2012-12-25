@@ -1,12 +1,12 @@
 package controllers.origo.admin;
 
 import main.origo.admin.helpers.SettingsAdminHelper;
-import main.origo.core.CachedThemeVariant;
 import main.origo.core.Node;
-import main.origo.core.Themes;
+import main.origo.core.ThemeRepository;
 import main.origo.core.helpers.NavigationHelper;
 import main.origo.core.helpers.NodeHelper;
 import main.origo.core.helpers.ThemeHelper;
+import main.origo.core.internal.CachedThemeVariant;
 import main.origo.core.ui.NavigationElement;
 import main.origo.core.ui.RenderedNode;
 import models.origo.core.RootNode;
@@ -76,7 +76,7 @@ public class AdminLoader {
     }
 
     private static Result decorateNode(Node node) {
-        CachedThemeVariant themeVariant = Themes.getThemeVariant(SettingsAdminHelper.getThemeVariant());
+        CachedThemeVariant themeVariant = ThemeRepository.getThemeVariant(SettingsAdminHelper.getThemeVariant());
         RenderedNode renderedNode = ThemeHelper.decorate(node, themeVariant);
         renderedNode.navigation(getNavigation(node.getNodeId()));
         if (Logger.isDebugEnabled()) {

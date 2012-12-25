@@ -1,5 +1,8 @@
-package main.origo.core;
+package main.origo.core.internal;
 
+import main.origo.core.InitializationException;
+import main.origo.core.InterceptorRepository;
+import main.origo.core.ThemeRepository;
 import main.origo.core.annotations.*;
 import main.origo.core.annotations.forms.*;
 import org.reflections.ReflectionUtils;
@@ -19,7 +22,7 @@ public class AnnotationProcessor {
 
     public static void initialize() {
         InterceptorRepository.invalidate();
-        Themes.invalidate();
+        ThemeRepository.invalidate();
         scan();
         if (Logger.isDebugEnabled()) {
             StringBuilder sb = new StringBuilder();
@@ -32,7 +35,7 @@ public class AnnotationProcessor {
             }
             Logger.debug("Interceptors registered: " + count + "\n" + sb.toString());
 
-            Map<String, CachedTheme> themesMap = Themes.getThemesMap();
+            Map<String, CachedTheme> themesMap = ThemeRepository.getThemesMap();
             sb = new StringBuilder("Themes registered: ").append(themesMap.size()).append("\n");
             for (String themeId : themesMap.keySet()) {
                 sb.append(" - ").append(themeId).append("\n");
@@ -64,14 +67,14 @@ public class AnnotationProcessor {
             @Override
             public void add(Theme theme, Annotation annotation, Method method) {
                 Decorates decorates = (Decorates) annotation;
-                Themes.addDecorator(theme.id(), decorates.type(), method);
+                ThemeRepository.addDecorator(theme.id(), decorates.type(), method);
             }
         });
         scanThemeParts(themes, ThemeVariant.class, Result.class, ThemeVariant.Context.class, new AddThemePartFunction() {
             @Override
             public void add(Theme theme, Annotation annotation, Method method) {
                 ThemeVariant themeVariant = (ThemeVariant) annotation;
-                Themes.addThemeVariant(theme.id(), themeVariant.id(), themeVariant.regions(), method);
+                ThemeRepository.addThemeVariant(theme.id(), themeVariant.id(), themeVariant.regions(), method);
             }
         });
     }
@@ -108,7 +111,7 @@ public class AnnotationProcessor {
 
         for (Class c : classes) {
             Theme themeAnnotation = (Theme) c.getAnnotation(Theme.class);
-            Themes.addTheme(themeAnnotation.id(), c);
+            ThemeRepository.addTheme(themeAnnotation.id(), c);
         }
     }
 

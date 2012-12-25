@@ -1,15 +1,15 @@
-package main.origo.core.helpers.forms;
+package main.origo.core.event.forms;
 
-import main.origo.core.CachedAnnotation;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.annotations.forms.SubmitHandler;
 import main.origo.core.helpers.SettingsCoreHelper;
+import main.origo.core.internal.CachedAnnotation;
 import org.apache.commons.lang3.StringUtils;
 import play.mvc.Result;
 
 import java.util.List;
 
-public class SubmitHandlerHelper {
+public class SubmitHandlerEventGenerator {
 
     public static Class getActiveSubmitHandler() {
         final String postHandlerName = getRegisteredSubmitHandlerName();

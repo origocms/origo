@@ -1,8 +1,8 @@
-package main.origo.core.helpers.forms;
+package main.origo.core.event.forms;
 
-import main.origo.core.CachedAnnotation;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.annotations.forms.OnSubmit;
+import main.origo.core.internal.CachedAnnotation;
 import play.Logger;
 import play.data.DynamicForm;
 
@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class OnSubmitHelper {
+public class OnSubmitEventGenerator {
 
     public static void triggerInterceptors(String withType, DynamicForm form) {
         triggerInterceptors(withType, form, Collections.<String, Object>emptyMap());

@@ -1,4 +1,4 @@
-import main.origo.core.AnnotationProcessor;
+import main.origo.core.internal.AnnotationProcessor;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

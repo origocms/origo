@@ -2,8 +2,8 @@ package main.origo.core.helpers.forms;
 
 import main.origo.core.Node;
 import main.origo.core.annotations.Types;
-import main.origo.core.helpers.OnLoadHelper;
-import main.origo.core.helpers.ProvidesHelper;
+import main.origo.core.event.OnLoadEventGenerator;
+import main.origo.core.event.ProvidesEventGenerator;
 import main.origo.core.helpers.SettingsCoreHelper;
 import main.origo.core.interceptors.forms.TinyMCEEditorProvider;
 import main.origo.core.ui.Element;
@@ -31,15 +31,15 @@ public class EditorHelper {
     * Convenience methods for hooks with RICHTEXT_EDITOR type
     */
     public static Element triggerProvidesRichTextEditorInterceptor(String withType, Node node, Content content) {
-        return ProvidesHelper.triggerInterceptor(Types.RICHTEXT_EDITOR, withType, node, Collections.<String, Object>singletonMap("content", content));
+        return ProvidesEventGenerator.triggerInterceptor(Types.RICHTEXT_EDITOR, withType, node, Collections.<String, Object>singletonMap("content", content));
     }
 
     public static void triggerBeforeRichTextEditorLoaded(String withType, Node node, Content content) {
-        OnLoadHelper.triggerBeforeInterceptor(Types.RICHTEXT_EDITOR, withType, node, Collections.<String, Object>singletonMap("content", content));
+        OnLoadEventGenerator.triggerBeforeInterceptor(Types.RICHTEXT_EDITOR, withType, node, Collections.<String, Object>singletonMap("content", content));
     }
 
     public static void triggerAfterRichTextEditorLoaded(String withType, Node node, Element element, Content content) {
-        OnLoadHelper.triggerAfterInterceptor(Types.RICHTEXT_EDITOR, withType, node, Collections.<String, Object>singletonMap("content", content), element);
+        OnLoadEventGenerator.triggerAfterInterceptor(Types.RICHTEXT_EDITOR, withType, node, Collections.<String, Object>singletonMap("content", content), element);
     }
 
 
