@@ -30,7 +30,7 @@ public class SubmitStateEventGenerator {
     }
 
     private static CachedAnnotation findOnPostInterceptorsWithType(final String state, final String withType) {
-        List<CachedAnnotation> submitStateInterceptors = InterceptorRepository.getInterceptor(SubmitState.class, new CachedAnnotation.InterceptorSelector() {
+        List<CachedAnnotation> submitStateInterceptors = InterceptorRepository.getInterceptors(SubmitState.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation interceptor) {
                 SubmitState annotation = (SubmitState) interceptor.annotation;
@@ -38,10 +38,10 @@ public class SubmitStateEventGenerator {
             }
         });
         if (submitStateInterceptors.isEmpty()) {
-            throw new RuntimeException("Every form type (specified by using attribute 'with') must have a class annotated with @SubmitState to use as an endpoint for submit\'s. Unable to find a SubmitState for state=\'" + state + "\' and type=\'" + withType + "\'");
+            throw new RuntimeException("Every form type (specified by using attribute 'with') must have a class annotated with @SubmitState to use as an endpoint for submit's. Unable to find a SubmitState for state='" + state + "' and type='" + withType + "'");
         }
         if (submitStateInterceptors.size() > 1) {
-            throw new RuntimeException("Only one @SubmitState(state=\'" + state + "\') per type (attribute 'with') is allowed");
+            throw new RuntimeException("Only one @SubmitState(state='" + state + "') per type (attribute 'with') is allowed");
         }
         return submitStateInterceptors.iterator().next();
     }

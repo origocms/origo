@@ -28,11 +28,11 @@ public class InterceptorRepository {
         annotationTypes.add(new CachedAnnotation(annotation, method, relationship));
     }
 
-    public static List<CachedAnnotation> getInterceptor(Class<? extends Annotation> annotationType) {
-        return getInterceptor(annotationType, null);
+    public static List<CachedAnnotation> getInterceptors(Class<? extends Annotation> annotationType) {
+        return getInterceptors(annotationType, null);
     }
 
-    public static List<CachedAnnotation> getInterceptor(Class<? extends Annotation> annotationType, CachedAnnotation.InterceptorSelector interceptorSelector) {
+    public static List<CachedAnnotation> getInterceptors(Class<? extends Annotation> annotationType, CachedAnnotation.InterceptorSelector interceptorSelector) {
         if (interceptors.containsKey(annotationType)) {
             List<CachedAnnotation> interceptorList = interceptors.get(annotationType);
             if (interceptorSelector == null) {

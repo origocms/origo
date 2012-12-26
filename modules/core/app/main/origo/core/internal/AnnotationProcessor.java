@@ -12,7 +12,6 @@ import play.api.templates.Html;
 import play.mvc.Result;
 
 import java.lang.annotation.Annotation;
-import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
@@ -63,20 +62,8 @@ public class AnnotationProcessor {
         Set<Class<?>> themes = reflections.getTypesAnnotatedWith(Theme.class);
         scanThemes(themes);
 
-        scanThemeParts(themes, Decorates.class, Html.class, Decorates.Context.class, new AddThemePartFunction() {
-            @Override
-            public void add(Theme theme, Annotation annotation, Method method) {
-                Decorates decorates = (Decorates) annotation;
-                ThemeRepository.addDecorator(theme.id(), decorates.type(), method);
-            }
-        });
-        scanThemeParts(themes, ThemeVariant.class, Result.class, ThemeVariant.Context.class, new AddThemePartFunction() {
-            @Override
-            public void add(Theme theme, Annotation annotation, Method method) {
-                ThemeVariant themeVariant = (ThemeVariant) annotation;
-                ThemeRepository.addThemeVariant(theme.id(), themeVariant.id(), themeVariant.regions(), method);
-            }
-        });
+        scanDecorators(interceptors);
+        scanDecorators(themes);
     }
 
     private static void scanInterceptors(Set<Class<?>> classes, Class<? extends Annotation> annotationClass, Class contextClass) {
@@ -112,34 +99,47 @@ public class AnnotationProcessor {
         for (Class c : classes) {
             Theme themeAnnotation = (Theme) c.getAnnotation(Theme.class);
             ThemeRepository.addTheme(themeAnnotation.id(), c);
-        }
-    }
 
-    private static void scanThemeParts(Set<Class<?>> classes, Class<? extends Annotation> annotationClass, Class returnType, Class contextClass, AddThemePartFunction addThemepartFunction) {
-
-        MethodHandles.Lookup lookup = MethodHandles.lookup();
-
-        for (Class c : classes) {
-            Set<Method> methods = Reflections.getAllMethods(c, ReflectionUtils.withAnnotation(annotationClass));
-
-            Theme themeAnnotation = (Theme) c.getAnnotation(Theme.class);
+            Set<Method> methods = Reflections.getAllMethods(c, ReflectionUtils.withAnnotation(ThemeVariant.class));
 
             for (Method m : methods) {
 
-                Class[] pc = m.getParameterTypes();
-                if (pc.length > 1 && !pc[0].equals(contextClass)) {
-                    throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() + "' in " +
-                            " is annotated with '" + annotationClass.getName() +
-                            "' but the method does not match the required signature");
-                }
-                Annotation annotation = m.getAnnotation(annotationClass);
-                addThemepartFunction.add(themeAnnotation, annotation, m);
+                assertCorrectSignature(m, Result.class, ThemeVariant.Context.class, ThemeVariant.class);
+
+                ThemeVariant themeVariant = m.getAnnotation(ThemeVariant.class);
+                ThemeRepository.addThemeVariant(themeAnnotation.id(), themeVariant.id(), themeVariant.regions(), m);
             }
         }
     }
 
-    private static interface AddThemePartFunction {
-        public void add(Theme theme, Annotation annotation, Method method);
+    private static void scanDecorators(Set<Class<?>> classes) {
+
+        for (Class c : classes) {
+            Theme themeAnnotation = (Theme) c.getAnnotation(Theme.class);
+
+            Set<Method> methods = Reflections.getAllMethods(c, ReflectionUtils.withAnnotation(Decorates.class));
+
+            for (Method m : methods) {
+
+                assertCorrectSignature(m, Html.class, Decorates.Context.class, Decorates.class);
+
+                Decorates decorates = m.getAnnotation(Decorates.class);
+                if (themeAnnotation != null) {
+                    ThemeRepository.addDecorator(themeAnnotation.id(), decorates.types(), m);
+                } else {
+                    ThemeRepository.addDecorator(decorates.types(), m);
+                }
+            }
+        }
+    }
+
+    private static void assertCorrectSignature(Method m, Class returnType, Class contextClass, Class<? extends Annotation> annotationClass) {
+        Class[] pc = m.getParameterTypes();
+        if (pc.length > 1 || !pc[0].equals(contextClass) || !m.getReturnType().equals(returnType)) {
+            throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() + "' in " +
+                    " is annotated with '" + annotationClass.getName() +
+                    "' but the method does not match the required signature");
+        }
     }
 
 }

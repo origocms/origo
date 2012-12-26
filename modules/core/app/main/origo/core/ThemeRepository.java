@@ -1,5 +1,6 @@
 package main.origo.core;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.internal.CachedDecorator;
@@ -23,12 +24,14 @@ public class ThemeRepository {
     /**
      * Collection of theme variants id's that a theme offers.
      */
-    public static Map<String, CachedTheme> themes = Maps.newConcurrentMap();
+    private static Map<String, CachedTheme> themes = Maps.newConcurrentMap();
 
     /**
      * Maps variant id's to it's parent theme id.
      */
     private static Map<String, String> themeVariantsToThemeMapping = Maps.newHashMap();
+
+    private static Map<Class<? extends Element>, List<CachedDecorator>> genericDecorators = Maps.newHashMap();
 
     public static void addTheme(String themeId, Class declaringClass) {
         if (themes.containsKey(themeId) && themes.get(themeId).getDeclaringClass().equals(declaringClass)) {
@@ -49,12 +52,23 @@ public class ThemeRepository {
         themeVariants.put(variantId, new CachedThemeVariant(themeId, variantId, templateMethod, new HashSet<>(Arrays.asList(regions))));
     }
 
-    public static void addDecorator(String themeId, Class[] uiElementType, Method method) {
+    public static void addDecorator(String themeId, Class<? extends Element>[] elementTypes, Method method) {
         // Themes are declared on the class level and should be parsed first so we don't need to check if the themeId exists before accessing
         Map<Class<? extends Element>, CachedDecorator> themeDecorators = themes.get(themeId).getDecorators();
 
-        for (Class type : uiElementType) {
+        for (Class<? extends Element> type : elementTypes) {
             themeDecorators.put(type, new CachedDecorator(type, method));
+        }
+    }
+
+    public static void addDecorator(Class<? extends Element>[] elementTypes, Method method) {
+        for (Class<? extends Element> type : elementTypes) {
+            List<CachedDecorator> decorators = genericDecorators.get(type);
+            if (decorators == null ) {
+                decorators = Lists.newArrayList();
+                genericDecorators.put(type, decorators);
+            }
+            decorators.add(new CachedDecorator(type, method));
         }
     }
 
@@ -81,7 +95,7 @@ public class ThemeRepository {
         return Collections.emptyList();
     }
 
-    public static Map<Class<? extends Element>, CachedDecorator> getDecoratorsForTheme(String themeId) {
+    public static Map<Class<? extends Element>, CachedDecorator> getThemeDecorators(String themeId) {
         if (themes.containsKey(themeId)) {
             Map<Class<? extends Element>, CachedDecorator> decorators = themes.get(themeId).getDecorators();
             if (decorators != null) {
@@ -91,8 +105,30 @@ public class ThemeRepository {
         return Collections.emptyMap();
     }
 
-    public static CachedDecorator getDecoratorForTheme(String themeId, Class<? extends Element> elementType) {
-        return getDecoratorsForTheme(themeId).get(elementType);
+    public static CachedDecorator getThemeDecorators(String themeId, Class<? extends Element> elementType) {
+        return getThemeDecorators(themeId).get(elementType);
+    }
+
+    public static Map<Class<? extends Element>, List<CachedDecorator>> getGenericDecorators() {
+        return genericDecorators;
+    }
+
+    public static List<CachedDecorator> getGenericDecorators(Class<? extends Element> elementType) {
+        List<CachedDecorator> cachedDecorators = getGenericDecorators().get(elementType);
+        if (cachedDecorators != null) {
+            return cachedDecorators;
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    public static List<CachedDecorator> getDecorators(String themeId, Class<? extends Element> elementType) {
+        List<CachedDecorator> decorators = Lists.newArrayList(getGenericDecorators(elementType));
+        CachedDecorator themeDecorator = getThemeDecorators(themeId, elementType);
+        if (themeDecorator != null) {
+            decorators.add(themeDecorator);
+        }
+        return decorators;
     }
 
     /**

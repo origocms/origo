@@ -77,11 +77,13 @@ public class ThemeHelper {
     }
 
     public static Html decorate(Element element, RenderingContext renderingContext) {
-        Map<Class<? extends Element>, CachedDecorator> decorators = ThemeRepository.getDecoratorsForTheme(renderingContext.getThemeVariant().themeId);
         renderingContext.nest(element);
         Html decoratedOutput = null;
-        if (decorators.containsKey(element.getClass())) {
-            CachedDecorator decorator = decorators.get(element.getClass());
+
+        List<CachedDecorator> decorators = ThemeRepository.getDecorators(renderingContext.getThemeVariant().themeId, element.getClass());
+
+        if (!decorators.isEmpty()) {
+            CachedDecorator decorator = selectDecorator(element.getClass(), decorators);
             try {
                 decoratedOutput = (Html) decorator.method.invoke(null, new Decorates.Context(element, renderingContext));
             } catch (Throwable e) {
@@ -90,6 +92,9 @@ public class ThemeHelper {
         }
         if (decoratedOutput == null) {
             decoratedOutput = element.decorate(renderingContext);
+            if (decoratedOutput == null) {
+                Logger.error("Unable to decorate ["+element.getClass()+"]");
+            }
         }
         renderingContext.unNest();
         return decoratedOutput;
@@ -136,6 +141,35 @@ public class ThemeHelper {
         } catch (Throwable e) {
             throw new RuntimeException("", e);
         }
+    }
+
+    public static CachedDecorator selectDecorator(Class<? extends Element> type, List<CachedDecorator> cachedDecorators) {
+        if (cachedDecorators.isEmpty()) {
+            return null;
+        }
+
+        if (cachedDecorators.size() == 1) {
+            return setFirstDecoratorAsDefault(type, cachedDecorators);
+        }
+
+        String storedEventHandlerType = CoreSettingsHelper.getDecorator(type);
+        if (StringUtils.isBlank(storedEventHandlerType)) {
+            return setFirstDecoratorAsDefault(type, cachedDecorators);
+        }
+        for (CachedDecorator cachedDecorator : cachedDecorators) {
+            if (storedEventHandlerType.equals(cachedDecorator.method.getDeclaringClass().getName())) {
+                return cachedDecorator;
+            }
+        }
+        Logger.error("The stored EventHandler [" + storedEventHandlerType + "] is not available, resetting the value for type [" + type.getName() + "]");
+        return setFirstDecoratorAsDefault(type, cachedDecorators);
+    }
+
+    private static CachedDecorator setFirstDecoratorAsDefault(Class<? extends Element> type, List<CachedDecorator> decorators) {
+        CachedDecorator annotation = decorators.iterator().next();
+        Logger.info("Setting ["+annotation.getClass().getName()+"] as default for type ["+type.getName()+"]");
+        CoreSettingsHelper.setDecorator(type, annotation.method.getDeclaringClass());
+        return annotation;
     }
 
 }

@@ -23,10 +23,10 @@ public class InitialTestData {
 
     private void createSettings() {
         Settings settings = Settings.load();
-        CoreSettingsHelper.setValueIfMissing(settings, CoreSettingsHelper.Keys.BASE_URL, "/");
-        CoreSettingsHelper.setValueIfMissing(settings, CoreSettingsHelper.Keys.START_PAGE, "aa1755dd-18c4-4b78-956e-eef7e562c36c"); // Page 1
-        CoreSettingsHelper.setValueIfMissing(settings, CoreSettingsHelper.Keys.PAGE_NOT_FOUND_PAGE, "c9615819-0556-4e70-b6a9-a66c5b8d4c1a"); // Page 2
-        CoreSettingsHelper.setValueIfMissing(settings, CoreSettingsHelper.Keys.INTERNAL_SERVER_ERROR_PAGE, "1cf699a7-a0c4-4be0-855f-466042a36a8d"); // Page 3
+        settings.setValueIfMissing(CoreSettingsHelper.Keys.BASE_URL, "/");
+        settings.setValueIfMissing(CoreSettingsHelper.Keys.START_PAGE, "aa1755dd-18c4-4b78-956e-eef7e562c36c"); // Page 1
+        settings.setValueIfMissing(CoreSettingsHelper.Keys.PAGE_NOT_FOUND_PAGE, "c9615819-0556-4e70-b6a9-a66c5b8d4c1a"); // Page 2
+        settings.setValueIfMissing(CoreSettingsHelper.Keys.INTERNAL_SERVER_ERROR_PAGE, "1cf699a7-a0c4-4be0-855f-466042a36a8d"); // Page 3
         settings.save();
     }
 

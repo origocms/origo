@@ -89,7 +89,7 @@ public class OnLoadEventGenerator {
     }
 
     private static List<CachedAnnotation> findInterceptorForType(final String onLoadType, final String withType, final boolean after) {
-        return InterceptorRepository.getInterceptor(OnLoad.class, new CachedAnnotation.InterceptorSelector() {
+        return InterceptorRepository.getInterceptors(OnLoad.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation cachedAnnotation) {
                 OnLoad annotation = ((OnLoad) cachedAnnotation.annotation);

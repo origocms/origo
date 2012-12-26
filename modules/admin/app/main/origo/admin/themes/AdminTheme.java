@@ -30,7 +30,7 @@ public class AdminTheme {
         return "dashboard";
     }
 
-    @Decorates(type = Admin.Dashboard.class)
+    @Decorates(types = Admin.Dashboard.class)
     public static Html decorateDashboard(Decorates.Context context) {
         Html body = ThemeHelper.decorateChildren(context.element, context.renderingContext);
         return dashboard.render(context.element, body,
@@ -42,7 +42,7 @@ public class AdminTheme {
         return "dashboard-item item";
     }
 
-    @Decorates(type = Admin.DashboardItem.class)
+    @Decorates(types = Admin.DashboardItem.class)
     public static Html decorateDashboardItem(Decorates.Context context) {
         Html body = ThemeHelper.decorateChildren(context.element, context.renderingContext);
         return dashboard_item.render(context.element, body,
@@ -50,7 +50,7 @@ public class AdminTheme {
                         Collections.singletonMap("class", defaultDashboardItemClasses() + " span3")));
     }
 
-    @Decorates(type = {Element.InputSubmit.class, Element.InputButton.class, Element.InputReset.class})
+    @Decorates(types = {Element.InputSubmit.class, Element.InputButton.class, Element.InputReset.class})
     public static Html decorateButton(Decorates.Context context) {
         context.element.addAttribute("class", "btn");
         return context.element.decorate(context.renderingContext);

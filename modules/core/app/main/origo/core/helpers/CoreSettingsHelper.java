@@ -2,6 +2,7 @@ package main.origo.core.helpers;
 
 import main.origo.core.interceptors.forms.DefaultFormProvider;
 import main.origo.core.interceptors.forms.DefaultSubmitHandler;
+import main.origo.core.ui.Element;
 import models.origo.core.Settings;
 import models.origo.core.navigation.BasicNavigation;
 import play.Logger;
@@ -67,8 +68,16 @@ public class CoreSettingsHelper {
         return Settings.load().getValue("event."+withType);
     }
 
-    public static void setEventHandler(String withType, String annotatedClass) {
-        Settings.load().setValue("event."+withType, annotatedClass);
+    public static void setEventHandler(String withType, Class annotatedClass) {
+        Settings.load().setValue("event."+withType, annotatedClass.getName());
+    }
+
+    public static String getDecorator(Class<? extends Element> type) {
+        return Settings.load().getValue("decorator."+type.getName());
+    }
+
+    public static void setDecorator(Class<? extends Element> type, Class annotatedClass) {
+        Settings.load().setValue("decorator."+type.getName(), annotatedClass.getName());
     }
 
     protected static String getClassTypeIfExists(String propertyName, String fallback) {

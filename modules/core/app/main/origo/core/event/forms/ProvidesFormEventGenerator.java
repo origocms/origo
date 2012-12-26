@@ -3,7 +3,7 @@ package main.origo.core.event.forms;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.Node;
 import main.origo.core.annotations.forms.ProvidesForm;
-import main.origo.core.helpers.SettingsCoreHelper;
+import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.internal.CachedAnnotation;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
@@ -43,7 +43,7 @@ public class ProvidesFormEventGenerator {
      */
     public static Set<String> getAllProvidesForm() {
         Set<String> providedTypes = new HashSet<String>();
-        List<CachedAnnotation> cachedAnnotations = InterceptorRepository.getInterceptor(ProvidesForm.class);
+        List<CachedAnnotation> cachedAnnotations = InterceptorRepository.getInterceptors(ProvidesForm.class);
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
             providedTypes.add(((ProvidesForm) cachedAnnotation.annotation).with());
         }
@@ -53,7 +53,7 @@ public class ProvidesFormEventGenerator {
     private static CachedAnnotation findInterceptor(String withType) {
         CachedAnnotation Interceptor = findProvidersForType(withType);
         if (Interceptor == null) {
-            Interceptor = findProvidersForType(SettingsCoreHelper.getDefaultFormType());
+            Interceptor = findProvidersForType(CoreSettingsHelper.getDefaultFormType());
             if (Interceptor == null) {
                 throw new RuntimeException("Unable to find a form provider for type \'" + withType + "\' and the default form provider from settings is also not available");
             }
@@ -62,7 +62,7 @@ public class ProvidesFormEventGenerator {
     }
 
     private static CachedAnnotation findProvidersForType(final String withType) {
-        List<CachedAnnotation> providers = InterceptorRepository.getInterceptor(ProvidesForm.class, new CachedAnnotation.InterceptorSelector() {
+        List<CachedAnnotation> providers = InterceptorRepository.getInterceptors(ProvidesForm.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation Interceptor) {
                 ProvidesForm annotation = (ProvidesForm) Interceptor.annotation;

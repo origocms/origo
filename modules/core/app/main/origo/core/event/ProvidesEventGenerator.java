@@ -64,7 +64,7 @@ public class ProvidesEventGenerator {
     }
 
     private static List<CachedAnnotation> getAllProvidersForType(final String providesType) {
-        return InterceptorRepository.getInterceptor(Provides.class, new CachedAnnotation.InterceptorSelector() {
+        return InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation cacheAnnotation) {
                 return ((Provides) cacheAnnotation.annotation).type().equals(providesType);
@@ -81,7 +81,7 @@ public class ProvidesEventGenerator {
     }
 
     private static CachedAnnotation findProvidersForType(final String type, final String withType) {
-        List<CachedAnnotation> providers = InterceptorRepository.getInterceptor(Provides.class, new CachedAnnotation.InterceptorSelector() {
+        List<CachedAnnotation> providers = InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation cachedAnnotation) {
                 Provides annotation = (Provides) cachedAnnotation.annotation;

@@ -80,7 +80,7 @@ public class OnLoadFormEventGenerator {
     }
 
     private static List<CachedAnnotation> findInterceptorForType(final String withType, final boolean after) {
-        return InterceptorRepository.getInterceptor(OnLoadForm.class, new CachedAnnotation.InterceptorSelector() {
+        return InterceptorRepository.getInterceptors(OnLoadForm.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation cachedAnnotation) {
                 OnLoadForm annotation = ((OnLoadForm) cachedAnnotation.annotation);

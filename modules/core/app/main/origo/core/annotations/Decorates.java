@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 public @interface Decorates {
 
-    Class[] type();
+    Class<? extends Element>[] types();
 
     Class input() default String.class;
 

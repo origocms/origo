@@ -14,14 +14,11 @@ public class EventGeneratorUtils {
             return null;
         }
 
-        if (cachedAnnotations.size() == 1) {
-            return setFirstEventHandlerAsDefault(withType, cachedAnnotations);
-        }
-
         String storedEventHandlerType = CoreSettingsHelper.getEventHandler(withType);
         if (StringUtils.isBlank(storedEventHandlerType)) {
             return setFirstEventHandlerAsDefault(withType, cachedAnnotations);
         }
+
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
             if (storedEventHandlerType.equals(cachedAnnotation.method.getDeclaringClass().getName())) {
                 return cachedAnnotation;
@@ -34,7 +31,7 @@ public class EventGeneratorUtils {
     private static CachedAnnotation setFirstEventHandlerAsDefault(String withType, List<CachedAnnotation> providers) {
         CachedAnnotation annotation = providers.iterator().next();
         Logger.info("Setting ["+annotation.getClass().getName()+"] as default for type ["+withType+"]");
-        CoreSettingsHelper.setEventHandler(withType, annotation.method.getDeclaringClass().getName());
+        CoreSettingsHelper.setEventHandler(withType, annotation.method.getDeclaringClass());
         return annotation;
     }
 }

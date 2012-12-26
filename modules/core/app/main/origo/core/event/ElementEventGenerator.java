@@ -65,7 +65,7 @@ public class ElementEventGenerator {
     }
 
     private static List<CachedAnnotation> findOnInsertInterceptors(final Class withType, final boolean before) {
-        return InterceptorRepository.getInterceptor(OnInsertElement.class, new CachedAnnotation.InterceptorSelector() {
+        return InterceptorRepository.getInterceptors(OnInsertElement.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation cachedAnnotation) {
                 OnInsertElement annotation = (OnInsertElement) cachedAnnotation.annotation;
@@ -75,7 +75,7 @@ public class ElementEventGenerator {
     }
 
     private static List<CachedAnnotation> findOnRemoveInterceptors(final String withType, final boolean before) {
-        return InterceptorRepository.getInterceptor(OnRemoveElement.class, new CachedAnnotation.InterceptorSelector() {
+        return InterceptorRepository.getInterceptors(OnRemoveElement.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation cachedAnnotation) {
                 OnRemoveElement annotation = (OnRemoveElement) cachedAnnotation.annotation;

@@ -2,7 +2,7 @@ package main.origo.core.event.forms;
 
 import main.origo.core.InterceptorRepository;
 import main.origo.core.annotations.forms.SubmitHandler;
-import main.origo.core.helpers.SettingsCoreHelper;
+import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.internal.CachedAnnotation;
 import org.apache.commons.lang3.StringUtils;
 import play.mvc.Result;
@@ -29,7 +29,7 @@ public class SubmitHandlerEventGenerator {
     // TODO: Cache this instead of looking it up every time
     private static CachedAnnotation getPostHandler(final String postHandler) {
         List<CachedAnnotation> postHandlers = InterceptorRepository.
-                getInterceptor(SubmitHandler.class, new CachedAnnotation.InterceptorSelector() {
+                getInterceptors(SubmitHandler.class, new CachedAnnotation.InterceptorSelector() {
                     @Override
                     public boolean isCorrectInterceptor(CachedAnnotation listener) {
                         return postHandler.equals(listener.method.getDeclaringClass().getName());
@@ -43,7 +43,7 @@ public class SubmitHandlerEventGenerator {
     }
 
     public static String getRegisteredSubmitHandlerName() {
-        final String postHandler = SettingsCoreHelper.getSubmitHandler();
+        final String postHandler = CoreSettingsHelper.getSubmitHandler();
         if (StringUtils.isBlank(postHandler)) {
             throw new RuntimeException("No SubmitHandler defined in settings");
         }

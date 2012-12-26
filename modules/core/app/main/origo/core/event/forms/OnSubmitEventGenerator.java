@@ -30,7 +30,7 @@ public class OnSubmitEventGenerator {
     }
 
     private static List<CachedAnnotation> findOnPostInterceptorsWithType(final String withType) {
-        List<CachedAnnotation> onPostInterceptors = InterceptorRepository.getInterceptor(OnSubmit.class, new CachedAnnotation.InterceptorSelector() {
+        List<CachedAnnotation> onPostInterceptors = InterceptorRepository.getInterceptors(OnSubmit.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation interceptor) {
                 OnSubmit annotation = (OnSubmit) interceptor.annotation;
