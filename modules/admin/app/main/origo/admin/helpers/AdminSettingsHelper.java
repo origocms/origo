@@ -1,10 +1,10 @@
 package main.origo.admin.helpers;
 
-import main.origo.core.helpers.SettingsCoreHelper;
+import main.origo.core.helpers.CoreSettingsHelper;
 import models.origo.core.Settings;
 import models.origo.core.navigation.BasicNavigation;
 
-public class SettingsAdminHelper extends SettingsCoreHelper {
+public class AdminSettingsHelper extends CoreSettingsHelper {
 
     public static interface Keys {
         public static final String THEME_VARIANT = "admin_theme_variant";

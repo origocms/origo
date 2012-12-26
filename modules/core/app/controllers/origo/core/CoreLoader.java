@@ -2,9 +2,9 @@ package controllers.origo.core;
 
 import main.origo.core.Node;
 import main.origo.core.NodeNotFoundException;
+import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.helpers.NavigationHelper;
 import main.origo.core.helpers.NodeHelper;
-import main.origo.core.helpers.SettingsCoreHelper;
 import main.origo.core.helpers.ThemeHelper;
 import main.origo.core.ui.NavigationElement;
 import main.origo.core.ui.RenderedNode;
@@ -20,7 +20,7 @@ import java.util.List;
 public class CoreLoader {
 
     public static Result getStartPage() {
-        String startPage = SettingsCoreHelper.getStartPage();
+        String startPage = CoreSettingsHelper.getStartPage();
         try {
             return loadAndDecoratePage(startPage, 0);
         } catch (NodeNotFoundException e) {
@@ -54,15 +54,15 @@ public class CoreLoader {
     }
 
     public static Result loadPageNotFoundErrorPage() {
-        String pageNotFoundPage = SettingsCoreHelper.getPageNotFoundPage();
+        String pageNotFoundPage = CoreSettingsHelper.getPageNotFoundPage();
         Collection<Alias> aliases = Alias.findWithPageId(pageNotFoundPage);
         String url;
         if (aliases.iterator().hasNext()) {
             Alias alias = aliases.iterator().next();
-            url = SettingsCoreHelper.getBaseUrl() + "" + alias.path;
+            url = CoreSettingsHelper.getBaseUrl() + "" + alias.path;
         } else {
             // Defaulting to /page-not-found
-            url = SettingsCoreHelper.getBaseUrl() + "page-not-found";
+            url = CoreSettingsHelper.getBaseUrl() + "page-not-found";
         }
 
         // TODO: Could this be done without using the request?
@@ -75,15 +75,15 @@ public class CoreLoader {
     }
 
     public static Result loadPageLoadErrorPage() {
-        String internalServerErrorPage = SettingsCoreHelper.getInternalServerErrorPage();
+        String internalServerErrorPage = CoreSettingsHelper.getInternalServerErrorPage();
         Collection<Alias> aliases = Alias.findWithPageId(internalServerErrorPage);
         String url;
         if (aliases.iterator().hasNext()) {
             Alias alias = aliases.iterator().next();
-            url = SettingsCoreHelper.getBaseUrl() + "" + alias.path;
+            url = CoreSettingsHelper.getBaseUrl() + "" + alias.path;
         } else {
             // Defaulting to /error
-            url = SettingsCoreHelper.getBaseUrl() + "error";
+            url = CoreSettingsHelper.getBaseUrl() + "error";
         }
         // TODO: Could this be done without using the request?
         if (url.equalsIgnoreCase(Http.Context.current().request().path())) {

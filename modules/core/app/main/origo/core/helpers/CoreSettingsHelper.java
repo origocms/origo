@@ -4,10 +4,9 @@ import main.origo.core.interceptors.forms.DefaultFormProvider;
 import main.origo.core.interceptors.forms.DefaultSubmitHandler;
 import models.origo.core.Settings;
 import models.origo.core.navigation.BasicNavigation;
-import org.apache.commons.lang3.StringUtils;
 import play.Logger;
 
-public class SettingsCoreHelper {
+public class CoreSettingsHelper {
 
     public static interface Keys {
         public static final String BASE_URL = "base_url";
@@ -64,10 +63,12 @@ public class SettingsCoreHelper {
         return Settings.load().getValue(Keys.RICHTEXT_EDITOR_TYPE);
     }
 
-    public static void setValueIfMissing(Settings settings, String settingKey, String newValue) {
-        if (StringUtils.isBlank(settings.getValue(settingKey))) {
-            settings.setValue(settingKey, newValue);
-        }
+    public static String getEventHandler(String withType) {
+        return Settings.load().getValue("event."+withType);
+    }
+
+    public static void setEventHandler(String withType, String annotatedClass) {
+        Settings.load().setValue("event."+withType, annotatedClass);
     }
 
     protected static String getClassTypeIfExists(String propertyName, String fallback) {

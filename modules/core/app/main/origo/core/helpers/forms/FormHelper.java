@@ -4,7 +4,7 @@ import controllers.origo.core.routes;
 import main.origo.core.Node;
 import main.origo.core.event.forms.OnLoadFormEventGenerator;
 import main.origo.core.event.forms.ProvidesFormEventGenerator;
-import main.origo.core.helpers.SettingsCoreHelper;
+import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.ui.Element;
 import play.api.mvc.Call;
 
@@ -16,7 +16,7 @@ public class FormHelper {
     private static final String NODE_VERSION = "_core_node_version";
 
     public static Element createFormElement(Node node, String withType) {
-        return createFormElement(SettingsCoreHelper.getDefaultFormType(), node, withType);
+        return createFormElement(CoreSettingsHelper.getDefaultFormType(), node, withType);
     }
 
     public static Element createFormElement(String formType, Node node, String nodeType) {

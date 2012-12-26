@@ -9,7 +9,7 @@ import java.util.List;
 public class NavigationHelper {
 
     public static List<NavigationElement> getNavigation(Node node, String section) {
-        String navigationType = SettingsCoreHelper.getNavigationType();
+        String navigationType = CoreSettingsHelper.getNavigationType();
         return NavigationEventGenerator.triggerProvidesNavigationInterceptor(navigationType, node, section);
     }
 

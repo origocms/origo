@@ -1,6 +1,6 @@
 package main.origo.core.internal;
 
-import main.origo.core.helpers.SettingsCoreHelper;
+import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.interceptors.forms.DefaultFormProvider;
 import main.origo.core.interceptors.forms.DefaultSubmitHandler;
 import main.origo.core.interceptors.forms.WysiHTML5EditorProvider;
@@ -20,10 +20,10 @@ public class CoreBootStrap {
             @Override
             public void invoke() throws Throwable {
                 Settings settings = Settings.load();
-                SettingsCoreHelper.setValueIfMissing(settings, SettingsCoreHelper.Keys.THEME_VARIANT, "default-main_and_left_columns");
-                SettingsCoreHelper.setValueIfMissing(settings, SettingsCoreHelper.Keys.SUBMIT_HANDLER, DefaultSubmitHandler.class.getName());
-                SettingsCoreHelper.setValueIfMissing(settings, SettingsCoreHelper.Keys.DEFAULT_FORM_TYPE, DefaultFormProvider.TYPE);
-                SettingsCoreHelper.setValueIfMissing(settings, SettingsCoreHelper.Keys.RICHTEXT_EDITOR_TYPE, WysiHTML5EditorProvider.EDITOR_TYPE);
+                settings.setValueIfMissing(CoreSettingsHelper.Keys.THEME_VARIANT, "default-main_and_left_columns");
+                settings.setValueIfMissing(CoreSettingsHelper.Keys.SUBMIT_HANDLER, DefaultSubmitHandler.class.getName());
+                settings.setValueIfMissing(CoreSettingsHelper.Keys.DEFAULT_FORM_TYPE, DefaultFormProvider.TYPE);
+                settings.setValueIfMissing(CoreSettingsHelper.Keys.RICHTEXT_EDITOR_TYPE, WysiHTML5EditorProvider.EDITOR_TYPE);
                 settings.save();
             }
         });

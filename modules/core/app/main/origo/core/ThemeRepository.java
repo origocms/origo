@@ -1,7 +1,7 @@
 package main.origo.core;
 
 import com.google.common.collect.Maps;
-import main.origo.core.helpers.SettingsCoreHelper;
+import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.internal.CachedDecorator;
 import main.origo.core.internal.CachedTheme;
 import main.origo.core.internal.CachedThemeVariant;
@@ -108,7 +108,7 @@ public class ThemeRepository {
 
     public static Collection<CachedThemeVariant> getAvailableThemeVariants() {
 
-        String theme = SettingsCoreHelper.getTheme();
+        String theme = CoreSettingsHelper.getTheme();
         if (!StringUtils.isBlank(theme)) {
             return getThemeVariants(theme);
         }

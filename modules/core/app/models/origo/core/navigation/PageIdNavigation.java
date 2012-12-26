@@ -1,6 +1,6 @@
 package models.origo.core.navigation;
 
-import main.origo.core.helpers.SettingsCoreHelper;
+import main.origo.core.helpers.CoreSettingsHelper;
 import models.origo.core.Alias;
 import models.origo.core.BasicPage;
 import play.data.validation.Constraints;
@@ -28,13 +28,13 @@ public class PageIdNavigation {
     public String getLink() {
         Collection<Alias> aliases = Alias.findWithPageId(pageId);
         if (aliases == null || aliases.isEmpty()) {
-            if (SettingsCoreHelper.getStartPage().equals(pageId)) {
-                return SettingsCoreHelper.getBaseUrl();
+            if (CoreSettingsHelper.getStartPage().equals(pageId)) {
+                return CoreSettingsHelper.getBaseUrl();
             }
-            return SettingsCoreHelper.getBaseUrl() + BasicPage.findCurrentVersion(pageId, new Date()).getNodeId();
+            return CoreSettingsHelper.getBaseUrl() + BasicPage.findCurrentVersion(pageId, new Date()).getNodeId();
         } else {
             Alias alias = aliases.iterator().next();
-            return SettingsCoreHelper.getBaseUrl() + alias.path;
+            return CoreSettingsHelper.getBaseUrl() + alias.path;
         }
     }
 

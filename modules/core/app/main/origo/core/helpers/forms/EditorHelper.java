@@ -4,7 +4,7 @@ import main.origo.core.Node;
 import main.origo.core.annotations.Types;
 import main.origo.core.event.OnLoadEventGenerator;
 import main.origo.core.event.ProvidesEventGenerator;
-import main.origo.core.helpers.SettingsCoreHelper;
+import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.interceptors.forms.TinyMCEEditorProvider;
 import main.origo.core.ui.Element;
 import models.origo.core.Content;
@@ -16,7 +16,7 @@ import java.util.Collections;
 public class EditorHelper {
 
     public static Element createRichTextEditor(Node node, Content content) {
-        String editorType = SettingsCoreHelper.getEditorType();
+        String editorType = CoreSettingsHelper.getEditorType();
         if (StringUtils.isBlank(editorType) ) {
             Logger.debug("Editor type not set, using default "+ TinyMCEEditorProvider.class.getName());
             editorType = TinyMCEEditorProvider.EDITOR_TYPE;

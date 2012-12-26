@@ -1,6 +1,6 @@
 package models.origo.core.navigation;
 
-import main.origo.core.helpers.SettingsCoreHelper;
+import main.origo.core.helpers.CoreSettingsHelper;
 import models.origo.core.Alias;
 import play.data.validation.Constraints;
 import play.db.jpa.JPA;
@@ -25,10 +25,10 @@ public class AliasNavigation {
 
     public String getLink() {
         Alias aliasModel = Alias.findWithPath(alias);
-        if (aliasModel != null && SettingsCoreHelper.getStartPage().equals(aliasModel.pageId)) {
-            return SettingsCoreHelper.getBaseUrl();
+        if (aliasModel != null && CoreSettingsHelper.getStartPage().equals(aliasModel.pageId)) {
+            return CoreSettingsHelper.getBaseUrl();
         }
-        return SettingsCoreHelper.getBaseUrl() + alias;
+        return CoreSettingsHelper.getBaseUrl() + alias;
     }
 
     public static AliasNavigation findWithIdentifier(String identifier) {

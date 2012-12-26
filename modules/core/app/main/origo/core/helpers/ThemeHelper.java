@@ -115,7 +115,7 @@ public class ThemeHelper {
     public static CachedThemeVariant loadTheme(Node node) {
         CachedThemeVariant themeVariant = ThemeRepository.getThemeVariant(node.getThemeVariant());
         if (themeVariant == null) {
-            String themeVariantId = SettingsCoreHelper.getThemeVariant();
+            String themeVariantId = CoreSettingsHelper.getThemeVariant();
             if (StringUtils.isEmpty(themeVariantId)) {
                 throw new RuntimeException("No theme set for node and no default theme variant set");
             }

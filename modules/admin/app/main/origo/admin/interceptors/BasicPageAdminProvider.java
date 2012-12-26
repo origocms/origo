@@ -8,7 +8,7 @@ import main.origo.core.annotations.*;
 import main.origo.core.annotations.forms.OnLoadForm;
 import main.origo.core.annotations.forms.OnSubmit;
 import main.origo.core.annotations.forms.SubmitState;
-import main.origo.core.helpers.SettingsCoreHelper;
+import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.helpers.forms.EditorHelper;
 import main.origo.core.helpers.forms.FormHelper;
 import main.origo.core.internal.CachedThemeVariant;
@@ -160,7 +160,7 @@ public class BasicPageAdminProvider {
         for (CachedThemeVariant themeVariant : ThemeRepository.getAvailableThemeVariants()) {
             Element optionElement = new Element.InputSelectOption().setBody(themeVariant.variantId);
             if (StringUtils.isEmpty(basicPage.rootNode.themeVariant)) {
-                if (themeVariant.variantId.equals(SettingsCoreHelper.getThemeVariant())) {
+                if (themeVariant.variantId.equals(CoreSettingsHelper.getThemeVariant())) {
                     optionElement.addAttribute("selected", "selected");
                 }
             } else {

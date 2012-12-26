@@ -1,5 +1,6 @@
 package models.origo.core;
 
+import org.apache.commons.lang3.StringUtils;
 import play.db.jpa.JPA;
 
 import javax.persistence.*;
@@ -9,7 +10,7 @@ import java.util.Map;
 /**
  * Key/Value based store for system-wide settings.
  *
- * @see main.origo.core.helpers.SettingsCoreHelper
+ * @see main.origo.core.helpers.CoreSettingsHelper
  */
 @Entity
 @Table(name = "settings")
@@ -89,10 +90,12 @@ public class Settings {
         return null;
     }
 
-    private static Settings doSave(Settings settings) {
-        return settings.save();
-    }
 
+    public void setValueIfMissing(String settingKey, String newValue) {
+        if (StringUtils.isBlank(getValue(settingKey))) {
+            setValue(settingKey, newValue);
+        }
+    }
 
     public static Settings load() {
         try {

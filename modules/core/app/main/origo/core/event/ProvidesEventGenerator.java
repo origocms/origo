@@ -1,6 +1,7 @@
 package main.origo.core.event;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.Navigation;
 import main.origo.core.Node;
@@ -8,7 +9,6 @@ import main.origo.core.annotations.Provides;
 import main.origo.core.internal.CachedAnnotation;
 import play.Logger;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -55,7 +55,7 @@ public class ProvidesEventGenerator {
      * @return a list of all "with" added to the system.
      */
     public static Set<String> getAllProvidesWithForType(String providesType) {
-        Set<String> providedTypes = new HashSet<String>();
+        Set<String> providedTypes = Sets.newHashSet();
         List<CachedAnnotation> cachedAnnotations = getAllProvidersForType(providesType);
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
             providedTypes.add(((Provides) cachedAnnotation.annotation).with());
@@ -88,13 +88,7 @@ public class ProvidesEventGenerator {
                 return annotation.type().equals(type) && annotation.with().equals(withType);
             }
         });
-        if (!providers.isEmpty()) {
-            if (providers.size() > 1) {
-                throw new RuntimeException("Only one @Provides per type (attribute 'with') is allowed, offending type is ["+withType+"]");
-            }
-            return providers.iterator().next();
-        } else {
-            return null;
-        }
+        return EventGeneratorUtils.selectEventHandler(withType, providers);
     }
+
 }
