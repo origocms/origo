@@ -1,5 +1,8 @@
 package main.origo.core.annotations.forms;
 
+import main.origo.core.ui.Element;
+import play.data.Form;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -23,9 +26,10 @@ public @interface SubmitState {
     public static final String FAILURE = "failure";
 
     public class Context {
+        public Element.Form form;
         public Map<String, Object> args;
 
-        public Context(Map<String, Object> args) {
+        public Context(Form form, Map<String, Object> args) {
             this.args = args;
         }
     }

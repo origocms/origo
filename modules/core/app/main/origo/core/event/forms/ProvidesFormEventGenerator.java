@@ -3,6 +3,7 @@ package main.origo.core.event.forms;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.Node;
 import main.origo.core.annotations.forms.ProvidesForm;
+import main.origo.core.event.EventGeneratorUtils;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.internal.CachedAnnotation;
 import org.apache.commons.lang3.StringUtils;
@@ -51,14 +52,14 @@ public class ProvidesFormEventGenerator {
     }
 
     private static CachedAnnotation findInterceptor(String withType) {
-        CachedAnnotation Interceptor = findProvidersForType(withType);
-        if (Interceptor == null) {
-            Interceptor = findProvidersForType(CoreSettingsHelper.getDefaultFormType());
-            if (Interceptor == null) {
-                throw new RuntimeException("Unable to find a form provider for type \'" + withType + "\' and the default form provider from settings is also not available");
+        CachedAnnotation interceptor = findProvidersForType(withType);
+        if (interceptor == null) {
+            interceptor = findProvidersForType(CoreSettingsHelper.getDefaultFormType());
+            if (interceptor == null) {
+                throw new RuntimeException("Unable to find a form provider for type '" + withType + "' and the default form provider from settings is also not available");
             }
         }
-        return Interceptor;
+        return interceptor;
     }
 
     private static CachedAnnotation findProvidersForType(final String withType) {
@@ -69,13 +70,6 @@ public class ProvidesFormEventGenerator {
                 return (annotation.with().equals(withType) || StringUtils.isBlank(withType));
             }
         });
-        if (!providers.isEmpty()) {
-            if (providers.size() > 1) {
-                throw new RuntimeException("Only one @Provides per type (attribute 'with') is allowed");
-            }
-            return providers.iterator().next();
-        } else {
-            return null;
-        }
+        return EventGeneratorUtils.selectEventHandler(withType, providers);
     }
 }

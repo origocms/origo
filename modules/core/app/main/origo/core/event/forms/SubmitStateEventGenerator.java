@@ -17,7 +17,7 @@ public class SubmitStateEventGenerator {
     }
 
     public static Result triggerInterceptor(String state, String withType, Form form, Map<String, Object> args) {
-        return triggerInterceptor(state, withType, new SubmitState.Context(args));
+        return triggerInterceptor(state, withType, new SubmitState.Context(form, args));
     }
 
     public static Result triggerInterceptor(String state, String withType, SubmitState.Context context) {

@@ -350,4 +350,5 @@ public class BasicPageAdminProvider {
         String endpointURL = AdminHelper.getURLForAdminAction(Admin.CONTENT_PAGE_TYPE, LIST_TYPE);
         return Controller.redirect(endpointURL);
     }
+
 }
