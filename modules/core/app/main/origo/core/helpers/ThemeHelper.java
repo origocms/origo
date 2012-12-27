@@ -80,7 +80,7 @@ public class ThemeHelper {
         renderingContext.nest(element);
         Html decoratedOutput = null;
 
-        List<CachedDecorator> decorators = ThemeRepository.getDecorators(renderingContext.getThemeVariant().themeId, element.getClass());
+        List<CachedDecorator> decorators = ThemeRepository.getDecorators(renderingContext.themeVariant.themeId, element.getClass());
 
         if (!decorators.isEmpty()) {
             CachedDecorator decorator = selectDecorator(element.getClass(), decorators);

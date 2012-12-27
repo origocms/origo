@@ -2,6 +2,7 @@ package main.origo.core.annotations;
 
 import main.origo.core.Navigation;
 import main.origo.core.Node;
+import main.origo.core.event.NodeContext;
 import main.origo.core.ui.Element;
 import main.origo.core.ui.NavigationElement;
 import models.origo.core.RootNode;
@@ -39,40 +40,68 @@ public @interface OnLoad {
     boolean after() default true;
 
     public static class Context {
-        public RootNode rootNode;
-        public Node node;
-        public Map<String, Object> args;
-        public Navigation navigation;
-        public NavigationElement navigationElement;
-        public List<NavigationElement> navigationElements;
-        public Element element;
+        public final RootNode rootNode;
+        public final Node node;
+        public final Map<String, Object> args;
+        public final Navigation navigation;
+        public final NavigationElement navigationElement;
+        public final List<NavigationElement> navigationElements;
+        public final Element element;
+        public final Map<String, Object> attributes;
 
         public Context(RootNode rootNode, Map<String, Object> args) {
             this.rootNode = rootNode;
             this.args = args;
+            this.attributes = NodeContext.current().attributes;
+            navigation = null;
+            element = null;
+            navigationElements = null;
+            navigationElement = null;
+            node = null;
         }
 
         public Context(Node node, Map<String, Object> args) {
             this.node = node;
             this.args = args;
+            this.attributes = NodeContext.current().attributes;
+            navigation = null;
+            element = null;
+            navigationElements = null;
+            navigationElement = null;
+            rootNode = null;
         }
 
         public Context(Node node, Navigation navigation, Map<String, Object> args) {
             this.node = node;
             this.navigation = navigation;
             this.args = args;
+            this.attributes = NodeContext.current().attributes;
+            element = null;
+            navigationElements = null;
+            navigationElement = null;
+            rootNode = null;
         }
 
         public Context(Node node, List<NavigationElement> navigationElements, Map<String, Object> args) {
             this.node = node;
             this.navigationElements = navigationElements;
             this.args = args;
+            this.attributes = NodeContext.current().attributes;
+            navigation = null;
+            element = null;
+            navigationElement = null;
+            rootNode = null;
         }
 
         public Context(Node node, Element element, Map<String, Object> args) {
             this.node = node;
             this.element = element;
             this.args = args;
+            this.attributes = NodeContext.current().attributes;
+            navigation = null;
+            navigationElements = null;
+            navigationElement = null;
+            rootNode = null;
         }
 
         public Context(Node node, Navigation navigation, NavigationElement navigationElement, Map<String, Object> args) {
@@ -80,6 +109,10 @@ public @interface OnLoad {
             this.navigation = navigation;
             this.navigationElement = navigationElement;
             this.args = args;
+            this.attributes = NodeContext.current().attributes;
+            element = null;
+            navigationElements = null;
+            rootNode = null;
         }
     }
 

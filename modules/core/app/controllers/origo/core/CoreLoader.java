@@ -2,6 +2,7 @@ package controllers.origo.core;
 
 import main.origo.core.Node;
 import main.origo.core.NodeNotFoundException;
+import main.origo.core.event.NodeContext;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.helpers.NavigationHelper;
 import main.origo.core.helpers.NodeHelper;
@@ -95,13 +96,16 @@ public class CoreLoader {
     }
 
     private static Result loadAndDecoratePage(String identifier, int version) throws NodeNotFoundException {
+        NodeContext.set();
         Node node = loadNode(identifier, version);
         RenderedNode renderedNode = ThemeHelper.decorate(node, ThemeHelper.loadTheme(node));
         renderedNode.navigation(getNavigation(identifier));
         if (Logger.isDebugEnabled()) {
             Logger.debug("Decorated " + renderedNode);
         }
-        return ThemeHelper.render(renderedNode);
+        Result result = ThemeHelper.render(renderedNode);
+        NodeContext.clear();
+        return result;
     }
 
     private static Node loadNode(String identifier, int version) throws NodeNotFoundException {

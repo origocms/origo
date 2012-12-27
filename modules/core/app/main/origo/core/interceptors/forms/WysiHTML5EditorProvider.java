@@ -63,10 +63,9 @@ public class WysiHTML5EditorProvider {
     }
 
     @OnLoad(type = Types.RICHTEXT_EDITOR, with = EDITOR_TYPE)
-    public static Element addContent(OnLoad.Context context) {
+    public static void addContent(OnLoad.Context context) {
         Content content = (Content) context.args.get("content");
         context.element.setId(content.identifier).setBody(content.value);
-        return null;
     }
 
 }

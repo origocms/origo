@@ -2,6 +2,7 @@ package main.origo.core.annotations;
 
 import main.origo.core.Navigation;
 import main.origo.core.Node;
+import main.origo.core.event.NodeContext;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -36,19 +37,23 @@ public @interface Provides {
 
     public static class Context {
 
-        public Node node;
-        public Navigation navigation;
-        public Map<String, Object> args;
+        public final Node node;
+        public final Navigation navigation;
+        public final Map<String, Object> args;
+        private final Map<String, Object> attributes;
 
         public Context(Node node, Map<String, Object> args) {
             this.node = node;
             this.args = args;
+            this.attributes = NodeContext.current().attributes;
+            navigation = null;
         }
 
         public Context(Node node, Navigation navigation, Map<String, Object> args) {
             this.node = node;
             this.navigation = navigation;
             this.args = args;
+            this.attributes = NodeContext.current().attributes;
         }
     }
 
