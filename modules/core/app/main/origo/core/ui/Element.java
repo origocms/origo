@@ -48,6 +48,7 @@ public class Element {
 
         public Script() {
             super("script");
+            addAttribute("type", "text/javascript");
         }
 
         @Override
@@ -66,6 +67,7 @@ public class Element {
 
         public Style() {
             super("style");
+            addAttribute("type", "text/css");
         }
 
         @Override
@@ -84,6 +86,7 @@ public class Element {
 
         public Link() {
             super("link");
+            addAttribute("rel", "stylesheet");
         }
 
         @Override
@@ -511,7 +514,7 @@ public class Element {
 
     private int weight;
 
-    private List<Element> children = Lists.newArrayList();
+    private List<Element> children = Lists.newLinkedList();
 
     private Html body;
 
@@ -656,5 +659,17 @@ public class Element {
 
     public Html decorate(RenderingContext renderingContext) {
         return new Html("Element ["+getClass().getName()+"] is not correctly decorated. Please add a decorator.");
+    }
+
+    @Override
+    public String toString() {
+        return "Element{" +
+                "id='" + id + '\'' +
+                ", type='" + type + '\'' +
+                ", attributes=" + attributes +
+                ", weight=" + weight +
+                ", body=" + body +
+                ", inputType=" + inputType +
+                '}';
     }
 }

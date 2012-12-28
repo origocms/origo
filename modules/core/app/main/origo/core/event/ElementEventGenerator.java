@@ -5,7 +5,6 @@ import main.origo.core.annotations.OnInsertElement;
 import main.origo.core.annotations.OnRemoveElement;
 import main.origo.core.internal.CachedAnnotation;
 import main.origo.core.ui.Element;
-import org.apache.commons.lang3.StringUtils;
 import play.Logger;
 
 import java.util.List;
@@ -13,7 +12,7 @@ import java.util.List;
 public class ElementEventGenerator {
 
     public static void triggerBeforeInsert(Element parent, Element element) {
-        List<CachedAnnotation> interceptors = findOnInsertInterceptors(element.getClass(), true);
+        List<CachedAnnotation> interceptors = findOnInsertInterceptors(element.getClass(), element.getInputType(), true);
         for (CachedAnnotation annotation : interceptors) {
             try {
                 //noinspection unchecked
@@ -26,7 +25,7 @@ public class ElementEventGenerator {
     }
 
     public static void triggerAfterInsert(Element parent, Element element) {
-        List<CachedAnnotation> interceptors = findOnInsertInterceptors(element.getClass(), false);
+        List<CachedAnnotation> interceptors = findOnInsertInterceptors(element.getClass(), element.getInputType(), false);
         for (CachedAnnotation annotation : interceptors) {
             try {
                 //noinspection unchecked
@@ -39,7 +38,7 @@ public class ElementEventGenerator {
     }
 
     public static void triggerBeforeRemove(Element parent, Element element) {
-        List<CachedAnnotation> interceptors = findOnInsertInterceptors(element.getClass(), true);
+        List<CachedAnnotation> interceptors = findOnRemoveInterceptors(element.getClass(), element.getInputType(), true);
         for (CachedAnnotation annotation : interceptors) {
             try {
                 //noinspection unchecked
@@ -52,7 +51,7 @@ public class ElementEventGenerator {
     }
 
     public static void triggerAfterRemove(Element parent, Element element) {
-        List<CachedAnnotation> interceptors = findOnRemoveInterceptors(element.getType(), false);
+        List<CachedAnnotation> interceptors = findOnRemoveInterceptors(element.getClass(), element.getInputType(), false);
         for (CachedAnnotation annotation : interceptors) {
             try {
                 //noinspection unchecked
@@ -64,22 +63,24 @@ public class ElementEventGenerator {
         }
     }
 
-    private static List<CachedAnnotation> findOnInsertInterceptors(final Class withType, final boolean before) {
+    private static List<CachedAnnotation> findOnInsertInterceptors(final Class withType, final Class inputType, final boolean before) {
         return InterceptorRepository.getInterceptors(OnInsertElement.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation cachedAnnotation) {
                 OnInsertElement annotation = (OnInsertElement) cachedAnnotation.annotation;
-                return before != annotation.after() && (annotation.with().equals(withType) || withType == null);
+                return before != annotation.after() && (annotation.with().equals(withType) || withType == null) &&
+                        (inputType == null || annotation.input().equals(inputType));
             }
         });
     }
 
-    private static List<CachedAnnotation> findOnRemoveInterceptors(final String withType, final boolean before) {
+    private static List<CachedAnnotation> findOnRemoveInterceptors(final Class withType, final Class inputType, final boolean before) {
         return InterceptorRepository.getInterceptors(OnRemoveElement.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation cachedAnnotation) {
                 OnRemoveElement annotation = (OnRemoveElement) cachedAnnotation.annotation;
-                return before != annotation.after() && (annotation.with().equals(withType) || StringUtils.isBlank(withType));
+                return before != annotation.after() && (annotation.with().equals(withType) || withType == null) &&
+                        (inputType == null || annotation.input().equals(inputType));
             }
         });
     }

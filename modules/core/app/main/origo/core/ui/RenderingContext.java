@@ -11,12 +11,14 @@ public class RenderingContext {
 
     public CachedThemeVariant themeVariant;
     public Node rootNode;
+    public RenderedNode renderedNode;
     private Stack<Element> parents;
     public Map<String, Object> attributes;
 
-    public RenderingContext(CachedThemeVariant themeVariant, Node rootNode) {
+    public RenderingContext(CachedThemeVariant themeVariant, Node rootNode, RenderedNode renderedNode) {
         this.themeVariant = themeVariant;
         this.rootNode = rootNode;
+        this.renderedNode = renderedNode;
         this.parents = new Stack<>();
         this.attributes = NodeContext.current().attributes;
     }

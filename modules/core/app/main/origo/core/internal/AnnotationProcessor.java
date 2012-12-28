@@ -125,9 +125,9 @@ public class AnnotationProcessor {
 
                 Decorates decorates = m.getAnnotation(Decorates.class);
                 if (themeAnnotation != null) {
-                    ThemeRepository.addDecorator(themeAnnotation.id(), decorates.types(), m);
+                    ThemeRepository.addDecorator(themeAnnotation.id(), decorates.types(), m, decorates.input());
                 } else {
-                    ThemeRepository.addDecorator(decorates.types(), m);
+                    ThemeRepository.addDecorator(decorates.types(), m, decorates.input());
                 }
             }
         }

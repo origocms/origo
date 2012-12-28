@@ -3,6 +3,7 @@ package main.origo.core.internal;
 import com.google.common.collect.Maps;
 import main.origo.core.ui.Element;
 
+import java.util.List;
 import java.util.Map;
 
 public class CachedTheme {
@@ -26,11 +27,12 @@ public class CachedTheme {
 
     /**
      * Collection of decorators for each theme that can transform UIElements into elements in a RenderedNode.
+     * Each type of Element can have a list of decorators, differing on input type for example.
      *
      * @see main.origo.core.ui.Element
      * @see main.origo.core.ui.RenderedNode
      */
-    public final Map<Class<? extends Element>, CachedDecorator> decorators = Maps.newHashMap();
+    public final Map<Class<? extends Element>, List<CachedDecorator>> decorators = Maps.newHashMap();
 
     public CachedTheme(String themeId, Class declaringClass) {
         this.themeId = themeId;
@@ -49,7 +51,7 @@ public class CachedTheme {
         return themeVariants;
     }
 
-    public Map<Class<? extends Element>, CachedDecorator> getDecorators() {
+    public Map<Class<? extends Element>, List<CachedDecorator>> getDecorators() {
         return decorators;
     }
 

@@ -1,5 +1,6 @@
 package models.origo.core;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import main.origo.core.Node;
 import main.origo.core.helpers.ElementHelper;
@@ -49,7 +50,7 @@ public final class RootNode implements Node {
      * A list of UIElements for each region on the page. The key is the region name.
      */
     @Transient
-    private Map<String, List<Element>> uiElements = Maps.newHashMap();
+    private Map<String, LinkedList<Element>> uiElements = Maps.newHashMap();
 
     private RootNode() {
     }
@@ -152,7 +153,7 @@ public final class RootNode implements Node {
 
     private Element addUIElement(Element element, boolean reorderElementsBelow, String regionKey, int weight) {
         if (!uiElements.containsKey(regionKey)) {
-            uiElements.put(regionKey, new ArrayList<Element>());
+            uiElements.put(regionKey, Lists.<Element>newLinkedList());
         }
         element.setWeight(weight);
         uiElements.get(regionKey).add(element);
@@ -197,11 +198,11 @@ public final class RootNode implements Node {
     }
 
     private static void initializeNode(RootNode node) {
-        node.uiElements = new HashMap<String, List<Element>>();
-        node.uiElements.put(HEAD, new ArrayList<Element>());
-        node.headElement = new HashMap<String, Element>();
+        node.uiElements = Maps.newHashMap();
+        node.uiElements.put(HEAD, Lists.<Element>newLinkedList());
+        node.headElement = Maps.newHashMap();
+        node.tailElement = Maps.newHashMap();
     }
-
 
     private static void initializeNodes(Collection<RootNode> nodes) {
         for (RootNode node : nodes) {

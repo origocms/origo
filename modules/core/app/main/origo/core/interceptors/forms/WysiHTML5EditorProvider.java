@@ -13,6 +13,7 @@ import views.html.origo.core.decorators.forms.wysi.wysihtml5_toolbar;
 public class WysiHTML5EditorProvider {
 
     public static final String EDITOR_TYPE = "origo.admin.editor.wysihtml5";
+    private static final String JS_LOADED = "wysihtml_js_loaded";
 
     public static class WysiHtml5ToolbarElement extends Element {
 
@@ -40,10 +41,14 @@ public class WysiHTML5EditorProvider {
 
     @OnLoad(type = Types.RICHTEXT_EDITOR, with = EDITOR_TYPE)
     public static void setupEditor(OnLoad.Context context) {
-        String mainScript = routes.Assets.at("javascripts/wysihtml5/wysihtml5-0.4.0pre.min.js").url();
-        context.node.addHeadUIElement(new Element.Script().setWeight(9999).addAttribute("type", "text/javascript").addAttribute("src", mainScript));
-        String parserRulesScript = routes.Assets.at("javascripts/wysihtml5/parser_rules/advanced.js").url();
-        context.node.addHeadUIElement(new Element.Script().setWeight(9999).addAttribute("type", "text/javascript").addAttribute("src", parserRulesScript));
+        if (!context.attributes.containsKey(JS_LOADED)) {
+            String mainScript = routes.Assets.at("javascripts/wysihtml5/wysihtml5-0.4.0pre.min.js").url();
+            context.node.addTailUIElement(new Element.Script().setWeight(9999).addAttribute("src", mainScript));
+            String parserRulesScript = routes.Assets.at("javascripts/wysihtml5/parser_rules/advanced.js").url();
+            context.node.addTailUIElement(new Element.Script().setWeight(9999).addAttribute("src", parserRulesScript));
+
+            context.attributes.put(JS_LOADED, true);
+        }
     }
 
     @OnInsertElement(with = Element.InputTextArea.class)
@@ -53,7 +58,7 @@ public class WysiHTML5EditorProvider {
 
     @OnInsertElement(with = Element.InputTextArea.class, after = true)
     public static void insertScript(OnInsertElement.Context context) {
-        context.parent.addChild(new WysiHtml5ScriptElement().setId(context.element.id));
+        context.node.addTailUIElement(new WysiHtml5ScriptElement().setId(context.element.id));
     }
 
     @Provides(type = Types.RICHTEXT_EDITOR, with = EDITOR_TYPE)

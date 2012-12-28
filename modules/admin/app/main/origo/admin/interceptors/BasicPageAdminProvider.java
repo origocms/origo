@@ -122,8 +122,12 @@ public class BasicPageAdminProvider {
         } else {
             page.rootNode = (RootNode) context.node;
         }
-        page.addUIElement(FormHelper.createFormElement(page, BASE_TYPE));
         return page;
+    }
+
+    @OnLoad(type = Types.NODE, with = EDIT_TYPE)
+    public static void loadEditPage(OnLoad.Context context) {
+        context.node.addUIElement(FormHelper.createFormElement(context.node, BASE_TYPE));
     }
 
     /**
@@ -185,31 +189,44 @@ public class BasicPageAdminProvider {
         DateFormat dateFormat = new SimpleDateFormat(datePattern);
         Element publishElement = new Element.Panel().setWeight(15).addAttribute("class", "field").
                 addChild(new Element.Panel().addAttribute("class", "panel split-left").
-                        addChild(new Element.Label().setWeight(10).setBody("From Date")).
-                        addChild(new Element.InputText(Date.class).
+                        addChild(new Element.Label().setWeight(10).setBody("From Date").
+                                addAttribute("for", "date-"+PUBLISH_DATE_PARAM)
+                        ).
+                        addChild(new Element.InputText(Date.class).setId("date-"+PUBLISH_DATE_PARAM).
                                 addAttribute("name", PUBLISH_DATE_PARAM).
                                 addAttribute("value", formattedIfNotNull(dateFormat, basicPage.getDatePublished())).
-                                addAttribute("placeholder", datePattern.toLowerCase()))).
+                                addAttribute("placeholder", datePattern.toLowerCase())
+                        )
+                ).
                 addChild(new Element.Panel().addAttribute("class", "panel split-right").
-                        addChild(new Element.Label().setWeight(10).setBody("Until Date")).
-                        addChild(new Element.InputText(Date.class).
+                        addChild(new Element.Label().setWeight(10).setBody("Until Date").
+                                addAttribute("for", "date-"+UNPUBLISH_DATE_PARAM)
+                        ).
+                        addChild(new Element.InputText(Date.class).setId("date-"+UNPUBLISH_DATE_PARAM).
                                 addAttribute("name", UNPUBLISH_DATE_PARAM).
                                 addAttribute("value", formattedIfNotNull(dateFormat, basicPage.getDateUnpublished())).
-                                addAttribute("placeholder", datePattern.toLowerCase())));
+                                addAttribute("placeholder", datePattern.toLowerCase()))
+                );
         context.formElement.addChild(publishElement);
 
         String timePattern = Messages.get("time.format");
         DateFormat timeFormat = new SimpleDateFormat(timePattern);
         Element publishTimeElement = new Element.Panel().setWeight(15).addAttribute("class", "field").
                 addChild(new Element.Panel().addAttribute("class", "panel split-left").
-                        addChild(new Element.Label().setWeight(10).setBody("From Time")).
-                        addChild(new Element.InputText(Date.class).addAttribute("name", PUBLISH_TIME_PARAM).
+                        addChild(new Element.Label().setWeight(10).setBody("From Time").
+                                addAttribute("for", "date-"+PUBLISH_TIME_PARAM)
+                        ).
+                        addChild(new Element.InputText().setId("date-"+PUBLISH_TIME_PARAM).
+                                addAttribute("name", PUBLISH_TIME_PARAM).
                                 addAttribute("value", formattedIfNotNull(timeFormat, basicPage.getDatePublished())).
                                 addAttribute("placeholder", timePattern.toLowerCase()))
                 ).
                 addChild(new Element.Panel().addAttribute("class", "panel split-right").
-                        addChild(new Element.Label().setWeight(10).setBody("Until Time")).
-                        addChild(new Element.InputText(Date.class).addAttribute("name", UNPUBLISH_TIME_PARAM).
+                        addChild(new Element.Label().setWeight(10).setBody("Until Time").
+                                addAttribute("for", "date-"+UNPUBLISH_TIME_PARAM)
+                        ).
+                        addChild(new Element.InputText().setId("date-"+UNPUBLISH_TIME_PARAM).
+                                addAttribute("name", UNPUBLISH_TIME_PARAM).
                                 addAttribute("value", formattedIfNotNull(timeFormat, basicPage.getDateUnpublished())).
                                 addAttribute("placeholder", timePattern.toLowerCase()))
                 );

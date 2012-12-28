@@ -1,6 +1,7 @@
 package main.origo.core.event;
 
 import com.google.common.collect.Maps;
+import main.origo.core.Node;
 
 import java.util.Map;
 
@@ -9,6 +10,7 @@ public class NodeContext {
     private static ThreadLocal<NodeContext> current = new ThreadLocal<>();
 
     public Map<String, Object> attributes;
+    public Node node;
 
     public NodeContext() {
         this.attributes = Maps.newHashMap();

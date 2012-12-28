@@ -1,5 +1,6 @@
 package main.origo.core.annotations;
 
+import main.origo.core.Node;
 import main.origo.core.event.NodeContext;
 import main.origo.core.ui.Element;
 
@@ -17,7 +18,10 @@ public @interface OnInsertElement {
 
     boolean after() default false;
 
+    Class input() default String.class;
+
     public static class Context {
+        public final Node node;
         public final Element parent;
         public final Element element;
         public final Map<String, Object> attributes;
@@ -25,6 +29,7 @@ public @interface OnInsertElement {
         public Context(Element parent, Element element) {
             this.parent = parent;
             this.element = element;
+            this.node = NodeContext.current().node;
             this.attributes = NodeContext.current().attributes;
         }
     }

@@ -4,6 +4,7 @@ package main.origo.core.helpers;
 import main.origo.core.Node;
 import main.origo.core.NodeNotFoundException;
 import main.origo.core.annotations.Types;
+import main.origo.core.event.NodeContext;
 import main.origo.core.event.OnLoadEventGenerator;
 import main.origo.core.event.ProvidesEventGenerator;
 import models.origo.core.RootNode;
@@ -30,6 +31,8 @@ public class NodeHelper {
         if (rootNode == null) {
             throw new NodeNotFoundException(nodeId);
         }
+        // We'll set the root node for now, hopefully it will be overridden during load
+        NodeContext.current().node = rootNode;
 
         return load(rootNode);
     }
@@ -43,6 +46,10 @@ public class NodeHelper {
         Node node = rootNode;
         if (hasType) {
             node = ProvidesEventGenerator.triggerInterceptor(Types.NODE, rootNode.nodeType, rootNode);
+            if (node != null) {
+                // We found a new type to override the root node with
+                NodeContext.current().node = node;
+            }
         }
 
         if (hasType) {

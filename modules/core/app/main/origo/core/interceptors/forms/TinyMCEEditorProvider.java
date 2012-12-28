@@ -15,10 +15,11 @@ import models.origo.core.Content;
 public class TinyMCEEditorProvider {
 
     public static final String EDITOR_TYPE = "origo.admin.editor.tinymce";
+    private static final String JS_LOADED = "tinymce_js_loaded";
 
     @OnLoad(type = Types.RICHTEXT_EDITOR, with = EDITOR_TYPE)
     public static void setupEditor(OnLoad.Context context) {
-        if (!context.attributes.containsKey(EDITOR_TYPE)) {
+        if (!context.attributes.containsKey(JS_LOADED)) {
             String jqueryTinyMCEScript = routes.Assets.at("javascripts/tiny_mce/jquery.tiny_mce.js").url();
             if (jqueryTinyMCEScript != null) {
                 String tinyMCEScript = routes.Assets.at("javascripts/tiny_mce/tiny_mce.js").url();
@@ -49,7 +50,8 @@ public class TinyMCEEditorProvider {
                         )
                 );
             }
-            context.attributes.put(EDITOR_TYPE, true);
+
+            context.attributes.put(JS_LOADED, true);
         }
     }
 

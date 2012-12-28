@@ -34,6 +34,5 @@ public @interface Decorates {
             this.attributes = NodeContext.current().attributes;
         }
 
-
     }
 }

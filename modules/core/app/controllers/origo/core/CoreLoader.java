@@ -96,16 +96,18 @@ public class CoreLoader {
     }
 
     private static Result loadAndDecoratePage(String identifier, int version) throws NodeNotFoundException {
-        NodeContext.set();
-        Node node = loadNode(identifier, version);
-        RenderedNode renderedNode = ThemeHelper.decorate(node, ThemeHelper.loadTheme(node));
-        renderedNode.navigation(getNavigation(identifier));
-        if (Logger.isDebugEnabled()) {
-            Logger.debug("Decorated " + renderedNode);
+        try {
+            NodeContext.set();
+            Node node = loadNode(identifier, version);
+            RenderedNode renderedNode = ThemeHelper.decorate(node, ThemeHelper.loadTheme(node));
+            renderedNode.navigation(getNavigation(identifier));
+            if (Logger.isDebugEnabled()) {
+                Logger.debug("Decorated " + renderedNode);
+            }
+            return ThemeHelper.render(renderedNode);
+        } finally {
+            NodeContext.clear();
         }
-        Result result = ThemeHelper.render(renderedNode);
-        NodeContext.clear();
-        return result;
     }
 
     private static Node loadNode(String identifier, int version) throws NodeNotFoundException {

@@ -27,7 +27,7 @@ public class ThemeHelper {
         setupRegions(themeVariant, renderedNode);
         renderedNode.template(themeVariant);
         renderedNode.title(node.getTitle());
-        RenderingContext renderingContext = new RenderingContext(themeVariant, node);
+        RenderingContext renderingContext = new RenderingContext(themeVariant, node, renderedNode);
         for (String pageRegion : node.getRegions()) {
             for (Element element : node.getUIElements(pageRegion)) {
                 Html decoratedContent = decorate(element, renderingContext);
@@ -36,24 +36,26 @@ public class ThemeHelper {
 
                     case Node.HEAD: {
                         if (!element.isAlwaysInBody()) {
-                            throw new RuntimeException("Element ["+element.getType()+"] is not allowed in the head");
+                            throw new RuntimeException("Element ["+element.getType()+"] is not allowed in the head. Tried to add "+element.toString());
                         }
                         renderedNode.addHead(decoratedContent);
+                        break;
                     }
 
                     case Node.TAIL: {
                         if (element.isAlwaysInHead()) {
-                            throw new RuntimeException("Element ["+element.getType()+"] is not allowed in the body");
+                            throw new RuntimeException("Element ["+element.getType()+"] is not allowed in the body. Tried to add "+element.toString());
                         }
                         renderedNode.addTail(decoratedContent);
-
+                        break;
                     }
 
                     default: {
                         if (element.isAlwaysInHead()) {
-                            throw new RuntimeException("Element ["+element.getType()+"] is not allowed in the body");
+                            throw new RuntimeException("Element ["+element.getType()+"] is not allowed in the body. Tried to add "+element.toString());
                         }
                         renderedNode.add(pageRegion, decoratedContent);
+                        break;
                     }
                 }
             }
@@ -80,7 +82,7 @@ public class ThemeHelper {
         renderingContext.nest(element);
         Html decoratedOutput = null;
 
-        List<CachedDecorator> decorators = ThemeRepository.getDecorators(renderingContext.themeVariant.themeId, element.getClass());
+        List<CachedDecorator> decorators = ThemeRepository.getDecorators(renderingContext.themeVariant.themeId, element);
 
         if (!decorators.isEmpty()) {
             CachedDecorator decorator = selectDecorator(element.getClass(), decorators);
@@ -167,7 +169,7 @@ public class ThemeHelper {
 
     private static CachedDecorator setFirstDecoratorAsDefault(Class<? extends Element> type, List<CachedDecorator> decorators) {
         CachedDecorator annotation = decorators.iterator().next();
-        Logger.info("Setting ["+annotation.getClass().getName()+"] as default for type ["+type.getName()+"]");
+        Logger.info("Setting ["+annotation.method.getDeclaringClass().getName()+"] as default for type ["+type.getName()+"]");
         CoreSettingsHelper.setDecorator(type, annotation.method.getDeclaringClass());
         return annotation;
     }

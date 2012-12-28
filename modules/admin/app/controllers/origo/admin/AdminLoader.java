@@ -3,6 +3,7 @@ package controllers.origo.admin;
 import main.origo.admin.helpers.AdminSettingsHelper;
 import main.origo.core.Node;
 import main.origo.core.ThemeRepository;
+import main.origo.core.event.NodeContext;
 import main.origo.core.helpers.NavigationHelper;
 import main.origo.core.helpers.NodeHelper;
 import main.origo.core.helpers.ThemeHelper;
@@ -21,8 +22,8 @@ public class AdminLoader {
         return loadAndDecoratePage(AdminSettingsHelper.getDashboardType());
     }
 
-    public static Result getDashboard(String dashboard) {
-        return loadAndDecoratePage(dashboard);
+    public static Result getDashboard(String withType) {
+        return loadAndDecoratePage(withType);
     }
 
     public static Result getPage(String withType) {
@@ -34,13 +35,23 @@ public class AdminLoader {
     }
 
     private static Result loadAndDecoratePage(String withType) {
-        Node node = loadNode(withType);
-        return decorateNode(node);
+        try {
+            NodeContext.set();
+            Node node = loadNode(withType);
+            return decorateNode(node);
+        } finally {
+            NodeContext.clear();
+        }
     }
 
     private static Result loadAndDecoratePage(String withType, String identifier) {
-        Node node = loadNode(withType, identifier);
-        return decorateNode(node);
+        try {
+            NodeContext.set();
+            Node node = loadNode(withType, identifier);
+            return decorateNode(node);
+        } finally {
+            NodeContext.clear();
+        }
     }
 
     private static Node loadNode(String withType) {
@@ -55,11 +66,15 @@ public class AdminLoader {
 
     private static Node loadByType(String withType) {
         RootNode rootNode = loadRootNode(withType);
+        // We'll set the root node for now, hopefully it will be overridden during load
+        NodeContext.current().node = rootNode;
         return NodeHelper.load(rootNode);
     }
 
     private static Node loadByType(String withType, String identifier) {
         RootNode rootNode = loadRootNode(withType, identifier);
+        // We'll set the root node for now, hopefully it will be overridden during load
+        NodeContext.current().node = rootNode;
         return NodeHelper.load(rootNode);
     }
 

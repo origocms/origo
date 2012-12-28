@@ -5,7 +5,6 @@ import main.origo.core.Node;
 import main.origo.core.event.NodeContext;
 import main.origo.core.ui.Element;
 import main.origo.core.ui.NavigationElement;
-import models.origo.core.RootNode;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -40,7 +39,6 @@ public @interface OnLoad {
     boolean after() default true;
 
     public static class Context {
-        public final RootNode rootNode;
         public final Node node;
         public final Map<String, Object> args;
         public final Navigation navigation;
@@ -49,70 +47,54 @@ public @interface OnLoad {
         public final Element element;
         public final Map<String, Object> attributes;
 
-        public Context(RootNode rootNode, Map<String, Object> args) {
-            this.rootNode = rootNode;
+        public Context(Map<String, Object> args) {
             this.args = args;
             this.attributes = NodeContext.current().attributes;
             navigation = null;
             element = null;
             navigationElements = null;
             navigationElement = null;
-            node = null;
+            this.node = NodeContext.current().node;
         }
 
-        public Context(Node node, Map<String, Object> args) {
-            this.node = node;
-            this.args = args;
-            this.attributes = NodeContext.current().attributes;
-            navigation = null;
-            element = null;
-            navigationElements = null;
-            navigationElement = null;
-            rootNode = null;
-        }
-
-        public Context(Node node, Navigation navigation, Map<String, Object> args) {
-            this.node = node;
+        public Context(Navigation navigation, Map<String, Object> args) {
             this.navigation = navigation;
             this.args = args;
             this.attributes = NodeContext.current().attributes;
             element = null;
             navigationElements = null;
             navigationElement = null;
-            rootNode = null;
+            this.node = NodeContext.current().node;
         }
 
-        public Context(Node node, List<NavigationElement> navigationElements, Map<String, Object> args) {
-            this.node = node;
+        public Context(List<NavigationElement> navigationElements, Map<String, Object> args) {
             this.navigationElements = navigationElements;
             this.args = args;
             this.attributes = NodeContext.current().attributes;
             navigation = null;
             element = null;
             navigationElement = null;
-            rootNode = null;
+            this.node = NodeContext.current().node;
         }
 
-        public Context(Node node, Element element, Map<String, Object> args) {
-            this.node = node;
+        public Context(Element element, Map<String, Object> args) {
             this.element = element;
             this.args = args;
             this.attributes = NodeContext.current().attributes;
             navigation = null;
             navigationElements = null;
             navigationElement = null;
-            rootNode = null;
+            this.node = NodeContext.current().node;
         }
 
-        public Context(Node node, Navigation navigation, NavigationElement navigationElement, Map<String, Object> args) {
-            this.node = node;
+        public Context(Navigation navigation, NavigationElement navigationElement, Map<String, Object> args) {
             this.navigation = navigation;
             this.navigationElement = navigationElement;
             this.args = args;
             this.attributes = NodeContext.current().attributes;
             element = null;
             navigationElements = null;
-            rootNode = null;
+            this.node = NodeContext.current().node;
         }
     }
 
