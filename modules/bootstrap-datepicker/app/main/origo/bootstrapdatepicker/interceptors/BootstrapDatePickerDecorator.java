@@ -4,9 +4,11 @@ import controllers.routes;
 import main.origo.core.annotations.Decorates;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnInsertElement;
+import main.origo.core.helpers.ElementHelper;
 import main.origo.core.ui.Element;
 import play.api.templates.Html;
 import play.i18n.Messages;
+import view.origo.bootstrapdatepicker.html.datepicker;
 
 import java.util.Date;
 
@@ -20,15 +22,15 @@ public class BootstrapDatePickerDecorator {
 
         context.element.setId("datepicker-" + context.element.getId());
 
-        return context.element.decorate(context.renderingContext);
+        return datepicker.render(context.element, ElementHelper.getHtmlFromBody(context.element), context.element.getAttributes());
     }
 
     @OnInsertElement(with = Element.InputText.class, input = Date.class)
     public static void addJavascriptSrc(OnInsertElement.Context context) {
         if(!context.attributes.containsKey(JS_LOADED)) {
-            String script = routes.Assets.at("javascripts/bootstrapdatepicker/bootstrap-datepicker.min.js").url();
+            String script = routes.Assets.at("javascripts/origo/bootstrapdatepicker/bootstrap-datepicker.min.js").url();
             context.node.addTailUIElement(new Element.Script().addAttribute("src", script));
-            String style = routes.Assets.at("stylesheets/bootstrapdatepicker/datepicker.css").url();
+            String style = routes.Assets.at("stylesheets/origo/bootstrapdatepicker/datepicker-custom.css").url();
             context.node.addHeadUIElement(new Element.Link().addAttribute("href", style));
 
             context.attributes.put(JS_LOADED, true);
@@ -43,10 +45,11 @@ public class BootstrapDatePickerDecorator {
 
         context.node.addTailUIElement(new Element.Script().setBody(
                 "$('#" + "datepicker-" + context.element.id + "').datepicker({ " +
-                "format: '" + dateFormat + "', " +
-                "todayBtn: 'linked', " +
-                "todayHighlight: true, " +
-                "});"
+                        "format: '" + dateFormat + "', " +
+                        "todayBtn: 'linked', " +
+                        "todayHighlight: true, " +
+                        "});\n" +
+                "$('#cal-datepicker-" + context.element.id +"').bind('click', function(){$('#" + "datepicker-" + context.element.id + "').datepicker('show');})"
         ));
 
     }

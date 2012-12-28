@@ -1,0 +1,6 @@
+@(element:main.origo.core.ui.Element, body:Html, attributes:Map[String, String])
+
+<div class="input-append">
+    <input id="@element.id" @views.html.origo.core.tags._attributes(attributes) />
+    <span class="add-on" id="cal-@element.id"><i class="icon-calendar"></i></span>
+</div>
