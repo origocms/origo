@@ -2,6 +2,7 @@ package controllers.origo.admin;
 
 import main.origo.admin.helpers.AdminSettingsHelper;
 import main.origo.core.Node;
+import main.origo.core.NodeLoadException;
 import main.origo.core.ThemeRepository;
 import main.origo.core.event.NodeContext;
 import main.origo.core.helpers.NavigationHelper;
@@ -18,23 +19,23 @@ import java.util.List;
 
 public class AdminLoader {
 
-    public static Result getFrontDashboard() {
+    public static Result getFrontDashboard() throws NodeLoadException {
         return loadAndDecoratePage(AdminSettingsHelper.getDashboardType());
     }
 
-    public static Result getDashboard(String withType) {
+    public static Result getDashboard(String withType) throws NodeLoadException {
         return loadAndDecoratePage(withType);
     }
 
-    public static Result getPage(String withType) {
+    public static Result getPage(String withType) throws NodeLoadException {
         return loadAndDecoratePage(withType);
     }
 
-    public static Result getPage(String withType, String identifier) {
+    public static Result getPage(String withType, String identifier) throws NodeLoadException {
         return loadAndDecoratePage(withType, identifier);
     }
 
-    private static Result loadAndDecoratePage(String withType) {
+    private static Result loadAndDecoratePage(String withType) throws NodeLoadException {
         try {
             NodeContext.set();
             Node node = loadNode(withType);
@@ -44,7 +45,7 @@ public class AdminLoader {
         }
     }
 
-    private static Result loadAndDecoratePage(String withType, String identifier) {
+    private static Result loadAndDecoratePage(String withType, String identifier) throws NodeLoadException {
         try {
             NodeContext.set();
             Node node = loadNode(withType, identifier);
@@ -54,24 +55,24 @@ public class AdminLoader {
         }
     }
 
-    private static Node loadNode(String withType) {
+    private static Node loadNode(String withType) throws NodeLoadException {
         Logger.debug("Loading [" + withType + "] as type");
         return loadByType(withType);
     }
 
-    private static Node loadNode(String withType, String identifier) {
+    private static Node loadNode(String withType, String identifier) throws NodeLoadException {
         Logger.debug("Loading [" + withType + "] as type and identifier [" + identifier + "]");
         return loadByType(withType, identifier);
     }
 
-    private static Node loadByType(String withType) {
+    private static Node loadByType(String withType) throws NodeLoadException {
         RootNode rootNode = loadRootNode(withType);
         // We'll set the root node for now, hopefully it will be overridden during load
         NodeContext.current().node = rootNode;
         return NodeHelper.load(rootNode);
     }
 
-    private static Node loadByType(String withType, String identifier) {
+    private static Node loadByType(String withType, String identifier) throws NodeLoadException {
         RootNode rootNode = loadRootNode(withType, identifier);
         // We'll set the root node for now, hopefully it will be overridden during load
         NodeContext.current().node = rootNode;

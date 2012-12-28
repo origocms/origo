@@ -2,6 +2,7 @@ package main.origo.core.helpers;
 
 
 import main.origo.core.Node;
+import main.origo.core.NodeLoadException;
 import main.origo.core.NodeNotFoundException;
 import main.origo.core.annotations.Types;
 import main.origo.core.event.NodeContext;
@@ -15,7 +16,7 @@ import java.util.Date;
 
 public class NodeHelper {
 
-    public static Node load(String nodeId) throws NodeNotFoundException {
+    public static Node load(String nodeId) throws NodeNotFoundException, NodeLoadException {
         //Load RootNode model
         RootNode rootNode = RootNode.findLatestPublishedVersionWithNodeId(nodeId, new Date());
         if (rootNode == null) {
@@ -25,7 +26,7 @@ public class NodeHelper {
         return load(rootNode);
     }
 
-    public static Node load(String nodeId, Integer version) throws NodeNotFoundException {
+    public static Node load(String nodeId, Integer version) throws NodeNotFoundException, NodeLoadException {
         //Load RootNode model
         RootNode rootNode = RootNode.findWithNodeIdAndSpecificVersion(nodeId, version);
         if (rootNode == null) {
@@ -37,7 +38,7 @@ public class NodeHelper {
         return load(rootNode);
     }
 
-    public static Node load(RootNode rootNode) {
+    public static Node load(RootNode rootNode) throws NodeLoadException {
         boolean hasType = !StringUtils.isBlank(rootNode.nodeType) && !rootNode.nodeType.equals(RootNode.class.getName());
         if (hasType) {
             OnLoadEventGenerator.triggerBeforeInterceptor(Types.NODE, rootNode.nodeType, rootNode, Collections.<String, Object>emptyMap());
@@ -46,6 +47,9 @@ public class NodeHelper {
         Node node = rootNode;
         if (hasType) {
             node = ProvidesEventGenerator.triggerInterceptor(Types.NODE, rootNode.nodeType, rootNode);
+            if (!node.getRegions().isEmpty()) {
+                throw new NodeLoadException(rootNode.getNodeId(), "Providers should only create the base type, not add any elements. To add elements use OnLoad instead.");
+            }
             if (node != null) {
                 // We found a new type to override the root node with
                 NodeContext.current().node = node;

@@ -1,6 +1,7 @@
 package controllers.origo.core;
 
 import main.origo.core.Node;
+import main.origo.core.NodeLoadException;
 import main.origo.core.NodeNotFoundException;
 import main.origo.core.event.NodeContext;
 import main.origo.core.helpers.CoreSettingsHelper;
@@ -95,7 +96,7 @@ public class CoreLoader {
         return Controller.redirect(url);
     }
 
-    private static Result loadAndDecoratePage(String identifier, int version) throws NodeNotFoundException {
+    private static Result loadAndDecoratePage(String identifier, int version) throws NodeNotFoundException, NodeLoadException {
         try {
             NodeContext.set();
             Node node = loadNode(identifier, version);
@@ -110,7 +111,7 @@ public class CoreLoader {
         }
     }
 
-    private static Node loadNode(String identifier, int version) throws NodeNotFoundException {
+    private static Node loadNode(String identifier, int version) throws NodeNotFoundException, NodeLoadException {
         Logger.trace("Trying to find alias for [" + identifier + "]");
 
         Alias alias = Alias.findWithPath(identifier);
@@ -123,7 +124,7 @@ public class CoreLoader {
         }
     }
 
-    private static Node loadByNodeIdAndVersion(String identifier, int version) throws NodeNotFoundException {
+    private static Node loadByNodeIdAndVersion(String identifier, int version) throws NodeNotFoundException, NodeLoadException {
         Node node;
         if (version != 0) {
             node = NodeHelper.load(identifier, version);
@@ -139,11 +140,11 @@ public class CoreLoader {
         return node;
     }
 
-    public static List<NavigationElement> getNavigation(String identifier) throws NodeNotFoundException {
+    public static List<NavigationElement> getNavigation(String identifier) throws NodeNotFoundException, NodeLoadException {
         return getNavigation(identifier, 0);
     }
 
-    public static List<NavigationElement> getNavigation(String identifier, int version) throws NodeNotFoundException {
+    public static List<NavigationElement> getNavigation(String identifier, int version) throws NodeNotFoundException, NodeLoadException {
         Node node = loadNode(identifier, version);
         List<NavigationElement> navigationLinks = NavigationHelper.getNavigation(node, NavigationElement.FRONT);
         if (Logger.isDebugEnabled()) {
