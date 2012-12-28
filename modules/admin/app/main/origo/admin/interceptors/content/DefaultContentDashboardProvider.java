@@ -1,4 +1,4 @@
-package main.origo.admin.interceptors;
+package main.origo.admin.interceptors.content;
 
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.AdminHelper;
@@ -35,10 +35,12 @@ public class DefaultContentDashboardProvider {
         AdminPage page = new AdminPage(context.node.getNodeId());
         page.setTitle("Content - Dashboard");
         page.rootNode = (RootNode) context.node;
-
-        page.addElement(DashboardHelper.createDashboard(Admin.CONTENT_PAGE_TYPE, page));
-
         return page;
+    }
+
+    @OnLoad(type = Types.NODE, with = Admin.CONTENT_PAGE_TYPE)
+    public static void addContentPageContent(OnLoad.Context context) throws NodeLoadException {
+        context.node.addElement(DashboardHelper.createDashboard(Admin.CONTENT_PAGE_TYPE, context.node));
     }
 
     /*

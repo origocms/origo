@@ -56,12 +56,4 @@ public class Admin {
 
     }
 
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.METHOD})
-    public static @interface NavigationItem {
-        String name();
-
-        String parent();
-    }
-
 }

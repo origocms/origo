@@ -130,6 +130,11 @@ public class BasicPage implements Node {
         return rootNode.removeElement(element);
     }
 
+    @Override
+    public boolean hasElements() {
+        return rootNode.hasElements();
+    }
+
     public BasicPage copy() {
         BasicPage newPage = new BasicPage();
         RootNode rootNodeCopy = rootNode.copy(true);

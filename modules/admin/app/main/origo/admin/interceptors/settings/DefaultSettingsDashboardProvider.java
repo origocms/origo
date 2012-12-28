@@ -1,4 +1,4 @@
-package main.origo.admin.interceptors;
+package main.origo.admin.interceptors.settings;
 
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.AdminHelper;
@@ -35,10 +35,12 @@ public class DefaultSettingsDashboardProvider {
         AdminPage page = new AdminPage(context.node.getNodeId());
         page.setTitle("Settings - Dashboard");
         page.rootNode = (RootNode) context.node;
-
-        page.addElement(DashboardHelper.createDashboard(Admin.SETTINGS_PAGE_TYPE, page));
-
         return page;
+    }
+
+    @OnLoad(type = Types.NODE, with = Admin.SETTINGS_PAGE_TYPE)
+    public static void addSettingsPageContent(OnLoad.Context context) throws NodeLoadException {
+        context.node.addElement(DashboardHelper.createDashboard(Admin.SETTINGS_PAGE_TYPE, context.node));
     }
 
     /*

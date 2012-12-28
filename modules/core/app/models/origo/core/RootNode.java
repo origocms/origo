@@ -193,6 +193,16 @@ public final class RootNode implements Node {
     }
 
     @Override
+    public boolean hasElements() {
+        for (String region : getRegions()) {
+            if (getElements(region).size()>1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public String toString() {
         return "Node (" + nodeType + " - " + nodeId + "," + version + ")";
     }

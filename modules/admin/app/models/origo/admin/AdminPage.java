@@ -111,6 +111,11 @@ public class AdminPage implements Node {
     }
 
     @Override
+    public boolean hasElements() {
+        return rootNode.hasElements();
+    }
+
+    @Override
     public String toString() {
         return new StringBuilder().append("AdminPage {").
                 append("nodeId='").append(nodeId).append("\', ").

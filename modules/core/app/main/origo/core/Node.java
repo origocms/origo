@@ -160,4 +160,8 @@ public interface Node {
      */
     boolean removeElement(Element element);
 
+    /**
+     * Checks if there are any elements added to the node
+     */
+    boolean hasElements();
 }

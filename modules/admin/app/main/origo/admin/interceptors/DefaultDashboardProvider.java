@@ -28,10 +28,12 @@ public class DefaultDashboardProvider {
         AdminPage page = new AdminPage(context.node.getNodeId());
         page.setTitle("Dashboard");
         page.rootNode = (RootNode) context.node;
-
-        page.addElement(DashboardHelper.createDashboard(Admin.FRONT_PAGE_TYPE, page));
-
         return page;
+    }
+
+    @OnLoad(type = Types.NODE, with = Admin.FRONT_PAGE_TYPE)
+    public static void addDashboardContent(OnLoad.Context context) throws NodeLoadException {
+        context.node.addElement(DashboardHelper.createDashboard(Admin.FRONT_PAGE_TYPE, context.node));
     }
 
     @Provides(type = Admin.DASHBOARD, with = Admin.FRONT_PAGE_TYPE)

@@ -119,6 +119,11 @@ public class StructuredPage implements Node {
     }
 
     @Override
+    public boolean hasElements() {
+        return rootNode.hasElements();
+    }
+
+    @Override
     public String toString() {
         return new StringBuilder().
                 append("StructuredPage {").

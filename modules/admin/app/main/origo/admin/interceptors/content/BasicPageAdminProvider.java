@@ -1,4 +1,4 @@
-package main.origo.admin.interceptors;
+package main.origo.admin.interceptors.content;
 
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.AdminHelper;
