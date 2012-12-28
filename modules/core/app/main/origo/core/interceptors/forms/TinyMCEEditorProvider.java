@@ -23,8 +23,8 @@ public class TinyMCEEditorProvider {
             String jqueryTinyMCEScript = routes.Assets.at("javascripts/origo/tiny_mce/jquery.tiny_mce.js").url();
             if (jqueryTinyMCEScript != null) {
                 String tinyMCEScript = routes.Assets.at("javascripts/origo/tiny_mce/tiny_mce.js").url();
-                context.node.addTailUIElement(new Element.Script().setId(EDITOR_TYPE+"_src").setWeight(9999).addAttribute("type", "text/javascript").addAttribute("src", jqueryTinyMCEScript));
-                context.node.addTailUIElement(new Element.Script().setId(EDITOR_TYPE+"_invocation").setWeight(10000).addAttribute("type", "text/javascript").
+                context.node.addTailElement(new Element.Script().setId(EDITOR_TYPE+"_src").setWeight(9999).addAttribute("type", "text/javascript").addAttribute("src", jqueryTinyMCEScript));
+                context.node.addTailElement(new Element.Script().setId(EDITOR_TYPE+"_invocation").setWeight(10000).addAttribute("type", "text/javascript").
                         setBody(
                                 "$().ready(function() {\n" +
                                         "  $('textarea.tinymce').tinymce({\n" +

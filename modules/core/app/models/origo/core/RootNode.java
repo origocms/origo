@@ -47,12 +47,12 @@ public final class RootNode implements Node {
     @Transient
     private Map<String, Element> tailElement = Maps.newHashMap();
     /**
-     * A list of UIElements for each region on the page. The key is the region name.
+     * A list of Elements for each region on the page. The key is the region name.
      */
     @Transient
-    private Map<String, LinkedList<Element>> uiElements = Maps.newHashMap();
+    private Map<String, LinkedList<Element>> elements = Maps.newHashMap();
 
-    private RootNode() {
+    protected RootNode() {
     }
 
     public RootNode(Integer version) {
@@ -96,97 +96,97 @@ public final class RootNode implements Node {
 
     @Override
     public Set<String> getRegions() {
-        return this.uiElements.keySet();
+        return this.elements.keySet();
     }
 
     /* Interface methods */
     @Override
-    public List<Element> getUIElements(String region) {
-        return this.uiElements.get(region.toLowerCase());
+    public List<Element> getElements(String region) {
+        return this.elements.get(region.toLowerCase());
     }
 
     @Override
-    public Element addHeadUIElement(Element element) {
-        return addHeadUIElement(element, false);
+    public Element addHeadElement(Element element) {
+        return addHeadElement(element, false);
     }
 
     @Override
-    public Element addTailUIElement(Element element) {
-        return addTailUIElement(element, false);
+    public Element addTailElement(Element element) {
+        return addTailElement(element, false);
     }
 
     @Override
-    public Element addUIElement(Element element) {
-        return addUIElement(element, false);
+    public Element addElement(Element element) {
+        return addElement(element, false);
     }
 
     @Override
-    public Element addHeadUIElement(Element element, boolean reorderElementsBelow) {
+    public Element addHeadElement(Element element, boolean reorderElementsBelow) {
         String elementKey = String.valueOf(element.hashCode());
         if (headElement.containsKey(elementKey)) {
             return headElement.get(elementKey);
         }
         headElement.put(elementKey, element);
-        return addUIElement(element, reorderElementsBelow, HEAD, element.getWeight());
+        return addElement(element, reorderElementsBelow, HEAD, element.getWeight());
     }
 
     @Override
-    public Element addTailUIElement(Element element, boolean reorderElementsBelow) {
+    public Element addTailElement(Element element, boolean reorderElementsBelow) {
         String elementKey = String.valueOf(element.hashCode());
         if (tailElement.containsKey(elementKey)) {
             return tailElement.get(elementKey);
         }
         tailElement.put(elementKey, element);
-        return addUIElement(element, reorderElementsBelow, TAIL, element.getWeight());
+        return addElement(element, reorderElementsBelow, TAIL, element.getWeight());
     }
 
     @Override
-    public Element addUIElement(Element element, boolean reorderElementsBelow) {
+    public Element addElement(Element element, boolean reorderElementsBelow) {
         Meta meta = Meta.findWithNodeIdAndSpecificVersion(nodeId, version, element.id);
         if (meta == null) {
             meta = Meta.defaultMeta();
         }
 
         String regionKey = meta.region.toLowerCase();
-        return addUIElement(element, reorderElementsBelow, regionKey, meta.weight.intValue());
+        return addElement(element, reorderElementsBelow, regionKey, meta.weight.intValue());
     }
 
-    private Element addUIElement(Element element, boolean reorderElementsBelow, String regionKey, int weight) {
-        if (!uiElements.containsKey(regionKey)) {
-            uiElements.put(regionKey, Lists.<Element>newLinkedList());
+    private Element addElement(Element element, boolean reorderElementsBelow, String regionKey, int weight) {
+        if (!elements.containsKey(regionKey)) {
+            elements.put(regionKey, Lists.<Element>newLinkedList());
         }
         element.setWeight(weight);
-        uiElements.get(regionKey).add(element);
+        elements.get(regionKey).add(element);
         if (reorderElementsBelow) {
-            ElementHelper.repositionUIElements(uiElements.get(regionKey), element);
+            ElementHelper.repositionUIElements(elements.get(regionKey), element);
         }
-        ElementHelper.reorderUIElements(uiElements.get(regionKey));
+        ElementHelper.reorderUIElements(elements.get(regionKey));
         return element;
     }
 
     @Override
-    public boolean removeHeadUIElement(Element element) {
-        return removeUIElement(element, HEAD);
+    public boolean removeHeadElement(Element element) {
+        return removeElement(element, HEAD);
     }
 
     @Override
-    public boolean removeTailUIElement(Element element) {
-        return removeUIElement(element, TAIL);
+    public boolean removeTailElement(Element element) {
+        return removeElement(element, TAIL);
     }
 
     @Override
-    public boolean removeUIElement(Element element) {
+    public boolean removeElement(Element element) {
         Meta meta = Meta.findWithNodeIdAndSpecificVersion(nodeId, version, element.id);
         if (meta == null) {
             meta = Meta.defaultMeta();
         }
         String regionKey = meta.region.toLowerCase();
-        return removeUIElement(element, regionKey);
+        return removeElement(element, regionKey);
     }
 
-    private boolean removeUIElement(Element element, String regionKey) {
-        if (uiElements.get(regionKey).remove(element)) {
-            ElementHelper.reorderUIElements(uiElements.get(regionKey));
+    private boolean removeElement(Element element, String regionKey) {
+        if (elements.get(regionKey).remove(element)) {
+            ElementHelper.reorderUIElements(elements.get(regionKey));
             return true;
         }
         return false;
@@ -198,8 +198,8 @@ public final class RootNode implements Node {
     }
 
     private static void initializeNode(RootNode node) {
-        node.uiElements = Maps.newHashMap();
-        node.uiElements.put(HEAD, Lists.<Element>newLinkedList());
+        node.elements = Maps.newHashMap();
+        node.elements.put(HEAD, Lists.<Element>newLinkedList());
         node.headElement = Maps.newHashMap();
         node.tailElement = Maps.newHashMap();
     }
@@ -299,5 +299,6 @@ public final class RootNode implements Node {
         JPA.em().persist(this);
         return this;
     }
+
 
 }

@@ -77,7 +77,7 @@ public interface Node {
      * @param region the area of the screen where this element should be rendered
      * @return all uiElements for the region
      */
-    List<Element> getUIElements(String region);
+    List<Element>getElements(String region);
 
     /**
      * Add an element that should be rendered in the head region of the page. The head region always exists.
@@ -86,7 +86,7 @@ public interface Node {
      * @return the newly added Element
      * @see main.origo.core.annotations.ThemeVariant
      */
-    Element addHeadUIElement(Element element);
+    Element addHeadElement(Element element);
 
     /**
      * Add an element that should be rendered in the tail of the page. The head region always exists.
@@ -95,7 +95,7 @@ public interface Node {
      * @return the newly added Element
      * @see main.origo.core.annotations.ThemeVariant
      */
-    Element addTailUIElement(Element element);
+    Element addTailElement(Element element);
 
     /**
      * Add an element that should be rendered on the page. Regions are determined by the theme variant used.
@@ -104,7 +104,7 @@ public interface Node {
      * @return the newly added Element
      * @see main.origo.core.annotations.ThemeVariant
      */
-    Element addUIElement(Element element);
+    Element addElement(Element element);
 
     /**
      * Add an element that should be rendered in the head region of the page. The head region always exists.
@@ -114,7 +114,7 @@ public interface Node {
      * @return the newly added Element
      * @see main.origo.core.annotations.ThemeVariant
      */
-    Element addHeadUIElement(Element element, boolean reorderElementsBelow);
+    Element addHeadElement(Element element, boolean reorderElementsBelow);
 
     /**
      * Add an element that should be rendered in the tail of the page. The head region always exists.
@@ -124,7 +124,7 @@ public interface Node {
      * @return the newly added Element
      * @see main.origo.core.annotations.ThemeVariant
      */
-    Element addTailUIElement(Element element, boolean reorderElementsBelow);
+    Element addTailElement(Element element, boolean reorderElementsBelow);
 
     /**
      * Add an element that should be rendered on the page. Regions are determined by the theme variant used.
@@ -134,7 +134,7 @@ public interface Node {
      * @return the newly added Element
      * @see main.origo.core.annotations.ThemeVariant
      */
-    Element addUIElement(Element element, boolean reorderElementsBelow);
+    Element addElement(Element element, boolean reorderElementsBelow);
 
     /**
      * Removes an element so it is not rendered in the head region of the page. The head region always exists.
@@ -142,7 +142,7 @@ public interface Node {
      * @param element the element to be rendered
      * @return if an object matching the region and the element could be found and removed
      */
-    boolean removeHeadUIElement(Element element);
+    boolean removeHeadElement(Element element);
 
     /**
      * Removes an element so it is not rendered in the tail of the page. The head region always exists.
@@ -150,7 +150,7 @@ public interface Node {
      * @param element the element to be rendered
      * @return if an object matching the region and the element could be found and removed
      */
-    boolean removeTailUIElement(Element element);
+    boolean removeTailElement(Element element);
 
     /**
      * Removes an element so it is not rendered. Will force a reordering of all elements below.
@@ -158,6 +158,6 @@ public interface Node {
      * @param element the element to be rendered
      * @return if an object matching the region and the element could be found and removed
      */
-    boolean removeUIElement(Element element);
+    boolean removeElement(Element element);
 
 }

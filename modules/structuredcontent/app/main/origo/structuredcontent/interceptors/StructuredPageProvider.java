@@ -36,7 +36,7 @@ public class StructuredPageProvider {
             SegmentHelper.triggerBeforeSegmentLoaded(segment.type, context.node, segment);
             Element element = SegmentHelper.triggerSegmentProvider(segment.type, context.node, segment);
             SegmentHelper.triggerAfterSegmentLoaded(segment.type, context.node, segment, element);
-            context.node.addUIElement(element);
+            context.node.addElement(element);
         }
 
     }

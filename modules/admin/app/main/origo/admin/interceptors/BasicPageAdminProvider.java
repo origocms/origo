@@ -104,7 +104,7 @@ public class BasicPageAdminProvider {
                     addChild(new Element.Text().setWeight(20).setBody(" (" + page.nodeId + " / " + page.getVersion() + ")"));
             panelElement.addChild(panel);
         }
-        context.node.addUIElement(panelElement);
+        context.node.addElement(panelElement);
     }
 
     /**
@@ -127,7 +127,7 @@ public class BasicPageAdminProvider {
 
     @OnLoad(type = Types.NODE, with = EDIT_TYPE)
     public static void loadEditPage(OnLoad.Context context) {
-        context.node.addUIElement(FormHelper.createFormElement(context.node, BASE_TYPE));
+        context.node.addElement(FormHelper.createFormElement(context.node, BASE_TYPE));
     }
 
     /**
@@ -139,7 +139,7 @@ public class BasicPageAdminProvider {
     public static void loadEditForm(OnLoadForm.Context context) {
         BasicPage basicPage = BasicPage.findLatestVersion(context.node.getNodeId());
         if (basicPage == null) {
-            context.node.addUIElement(new Element.Paragraph().setWeight(10).setBody("Page '" + context.node.getNodeId() + "' does not exist."));
+            context.node.addElement(new Element.Paragraph().setWeight(10).setBody("Page '" + context.node.getNodeId() + "' does not exist."));
             return;
         }
         basicPage.rootNode = RootNode.findWithNodeIdAndSpecificVersion(context.node.getNodeId(), context.node.getVersion());

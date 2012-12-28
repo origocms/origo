@@ -29,7 +29,7 @@ public class ThemeHelper {
         renderedNode.title(node.getTitle());
         RenderingContext renderingContext = new RenderingContext(themeVariant, node, renderedNode);
         for (String pageRegion : node.getRegions()) {
-            for (Element element : node.getUIElements(pageRegion)) {
+            for (Element element : node.getElements(pageRegion)) {
                 Html decoratedContent = decorate(element, renderingContext);
 
                 switch(pageRegion) {

@@ -29,9 +29,9 @@ public class BootstrapDatePickerDecorator {
     public static void addJavascriptSrc(OnInsertElement.Context context) {
         if(!context.attributes.containsKey(JS_LOADED)) {
             String script = routes.Assets.at("javascripts/origo/bootstrapdatepicker/bootstrap-datepicker.min.js").url();
-            context.node.addTailUIElement(new Element.Script().addAttribute("src", script));
+            context.node.addTailElement(new Element.Script().addAttribute("src", script));
             String style = routes.Assets.at("stylesheets/origo/bootstrapdatepicker/datepicker-custom.css").url();
-            context.node.addHeadUIElement(new Element.Link().addAttribute("href", style));
+            context.node.addHeadElement(new Element.Link().addAttribute("href", style).addAttribute("rel", "stylesheet"));
 
             context.attributes.put(JS_LOADED, true);
         }
@@ -43,7 +43,7 @@ public class BootstrapDatePickerDecorator {
 
         String dateFormat = Messages.get("date.format").toLowerCase();
 
-        context.node.addTailUIElement(new Element.Script().setBody(
+        context.node.addTailElement(new Element.Script().setBody(
                 "$('#" + "datepicker-" + context.element.id + "').datepicker({ " +
                         "format: '" + dateFormat + "', " +
                         "todayBtn: 'linked', " +

@@ -48,7 +48,6 @@ public class Element {
 
         public Script() {
             super("script");
-            addAttribute("type", "text/javascript");
         }
 
         @Override
@@ -67,7 +66,6 @@ public class Element {
 
         public Style() {
             super("style");
-            addAttribute("type", "text/css");
         }
 
         @Override
@@ -86,7 +84,6 @@ public class Element {
 
         public Link() {
             super("link");
-            addAttribute("rel", "stylesheet");
         }
 
         @Override

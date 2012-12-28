@@ -31,8 +31,8 @@ public class BasicPageProvider {
 
     @OnLoad(type = "node", with = "models.origo.core.BasicPage")
     public static void loadContent(OnLoad.Context context) {
-        context.node.addUIElement(loadContent(((BasicPage) context.node).leadReferenceId));
-        context.node.addUIElement(loadContent(((BasicPage) context.node).bodyReferenceId));
+        context.node.addElement(loadContent(((BasicPage) context.node).leadReferenceId));
+        context.node.addElement(loadContent(((BasicPage) context.node).bodyReferenceId));
     }
 
     private static Element loadContent(String referenceId) {

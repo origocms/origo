@@ -36,7 +36,7 @@ public class DefaultSettingsDashboardProvider {
         page.setTitle("Settings - Dashboard");
         page.rootNode = (RootNode) context.node;
 
-        page.addUIElement(DashboardHelper.createDashboard(Admin.SETTINGS_PAGE_TYPE, page));
+        page.addElement(DashboardHelper.createDashboard(Admin.SETTINGS_PAGE_TYPE, page));
 
         return page;
     }
@@ -57,7 +57,7 @@ public class DefaultSettingsDashboardProvider {
     public static void addFrontPageDashboardItems(OnLoad.Context context) {
         List<Element> elements = DashboardHelper.createDashboardItems(Admin.SETTINGS_PAGE_TYPE, context.node);
         for(Element element : elements) {
-            context.node.addUIElement(element);
+            context.node.addElement(element);
         }
     }
 

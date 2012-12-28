@@ -69,53 +69,53 @@ public class StructuredPage implements Node {
     }
 
     @Override
-    public List<Element> getUIElements(String region) {
-        return rootNode.getUIElements(region);
+    public List<Element> getElements(String region) {
+        return rootNode.getElements(region);
     }
 
     @Override
-    public Element addHeadUIElement(Element element) {
-        return rootNode.addHeadUIElement(element);
+    public Element addHeadElement(Element element) {
+        return rootNode.addHeadElement(element);
     }
 
     @Override
-    public Element addTailUIElement(Element element) {
-        return rootNode.addTailUIElement(element);
+    public Element addTailElement(Element element) {
+        return rootNode.addTailElement(element);
     }
 
     @Override
-    public Element addUIElement(Element element) {
-        return rootNode.addUIElement(element, false);
+    public Element addElement(Element element) {
+        return rootNode.addElement(element, false);
     }
 
     @Override
-    public Element addHeadUIElement(Element element, boolean reorderElementsBelow) {
-        return rootNode.addHeadUIElement(element, reorderElementsBelow);
+    public Element addHeadElement(Element element, boolean reorderElementsBelow) {
+        return rootNode.addHeadElement(element, reorderElementsBelow);
     }
 
     @Override
-    public Element addTailUIElement(Element element, boolean reorderElementsBelow) {
-        return rootNode.addTailUIElement(element, reorderElementsBelow);
+    public Element addTailElement(Element element, boolean reorderElementsBelow) {
+        return rootNode.addTailElement(element, reorderElementsBelow);
     }
 
     @Override
-    public Element addUIElement(Element element, boolean reorderElementsBelow) {
-        return rootNode.addUIElement(element, reorderElementsBelow);
+    public Element addElement(Element element, boolean reorderElementsBelow) {
+        return rootNode.addElement(element, reorderElementsBelow);
     }
 
     @Override
-    public boolean removeHeadUIElement(Element element) {
-        return rootNode.removeHeadUIElement(element);
+    public boolean removeHeadElement(Element element) {
+        return rootNode.removeHeadElement(element);
     }
 
     @Override
-    public boolean removeTailUIElement(Element element) {
-        return rootNode.removeTailUIElement(element);
+    public boolean removeTailElement(Element element) {
+        return rootNode.removeTailElement(element);
     }
 
     @Override
-    public boolean removeUIElement(Element element) {
-        return rootNode.removeUIElement(element);
+    public boolean removeElement(Element element) {
+        return rootNode.removeElement(element);
     }
 
     @Override

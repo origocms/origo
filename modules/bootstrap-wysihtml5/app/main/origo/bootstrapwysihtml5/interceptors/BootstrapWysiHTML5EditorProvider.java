@@ -49,15 +49,15 @@ public class BootstrapWysiHTML5EditorProvider {
     public static void setupEditor(OnLoad.Context context) {
         if (!context.attributes.containsKey(JS_LOADED)) {
             String wysiHtmlScript = routes.Assets.at("javascripts/origo/bootstrapwysihtml5/wysihtml5-0.4.0pre.min.js").url();
-            context.node.addTailUIElement(new Element.Script().setWeight(9999).addAttribute("src", wysiHtmlScript));
+            context.node.addTailElement(new Element.Script().setWeight(9999).addAttribute("src", wysiHtmlScript));
             String parserRulesScript = routes.Assets.at("javascripts/origo/bootstrapwysihtml5/parser_rules/advanced.js").url();
-            context.node.addTailUIElement(new Element.Script().setWeight(9999).addAttribute("src", parserRulesScript));
+            context.node.addTailElement(new Element.Script().setWeight(9999).addAttribute("src", parserRulesScript));
 
             String bootstrapWysiHtmlScript = routes.Assets.at("javascripts/origo/bootstrapwysihtml5/bootstrap-wysihtml5.min.js").url();
-            context.node.addTailUIElement(new Element.Script().setWeight(9999).addAttribute("src", bootstrapWysiHtmlScript));
+            context.node.addTailElement(new Element.Script().setWeight(9999).addAttribute("src", bootstrapWysiHtmlScript));
 
             String mainStyle = routes.Assets.at("stylesheets/origo/bootstrapwysihtml5/bootstrap-wysihtml5.min.css").url();
-            context.node.addHeadUIElement(new Element.Link().addAttribute("href", mainStyle));
+            context.node.addHeadElement(new Element.Link().addAttribute("href", mainStyle).addAttribute("rel", "stylesheet"));
 
             context.attributes.put(JS_LOADED, true);
         }
@@ -69,10 +69,10 @@ public class BootstrapWysiHTML5EditorProvider {
     public static void insertScript(OnInsertElement.Context context) {
         if (context.attributes.containsKey(JS_LOADED)) {
             if (!context.attributes.containsKey("templates_created")) {
-                context.node.addTailUIElement(new BootstrapWysiHtml5CustomTemplatesElement());
+                context.node.addTailElement(new BootstrapWysiHtml5CustomTemplatesElement());
                 context.attributes.put("templates_created", true);
             }
-            context.node.addTailUIElement(new BootstrapWysiHtml5ScriptElement().setId(context.element.id));
+            context.node.addTailElement(new BootstrapWysiHtml5ScriptElement().setId(context.element.id));
         }
     }
 

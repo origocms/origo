@@ -29,7 +29,7 @@ public class DefaultDashboardProvider {
         page.setTitle("Dashboard");
         page.rootNode = (RootNode) context.node;
 
-        page.addUIElement(DashboardHelper.createDashboard(Admin.FRONT_PAGE_TYPE, page));
+        page.addElement(DashboardHelper.createDashboard(Admin.FRONT_PAGE_TYPE, page));
 
         return page;
     }
@@ -43,7 +43,7 @@ public class DefaultDashboardProvider {
     public static void addFrontPageDashboardItems(OnLoad.Context context) {
         List<Element> elements = DashboardHelper.createDashboardItems(Admin.FRONT_PAGE_TYPE, context.node);
         for(Element element : elements) {
-            context.node.addUIElement(element);
+            context.node.addElement(element);
         }
     }
 }
