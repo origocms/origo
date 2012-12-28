@@ -33,9 +33,12 @@ object ApplicationBuild extends Build {
   val datepicker = play.Project(
     appName + "-bootstrap-datepicker", appVersion, appDependencies, path = file("modules/bootstrap-datepicker")
   ).dependsOn( core ).aggregate( core )
+  val bootstrap_wysihtml = play.Project(
+    appName + "-bootstrap-wysihtml5", appVersion, appDependencies, path = file("modules/bootstrap-wysihtml5")
+  ).dependsOn( core ).aggregate( core )
   val admin = play.Project(
     appName + "-admin", appVersion, appDependencies, path = file("modules/admin")
-  ).dependsOn( core, datepicker ).aggregate( core, datepicker )
+  ).dependsOn( core, datepicker, bootstrap_wysihtml ).aggregate( core, datepicker, bootstrap_wysihtml )
 
 /*
     val adminArea = PlayProject(

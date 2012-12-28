@@ -42,10 +42,10 @@ public class WysiHTML5EditorProvider {
     @OnLoad(type = Types.RICHTEXT_EDITOR, with = EDITOR_TYPE)
     public static void setupEditor(OnLoad.Context context) {
         if (!context.attributes.containsKey(JS_LOADED)) {
-            String mainScript = routes.Assets.at("javascripts/wysihtml5/wysihtml5-0.4.0pre.min.js").url();
-            context.node.addTailUIElement(new Element.Script().setWeight(9999).addAttribute("src", mainScript));
-            String parserRulesScript = routes.Assets.at("javascripts/wysihtml5/parser_rules/advanced.js").url();
-            context.node.addTailUIElement(new Element.Script().setWeight(9999).addAttribute("src", parserRulesScript));
+            String mainScript = routes.Assets.at("javascripts/origo/wysihtml5/wysihtml5-0.4.0pre.min.js").url();
+            context.node.addTailUIElement(new Element.Script().setWeight(9999).addAttribute("src", mainScript).addAttribute("type", "text/javascript"));
+            String parserRulesScript = routes.Assets.at("javascripts/origo/wysihtml5/parser_rules/advanced.js").url();
+            context.node.addTailUIElement(new Element.Script().setWeight(9999).addAttribute("src", parserRulesScript).addAttribute("type", "text/javascript"));
 
             context.attributes.put(JS_LOADED, true);
         }
@@ -53,12 +53,16 @@ public class WysiHTML5EditorProvider {
 
     @OnInsertElement(with = Element.InputTextArea.class)
     public static void insertToolbar(OnInsertElement.Context context) {
-        context.parent.addChild(new WysiHtml5ToolbarElement().setId(context.element.id));
+        if (context.attributes.containsKey(JS_LOADED)) {
+            context.parent.addChild(new WysiHtml5ToolbarElement().setId(context.element.id));
+        }
     }
 
     @OnInsertElement(with = Element.InputTextArea.class, after = true)
     public static void insertScript(OnInsertElement.Context context) {
-        context.node.addTailUIElement(new WysiHtml5ScriptElement().setId(context.element.id));
+        if (context.attributes.containsKey(JS_LOADED)) {
+            context.node.addTailUIElement(new WysiHtml5ScriptElement().setId(context.element.id));
+        }
     }
 
     @Provides(type = Types.RICHTEXT_EDITOR, with = EDITOR_TYPE)

@@ -20,9 +20,9 @@ public class TinyMCEEditorProvider {
     @OnLoad(type = Types.RICHTEXT_EDITOR, with = EDITOR_TYPE)
     public static void setupEditor(OnLoad.Context context) {
         if (!context.attributes.containsKey(JS_LOADED)) {
-            String jqueryTinyMCEScript = routes.Assets.at("javascripts/tiny_mce/jquery.tiny_mce.js").url();
+            String jqueryTinyMCEScript = routes.Assets.at("javascripts/origo/tiny_mce/jquery.tiny_mce.js").url();
             if (jqueryTinyMCEScript != null) {
-                String tinyMCEScript = routes.Assets.at("javascripts/tiny_mce/tiny_mce.js").url();
+                String tinyMCEScript = routes.Assets.at("javascripts/origo/tiny_mce/tiny_mce.js").url();
                 context.node.addTailUIElement(new Element.Script().setId(EDITOR_TYPE+"_src").setWeight(9999).addAttribute("type", "text/javascript").addAttribute("src", jqueryTinyMCEScript));
                 context.node.addTailUIElement(new Element.Script().setId(EDITOR_TYPE+"_invocation").setWeight(10000).addAttribute("type", "text/javascript").
                         setBody(
