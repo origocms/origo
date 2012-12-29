@@ -19,12 +19,12 @@ import java.util.Map;
  */
 public class OnLoadFormEventGenerator {
 
-    public static void triggerBeforeInterceptor(String nodeType, Node node) {
-        triggerBeforeInterceptor(nodeType, node, Collections.<String, Object>emptyMap());
+    public static void triggerBeforeInterceptor(String formType, Node node) {
+        triggerBeforeInterceptor(formType, node, Collections.<String, Object>emptyMap());
     }
 
-    public static void triggerBeforeInterceptor(String withType, Node node, Map<String, Object> args) {
-        triggerBeforeInterceptor(withType, new OnLoadForm.Context(withType, node, args));
+    public static void triggerBeforeInterceptor(String formType, Node node, Map<String, Object> args) {
+        triggerBeforeInterceptor(formType, new OnLoadForm.Context(formType, node, args));
     }
 
     public static void triggerBeforeInterceptor(String withType, OnLoadForm.Context context) {
@@ -39,16 +39,6 @@ public class OnLoadFormEventGenerator {
             }
         }
     }
-
-/*
-    public static void triggerAfterListenerINterceptor(Node node, Class argType, Object arg, Element element) {
-        triggerAfterListenerINterceptor(null, node, argType, arg, element);
-    }
-
-    public static void triggerAfterListenerINterceptor(String withType, Node node, Element element) {
-        triggerAfterListenerINterceptor(withType, node, Collections.<Class, Object>singletonMap(Element.class, element));
-    }
-*/
 
     public static void triggerAfterInterceptor(String withType, Node node) {
         triggerAfterInterceptor(withType, node, Collections.<String, Object>emptyMap());

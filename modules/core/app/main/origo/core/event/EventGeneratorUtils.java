@@ -30,7 +30,7 @@ public class EventGeneratorUtils {
 
     private static CachedAnnotation setFirstEventHandlerAsDefault(String withType, List<CachedAnnotation> providers) {
         CachedAnnotation annotation = providers.iterator().next();
-        Logger.info("Setting ["+annotation.getClass().getName()+"] as default for type ["+withType+"]");
+        Logger.info("Setting ["+annotation.method.getDeclaringClass().getName()+"] as default for type ["+withType+"]");
         CoreSettingsHelper.setEventHandler(withType, annotation.method.getDeclaringClass());
         return annotation;
     }

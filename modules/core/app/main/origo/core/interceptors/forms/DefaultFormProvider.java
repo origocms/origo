@@ -20,8 +20,7 @@ public class DefaultFormProvider {
     @ProvidesForm(with = TYPE)
     public static Element createBasicForm(ProvidesForm.Context context) {
         return new Element.Form().
-                // TODO: This is might not be the correct
-                        addAttribute("action", FormHelper.getPostURL().url()).
+                addAttribute("action", FormHelper.getPostURL().url()).
                 addAttribute("method", "POST");
     }
 

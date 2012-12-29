@@ -1,11 +1,14 @@
 package main.origo.core.helpers;
 
+import com.google.common.collect.Maps;
 import main.origo.core.interceptors.forms.DefaultFormProvider;
 import main.origo.core.interceptors.forms.DefaultSubmitHandler;
 import main.origo.core.ui.Element;
 import models.origo.core.Settings;
 import models.origo.core.navigation.BasicNavigation;
 import play.Logger;
+
+import java.util.Map;
 
 public class CoreSettingsHelper {
 
@@ -19,9 +22,9 @@ public class CoreSettingsHelper {
         public static final String THEME_VARIANT = "theme_variant";
         public static final String NAVIGATION_TYPE = "navigation_type";
 
-        public static final String DEFAULT_FORM_TYPE = "default_form_type";
-        public static final String SUBMIT_HANDLER = "submit_handler";
-        public static final String RICHTEXT_EDITOR_TYPE = "richtext_editor_type";
+        public static final String DEFAULT_FORM_TYPE = "event.default_form_type";
+        public static final String SUBMIT_HANDLER = "event.submit_handler";
+        public static final String RICHTEXT_EDITOR_TYPE = "event.richtext_editor_type";
     }
 
     public static String getBaseUrl() {
@@ -72,12 +75,34 @@ public class CoreSettingsHelper {
         Settings.load().setValue("event."+withType, annotatedClass.getName());
     }
 
+    public static Map<String, String> getEventHandlers() {
+        Map<String, String> result = Maps.newHashMap();
+        Settings settings = Settings.load();
+        for (String key : settings.getValues().keySet()) {
+            if (key.startsWith("event.")) {
+                result.put(key, settings.getValue(key));
+            }
+        }
+        return result;
+    }
+
     public static String getDecorator(Class<? extends Element> type) {
         return Settings.load().getValue("decorator."+type.getName());
     }
 
     public static void setDecorator(Class<? extends Element> type, Class annotatedClass) {
         Settings.load().setValue("decorator."+type.getName(), annotatedClass.getName());
+    }
+
+    public static Map<String, String> getDecorators() {
+        Map<String, String> result = Maps.newHashMap();
+        Settings settings = Settings.load();
+        for (String key : settings.getValues().keySet()) {
+            if (key.startsWith("decorator.")) {
+                result.put(key, settings.getValue(key));
+            }
+        }
+        return result;
     }
 
     protected static String getClassTypeIfExists(String propertyName, String fallback) {

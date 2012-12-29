@@ -276,7 +276,7 @@ public class BasicPageAdminProvider {
         Integer version = FormHelper.getNodeVersion(data);
         RootNode oldRootNode = RootNode.findWithNodeIdAndSpecificVersion(nodeId, version);
         if (oldRootNode == null) {
-            throw new RuntimeException("Root node with id=\'" + nodeId + "\' does not exist");
+            throw new RuntimeException("Root node with id='" + nodeId + "' does not exist");
         }
 
         BasicPage latestVersion = BasicPage.findLatestVersion(nodeId);

@@ -20,12 +20,10 @@ public class FormHelper {
     }
 
     public static Element createFormElement(String formType, Node node, String nodeType) {
-        OnLoadFormEventGenerator.triggerBeforeInterceptor(formType, node);
         OnLoadFormEventGenerator.triggerBeforeInterceptor(nodeType, node);
         Element formElement = ProvidesFormEventGenerator.triggerInterceptor(formType, node);
         addNodeIdAndVersion(formElement, node);
         OnLoadFormEventGenerator.triggerAfterInterceptor(nodeType, node, formElement);
-        OnLoadFormEventGenerator.triggerAfterInterceptor(formType, node, formElement);
         return formElement;
     }
 
