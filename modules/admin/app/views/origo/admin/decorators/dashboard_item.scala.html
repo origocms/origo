@@ -1,5 +1,5 @@
 @(element:main.origo.core.ui.Element, body:Html, attributes:Map[String, String])
 
-<div @views.html.origo.core.tags._attributes(attributes)>
+<div id="@element.id" @views.html.origo.core.tags._attributes(attributes)>
     @body
 </div>

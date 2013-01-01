@@ -5,7 +5,6 @@ import main.origo.admin.annotations.Admin;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.Node;
 import main.origo.core.annotations.Provides;
-import main.origo.core.event.OnLoadEventGenerator;
 import main.origo.core.internal.CachedAnnotation;
 import main.origo.core.ui.Element;
 import play.Logger;
@@ -25,9 +24,7 @@ public class DashboardEventGenerator {
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
             try {
                 //noinspection unchecked
-                Element element = (Element) cachedAnnotation.method.invoke(null, new Provides.Context(node, Collections.<String, Object>emptyMap()));
-                OnLoadEventGenerator.triggerAfterInterceptor(Admin.DASHBOARD_ITEM, withType, node, Collections.<String, Object>emptyMap(), element);
-                items.add(element);
+                items.add((Element) cachedAnnotation.method.invoke(null, new Provides.Context(node, Collections.<String, Object>emptyMap())));
             } catch (Throwable e) {
                 Logger.error("", e);
                 throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());

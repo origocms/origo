@@ -10,7 +10,6 @@ import main.origo.core.event.OnLoadEventGenerator;
 import main.origo.core.event.ProvidesEventGenerator;
 import models.origo.core.RootNode;
 import org.apache.commons.lang3.StringUtils;
-import play.Logger;
 
 import java.util.Collections;
 import java.util.Date;
@@ -49,9 +48,6 @@ public class NodeHelper {
         if (hasType) {
             node = ProvidesEventGenerator.triggerInterceptor(Types.NODE, rootNode.nodeType, rootNode);
             if (node != null) {
-                if (node.hasElements()) {
-                    Logger.debug("The provider for [" + rootNode.nodeType + "] adds elements to during the create. Providers should only create the base type, and then to add elements use OnLoad instead. If the created Node doesn't use the same rootNode, elements will be lost.");
-                }
                 // We found a new type to override the root node with
                 NodeContext.current().node = node;
             }

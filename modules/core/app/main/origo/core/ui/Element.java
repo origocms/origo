@@ -596,6 +596,13 @@ public class Element {
         return this;
     }
 
+    public Element addChildren(Collection<Element> elements) {
+        for (Element element : elements) {
+            addChild(element);
+        }
+        return this;
+    }
+
     public boolean removeChild(Element element) {
         ElementEventGenerator.triggerBeforeRemove(this, element);
         boolean ret = this.children.remove(element);

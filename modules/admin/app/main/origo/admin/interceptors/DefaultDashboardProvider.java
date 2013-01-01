@@ -1,19 +1,15 @@
 package main.origo.admin.interceptors;
 
 import main.origo.admin.annotations.Admin;
-import main.origo.admin.helpers.AdminHelper;
 import main.origo.admin.helpers.DashboardHelper;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Interceptor;
-import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.Provides;
 import main.origo.core.annotations.Types;
 import main.origo.core.ui.Element;
 import models.origo.admin.AdminPage;
 import models.origo.core.RootNode;
-
-import java.util.List;
 
 /**
  * Dashboard is the front page of the admin UI. Any \@Provides annotation with type DASHBOARD_ITEM will be picked up and
@@ -23,29 +19,27 @@ import java.util.List;
 @Interceptor
 public class DefaultDashboardProvider {
 
+    /*
+     * Creating the node for the Front page.
+     */
     @Provides(type = Types.NODE, with = Admin.FRONT_PAGE_TYPE)
     public static Node createPage(Provides.Context context) throws NodeLoadException {
         AdminPage page = new AdminPage(context.node.getNodeId());
         page.setTitle("Dashboard");
         page.rootNode = (RootNode) context.node;
+
+        context.node.addElement(DashboardHelper.createDashboard(Admin.FRONT_PAGE_TYPE, context.node));
+
         return page;
     }
 
-    @OnLoad(type = Types.NODE, with = Admin.FRONT_PAGE_TYPE)
-    public static void addDashboardContent(OnLoad.Context context) throws NodeLoadException {
-        context.node.addElement(DashboardHelper.createDashboard(Admin.FRONT_PAGE_TYPE, context.node));
-    }
-
+    /*
+     * Creating the Dashboard for the Node created above.
+     */
     @Provides(type = Admin.DASHBOARD, with = Admin.FRONT_PAGE_TYPE)
     public static Element createFrontPageDashboard(Provides.Context context) {
-        return AdminHelper.createBasicDashboard();
+        return DashboardHelper.createBasicDashboard().setId("dashboard."+Admin.FRONT_PAGE_TYPE).
+                addChildren(DashboardHelper.createDashboardItems(Admin.FRONT_PAGE_TYPE, context.node));
     }
 
-    @OnLoad(type = Admin.DASHBOARD, with = Admin.FRONT_PAGE_TYPE)
-    public static void addFrontPageDashboardItems(OnLoad.Context context) {
-        List<Element> elements = DashboardHelper.createDashboardItems(Admin.FRONT_PAGE_TYPE, context.node);
-        for(Element element : elements) {
-            context.node.addElement(element);
-        }
-    }
 }
