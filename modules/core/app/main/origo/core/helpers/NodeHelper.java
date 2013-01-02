@@ -4,7 +4,7 @@ package main.origo.core.helpers;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
 import main.origo.core.NodeNotFoundException;
-import main.origo.core.annotations.Types;
+import main.origo.core.annotations.Core;
 import main.origo.core.event.NodeContext;
 import main.origo.core.event.OnLoadEventGenerator;
 import main.origo.core.event.ProvidesEventGenerator;
@@ -41,12 +41,12 @@ public class NodeHelper {
     public static Node load(RootNode rootNode) throws NodeLoadException {
         boolean hasType = !StringUtils.isBlank(rootNode.nodeType) && !rootNode.nodeType.equals(RootNode.class.getName());
         if (hasType) {
-            OnLoadEventGenerator.triggerBeforeInterceptor(Types.NODE, rootNode.nodeType, rootNode, Collections.<String, Object>emptyMap());
+            OnLoadEventGenerator.triggerBeforeInterceptor(Core.Type.NODE, rootNode.nodeType, rootNode, Collections.<String, Object>emptyMap());
         }
 
         Node node = rootNode;
         if (hasType) {
-            node = ProvidesEventGenerator.triggerInterceptor(Types.NODE, rootNode.nodeType, rootNode);
+            node = ProvidesEventGenerator.triggerInterceptor(Core.Type.NODE, rootNode.nodeType, rootNode);
             if (node != null) {
                 // We found a new type to override the root node with
                 NodeContext.current().node = node;
@@ -54,7 +54,7 @@ public class NodeHelper {
         }
 
         if (hasType) {
-            OnLoadEventGenerator.triggerAfterInterceptor(Types.NODE, rootNode.nodeType, node, Collections.<String, Object>emptyMap());
+            OnLoadEventGenerator.triggerAfterInterceptor(Core.Type.NODE, rootNode.nodeType, node, Collections.<String, Object>emptyMap());
         }
 
         return node;

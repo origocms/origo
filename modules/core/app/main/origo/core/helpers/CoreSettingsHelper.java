@@ -24,7 +24,6 @@ public class CoreSettingsHelper {
 
         public static final String DEFAULT_FORM_TYPE = "event.default_form_type";
         public static final String SUBMIT_HANDLER = "event.submit_handler";
-        public static final String RICHTEXT_EDITOR_TYPE = "event.richtext_editor_type";
     }
 
     public static String getBaseUrl() {
@@ -61,29 +60,6 @@ public class CoreSettingsHelper {
 
     public static String getSubmitHandler() {
         return getClassTypeIfExists(Keys.SUBMIT_HANDLER, DefaultSubmitHandler.class.getName());
-    }
-
-    public static String getEditorType() {
-        return Settings.load().getValue(Keys.RICHTEXT_EDITOR_TYPE);
-    }
-
-    public static String getEventHandler(String withType) {
-        return Settings.load().getValue("event."+withType);
-    }
-
-    public static void setEventHandler(String withType, Class annotatedClass) {
-        Settings.load().setValue("event."+withType, annotatedClass.getName());
-    }
-
-    public static Map<String, String> getEventHandlers() {
-        Map<String, String> result = Maps.newHashMap();
-        Settings settings = Settings.load();
-        for (String key : settings.getValues().keySet()) {
-            if (key.startsWith("event.")) {
-                result.put(key, settings.getValue(key));
-            }
-        }
-        return result;
     }
 
     public static String getDecorator(Class<? extends Element> type) {

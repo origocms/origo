@@ -1,10 +1,10 @@
 package main.origo.core.interceptors.forms;
 
 import controllers.routes;
+import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.Provides;
-import main.origo.core.annotations.Types;
 import main.origo.core.ui.Element;
 import models.origo.core.Content;
 
@@ -14,17 +14,16 @@ import models.origo.core.Content;
 @Interceptor
 public class TinyMCEEditorProvider {
 
-    public static final String EDITOR_TYPE = "origo.admin.editor.tinymce";
     private static final String JS_LOADED = "tinymce_js_loaded";
 
-    @OnLoad(type = Types.RICHTEXT_EDITOR, with = EDITOR_TYPE)
+    @OnLoad(type = Core.Type.NODE, with = Core.With.EDITOR)
     public static void setupEditor(OnLoad.Context context) {
         if (!context.attributes.containsKey(JS_LOADED)) {
             String jqueryTinyMCEScript = routes.Assets.at("javascripts/origo/tiny_mce/jquery.tiny_mce.js").url();
             if (jqueryTinyMCEScript != null) {
                 String tinyMCEScript = routes.Assets.at("javascripts/origo/tiny_mce/tiny_mce.js").url();
-                context.node.addTailElement(new Element.Script().setId(EDITOR_TYPE+"_src").setWeight(9999).addAttribute("type", "text/javascript").addAttribute("src", jqueryTinyMCEScript));
-                context.node.addTailElement(new Element.Script().setId(EDITOR_TYPE+"_invocation").setWeight(10000).addAttribute("type", "text/javascript").
+                context.node.addTailElement(new Element.Script().setId(Core.With.EDITOR+"_src").setWeight(9999).addAttribute("type", "text/javascript").addAttribute("src", jqueryTinyMCEScript));
+                context.node.addTailElement(new Element.Script().setId(Core.With.EDITOR+"_invocation").setWeight(10000).addAttribute("type", "text/javascript").
                         setBody(
                                 "$().ready(function() {\n" +
                                         "  $('textarea.tinymce').tinymce({\n" +
@@ -55,12 +54,12 @@ public class TinyMCEEditorProvider {
         }
     }
 
-    @Provides(type = Types.RICHTEXT_EDITOR, with = EDITOR_TYPE)
+    @Provides(type = Core.Type.NODE, with = Core.With.EDITOR)
     public static Element createEditor(Provides.Context context) {
         return new Element.InputTextArea().addAttribute("class", "tinymce");
     }
 
-    @OnLoad(type = Types.RICHTEXT_EDITOR, with = EDITOR_TYPE)
+    @OnLoad(type = Core.Type.NODE, with = Core.With.EDITOR)
     public static void addContent(OnLoad.Context context) {
         Content content = (Content) context.args.get("content");
         context.element.setBody(content.value);

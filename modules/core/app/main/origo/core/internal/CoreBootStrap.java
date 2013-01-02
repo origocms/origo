@@ -3,7 +3,6 @@ package main.origo.core.internal;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.interceptors.forms.DefaultFormProvider;
 import main.origo.core.interceptors.forms.DefaultSubmitHandler;
-import main.origo.core.interceptors.forms.WysiHTML5EditorProvider;
 import models.origo.core.Settings;
 import org.springframework.stereotype.Component;
 import play.db.jpa.JPA;
@@ -23,7 +22,6 @@ public class CoreBootStrap {
                 settings.setValueIfMissing(CoreSettingsHelper.Keys.THEME_VARIANT, "default-main_and_left_columns");
                 settings.setValueIfMissing(CoreSettingsHelper.Keys.SUBMIT_HANDLER, DefaultSubmitHandler.class.getName());
                 settings.setValueIfMissing(CoreSettingsHelper.Keys.DEFAULT_FORM_TYPE, DefaultFormProvider.TYPE);
-                settings.setValueIfMissing(CoreSettingsHelper.Keys.RICHTEXT_EDITOR_TYPE, WysiHTML5EditorProvider.EDITOR_TYPE);
                 settings.save();
             }
         });

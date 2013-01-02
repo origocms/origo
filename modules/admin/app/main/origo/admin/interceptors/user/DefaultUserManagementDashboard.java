@@ -4,10 +4,10 @@ import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.DashboardHelper;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
+import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.Provides;
 import main.origo.core.annotations.Relationship;
-import main.origo.core.annotations.Types;
 import main.origo.core.ui.Element;
 import models.origo.admin.AdminPage;
 import models.origo.core.RootNode;
@@ -18,26 +18,26 @@ public class DefaultUserManagementDashboard {
     /*
      * Dashboard Item for front page.
      */
-    @Provides(type = Admin.DASHBOARD_ITEM, with = Admin.USER_PAGE_TYPE)
-    @Relationship(parent = Admin.FRONT_PAGE_TYPE)
+    @Provides(type = Admin.Type.DASHBOARD_ITEM, with = Admin.With.USER_PAGE)
+    @Relationship(parent = Admin.With.FRONT_PAGE)
     public static Element addUserDashboardItemToFrontPage(Provides.Context context) {
         return DashboardHelper.createBasicDashboardItem().
-                setId("item.link." + Admin.USER_PAGE_TYPE).
+                setId("item.link." + Admin.With.USER_PAGE).
                 addChild(new Element.Panel().setWeight(20).
                         addChild(new Element.Heading4().setWeight(10).setBody("User Management").addAttribute("class", "title")).
-                        addChild(new Element.Anchor().setWeight(10).setBody("View").addAttribute("href", DashboardHelper.getDashBoardURL(Admin.USER_PAGE_TYPE))));
+                        addChild(new Element.Anchor().setWeight(10).setBody("View").addAttribute("href", DashboardHelper.getDashBoardURL(Admin.With.USER_PAGE))));
     }
 
     /*
      * Creating the Node for the User Dashboard.
      */
-    @Provides(type = Types.NODE, with = Admin.USER_PAGE_TYPE)
+    @Provides(type = Core.Type.NODE, with = Admin.With.USER_PAGE)
     public static Node createUserDashboard(Provides.Context context) throws NodeLoadException {
         AdminPage page = new AdminPage(context.node.getNodeId());
         page.setTitle("User Management - Dashboard");
         page.rootNode = (RootNode) context.node;
 
-        context.node.addElement(DashboardHelper.createDashboard(Admin.USER_PAGE_TYPE, context.node));
+        context.node.addElement(DashboardHelper.createDashboard(Admin.With.USER_PAGE, context.node));
 
         return page;
     }
@@ -45,11 +45,11 @@ public class DefaultUserManagementDashboard {
     /*
      * Creating the Dashboard for the Node created above.
      */
-    @Provides(type = Admin.DASHBOARD, with = Admin.USER_PAGE_TYPE)
-    @Relationship(parent = Admin.FRONT_PAGE_TYPE)
+    @Provides(type = Admin.Type.DASHBOARD, with = Admin.With.USER_PAGE)
+    @Relationship(parent = Admin.With.FRONT_PAGE)
     public static Element addUserDashboardContent(Provides.Context context) {
-        return DashboardHelper.createBasicDashboard().setId("dashboard."+Admin.USER_PAGE_TYPE).
-                addChildren(DashboardHelper.createDashboardItems(Admin.USER_PAGE_TYPE, context.node));
+        return DashboardHelper.createBasicDashboard().setId("dashboard."+Admin.With.USER_PAGE).
+                addChildren(DashboardHelper.createDashboardItems(Admin.With.USER_PAGE, context.node));
     }
 
 }

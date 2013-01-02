@@ -4,9 +4,9 @@ import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.DashboardHelper;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
+import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.Provides;
-import main.origo.core.annotations.Types;
 import main.origo.core.ui.Element;
 import models.origo.admin.AdminPage;
 import models.origo.core.RootNode;
@@ -22,13 +22,13 @@ public class DefaultDashboardProvider {
     /*
      * Creating the node for the Front page.
      */
-    @Provides(type = Types.NODE, with = Admin.FRONT_PAGE_TYPE)
+    @Provides(type = Core.Type.NODE, with = Admin.With.FRONT_PAGE)
     public static Node createPage(Provides.Context context) throws NodeLoadException {
         AdminPage page = new AdminPage(context.node.getNodeId());
         page.setTitle("Dashboard");
         page.rootNode = (RootNode) context.node;
 
-        context.node.addElement(DashboardHelper.createDashboard(Admin.FRONT_PAGE_TYPE, context.node));
+        context.node.addElement(DashboardHelper.createDashboard(Admin.With.FRONT_PAGE, context.node));
 
         return page;
     }
@@ -36,10 +36,10 @@ public class DefaultDashboardProvider {
     /*
      * Creating the Dashboard for the Node created above.
      */
-    @Provides(type = Admin.DASHBOARD, with = Admin.FRONT_PAGE_TYPE)
+    @Provides(type = Admin.Type.DASHBOARD, with = Admin.With.FRONT_PAGE)
     public static Element createFrontPageDashboard(Provides.Context context) {
-        return DashboardHelper.createBasicDashboard().setId("dashboard."+Admin.FRONT_PAGE_TYPE).
-                addChildren(DashboardHelper.createDashboardItems(Admin.FRONT_PAGE_TYPE, context.node));
+        return DashboardHelper.createBasicDashboard().setId("dashboard."+Admin.With.FRONT_PAGE).
+                addChildren(DashboardHelper.createDashboardItems(Admin.With.FRONT_PAGE, context.node));
     }
 
 }

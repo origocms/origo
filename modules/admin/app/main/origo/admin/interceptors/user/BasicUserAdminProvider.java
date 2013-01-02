@@ -9,13 +9,13 @@ import main.origo.core.ui.Element;
 @Interceptor
 public class BasicUserAdminProvider {
 
-    private static final String BASE_TYPE = "origo.admin.dashboard.user.basicuser";
+    private static final String BASE_TYPE = Admin.With.USER_PAGE + ".basicuser";
 
     /*
      * Creating the Dashboard Items for the Basic type on the User dashboard.
      */
-    @Provides(type = Admin.DASHBOARD_ITEM, with = BASE_TYPE)
-    @Relationship(parent = Admin.USER_PAGE_TYPE)
+    @Provides(type = Admin.Type.DASHBOARD_ITEM, with = BASE_TYPE)
+    @Relationship(parent = Admin.With.USER_PAGE)
     public static Element createDashboardItem(Provides.Context context) {
         return new Admin.DashboardItem().addAttribute("class", "item").
                 addChild(new Element.Panel().setWeight(20).

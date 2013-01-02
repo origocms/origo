@@ -12,7 +12,6 @@ import views.html.origo.bootstrapwysihtml5.decorators.forms.wysi.bootstrapwysiht
 @Interceptor
 public class BootstrapWysiHTML5EditorProvider {
 
-    public static final String EDITOR_TYPE = "origo.bootstrapwysihtml5.editor.bootstrapwysihtml5";
     private static final String JS_LOADED = "bootstrapwysihtml_js_loaded";
 
     public static class BootstrapWysiHtml5CustomTemplatesElement extends Element {
@@ -39,13 +38,13 @@ public class BootstrapWysiHTML5EditorProvider {
         }
     }
 
-    @Provides(type = Types.RICHTEXT_EDITOR, with = EDITOR_TYPE)
+    @Provides(type = Core.Type.NODE, with = Core.With.EDITOR)
     public static Element createEditor(Provides.Context context) {
         Content content = (Content) context.args.get("content");
         return new Element.InputTextArea().setId(content.identifier);
     }
 
-    @OnLoad(type = Types.RICHTEXT_EDITOR, with = EDITOR_TYPE)
+    @OnLoad(type = Core.Type.NODE, with = Core.With.EDITOR)
     public static void setupEditor(OnLoad.Context context) {
         if (!context.attributes.containsKey(JS_LOADED)) {
             String wysiHtmlScript = routes.Assets.at("javascripts/origo/bootstrapwysihtml5/wysihtml5-0.4.0pre.min.js").url();

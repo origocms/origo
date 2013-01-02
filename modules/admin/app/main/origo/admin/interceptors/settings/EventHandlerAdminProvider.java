@@ -9,10 +9,10 @@ import main.origo.core.annotations.*;
 import main.origo.core.annotations.forms.OnSubmit;
 import main.origo.core.annotations.forms.SubmitState;
 import main.origo.core.event.ProvidesEventGenerator;
-import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.helpers.forms.FormHelper;
 import main.origo.core.ui.Element;
 import models.origo.admin.AdminPage;
+import models.origo.core.EventHandler;
 import models.origo.core.RootNode;
 import models.origo.core.Settings;
 import play.data.DynamicForm;
@@ -28,7 +28,7 @@ import java.util.Set;
 @Interceptor
 public class EventHandlerAdminProvider {
 
-    private static final String BASE_TYPE = "origo.admin.settings.event";
+    private static final String BASE_TYPE = Admin.With.SETTINGS_PAGE + ".event";
     private static final String EDIT_TYPE = BASE_TYPE + ".edit";
 
     /**
@@ -36,11 +36,11 @@ public class EventHandlerAdminProvider {
      *
      * @return a Element that contains a dashboard element.
      */
-    @Provides(type = Admin.DASHBOARD_ITEM, with = BASE_TYPE)
-    @Relationship(parent = Admin.SETTINGS_PAGE_TYPE)
+    @Provides(type = Admin.Type.DASHBOARD_ITEM, with = BASE_TYPE)
+    @Relationship(parent = Admin.With.SETTINGS_PAGE)
     public static Element createDashboardItem(Provides.Context context) {
 
-        String url = AdminHelper.getURLForAdminAction(Admin.CONTENT_PAGE_TYPE, EDIT_TYPE);
+        String url = AdminHelper.getURLForAdminAction(Admin.With.CONTENT_PAGE, EDIT_TYPE);
 
         return new Admin.DashboardItem().addAttribute("class", "item").
                 addChild(new Element.Panel().setWeight(10).
@@ -56,7 +56,7 @@ public class EventHandlerAdminProvider {
      * @param context containing a root node with an node id
      * @return a node to be presented as part of the admin UI
      */
-    @Provides(type = Types.NODE, with = EDIT_TYPE)
+    @Provides(type = Core.Type.NODE, with = EDIT_TYPE)
     public static Node createEditPage(Provides.Context context) {
         AdminPage page = new AdminPage(context.node.getNodeId());
         page.setTitle("Event Handlers");
@@ -64,12 +64,12 @@ public class EventHandlerAdminProvider {
         return page;
     }
 
-    @OnLoad(type = Types.NODE, with = EDIT_TYPE)
+    @OnLoad(type = Core.Type.NODE, with = EDIT_TYPE)
     public static void loadEditPage(OnLoad.Context context) {
         Element formElement = FormHelper.createFormElement(context.node, BASE_TYPE).addAttribute("class", "form-horizontal");
         context.node.addElement(formElement);
 
-        Map<String, String> eventHandlers = CoreSettingsHelper.getEventHandlers();
+        Map<String, EventHandler> eventHandlers = EventHandler.findAll();
         List<String> keys = Lists.newArrayList(eventHandlers.keySet());
         Collections.sort(keys);
 
@@ -80,18 +80,21 @@ public class EventHandlerAdminProvider {
 
             for (String key : keys) {
 
-                String with = key.substring("event.".length());
-                Set<String> providers = ProvidesEventGenerator.getAllProviders(providerType, with);
+                Set<String> providers = ProvidesEventGenerator.getAllProviders(providerType, key);
 
                 if (!providers.isEmpty()) {
-                    Element inputSelect = new Element.InputSelect().setId("event-" + with).addAttribute("name", key);
+                    Element inputSelect = new Element.InputSelect().setId("event-" + key).addAttribute("name", key);
                     for (String provider : providers) {
-                        inputSelect.addChild(new Element.InputSelectOption().setBody(provider));
+                        Element element = new Element.InputSelectOption().setBody(provider);
+                        if (eventHandlers.get(key).handlerClass.equals(provider)) {
+                            element.addAttribute("selected", "selected");
+                        }
+                        inputSelect.addChild(element);
                     }
 
                     formElement.
                             addChild(new Element.Panel().addAttribute("class", "field control-group").
-                                    addChild(new Element.Label().addAttribute("class", "control-label").addAttribute("for", "event-" + with).setBody(key)).
+                                    addChild(new Element.Label().addAttribute("class", "control-label").addAttribute("for", "event-" + key).setBody(key)).
                                     addChild(new Element.Panel().addAttribute("class", "controls").
                                             addChild(inputSelect))
                             );
@@ -129,7 +132,7 @@ public class EventHandlerAdminProvider {
      */
     @SubmitState(with = BASE_TYPE)
     public static Result handleSuccess(SubmitState.Context context) {
-        String endpointURL = DashboardHelper.getDashBoardURL(Admin.SETTINGS_PAGE_TYPE);
+        String endpointURL = DashboardHelper.getDashBoardURL(Admin.With.SETTINGS_PAGE);
         return Controller.redirect(endpointURL);
     }
 

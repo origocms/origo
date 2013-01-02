@@ -41,7 +41,7 @@ import java.util.Map;
 @Interceptor
 public class BasicPageAdminProvider {
 
-    private static final String BASE_TYPE = "origo.admin.content.basicpage";
+    private static final String BASE_TYPE = Admin.With.CONTENT_PAGE + ".basicpage";
     private static final String LIST_TYPE = BASE_TYPE + ".list";
     private static final String EDIT_TYPE = BASE_TYPE + ".edit";
 
@@ -59,11 +59,11 @@ public class BasicPageAdminProvider {
      *
      * @return a Element that contains a dashboard element.
      */
-    @Provides(type = Admin.DASHBOARD_ITEM, with = BASE_TYPE)
-    @Relationship(parent = Admin.CONTENT_PAGE_TYPE)
+    @Provides(type = Admin.Type.DASHBOARD_ITEM, with = BASE_TYPE)
+    @Relationship(parent = Admin.With.CONTENT_PAGE)
     public static Element createDashboardItem(Provides.Context context) {
 
-        String url = AdminHelper.getURLForAdminAction(Admin.CONTENT_PAGE_TYPE, LIST_TYPE);
+        String url = AdminHelper.getURLForAdminAction(Admin.With.CONTENT_PAGE, LIST_TYPE);
 
         return new Admin.DashboardItem().addAttribute("class", "item").
                 addChild(new Element.Panel().setWeight(10).
@@ -79,7 +79,7 @@ public class BasicPageAdminProvider {
      * @param context contains a root node with an node id
      * @return a node to be presented as part of the admin UI
      */
-    @Provides(type = Types.NODE, with = LIST_TYPE)
+    @Provides(type = Core.Type.NODE, with = LIST_TYPE)
     public static Node createListPage(Provides.Context context) {
         AdminPage page = new AdminPage(context.node.getNodeId());
         page.setTitle("List Basic Pages");
@@ -92,13 +92,13 @@ public class BasicPageAdminProvider {
      *
      * @param context contains a node of the type 'origo.admin.basicpage.list'.
      */
-    @OnLoad(type = Types.NODE, with = LIST_TYPE)
+    @OnLoad(type = Core.Type.NODE, with = LIST_TYPE)
     public static void createListPage(OnLoad.Context context) {
         List<BasicPage> basicPages = BasicPage.findAllLatestVersions();
 
         Element panelElement = new Element.Panel().setWeight(10).addAttribute("class", "panel pages");
         for (BasicPage page : basicPages) {
-            String editURL = AdminHelper.getURLForAdminAction(Admin.CONTENT_PAGE_TYPE, EDIT_TYPE, page.getNodeId());
+            String editURL = AdminHelper.getURLForAdminAction(Admin.With.CONTENT_PAGE, EDIT_TYPE, page.getNodeId());
             Element panel = new Element.Panel().
                     addChild(new Element.Anchor().setWeight(10).setBody(page.getTitle()).addAttribute("href", editURL)).
                     addChild(new Element.Text().setWeight(20).setBody(" (" + page.nodeId + " / " + page.getVersion() + ")"));
@@ -113,7 +113,7 @@ public class BasicPageAdminProvider {
      * @param context containing a root node with an node id
      * @return a node to be presented as part of the admin UI
      */
-    @Provides(type = Types.NODE, with = EDIT_TYPE)
+    @Provides(type = Core.Type.NODE, with = EDIT_TYPE)
     public static Node createEditPage(Provides.Context context) {
         AdminPage page = new AdminPage(context.node.getNodeId());
         page.setTitle("Edit Basic Page");
@@ -125,7 +125,7 @@ public class BasicPageAdminProvider {
         return page;
     }
 
-    @OnLoad(type = Types.NODE, with = EDIT_TYPE)
+    @OnLoad(type = Core.Type.NODE, with = EDIT_TYPE)
     public static void loadEditPage(OnLoad.Context context) {
         context.node.addElement(FormHelper.createFormElement(context.node, BASE_TYPE));
     }
@@ -364,7 +364,7 @@ public class BasicPageAdminProvider {
      */
     @SubmitState(with = BASE_TYPE)
     public static Result handleSuccess(SubmitState.Context context) {
-        String endpointURL = AdminHelper.getURLForAdminAction(Admin.CONTENT_PAGE_TYPE, LIST_TYPE);
+        String endpointURL = AdminHelper.getURLForAdminAction(Admin.With.CONTENT_PAGE, LIST_TYPE);
         return Controller.redirect(endpointURL);
     }
 

@@ -15,21 +15,21 @@ import java.util.List;
 public class DashboardHelper {
 
     public static Element createDashboard(String withType, Node node) throws NodeLoadException {
-        OnLoadEventGenerator.triggerBeforeInterceptor(Admin.DASHBOARD, withType, node);
-        Element element = ProvidesEventGenerator.triggerInterceptor(Admin.DASHBOARD, withType, node);
+        OnLoadEventGenerator.triggerBeforeInterceptor(Admin.Type.DASHBOARD, withType, node);
+        Element element = ProvidesEventGenerator.triggerInterceptor(Admin.Type.DASHBOARD, withType, node);
         if (element == null) {
             throw new NodeLoadException(node.getNodeId(), "The provider for type [" + withType + "] did not return a Element");
         }
 
-        OnLoadEventGenerator.triggerAfterInterceptor(Admin.DASHBOARD, withType, node);
+        OnLoadEventGenerator.triggerAfterInterceptor(Admin.Type.DASHBOARD, withType, node);
         return element;
     }
 
     public static List<Element> createDashboardItems(String withType, Node node) {
-        OnLoadEventGenerator.triggerBeforeInterceptor(Admin.DASHBOARD_ITEM, withType, node);
+        OnLoadEventGenerator.triggerBeforeInterceptor(Admin.Type.DASHBOARD_ITEM, withType, node);
         List<Element> elements = DashboardEventGenerator.triggerProvidesDashboardItemInterceptor(withType, node);
         for (Element element : elements) {
-            OnLoadEventGenerator.triggerAfterInterceptor(Admin.DASHBOARD_ITEM, withType, node, Collections.<String, Object>emptyMap(), element);
+            OnLoadEventGenerator.triggerAfterInterceptor(Admin.Type.DASHBOARD_ITEM, withType, node, Collections.<String, Object>emptyMap(), element);
         }
         return elements;
     }

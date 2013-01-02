@@ -2,9 +2,9 @@ package main.origo.core.interceptors;
 
 import com.google.common.collect.Lists;
 import main.origo.core.Node;
+import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.Provides;
-import main.origo.core.annotations.Types;
 import main.origo.core.event.NavigationEventGenerator;
 import main.origo.core.event.ProvidesEventGenerator;
 import main.origo.core.ui.NavigationElement;
@@ -31,7 +31,7 @@ import java.util.List;
 @Interceptor
 public class DefaultNavigationProvider {
 
-    @Provides(type = Types.NAVIGATION, with = "models.origo.core.navigation.BasicNavigation")
+    @Provides(type = Core.Type.NAVIGATION, with = "models.origo.core.navigation.BasicNavigation")
     public static List<NavigationElement> createNavigation(Provides.Context context) {
         List<NavigationElement> navigationElements = Lists.newArrayList();
         String section = (String) context.args.get("section");
@@ -66,14 +66,14 @@ public class DefaultNavigationProvider {
         return navigationElements;
     }
 
-    @Provides(type = Types.NAVIGATION_ITEM, with = "models.origo.core.navigation.AliasNavigation")
+    @Provides(type = Core.Type.NAVIGATION_ITEM, with = "models.origo.core.navigation.AliasNavigation")
     public static NavigationElement createAliasNavigation(Provides.Context context) {
         AliasNavigation navigationModel = AliasNavigation.findWithIdentifier(context.navigation.getReferenceId());
         Alias alias = Alias.findWithPath(navigationModel.alias);
         if (alias != null) {
             RootNode referencedRootNode = RootNode.findLatestPublishedVersionWithNodeId(alias.pageId, new Date());
             if (referencedRootNode != null) {
-                Node referencedNode = ProvidesEventGenerator.triggerInterceptor(Types.NODE, referencedRootNode.nodeType, referencedRootNode);
+                Node referencedNode = ProvidesEventGenerator.triggerInterceptor(Core.Type.NODE, referencedRootNode.nodeType, referencedRootNode);
                 boolean selected = context.node.getNodeId().equals(alias.pageId);
                 return new NavigationElement(context.navigation.getSection(), referencedNode.getTitle(), navigationModel.getLink(), selected);
             } else {
@@ -84,12 +84,12 @@ public class DefaultNavigationProvider {
         }
     }
 
-    @Provides(type = Types.NAVIGATION_ITEM, with = "models.origo.core.navigation.PageIdNavigation")
+    @Provides(type = Core.Type.NAVIGATION_ITEM, with = "models.origo.core.navigation.PageIdNavigation")
     public static NavigationElement createPageIdNavigation(Provides.Context context) {
         PageIdNavigation navigationModel = PageIdNavigation.findWithIdentifier(context.navigation.getReferenceId());
         RootNode referencedRootNode = RootNode.findLatestPublishedVersionWithNodeId(navigationModel.pageId, new Date());
         if (referencedRootNode != null) {
-            Node referencedNode = ProvidesEventGenerator.triggerInterceptor(Types.NODE, referencedRootNode.nodeType, referencedRootNode);
+            Node referencedNode = ProvidesEventGenerator.triggerInterceptor(Core.Type.NODE, referencedRootNode.nodeType, referencedRootNode);
             boolean selected = context.node.getNodeId().equals(referencedRootNode.getNodeId());
             return new NavigationElement(context.navigation.getSection(), referencedNode.getTitle(), navigationModel.getLink(), selected);
         } else {
@@ -97,7 +97,7 @@ public class DefaultNavigationProvider {
         }
     }
 
-    @Provides(type = Types.NAVIGATION_ITEM, with = "models.origo.core.navigation.ExternalLinkNavigation")
+    @Provides(type = Core.Type.NAVIGATION_ITEM, with = "models.origo.core.navigation.ExternalLinkNavigation")
     public static NavigationElement createExternalLinkNavigation(Provides.Context context) {
         ExternalLinkNavigation navigationModel = ExternalLinkNavigation.findWithIdentifier(context.navigation.getReferenceId());
         if (navigationModel != null) {

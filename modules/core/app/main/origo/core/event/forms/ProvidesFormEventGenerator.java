@@ -70,6 +70,6 @@ public class ProvidesFormEventGenerator {
                 return (annotation.with().equals(withType) || StringUtils.isBlank(withType));
             }
         });
-        return EventGeneratorUtils.selectEventHandler(withType, providers);
+        return EventGeneratorUtils.selectEventHandler(ProvidesForm.class, withType, providers);
     }
 }

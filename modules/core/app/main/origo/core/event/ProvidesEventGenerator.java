@@ -71,7 +71,7 @@ public class ProvidesEventGenerator {
      * Filters out the cached providers matching the specified type.
      * @param providesType the type of provider to search for (NODE, NAVIGATION, NAVIGATION_ITEM, DASHBOARD_ITEM, etc).
      * @return a list of cached annotations
-     * @see main.origo.core.annotations.Types
+     * @see main.origo.core.annotations.Core
      */
     private static List<CachedAnnotation> getAllProvidersForType(final String providesType) {
         return InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
@@ -85,7 +85,7 @@ public class ProvidesEventGenerator {
     /**
      * Filters out the cached providers types.
      * @return a list of types that have a provider (NODE, NAVIGATION, NAVIGATION_ITEM, DASHBOARD_ITEM, etc)
-     * @see main.origo.core.annotations.Types
+     * @see main.origo.core.annotations.Core
      */
     public static Set<String> getAllProviderTypes() {
         List<CachedAnnotation> interceptors = InterceptorRepository.getInterceptors(Provides.class);
@@ -100,7 +100,7 @@ public class ProvidesEventGenerator {
      * Filters out the cached providers types.
      * @return a list of all the classes that provides a matching type
      * @see main.origo.core.annotations.Provides
-     * @see main.origo.core.annotations.Types
+     * @see main.origo.core.annotations.Core
      */
     public static Set<String> getAllProviders(final String type, final String with) {
         List<CachedAnnotation> interceptors = InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
@@ -133,7 +133,7 @@ public class ProvidesEventGenerator {
                 return annotation.type().equals(type) && annotation.with().equals(withType);
             }
         });
-        return EventGeneratorUtils.selectEventHandler(withType, providers);
+        return EventGeneratorUtils.selectEventHandler(Provides.class, withType, providers);
     }
 
 }
