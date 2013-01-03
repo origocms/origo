@@ -33,10 +33,10 @@ public class DefaultSettingsDashboardProvider {
      */
     @Provides(type = Core.Type.NODE, with = Admin.With.SETTINGS_PAGE)
     public static Node addSettingsDashboard(Provides.Context context) throws NodeLoadException {
-        AdminPage page = new AdminPage(context.node.getNodeId());
+        AdminPage page = new AdminPage((RootNode) context.node);
         page.setTitle("Settings - Dashboard");
-        page.rootNode = (RootNode) context.node;
 
+        context.node.addElement(DashboardHelper.createBreadcrumb(Admin.With.SETTINGS_PAGE));
         context.node.addElement(DashboardHelper.createDashboard(Admin.With.SETTINGS_PAGE, context.node));
 
         return page;

@@ -19,7 +19,7 @@ public class AdminBootStrap {
             @Override
             public void invoke() throws Throwable {
                 Settings settings = Settings.load();
-                settings.setValueIfMissing(AdminSettingsHelper.Keys.DASHBOARD_TYPE, Admin.FRONT_PAGE_TYPE);
+                settings.setValueIfMissing(AdminSettingsHelper.Keys.HOME_DASHBOARD_TYPE, Admin.With.FRONT_PAGE);
                 settings.setValueIfMissing(AdminSettingsHelper.Keys.THEME_VARIANT, AdminTheme.DEFAULT_VARIANT_NAME);
                 settings.save();
             }

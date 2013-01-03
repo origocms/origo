@@ -58,9 +58,9 @@ public class EventHandlerAdminProvider {
      */
     @Provides(type = Core.Type.NODE, with = EDIT_TYPE)
     public static Node createEditPage(Provides.Context context) {
-        AdminPage page = new AdminPage(context.node.getNodeId());
+        AdminPage page = new AdminPage((RootNode) context.node);
         page.setTitle("Event Handlers");
-        page.rootNode = (RootNode) context.node;
+        page.addElement(DashboardHelper.createBreadcrumb(BASE_TYPE));
         return page;
     }
 

@@ -33,9 +33,9 @@ public class DefaultUserManagementDashboard {
      */
     @Provides(type = Core.Type.NODE, with = Admin.With.USER_PAGE)
     public static Node createUserDashboard(Provides.Context context) throws NodeLoadException {
-        AdminPage page = new AdminPage(context.node.getNodeId());
+        AdminPage page = new AdminPage((RootNode) context.node);
         page.setTitle("User Management - Dashboard");
-        page.rootNode = (RootNode) context.node;
+        page.addElement(DashboardHelper.createBreadcrumb(Admin.With.USER_PAGE));
 
         context.node.addElement(DashboardHelper.createDashboard(Admin.With.USER_PAGE, context.node));
 

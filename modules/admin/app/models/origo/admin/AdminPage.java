@@ -16,8 +16,9 @@ public class AdminPage implements Node {
 
     public RootNode rootNode;
 
-    public AdminPage(String nodeId) {
-        this.nodeId = nodeId;
+    public AdminPage(RootNode node) {
+        this.rootNode = node;
+        this.nodeId = node.getNodeId();
     }
 
     @Override

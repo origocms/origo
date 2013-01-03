@@ -4,11 +4,6 @@ import main.origo.core.ui.Element;
 import main.origo.core.ui.RenderingContext;
 import play.api.templates.Html;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 public class Admin {
 
     public static class Type {
@@ -25,10 +20,8 @@ public class Admin {
 
     public static class Dashboard extends Element {
 
-        public static final String TYPE = "dashboard";
-
         public Dashboard() {
-            super(TYPE);
+            super("dashboard");
         }
 
         @Override
@@ -40,23 +33,14 @@ public class Admin {
 
     public static class DashboardItem extends Element {
 
-        public static final String TYPE = "dashboard_item";
-
         public DashboardItem() {
-            super(TYPE);
+            super("dashboard_item");
         }
 
         @Override
         public Html decorate(RenderingContext renderingContext) {
             return getBody();
         }
-
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.METHOD})
-    public static @interface Navigation {
-        String name();
 
     }
 

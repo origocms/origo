@@ -98,6 +98,42 @@ public class Element {
         }
     }
 
+    public static class Image extends Element {
+
+        public Image() {
+            super("image");
+        }
+
+        @Override
+        public boolean isAlwaysInBody() {
+            return true;
+        }
+
+        @Override
+        public Html decorate(RenderingContext renderingContext) {
+            //noinspection unchecked
+            return image.render(this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
+        }
+    }
+
+    public static class Span extends Element {
+
+        public Span() {
+            super("span");
+        }
+
+        @Override
+        public boolean isAlwaysInBody() {
+            return true;
+        }
+
+        @Override
+        public Html decorate(RenderingContext renderingContext) {
+            //noinspection unchecked
+            return span.render(this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
+        }
+    }
+
     public static class ListBulleted extends Element {
 
         public ListBulleted() {
@@ -596,7 +632,7 @@ public class Element {
         return this;
     }
 
-    public Element addChildren(Collection<Element> elements) {
+    public Element addChildren(Collection<? extends Element> elements) {
         for (Element element : elements) {
             addChild(element);
         }

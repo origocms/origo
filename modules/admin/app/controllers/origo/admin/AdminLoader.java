@@ -20,7 +20,7 @@ import java.util.List;
 public class AdminLoader {
 
     public static Result getFrontDashboard() throws NodeLoadException {
-        return loadAndDecoratePage(AdminSettingsHelper.getDashboardType());
+        return loadAndDecoratePage(AdminSettingsHelper.getHomeDashboard());
     }
 
     public static Result getDashboard(String withType) throws NodeLoadException {

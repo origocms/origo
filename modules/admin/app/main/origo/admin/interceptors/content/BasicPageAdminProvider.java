@@ -2,6 +2,7 @@ package main.origo.admin.interceptors.content;
 
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.AdminHelper;
+import main.origo.admin.helpers.DashboardHelper;
 import main.origo.core.Node;
 import main.origo.core.ThemeRepository;
 import main.origo.core.annotations.*;
@@ -81,9 +82,10 @@ public class BasicPageAdminProvider {
      */
     @Provides(type = Core.Type.NODE, with = LIST_TYPE)
     public static Node createListPage(Provides.Context context) {
-        AdminPage page = new AdminPage(context.node.getNodeId());
+        AdminPage page = new AdminPage((RootNode)context.node);
         page.setTitle("List Basic Pages");
-        page.rootNode = (RootNode) context.node;
+        page.addElement(DashboardHelper.createBreadcrumb(BASE_TYPE));
+
         return page;
     }
 
@@ -115,13 +117,16 @@ public class BasicPageAdminProvider {
      */
     @Provides(type = Core.Type.NODE, with = EDIT_TYPE)
     public static Node createEditPage(Provides.Context context) {
-        AdminPage page = new AdminPage(context.node.getNodeId());
-        page.setTitle("Edit Basic Page");
+        AdminPage page;
+
         if (context.node.getVersion() == null || context.node.getVersion() == 0) {
-            page.rootNode = RootNode.findLatestVersionWithNodeId(context.node.getNodeId()).copy();
+            page = new AdminPage(RootNode.findLatestVersionWithNodeId(context.node.getNodeId()).copy());
         } else {
-            page.rootNode = (RootNode) context.node;
+            page = new AdminPage((RootNode) context.node);
         }
+
+        page.setTitle("Edit Basic Page");
+        page.addElement(DashboardHelper.createBreadcrumb(BASE_TYPE));
         return page;
     }
 

@@ -4,6 +4,10 @@ import controllers.origo.admin.routes;
 
 public class AdminHelper {
 
+    public static String getURLForAdminAction(String dashboard) {
+        return routes.Dashboard.dashboard(dashboard).url();
+    }
+
     public static String getURLForAdminAction(String dashboard, String type) {
         return routes.Dashboard.pageWithType(dashboard, type).url();
     }

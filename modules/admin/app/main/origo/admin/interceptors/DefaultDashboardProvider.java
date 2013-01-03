@@ -24,10 +24,10 @@ public class DefaultDashboardProvider {
      */
     @Provides(type = Core.Type.NODE, with = Admin.With.FRONT_PAGE)
     public static Node createPage(Provides.Context context) throws NodeLoadException {
-        AdminPage page = new AdminPage(context.node.getNodeId());
+        AdminPage page = new AdminPage((RootNode) context.node);
         page.setTitle("Dashboard");
-        page.rootNode = (RootNode) context.node;
 
+        context.node.addElement(DashboardHelper.createBreadcrumb(Admin.With.FRONT_PAGE));
         context.node.addElement(DashboardHelper.createDashboard(Admin.With.FRONT_PAGE, context.node));
 
         return page;

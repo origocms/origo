@@ -19,7 +19,7 @@ public class DashboardEventGenerator {
     */
 
     public static List<Element> triggerProvidesDashboardItemInterceptor(String withType, Node node) {
-        List<CachedAnnotation> cachedAnnotations = findProvidersWithParent(Admin.DASHBOARD_ITEM, withType);
+        List<CachedAnnotation> cachedAnnotations = findProvidersWithParent(Admin.Type.DASHBOARD_ITEM, withType);
         List<Element> items = Lists.newArrayList();
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
             try {
@@ -33,20 +33,57 @@ public class DashboardEventGenerator {
         return items;
     }
 
-    private static List<CachedAnnotation> findProvidersWithParent(final String withType, final String parent) {
+    public static List<String> createDashboardTrail(String withType) {
+        List<String> dashboards = Lists.newArrayList();
+        String current = withType;
+
+        dashboards.add(current);
+        do {
+            String parent = getParentDashboard(current);
+            if (parent != null) {
+                dashboards.add(parent);
+            }
+            current = parent;
+        } while (current != null);
+
+        Collections.reverse(dashboards);
+        return dashboards;
+    }
+
+    public static String getParentDashboard(String withType) {
+        return findParentForProvider(Admin.Type.DASHBOARD_ITEM, withType);
+    }
+
+    private static String findParentForProvider(final String type, final String withType) {
         List<CachedAnnotation> providers = InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation cachedAnnotation) {
                 Provides annotation = (Provides) cachedAnnotation.annotation;
-                return annotation.type().equals(withType) &&
+                return annotation.type().equals(type) &&
+                        annotation.with().equals(withType) &&
+                        cachedAnnotation.relationship != null && cachedAnnotation.relationship.parent() != null;
+            }
+        });
+        if (!providers.isEmpty()) {
+            return providers.iterator().next().relationship.parent();
+        } else {
+            return null;
+        }
+    }
+
+    private static List<CachedAnnotation> findProvidersWithParent(final String type, final String parent) {
+        List<CachedAnnotation> providers = InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
+            @Override
+            public boolean isCorrectInterceptor(CachedAnnotation cachedAnnotation) {
+                Provides annotation = (Provides) cachedAnnotation.annotation;
+                return annotation.type().equals(type) &&
                         cachedAnnotation.relationship != null && cachedAnnotation.relationship.parent().equals(parent);
             }
         });
         if (providers.isEmpty()) {
-            Logger.warn("Every type (specified by using attribute 'with') must have a class annotated with @Provides to instantiate an instance. Unable to find a provider for type \'" + withType + "\'");
+            Logger.warn("Every type (specified by using attribute 'with') must have a class annotated with @Provides to instantiate an instance. Unable to find a provider for type \'" + type + "\'");
         }
         return providers;
     }
-
 
 }

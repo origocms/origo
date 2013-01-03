@@ -1,0 +1,10 @@
+# DASHBOARDS
+breadcrumb.origo.admin.dashboard.frontpage = Home
+breadcrumb.origo.admin.dashboard.content = Content
+breadcrumb.origo.admin.dashboard.user = User
+breadcrumb.origo.admin.dashboard.settings = Settings
+
+# SUB CATEGORIES
+breadcrumb.origo.admin.dashboard.content.basicpage = Basic Page
+breadcrumb.origo.admin.dashboard.settings.event = Event Handlers
+
