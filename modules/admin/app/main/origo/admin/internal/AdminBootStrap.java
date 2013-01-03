@@ -1,4 +1,4 @@
-package main.origo.admin;
+package main.origo.admin.internal;
 
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.AdminSettingsHelper;
@@ -15,7 +15,7 @@ public class AdminBootStrap {
 
     @PostConstruct
     public void doJob() {
-
+        AdminAnnotationProcessor.initialize();
 
         JPA.withTransaction(new F.Callback0() {
             @Override

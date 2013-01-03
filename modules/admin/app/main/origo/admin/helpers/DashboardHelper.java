@@ -4,10 +4,13 @@ import com.google.common.collect.Lists;
 import controllers.origo.admin.routes;
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.event.DashboardEventGenerator;
+import main.origo.core.InterceptorRepository;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
+import main.origo.core.annotations.Provides;
 import main.origo.core.event.OnLoadEventGenerator;
 import main.origo.core.event.ProvidesEventGenerator;
+import main.origo.core.internal.CachedAnnotation;
 import main.origo.core.ui.Element;
 import play.i18n.Messages;
 
@@ -37,22 +40,20 @@ public class DashboardHelper {
         return elements;
     }
 
-    /*
-    public static Element.ListBulleted createBreadcrumbWithNonDashboard(String withType, String... names) {
-        List<String> dashboards = DashboardEventGenerator.createDashboardTrail(withType);
-        for (String name : names) {
-            dashboards.add(name);
-        }
-        List<Element.ListItem> items = createBreadcrumbItems(dashboards);
-
-        return (Element.ListBulleted) new Element.ListBulleted().
-                addAttribute("class", "breadcrumb").
-                addChildren(items);
+    public static Element createBasicDashboard(int weight) {
+        return new Admin.Dashboard().setWeight(weight).addAttribute("class", "dashboard");
     }
-    */
+
+    public static Element createBasicDashboard() {
+        return createBasicDashboard(10);
+    }
+
+    public static Element createBasicDashboardItem() {
+        return new Admin.DashboardItem().addAttribute("class", "item");
+    }
 
     public static Element.ListBulleted createBreadcrumb(String withType) {
-        List<String> dashboards = DashboardEventGenerator.createDashboardTrail(withType);
+        List<String> dashboards = createDashboardTrail(withType);
         List<Element.ListItem> items = createBreadcrumbItems(dashboards);
 
         return (Element.ListBulleted) new Element.ListBulleted().
@@ -97,20 +98,42 @@ public class DashboardHelper {
         return listItemElement;
     }
 
-    public static String getDashBoardURL(String dashboard) {
-        return routes.Dashboard.dashboard(dashboard).url();
+    public static List<String> createDashboardTrail(String withType) {
+        List<String> dashboards = Lists.newArrayList();
+        String current = withType;
+
+        dashboards.add(current);
+        do {
+            String parent = getParentDashboard(current);
+            if (parent != null) {
+                dashboards.add(parent);
+            }
+            current = parent;
+        } while (current != null);
+
+        Collections.reverse(dashboards);
+        return dashboards;
     }
 
-    public static Element createBasicDashboard(int weight) {
-        return new Admin.Dashboard().setWeight(weight).addAttribute("class", "dashboard");
+    public static String getParentDashboard(String withType) {
+        return findParentForProvider(Admin.Type.DASHBOARD_ITEM, withType);
     }
 
-    public static Element createBasicDashboard() {
-        return createBasicDashboard(10);
-    }
-
-    public static Element createBasicDashboardItem() {
-        return new Admin.DashboardItem().addAttribute("class", "item");
+    private static String findParentForProvider(final String type, final String withType) {
+        List<CachedAnnotation> providers = InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
+            @Override
+            public boolean isCorrectInterceptor(CachedAnnotation cachedAnnotation) {
+                Provides annotation = (Provides) cachedAnnotation.annotation;
+                return annotation.type().equals(type) &&
+                        annotation.with().equals(withType) &&
+                        cachedAnnotation.relationship != null && cachedAnnotation.relationship.parent() != null;
+            }
+        });
+        if (!providers.isEmpty()) {
+            return providers.iterator().next().relationship.parent();
+        } else {
+            return null;
+        }
     }
 
 }

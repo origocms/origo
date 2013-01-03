@@ -33,44 +33,6 @@ public class DashboardEventGenerator {
         return items;
     }
 
-    public static List<String> createDashboardTrail(String withType) {
-        List<String> dashboards = Lists.newArrayList();
-        String current = withType;
-
-        dashboards.add(current);
-        do {
-            String parent = getParentDashboard(current);
-            if (parent != null) {
-                dashboards.add(parent);
-            }
-            current = parent;
-        } while (current != null);
-
-        Collections.reverse(dashboards);
-        return dashboards;
-    }
-
-    public static String getParentDashboard(String withType) {
-        return findParentForProvider(Admin.Type.DASHBOARD_ITEM, withType);
-    }
-
-    private static String findParentForProvider(final String type, final String withType) {
-        List<CachedAnnotation> providers = InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
-            @Override
-            public boolean isCorrectInterceptor(CachedAnnotation cachedAnnotation) {
-                Provides annotation = (Provides) cachedAnnotation.annotation;
-                return annotation.type().equals(type) &&
-                        annotation.with().equals(withType) &&
-                        cachedAnnotation.relationship != null && cachedAnnotation.relationship.parent() != null;
-            }
-        });
-        if (!providers.isEmpty()) {
-            return providers.iterator().next().relationship.parent();
-        } else {
-            return null;
-        }
-    }
-
     private static List<CachedAnnotation> findProvidersWithParent(final String type, final String parent) {
         List<CachedAnnotation> providers = InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
             @Override

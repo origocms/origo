@@ -1,5 +1,6 @@
 package main.origo.admin.interceptors.settings;
 
+import controllers.origo.admin.routes;
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.DashboardHelper;
 import main.origo.core.Node;
@@ -25,7 +26,7 @@ public class DefaultSettingsDashboardProvider {
                 setId("item.link." + Admin.With.SETTINGS_PAGE).
                 addChild(new Element.Panel().setWeight(100).
                         addChild(new Element.Heading4().setWeight(10).setBody("Settings").addAttribute("class", "title")).
-                        addChild(new Element.Anchor().setWeight(10).setBody("View").addAttribute("href", DashboardHelper.getDashBoardURL(Admin.With.SETTINGS_PAGE))));
+                        addChild(new Element.Anchor().setWeight(10).setBody("View").addAttribute("href", routes.Dashboard.dashboard(Admin.With.SETTINGS_PAGE).url())));
     }
 
     /*

@@ -49,15 +49,15 @@ public class AnnotationProcessor {
         Reflections reflections = new Reflections("");
 
         Set<Class<?>> interceptors = reflections.getTypesAnnotatedWith(Interceptor.class);
-        scanInterceptors(interceptors, Provides.class, Provides.Context.class);
-        scanInterceptors(interceptors, OnLoad.class, OnLoad.Context.class);
-        scanInterceptors(interceptors, ProvidesForm.class, ProvidesForm.Context.class);
-        scanInterceptors(interceptors, OnLoadForm.class, OnLoadForm.Context.class);
-        scanInterceptors(interceptors, OnSubmit.class, OnSubmit.Context.class);
-        scanInterceptors(interceptors, SubmitHandler.class, SubmitHandler.Context.class);
-        scanInterceptors(interceptors, SubmitState.class, SubmitState.Context.class);
-        scanInterceptors(interceptors, OnInsertElement.class, OnInsertElement.Context.class);
-        scanInterceptors(interceptors, OnRemoveElement.class, OnRemoveElement.Context.class);
+        scanEventHandlers(interceptors, Provides.class, Provides.Context.class);
+        scanEventHandlers(interceptors, OnLoad.class, OnLoad.Context.class);
+        scanEventHandlers(interceptors, ProvidesForm.class, ProvidesForm.Context.class);
+        scanEventHandlers(interceptors, OnLoadForm.class, OnLoadForm.Context.class);
+        scanEventHandlers(interceptors, OnSubmit.class, OnSubmit.Context.class);
+        scanEventHandlers(interceptors, SubmitHandler.class, SubmitHandler.Context.class);
+        scanEventHandlers(interceptors, SubmitState.class, SubmitState.Context.class);
+        scanEventHandlers(interceptors, OnInsertElement.class, OnInsertElement.Context.class);
+        scanEventHandlers(interceptors, OnRemoveElement.class, OnRemoveElement.Context.class);
 
         Set<Class<?>> themes = reflections.getTypesAnnotatedWith(Theme.class);
         scanThemes(themes);
@@ -66,7 +66,7 @@ public class AnnotationProcessor {
         scanDecorators(themes);
     }
 
-    private static void scanInterceptors(Set<Class<?>> classes, Class<? extends Annotation> annotationClass, Class contextClass) {
+    public static void scanEventHandlers(Set<Class<?>> classes, Class<? extends Annotation> annotationClass, Class contextClass) {
 
         Logger.debug("Processing [" + annotationClass.getSimpleName() + "]");
         Logger.debug("------------------------------------------------");

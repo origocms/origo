@@ -9,6 +9,7 @@ public class Admin {
     public static class Type {
         public static final String DASHBOARD = "dashboard";
         public static final String DASHBOARD_ITEM = "dashboard_item";
+        public static final String NAVIGATION = "navigation";
     }
 
     public static class With {

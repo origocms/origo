@@ -40,7 +40,7 @@ public @interface Provides {
         public final Node node;
         public final Navigation navigation;
         public final Map<String, Object> args;
-        private final Map<String, Object> attributes;
+        public final Map<String, Object> attributes;
 
         public Context(Node node, Map<String, Object> args) {
             this.node = node;

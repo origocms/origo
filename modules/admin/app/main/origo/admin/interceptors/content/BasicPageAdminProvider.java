@@ -255,8 +255,19 @@ public class BasicPageAdminProvider {
         context.formElement.addChild(bodyElement);
 
         Element actionPanel = new Element.Panel().setWeight(40).addAttribute("class", "field").
-                addChild(new Element.InputSubmit().setWeight(10).addAttribute("value", "Save")).
-                addChild(new Element.InputReset().setWeight(15).addAttribute("value", "Reset"));
+                addChild(new Element.Panel().
+                        addAttribute("class", "pull-left").
+                        addChild(new Element.Anchor().setWeight(20).
+                                addAttribute("class", "btn").
+                                addAttribute("href", routes.Dashboard.pageWithType(Admin.With.CONTENT_PAGE, LIST_TYPE).url()).
+                                setBody("Cancel")
+                        )
+                ).
+                addChild(new Element.Panel().
+                        addAttribute("class", "pull-right").
+                        addChild(new Element.InputSubmit().setWeight(10).addAttribute("value", "Save")).
+                        addChild(new Element.InputReset().setWeight(15).addAttribute("value", "Reset"))
+                );
         context.formElement.addChild(actionPanel);
 
     }

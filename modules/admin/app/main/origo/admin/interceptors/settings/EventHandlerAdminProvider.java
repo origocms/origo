@@ -132,8 +132,7 @@ public class EventHandlerAdminProvider {
      */
     @SubmitState(with = BASE_TYPE)
     public static Result handleSuccess(SubmitState.Context context) {
-        String endpointURL = DashboardHelper.getDashBoardURL(Admin.With.SETTINGS_PAGE);
-        return Controller.redirect(endpointURL);
+        return Controller.redirect(routes.Dashboard.dashboard(Admin.With.SETTINGS_PAGE).url());
     }
 
 }
