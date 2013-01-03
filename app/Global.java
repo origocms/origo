@@ -1,4 +1,3 @@
-import main.origo.core.internal.AnnotationProcessor;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -19,7 +18,6 @@ public class Global extends GlobalSettings {
                 new InitialTestData().create();
             }
         });
-        AnnotationProcessor.initialize();
     }
 
     @Override

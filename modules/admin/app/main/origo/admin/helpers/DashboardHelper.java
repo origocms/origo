@@ -69,7 +69,7 @@ public class DashboardHelper {
             if (dashboard.equals(AdminSettingsHelper.getHomeDashboard())) {
                 url = routes.Dashboard.index().url();
             } else {
-                url = AdminHelper.getURLForAdminAction(dashboard);
+                url = routes.Dashboard.dashboard(dashboard).url();
             }
             if (dashboardIterator.hasNext()) {
                 items.add(

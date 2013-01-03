@@ -1,8 +1,8 @@
 package main.origo.admin.interceptors.settings;
 
 import com.google.common.collect.Lists;
+import controllers.origo.admin.routes;
 import main.origo.admin.annotations.Admin;
-import main.origo.admin.helpers.AdminHelper;
 import main.origo.admin.helpers.DashboardHelper;
 import main.origo.core.Node;
 import main.origo.core.annotations.*;
@@ -40,7 +40,7 @@ public class EventHandlerAdminProvider {
     @Relationship(parent = Admin.With.SETTINGS_PAGE)
     public static Element createDashboardItem(Provides.Context context) {
 
-        String url = AdminHelper.getURLForAdminAction(Admin.With.CONTENT_PAGE, EDIT_TYPE);
+        String url = routes.Dashboard.pageWithType(Admin.With.CONTENT_PAGE, EDIT_TYPE).url();
 
         return new Admin.DashboardItem().addAttribute("class", "item").
                 addChild(new Element.Panel().setWeight(10).

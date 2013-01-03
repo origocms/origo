@@ -15,6 +15,8 @@ public class CoreBootStrap {
 
     @PostConstruct
     public void doJob() {
+        AnnotationProcessor.initialize();
+
         JPA.withTransaction(new F.Callback0() {
             @Override
             public void invoke() throws Throwable {

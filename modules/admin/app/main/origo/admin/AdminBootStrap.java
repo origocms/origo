@@ -15,6 +15,8 @@ public class AdminBootStrap {
 
     @PostConstruct
     public void doJob() {
+
+
         JPA.withTransaction(new F.Callback0() {
             @Override
             public void invoke() throws Throwable {

@@ -1,7 +1,7 @@
 package main.origo.admin.interceptors.content;
 
+import controllers.origo.admin.routes;
 import main.origo.admin.annotations.Admin;
-import main.origo.admin.helpers.AdminHelper;
 import main.origo.admin.helpers.DashboardHelper;
 import main.origo.core.Node;
 import main.origo.core.ThemeRepository;
@@ -64,7 +64,7 @@ public class BasicPageAdminProvider {
     @Relationship(parent = Admin.With.CONTENT_PAGE)
     public static Element createDashboardItem(Provides.Context context) {
 
-        String url = AdminHelper.getURLForAdminAction(Admin.With.CONTENT_PAGE, LIST_TYPE);
+        String url = routes.Dashboard.pageWithType(Admin.With.CONTENT_PAGE, LIST_TYPE).url();
 
         return new Admin.DashboardItem().addAttribute("class", "item").
                 addChild(new Element.Panel().setWeight(10).
@@ -100,7 +100,7 @@ public class BasicPageAdminProvider {
 
         Element panelElement = new Element.Panel().setWeight(10).addAttribute("class", "panel pages");
         for (BasicPage page : basicPages) {
-            String editURL = AdminHelper.getURLForAdminAction(Admin.With.CONTENT_PAGE, EDIT_TYPE, page.getNodeId());
+            String editURL = routes.Dashboard.pageWithTypeAndIdentifier(Admin.With.CONTENT_PAGE, EDIT_TYPE, page.getNodeId()).url();
             Element panel = new Element.Panel().
                     addChild(new Element.Anchor().setWeight(10).setBody(page.getTitle()).addAttribute("href", editURL)).
                     addChild(new Element.Text().setWeight(20).setBody(" (" + page.nodeId + " / " + page.getVersion() + ")"));
@@ -369,8 +369,7 @@ public class BasicPageAdminProvider {
      */
     @SubmitState(with = BASE_TYPE)
     public static Result handleSuccess(SubmitState.Context context) {
-        String endpointURL = AdminHelper.getURLForAdminAction(Admin.With.CONTENT_PAGE, LIST_TYPE);
-        return Controller.redirect(endpointURL);
+        return Controller.redirect(routes.Dashboard.pageWithType(Admin.With.CONTENT_PAGE, LIST_TYPE));
     }
 
 }
