@@ -1,6 +1,7 @@
 package main.origo.core.annotations.forms;
 
-import main.origo.core.ui.Element;
+import com.google.common.collect.Maps;
+import play.data.DynamicForm;
 import play.data.Form;
 
 import java.lang.annotation.ElementType;
@@ -26,11 +27,14 @@ public @interface SubmitState {
     public static final String FAILURE = "failure";
 
     public class Context {
-        public Element.Form form;
+        public Form form;
         public Map<String, Object> args;
 
         public Context(Form form, Map<String, Object> args) {
-            this.args = args;
+            this.form = form;
+            this.args = Maps.newHashMap();
+            this.args.putAll(DynamicForm.form().bindFromRequest().data());
+            this.args.putAll(args);
         }
     }
 }

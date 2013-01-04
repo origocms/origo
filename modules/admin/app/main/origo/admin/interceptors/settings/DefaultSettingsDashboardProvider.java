@@ -3,6 +3,7 @@ package main.origo.admin.interceptors.settings;
 import controllers.origo.admin.routes;
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.DashboardHelper;
+import main.origo.admin.themes.AdminTheme;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Core;
@@ -37,8 +38,8 @@ public class DefaultSettingsDashboardProvider {
         AdminPage page = new AdminPage((RootNode) context.node);
         page.setTitle("Settings - Dashboard");
 
-        context.node.addElement(DashboardHelper.createBreadcrumb(Admin.With.SETTINGS_PAGE));
-        context.node.addElement(DashboardHelper.createDashboard(Admin.With.SETTINGS_PAGE, context.node));
+        context.node.addElement(DashboardHelper.createBreadcrumb(Admin.With.SETTINGS_PAGE), AdminTheme.topMeta());
+        context.node.addElement(DashboardHelper.createDashboard(context.node, Admin.With.SETTINGS_PAGE));
 
         return page;
     }
@@ -50,7 +51,7 @@ public class DefaultSettingsDashboardProvider {
     @Relationship(parent = Admin.With.FRONT_PAGE)
     public static Element addSettingsDashboardContent(Provides.Context context) {
         return DashboardHelper.createBasicDashboard().setId("dashboard."+Admin.With.SETTINGS_PAGE).
-            addChildren(DashboardHelper.createDashboardItems(Admin.With.SETTINGS_PAGE, context.node));
+            addChildren(DashboardHelper.createDashboardItems(context.node, Admin.With.SETTINGS_PAGE));
     }
 
 }

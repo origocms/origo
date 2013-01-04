@@ -14,7 +14,7 @@ public class EventGeneratorUtils {
             return null;
         }
 
-        EventHandler storedEventEventHandlerType = EventHandler.findWithType(withType);
+        EventHandler storedEventEventHandlerType = EventHandler.findWithWithType(withType);
         if (storedEventEventHandlerType == null) {
             return setFirstEventHandlerAsDefault(annotationType, withType, cachedAnnotations);
         }

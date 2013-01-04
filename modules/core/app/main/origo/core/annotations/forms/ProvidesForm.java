@@ -1,6 +1,7 @@
 package main.origo.core.annotations.forms;
 
 import main.origo.core.Node;
+import main.origo.core.annotations.AbstractContext;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -14,13 +15,10 @@ public @interface ProvidesForm {
 
     String with();
 
-    public class Context {
-        private Node node;
-        private Map<String, Object> args;
+    public class Context extends AbstractContext {
 
         public Context(Node node, Map<String, Object> args) {
-            this.node = node;
-            this.args = args;
+            super(node, args);
         }
     }
 }

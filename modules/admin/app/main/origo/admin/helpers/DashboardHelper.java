@@ -20,22 +20,22 @@ import java.util.List;
 
 public class DashboardHelper {
 
-    public static Element createDashboard(String withType, Node node) throws NodeLoadException {
-        OnLoadEventGenerator.triggerBeforeInterceptor(Admin.Type.DASHBOARD, withType, node);
-        Element element = ProvidesEventGenerator.triggerInterceptor(Admin.Type.DASHBOARD, withType, node);
+    public static Element createDashboard(Node node, String withType) throws NodeLoadException {
+        OnLoadEventGenerator.triggerBeforeInterceptor(node, Admin.Type.DASHBOARD, withType);
+        Element element = ProvidesEventGenerator.triggerInterceptor(node, Admin.Type.DASHBOARD, withType);
         if (element == null) {
             throw new NodeLoadException(node.getNodeId(), "The provider for type [" + withType + "] did not return a Element");
         }
 
-        OnLoadEventGenerator.triggerAfterInterceptor(Admin.Type.DASHBOARD, withType, node);
+        OnLoadEventGenerator.triggerAfterInterceptor(node, Admin.Type.DASHBOARD, withType);
         return element;
     }
 
-    public static List<Element> createDashboardItems(String withType, Node node) {
-        OnLoadEventGenerator.triggerBeforeInterceptor(Admin.Type.DASHBOARD_ITEM, withType, node);
-        List<Element> elements = DashboardEventGenerator.triggerProvidesDashboardItemInterceptor(withType, node);
+    public static List<Element> createDashboardItems(Node node, String withType) {
+        OnLoadEventGenerator.triggerBeforeInterceptor(node, Admin.Type.DASHBOARD_ITEM, withType);
+        List<Element> elements = DashboardEventGenerator.triggerProvidesDashboardItemInterceptor(node, withType);
         for (Element element : elements) {
-            OnLoadEventGenerator.triggerAfterInterceptor(Admin.Type.DASHBOARD_ITEM, withType, node, Collections.<String, Object>emptyMap(), element);
+            OnLoadEventGenerator.triggerAfterInterceptor(node, Admin.Type.DASHBOARD_ITEM, withType, Collections.<String, Object>emptyMap(), element);
         }
         return elements;
     }

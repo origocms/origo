@@ -15,16 +15,16 @@ public class SegmentHelper {
     /*
      * Convenience methods for hooks with SEGMENT type
      */
-    public static Element triggerSegmentProvider(String withType, Node node, Segment segment) {
-        return ProvidesEventGenerator.triggerInterceptor(TYPE_SEGMENT, withType, node, Collections.<String, Object>singletonMap("segment", segment));
+    public static Element triggerSegmentProvider(Node node, String withType, Segment segment) {
+        return ProvidesEventGenerator.triggerInterceptor(node, TYPE_SEGMENT, withType, Collections.<String, Object>singletonMap("segment", segment));
     }
 
-    public static void triggerBeforeSegmentLoaded(String nodeType, Node node, Segment segment) {
-        OnLoadEventGenerator.triggerBeforeInterceptor(TYPE_SEGMENT, nodeType, node, Collections.<String, Object>singletonMap("segment", segment));
+    public static void triggerBeforeSegmentLoaded(Node node, String nodeType, Segment segment) {
+        OnLoadEventGenerator.triggerBeforeInterceptor(node,  TYPE_SEGMENT, nodeType, Collections.<String, Object>singletonMap("segment", segment));
     }
 
-    public static void triggerAfterSegmentLoaded(String withType, Node node, Segment segment, Element element) {
-        OnLoadEventGenerator.triggerAfterInterceptor(TYPE_SEGMENT, withType, node, Collections.<String, Object>singletonMap("segment", segment), element);
+    public static void triggerAfterSegmentLoaded(Node node, String withType, Segment segment, Element element) {
+        OnLoadEventGenerator.triggerAfterInterceptor(node, TYPE_SEGMENT, withType, Collections.<String, Object>singletonMap("segment", segment), element);
     }
 
 }

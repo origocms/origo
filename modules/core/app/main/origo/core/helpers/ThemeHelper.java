@@ -119,15 +119,14 @@ public class ThemeHelper {
         return decoratedOutput;
     }
 
-    public static CachedThemeVariant loadTheme(Node node) {
+    public static CachedThemeVariant loadTheme(Node node, String fallbackTheme) {
         CachedThemeVariant themeVariant = ThemeRepository.getThemeVariant(node.getThemeVariant());
         if (themeVariant == null) {
-            String themeVariantId = CoreSettingsHelper.getThemeVariant();
-            if (StringUtils.isEmpty(themeVariantId)) {
+            if (StringUtils.isEmpty(fallbackTheme)) {
                 throw new RuntimeException("No theme set for node and no default theme variant set");
             }
-            Logger.debug("Using default theme variant [" + themeVariantId + "]");
-            themeVariant = ThemeRepository.getThemeVariant(themeVariantId);
+            Logger.debug("Using default theme variant [" + fallbackTheme + "]");
+            themeVariant = ThemeRepository.getThemeVariant(fallbackTheme);
         }
         if (themeVariant == null) {
             // TODO: Add some sort of fallback for when a theme is removed

@@ -54,4 +54,5 @@ public class Meta {
         JPA.em().merge(this);
         return this;
     }
+
 }

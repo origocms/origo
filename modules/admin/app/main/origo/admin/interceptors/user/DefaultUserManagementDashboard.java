@@ -3,6 +3,7 @@ package main.origo.admin.interceptors.user;
 import controllers.origo.admin.routes;
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.DashboardHelper;
+import main.origo.admin.themes.AdminTheme;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Core;
@@ -36,9 +37,9 @@ public class DefaultUserManagementDashboard {
     public static Node createUserDashboard(Provides.Context context) throws NodeLoadException {
         AdminPage page = new AdminPage((RootNode) context.node);
         page.setTitle("User Management - Dashboard");
-        page.addElement(DashboardHelper.createBreadcrumb(Admin.With.USER_PAGE));
+        page.addElement(DashboardHelper.createBreadcrumb(Admin.With.USER_PAGE), AdminTheme.topMeta());
 
-        context.node.addElement(DashboardHelper.createDashboard(Admin.With.USER_PAGE, context.node));
+        context.node.addElement(DashboardHelper.createDashboard(context.node, Admin.With.USER_PAGE));
 
         return page;
     }
@@ -50,7 +51,7 @@ public class DefaultUserManagementDashboard {
     @Relationship(parent = Admin.With.FRONT_PAGE)
     public static Element addUserDashboardContent(Provides.Context context) {
         return DashboardHelper.createBasicDashboard().setId("dashboard."+Admin.With.USER_PAGE).
-                addChildren(DashboardHelper.createDashboardItems(Admin.With.USER_PAGE, context.node));
+                addChildren(DashboardHelper.createDashboardItems(context.node, Admin.With.USER_PAGE));
     }
 
 }

@@ -147,8 +147,17 @@ public final class RootNode implements Node {
             meta = Meta.defaultMeta();
         }
 
-        String regionKey = meta.region.toLowerCase();
-        return addElement(element, reorderElementsBelow, regionKey, meta.weight.intValue());
+        return addElement(element, meta, reorderElementsBelow);
+    }
+
+    @Override
+    public Element addElement(Element element, Meta meta) {
+        return addElement(element, meta, false);
+    }
+
+    @Override
+    public Element addElement(Element element, Meta meta, boolean reorderElementsBelow) {
+        return addElement(element, reorderElementsBelow, meta.region.toLowerCase(), meta.weight);
     }
 
     private Element addElement(Element element, boolean reorderElementsBelow, String regionKey, int weight) {

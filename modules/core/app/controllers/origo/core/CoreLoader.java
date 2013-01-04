@@ -100,8 +100,8 @@ public class CoreLoader {
         try {
             NodeContext.set();
             Node node = loadNode(identifier, version);
-            RenderedNode renderedNode = ThemeHelper.decorate(node, ThemeHelper.loadTheme(node));
-            renderedNode.navigation(getNavigation(identifier));
+            RenderedNode renderedNode = ThemeHelper.decorate(node, ThemeHelper.loadTheme(node, CoreSettingsHelper.getThemeVariant()));
+            renderedNode.navigation(getNavigation(node));
             if (Logger.isDebugEnabled()) {
                 Logger.debug("Decorated " + renderedNode);
             }
@@ -140,13 +140,8 @@ public class CoreLoader {
         return node;
     }
 
-    public static List<NavigationElement> getNavigation(String identifier) throws NodeNotFoundException, NodeLoadException {
-        return getNavigation(identifier, 0);
-    }
-
-    public static List<NavigationElement> getNavigation(String identifier, int version) throws NodeNotFoundException, NodeLoadException {
-        Node node = loadNode(identifier, version);
-        List<NavigationElement> navigationLinks = NavigationHelper.getNavigation(node, NavigationElement.FRONT);
+    public static List<NavigationElement> getNavigation(Node rootNode) throws NodeNotFoundException, NodeLoadException {
+        List<NavigationElement> navigationLinks = NavigationHelper.getNavigation(rootNode, NavigationElement.FRONT);
         if (Logger.isDebugEnabled()) {
             Logger.debug("Navigation loaded " + navigationLinks);
         }

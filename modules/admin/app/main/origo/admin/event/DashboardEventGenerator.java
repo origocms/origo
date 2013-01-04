@@ -18,7 +18,7 @@ public class DashboardEventGenerator {
     * Convenience methods for hooks with DASHBOARD_ITEM type
     */
 
-    public static List<Element> triggerProvidesDashboardItemInterceptor(String withType, Node node) {
+    public static List<Element> triggerProvidesDashboardItemInterceptor(Node node, String withType) {
         List<CachedAnnotation> cachedAnnotations = findProvidersWithParent(Admin.Type.DASHBOARD_ITEM, withType);
         List<Element> items = Lists.newArrayList();
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {

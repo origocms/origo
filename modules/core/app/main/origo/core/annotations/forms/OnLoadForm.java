@@ -1,6 +1,7 @@
 package main.origo.core.annotations.forms;
 
 import main.origo.core.Node;
+import main.origo.core.annotations.AbstractContext;
 import main.origo.core.ui.Element;
 
 import java.lang.annotation.ElementType;
@@ -17,23 +18,19 @@ public @interface OnLoadForm {
 
     boolean after() default true;
 
-    public static class Context {
+    public static class Context extends AbstractContext {
 
         public String withType;
-        public Node node;
-        public Map<String, Object> args;
         public Element formElement;
 
-        public Context(String withType, Node node, Map<String, Object> args) {
+        public Context(Node node, String withType, Map<String, Object> args) {
+            super(node, args);
             this.withType = withType;
-            this.node = node;
-            this.args = args;
         }
 
-        public Context(String withType, Node node, Map<String, Object> args, Element formElement) {
+        public Context(Node node, String withType, Map<String, Object> args, Element formElement) {
+            super(node, args);
             this.withType = withType;
-            this.node = node;
-            this.args = args;
             this.formElement = formElement;
         }
 

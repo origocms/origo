@@ -1,5 +1,8 @@
 package main.origo.core.annotations.forms;
 
+import com.google.common.collect.Maps;
+import play.data.DynamicForm;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -19,7 +22,9 @@ public @interface OnSubmit {
         private Map<String, Object> args;
 
         public Context(Map<String, Object> args) {
-            this.args = args;
+            this.args = Maps.newHashMap();
+            this.args.putAll(DynamicForm.form().bindFromRequest().data());
+            this.args.putAll(args);
         }
     }
 }

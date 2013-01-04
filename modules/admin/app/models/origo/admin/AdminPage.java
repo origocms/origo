@@ -2,6 +2,7 @@ package models.origo.admin;
 
 import main.origo.core.Node;
 import main.origo.core.ui.Element;
+import models.origo.core.Meta;
 import models.origo.core.RootNode;
 
 import java.util.Date;
@@ -55,6 +56,10 @@ public class AdminPage implements Node {
         return rootNode.getThemeVariant();
     }
 
+    public void setThemeVariant(String themeVariant) {
+        rootNode.themeVariant = themeVariant;
+    }
+
     @Override
     public Set<String> getRegions() {
         return rootNode.getRegions();
@@ -94,6 +99,16 @@ public class AdminPage implements Node {
     @Override
     public Element addElement(Element element, boolean reorderElementsBelow) {
         return rootNode.addElement(element, reorderElementsBelow);
+    }
+
+    @Override
+    public Element addElement(Element element, Meta meta) {
+        return rootNode.addElement(element, meta);
+    }
+
+    @Override
+    public Element addElement(Element element, Meta meta, boolean reorderElementsBelow) {
+        return rootNode.addElement(element, meta, reorderElementsBelow);
     }
 
     @Override

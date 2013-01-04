@@ -1,11 +1,10 @@
 package models.origo.core;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.Lists;
 import play.db.jpa.JPA;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Map;
 
 @Entity
 @Table(name = "handlers")
@@ -19,7 +18,7 @@ public class EventHandler {
     public String withType;
     public String handlerClass;
 
-    public static EventHandler findWithType(String withType) {
+    public static EventHandler findWithWithType(String withType) {
         try {
             final Query query = JPA.em().createQuery("from models.origo.core.EventHandler an where an.withType=:withType");
             query.setParameter("withType", withType);
@@ -29,16 +28,26 @@ public class EventHandler {
         }
     }
 
-    public static Map<String, EventHandler> findAll() {
+    public static List<String> findEventTypes() {
+        return JPA.em().createQuery("select distinct eventName from models.origo.core.EventHandler").
+                getResultList();
+    }
+
+    public static List<EventHandler> findAllWithEventType(String eventName) {
         try {
-            List<EventHandler> allEventHandlers = JPA.em().createQuery("from models.origo.core.EventHandler").getResultList();
-            Map<String, EventHandler> results = Maps.newHashMap();
-            for (EventHandler eventHandler : allEventHandlers) {
-                results.put(eventHandler.withType, eventHandler);
-            }
-            return results;
+            return JPA.em().createQuery("from models.origo.core.EventHandler where eventName=:eventName").
+                    setParameter("eventName", eventName).
+                    getResultList();
         } catch (NoResultException e) {
-            return null;
+            return Lists.newArrayList();
+        }
+    }
+
+    public static List<EventHandler> findAll() {
+        try {
+            return JPA.em().createQuery("from models.origo.core.EventHandler").getResultList();
+        } catch (NoResultException e) {
+            return Lists.newArrayList();
         }
     }
 

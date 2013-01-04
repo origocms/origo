@@ -33,9 +33,9 @@ public class StructuredPageProvider {
 
         List<Segment> segmentModels = Segment.findWithNodeIdAndSpecificVersion(context.node.getNodeId(), context.node.getVersion());
         for (Segment segment : segmentModels) {
-            SegmentHelper.triggerBeforeSegmentLoaded(segment.type, context.node, segment);
-            Element element = SegmentHelper.triggerSegmentProvider(segment.type, context.node, segment);
-            SegmentHelper.triggerAfterSegmentLoaded(segment.type, context.node, segment, element);
+            SegmentHelper.triggerBeforeSegmentLoaded(context.node, segment.type, segment);
+            Element element = SegmentHelper.triggerSegmentProvider(context.node, segment.type, segment);
+            SegmentHelper.triggerAfterSegmentLoaded(context.node, segment.type, segment, element);
             context.node.addElement(element);
         }
 

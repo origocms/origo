@@ -16,7 +16,7 @@ public class ElementEventGenerator {
         for (CachedAnnotation annotation : interceptors) {
             try {
                 //noinspection unchecked
-                annotation.method.invoke(null, new OnInsertElement.Context(parent, element));
+                annotation.method.invoke(null, new OnInsertElement.Context(NodeContext.current().node, parent, element));
             } catch (Throwable e) {
                 Logger.error("", e);
                 throw new RuntimeException("Unable to invoke method [" + annotation.method.toString() + "]", e.getCause());
@@ -29,7 +29,7 @@ public class ElementEventGenerator {
         for (CachedAnnotation annotation : interceptors) {
             try {
                 //noinspection unchecked
-                annotation.method.invoke(null, new OnInsertElement.Context(parent, element));
+                annotation.method.invoke(null, new OnInsertElement.Context(NodeContext.current().node, parent, element));
             } catch (Throwable e) {
                 Logger.error("", e);
                 throw new RuntimeException("Unable to invoke method [" + annotation.method.toString() + "]", e.getCause());
@@ -42,7 +42,7 @@ public class ElementEventGenerator {
         for (CachedAnnotation annotation : interceptors) {
             try {
                 //noinspection unchecked
-                annotation.method.invoke(null, new OnInsertElement.Context(parent, element));
+                annotation.method.invoke(null, new OnRemoveElement.Context(NodeContext.current().node, parent, element));
             } catch (Throwable e) {
                 Logger.error("", e);
                 throw new RuntimeException("Unable to invoke method [" + annotation.method.toString() + "]", e.getCause());
@@ -55,7 +55,7 @@ public class ElementEventGenerator {
         for (CachedAnnotation annotation : interceptors) {
             try {
                 //noinspection unchecked
-                annotation.method.invoke(null, new OnInsertElement.Context(parent, element));
+                annotation.method.invoke(null, new OnRemoveElement.Context(NodeContext.current().node, parent, element));
             } catch (Throwable e) {
                 Logger.error("", e);
                 throw new RuntimeException("Unable to invoke method [" + annotation.method.toString() + "]", e.getCause());

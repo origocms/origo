@@ -1,6 +1,7 @@
 package main.origo.core;
 
 import main.origo.core.ui.Element;
+import models.origo.core.Meta;
 
 import java.util.Date;
 import java.util.List;
@@ -127,7 +128,7 @@ public interface Node {
     Element addTailElement(Element element, boolean reorderElementsBelow);
 
     /**
-     * Add an element that should be rendered on the page. Regions are determined by the theme variant used.
+     * Add an element that should be rendered on the page. Meta information is loaded based on nodeId. Regions are determined by the theme variant used.
      *
      * @param element            the element to be rendered
      * @param reorderElementsBelow if true then all elements below this new element will be reordered according to their individual weight
@@ -135,6 +136,29 @@ public interface Node {
      * @see main.origo.core.annotations.ThemeVariant
      */
     Element addElement(Element element, boolean reorderElementsBelow);
+
+    /**
+     * Add an element that should be rendered on the page with preloaded meta information. Regions are determined by the theme variant used.
+     *
+     *
+     * @param element            the element to be rendered
+     * @param meta              preloaded/static meta to be used for placing the element in the page
+     * @return the newly added Element
+     * @see main.origo.core.annotations.ThemeVariant
+     */
+    Element addElement(Element element, Meta meta);
+
+    /**
+     * Add an element that should be rendered on the page with preloaded meta information. Regions are determined by the theme variant used.
+     *
+     *
+     * @param element            the element to be rendered
+     * @param meta              preloaded/static meta to be used for placing the element in the page
+     * @param reorderElementsBelow if true then all elements below this new element will be reordered according to their individual weight
+     * @return the newly added Element
+     * @see main.origo.core.annotations.ThemeVariant
+     */
+    Element addElement(Element element, Meta meta, boolean reorderElementsBelow);
 
     /**
      * Removes an element so it is not rendered in the head region of the page. The head region always exists.

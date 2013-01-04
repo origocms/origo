@@ -12,25 +12,25 @@ import java.util.Collections;
 public class EditorHelper {
 
     public static Element createRichTextEditor(Node node, Content content) {
-        EditorHelper.triggerBeforeRichTextEditorLoaded(Core.With.EDITOR, node, content);
-        Element richTextEditor = EditorHelper.triggerProvidesRichTextEditorInterceptor(Core.With.EDITOR, node, content);
-        EditorHelper.triggerAfterRichTextEditorLoaded(Core.With.EDITOR, node, richTextEditor, content);
+        EditorHelper.triggerBeforeRichTextEditorLoaded(node, Core.With.EDITOR, content);
+        Element richTextEditor = EditorHelper.triggerProvidesRichTextEditorInterceptor(node, Core.With.EDITOR, content);
+        EditorHelper.triggerAfterRichTextEditorLoaded(node, Core.With.EDITOR, richTextEditor, content);
         return richTextEditor;
     }
 
     /*
     * Convenience methods for hooks with RICHTEXT_EDITOR type
     */
-    public static Element triggerProvidesRichTextEditorInterceptor(String withType, Node node, Content content) {
-        return ProvidesEventGenerator.triggerInterceptor(Core.Type.NODE, withType, node, Collections.<String, Object>singletonMap("content", content));
+    public static Element triggerProvidesRichTextEditorInterceptor(Node node, String withType, Content content) {
+        return ProvidesEventGenerator.triggerInterceptor(node, Core.Type.NODE, withType, Collections.<String, Object>singletonMap("content", content));
     }
 
-    public static void triggerBeforeRichTextEditorLoaded(String withType, Node node, Content content) {
-        OnLoadEventGenerator.triggerBeforeInterceptor(Core.Type.NODE, withType, node, Collections.<String, Object>singletonMap("content", content));
+    public static void triggerBeforeRichTextEditorLoaded(Node node, String withType, Content content) {
+        OnLoadEventGenerator.triggerBeforeInterceptor(node, Core.Type.NODE, withType, Collections.<String, Object>singletonMap("content", content));
     }
 
-    public static void triggerAfterRichTextEditorLoaded(String withType, Node node, Element element, Content content) {
-        OnLoadEventGenerator.triggerAfterInterceptor(Core.Type.NODE, withType, node, Collections.<String, Object>singletonMap("content", content), element);
+    public static void triggerAfterRichTextEditorLoaded(Node node, String withType, Element element, Content content) {
+        OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.NODE, withType, Collections.<String, Object>singletonMap("content", content), element);
     }
 
 

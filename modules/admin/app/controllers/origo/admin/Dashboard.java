@@ -35,11 +35,11 @@ public class Dashboard extends Controller {
     }
 
     @Transactional
-    public Result pageWithType(String dashboard, String type) {
+    public Result pageWithType(String dashboard, String withType) {
         //TODO: Check if config !exists and redirect to wizard
 
         try {
-            return AdminLoader.getPage(type);
+            return AdminLoader.getPage(withType);
         } catch (Exception e) {
             Logger.error("Error: " + e.getMessage(), e);
             return CoreLoader.loadPageLoadErrorPage();

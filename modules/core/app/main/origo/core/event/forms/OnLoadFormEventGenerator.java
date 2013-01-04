@@ -24,7 +24,7 @@ public class OnLoadFormEventGenerator {
     }
 
     public static void triggerBeforeInterceptor(String formType, Node node, Map<String, Object> args) {
-        triggerBeforeInterceptor(formType, new OnLoadForm.Context(formType, node, args));
+        triggerBeforeInterceptor(formType, new OnLoadForm.Context(node, formType, args));
     }
 
     public static void triggerBeforeInterceptor(String withType, OnLoadForm.Context context) {
@@ -53,7 +53,7 @@ public class OnLoadFormEventGenerator {
     }
 
     public static void triggerAfterInterceptor(String withType, Node node, Map<String, Object> args, Element element) {
-        triggerAfterInterceptor(withType, new OnLoadForm.Context(withType, node, args, element));
+        triggerAfterInterceptor(withType, new OnLoadForm.Context(node, withType, args, element));
     }
 
     public static void triggerAfterInterceptor(String withType, OnLoadForm.Context context) {

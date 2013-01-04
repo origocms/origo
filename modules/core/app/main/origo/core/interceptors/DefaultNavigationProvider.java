@@ -35,28 +35,28 @@ public class DefaultNavigationProvider {
     public static List<NavigationElement> createNavigation(Provides.Context context) {
         List<NavigationElement> navigationElements = Lists.newArrayList();
         String section = (String) context.args.get("section");
-        NavigationEventGenerator.triggerBeforeNavigationLoaded(BasicNavigation.class.getName(), context.node, section);
+        NavigationEventGenerator.triggerBeforeNavigationLoaded(context.node, BasicNavigation.class.getName(), section);
         List<BasicNavigation> navigationModels = BasicNavigation.findWithSection(section);
         for (BasicNavigation navigationModel : navigationModels) {
-            NavigationEventGenerator.triggerBeforeNavigationItemLoaded(navigationModel.type, context.node, navigationModel);
-            NavigationElement navigationElement = NavigationEventGenerator.triggerProvidesNavigationItemInterceptor(navigationModel.type, context.node, navigationModel);
-            NavigationEventGenerator.triggerAfterNavigationItemLoaded(navigationModel.type, context.node, navigationModel, navigationElement);
+            NavigationEventGenerator.triggerBeforeNavigationItemLoaded(context.node, navigationModel.type, navigationModel);
+            NavigationElement navigationElement = NavigationEventGenerator.triggerProvidesNavigationItemInterceptor(context.node, navigationModel.type, navigationModel);
+            NavigationEventGenerator.triggerAfterNavigationItemLoaded(context.node, navigationModel.type, navigationModel, navigationElement);
             List<NavigationElement> children = createNavigationChildren(context.node, section, navigationModel, navigationElement);
             navigationElement.children.addAll(children);
             navigationElements.add(navigationElement);
         }
-        NavigationEventGenerator.triggerAfterNavigationLoaded(BasicNavigation.class.getName(), context.node, navigationElements, section);
+        NavigationEventGenerator.triggerAfterNavigationLoaded(context.node, BasicNavigation.class.getName(), navigationElements, section);
         return navigationElements;
     }
 
-    public static List<NavigationElement> createNavigationChildren(Node node, String section, BasicNavigation navigationModel, NavigationElement parentNavigationElement) {
+    private static List<NavigationElement> createNavigationChildren(Node node, String section, BasicNavigation navigationModel, NavigationElement parentNavigationElement) {
         List<NavigationElement> navigationElements = Lists.newArrayList();
         List<BasicNavigation> navigationModels = BasicNavigation.findWithSection(section, navigationModel);
         for (BasicNavigation childNavigation : navigationModels) {
-            NavigationEventGenerator.triggerBeforeNavigationItemLoaded(childNavigation.type, node, childNavigation);
-            NavigationElement childNavigationElement = NavigationEventGenerator.triggerProvidesNavigationItemInterceptor(childNavigation.type, node, childNavigation, parentNavigationElement);
+            NavigationEventGenerator.triggerBeforeNavigationItemLoaded(node, childNavigation.type, childNavigation);
+            NavigationElement childNavigationElement = NavigationEventGenerator.triggerProvidesNavigationItemInterceptor(node, childNavigation.type, childNavigation, parentNavigationElement);
             if (childNavigationElement != null) {
-                NavigationEventGenerator.triggerAfterNavigationItemLoaded(childNavigation.type, node, childNavigation, childNavigationElement);
+                NavigationEventGenerator.triggerAfterNavigationItemLoaded(node, childNavigation.type, childNavigation, childNavigationElement);
                 if (childNavigationElement.selected) {
                     parentNavigationElement.selected = true;
                 }
@@ -73,7 +73,7 @@ public class DefaultNavigationProvider {
         if (alias != null) {
             RootNode referencedRootNode = RootNode.findLatestPublishedVersionWithNodeId(alias.pageId, new Date());
             if (referencedRootNode != null) {
-                Node referencedNode = ProvidesEventGenerator.triggerInterceptor(Core.Type.NODE, referencedRootNode.nodeType, referencedRootNode);
+                Node referencedNode = ProvidesEventGenerator.triggerInterceptor(referencedRootNode, Core.Type.NODE, referencedRootNode.nodeType);
                 boolean selected = context.node.getNodeId().equals(alias.pageId);
                 return new NavigationElement(context.navigation.getSection(), referencedNode.getTitle(), navigationModel.getLink(), selected);
             } else {
@@ -89,7 +89,7 @@ public class DefaultNavigationProvider {
         PageIdNavigation navigationModel = PageIdNavigation.findWithIdentifier(context.navigation.getReferenceId());
         RootNode referencedRootNode = RootNode.findLatestPublishedVersionWithNodeId(navigationModel.pageId, new Date());
         if (referencedRootNode != null) {
-            Node referencedNode = ProvidesEventGenerator.triggerInterceptor(Core.Type.NODE, referencedRootNode.nodeType, referencedRootNode);
+            Node referencedNode = ProvidesEventGenerator.triggerInterceptor(referencedRootNode, Core.Type.NODE, referencedRootNode.nodeType);
             boolean selected = context.node.getNodeId().equals(referencedRootNode.getNodeId());
             return new NavigationElement(context.navigation.getSection(), referencedNode.getTitle(), navigationModel.getLink(), selected);
         } else {

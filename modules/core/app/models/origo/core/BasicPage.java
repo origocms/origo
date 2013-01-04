@@ -116,6 +116,16 @@ public class BasicPage implements Node {
     }
 
     @Override
+    public Element addElement(Element element, Meta meta) {
+        return rootNode.addElement(element, meta);
+    }
+
+    @Override
+    public Element addElement(Element element, Meta meta, boolean reorderElementsBelow) {
+        return rootNode.addElement(element, meta, reorderElementsBelow);
+    }
+
+    @Override
     public boolean removeHeadElement(Element element) {
         return rootNode.removeHeadElement(element);
     }

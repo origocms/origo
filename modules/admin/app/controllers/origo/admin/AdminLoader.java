@@ -3,12 +3,10 @@ package controllers.origo.admin;
 import main.origo.admin.helpers.AdminSettingsHelper;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
-import main.origo.core.ThemeRepository;
 import main.origo.core.event.NodeContext;
 import main.origo.core.helpers.NavigationHelper;
 import main.origo.core.helpers.NodeHelper;
 import main.origo.core.helpers.ThemeHelper;
-import main.origo.core.internal.CachedThemeVariant;
 import main.origo.core.ui.NavigationElement;
 import main.origo.core.ui.RenderedNode;
 import models.origo.core.RootNode;
@@ -68,14 +66,14 @@ public class AdminLoader {
     private static Node loadByType(String withType) throws NodeLoadException {
         RootNode rootNode = loadRootNode(withType);
         // We'll set the root node for now, hopefully it will be overridden during load
-        NodeContext.current().node = rootNode;
+        //NodeContext.current().node = rootNode;
         return NodeHelper.load(rootNode);
     }
 
     private static Node loadByType(String withType, String identifier) throws NodeLoadException {
         RootNode rootNode = loadRootNode(withType, identifier);
         // We'll set the root node for now, hopefully it will be overridden during load
-        NodeContext.current().node = rootNode;
+        //NodeContext.current().node = rootNode;
         return NodeHelper.load(rootNode);
     }
 
@@ -92,17 +90,15 @@ public class AdminLoader {
     }
 
     private static Result decorateNode(Node node) {
-        CachedThemeVariant themeVariant = ThemeRepository.getThemeVariant(AdminSettingsHelper.getThemeVariant());
-        RenderedNode renderedNode = ThemeHelper.decorate(node, themeVariant);
-        renderedNode.navigation(getNavigation(node.getNodeId()));
+        RenderedNode renderedNode = ThemeHelper.decorate(node, ThemeHelper.loadTheme(node, AdminSettingsHelper.getThemeVariant()));
+        renderedNode.navigation(getNavigation(node));
         if (Logger.isDebugEnabled()) {
             Logger.debug("Decorated " + renderedNode);
         }
         return ThemeHelper.render(renderedNode);
     }
 
-    public static List<NavigationElement> getNavigation(String withType) {
-        Node node = loadRootNode(withType);
+    public static List<NavigationElement> getNavigation(Node node) {
         List<NavigationElement> navigationLinks = NavigationHelper.getNavigation(node, NavigationElement.ADMIN);
         if (Logger.isDebugEnabled()) {
             Logger.debug("Navigation loaded " + navigationLinks);

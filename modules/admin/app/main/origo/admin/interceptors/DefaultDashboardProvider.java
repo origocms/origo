@@ -2,6 +2,7 @@ package main.origo.admin.interceptors;
 
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.DashboardHelper;
+import main.origo.admin.themes.AdminTheme;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Core;
@@ -27,8 +28,8 @@ public class DefaultDashboardProvider {
         AdminPage page = new AdminPage((RootNode) context.node);
         page.setTitle("Dashboard");
 
-        context.node.addElement(DashboardHelper.createBreadcrumb(Admin.With.FRONT_PAGE));
-        context.node.addElement(DashboardHelper.createDashboard(Admin.With.FRONT_PAGE, context.node));
+        context.node.addElement(DashboardHelper.createBreadcrumb(Admin.With.FRONT_PAGE), AdminTheme.topMeta());
+        context.node.addElement(DashboardHelper.createDashboard(context.node, Admin.With.FRONT_PAGE));
 
         return page;
     }
@@ -39,7 +40,7 @@ public class DefaultDashboardProvider {
     @Provides(type = Admin.Type.DASHBOARD, with = Admin.With.FRONT_PAGE)
     public static Element createFrontPageDashboard(Provides.Context context) {
         return DashboardHelper.createBasicDashboard().setId("dashboard."+Admin.With.FRONT_PAGE).
-                addChildren(DashboardHelper.createDashboardItems(Admin.With.FRONT_PAGE, context.node));
+                addChildren(DashboardHelper.createDashboardItems(context.node, Admin.With.FRONT_PAGE));
     }
 
 }

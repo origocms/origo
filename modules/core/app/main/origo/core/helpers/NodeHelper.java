@@ -32,21 +32,22 @@ public class NodeHelper {
         if (rootNode == null) {
             throw new NodeNotFoundException(nodeId);
         }
-        // We'll set the root node for now, hopefully it will be overridden during load
-        NodeContext.current().node = rootNode;
 
         return load(rootNode);
     }
 
     public static Node load(RootNode rootNode) throws NodeLoadException {
+        // We'll set the root node for now, hopefully it will be overridden during load
+        NodeContext.current().node = rootNode;
+
         boolean hasType = !StringUtils.isBlank(rootNode.nodeType) && !rootNode.nodeType.equals(RootNode.class.getName());
         if (hasType) {
-            OnLoadEventGenerator.triggerBeforeInterceptor(Core.Type.NODE, rootNode.nodeType, rootNode, Collections.<String, Object>emptyMap());
+            OnLoadEventGenerator.triggerBeforeInterceptor(rootNode, Core.Type.NODE, rootNode.nodeType, Collections.<String, Object>emptyMap());
         }
 
         Node node = rootNode;
         if (hasType) {
-            node = ProvidesEventGenerator.triggerInterceptor(Core.Type.NODE, rootNode.nodeType, rootNode);
+            node = ProvidesEventGenerator.triggerInterceptor(node, Core.Type.NODE, rootNode.nodeType);
             if (node != null) {
                 // We found a new type to override the root node with
                 NodeContext.current().node = node;
@@ -54,7 +55,7 @@ public class NodeHelper {
         }
 
         if (hasType) {
-            OnLoadEventGenerator.triggerAfterInterceptor(Core.Type.NODE, rootNode.nodeType, node, Collections.<String, Object>emptyMap());
+            OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.NODE, rootNode.nodeType, Collections.<String, Object>emptyMap());
         }
 
         return node;

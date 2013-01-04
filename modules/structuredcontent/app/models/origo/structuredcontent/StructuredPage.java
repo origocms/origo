@@ -2,6 +2,7 @@ package models.origo.structuredcontent;
 
 import main.origo.core.Node;
 import main.origo.core.ui.Element;
+import models.origo.core.Meta;
 import models.origo.core.RootNode;
 import play.data.validation.Constraints;
 import play.db.jpa.JPA;
@@ -101,6 +102,16 @@ public class StructuredPage implements Node {
     @Override
     public Element addElement(Element element, boolean reorderElementsBelow) {
         return rootNode.addElement(element, reorderElementsBelow);
+    }
+
+    @Override
+    public Element addElement(Element element, Meta meta) {
+        return rootNode.addElement(element, meta);
+    }
+
+    @Override
+    public Element addElement(Element element, Meta meta, boolean reorderElementsBelow) {
+        return rootNode.addElement(element, meta, reorderElementsBelow);
     }
 
     @Override

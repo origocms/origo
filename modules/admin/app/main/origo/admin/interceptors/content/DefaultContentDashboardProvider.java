@@ -3,6 +3,7 @@ package main.origo.admin.interceptors.content;
 import controllers.origo.admin.routes;
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.DashboardHelper;
+import main.origo.admin.themes.AdminTheme;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Core;
@@ -37,8 +38,8 @@ public class DefaultContentDashboardProvider {
         AdminPage page = new AdminPage((RootNode) context.node);
         page.setTitle("Content - Dashboard");
 
-        context.node.addElement(DashboardHelper.createBreadcrumb(Admin.With.CONTENT_PAGE));
-        context.node.addElement(DashboardHelper.createDashboard(Admin.With.CONTENT_PAGE, context.node));
+        context.node.addElement(DashboardHelper.createBreadcrumb(Admin.With.CONTENT_PAGE), AdminTheme.topMeta());
+        context.node.addElement(DashboardHelper.createDashboard(context.node, Admin.With.CONTENT_PAGE));
 
         return page;
     }
@@ -51,7 +52,7 @@ public class DefaultContentDashboardProvider {
     public static Element addContentDashboardContent(Provides.Context context) {
         return DashboardHelper.createBasicDashboard().
                 setId("dashboard." + Admin.With.CONTENT_PAGE).
-                addChildren(DashboardHelper.createDashboardItems(Admin.With.CONTENT_PAGE, context.node));
+                addChildren(DashboardHelper.createDashboardItems(context.node, Admin.With.CONTENT_PAGE));
     }
 
 }

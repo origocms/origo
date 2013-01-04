@@ -15,39 +15,39 @@ public class NavigationEventGenerator {
     /*
      * Convenience methods for hooks with NAVIGATION type
      */
-    public static List<NavigationElement> triggerProvidesNavigationInterceptor(String withType, Node node, String section) {
-        return ProvidesEventGenerator.triggerInterceptor(Core.Type.NAVIGATION, withType, node, Collections.<String, Object>singletonMap("section", section));
+    public static List<NavigationElement> triggerProvidesNavigationInterceptor(Node node, String withType, String section) {
+        return ProvidesEventGenerator.triggerInterceptor(node, Core.Type.NAVIGATION, withType, Collections.<String, Object>singletonMap("section", section));
     }
 
-    public static void triggerBeforeNavigationLoaded(String withType, Node node, String section) {
+    public static void triggerBeforeNavigationLoaded(Node node, String withType, String section) {
         Map<String, Object> args = Maps.newHashMap();
         args.put("section", section);
-        OnLoadEventGenerator.triggerBeforeInterceptor(Core.Type.NAVIGATION, withType, node, args);
+        OnLoadEventGenerator.triggerBeforeInterceptor(node, Core.Type.NAVIGATION, withType, args);
     }
 
-    public static void triggerAfterNavigationLoaded(String withType, Node node, List<NavigationElement> navigationElements, String section) {
+    public static void triggerAfterNavigationLoaded(Node node, String withType, List<NavigationElement> navigationElements, String section) {
         //TODO: Figure out how to do this with a complete type Collection<NavigationElement>.class? instead of Collection.class
-        OnLoadEventGenerator.triggerAfterInterceptor(Core.Type.NAVIGATION, withType, node, Collections.<String, Object>singletonMap("section", section), navigationElements);
+        OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.NAVIGATION, withType, Collections.<String, Object>singletonMap("section", section), navigationElements);
     }
 
     /*
      * Convenience methods for hooks with NAVIGATION_ITEM type
      */
-    public static NavigationElement triggerProvidesNavigationItemInterceptor(String withType, Node node, Navigation navigation) {
-        return ProvidesEventGenerator.triggerInterceptor(Core.Type.NAVIGATION_ITEM, withType, node, navigation, Collections.<String, Object>emptyMap());
+    public static NavigationElement triggerProvidesNavigationItemInterceptor(Node node, String withType, Navigation navigation) {
+        return ProvidesEventGenerator.triggerInterceptor(node, Core.Type.NAVIGATION_ITEM, withType, navigation, Collections.<String, Object>emptyMap());
     }
 
-    public static NavigationElement triggerProvidesNavigationItemInterceptor(String withType, Node node, Navigation navigation, NavigationElement parentNavigationElement) {
+    public static NavigationElement triggerProvidesNavigationItemInterceptor(Node node, String withType, Navigation navigation, NavigationElement parentNavigationElement) {
         Map<String, Object> args = Maps.newHashMap();
         args.put("parent", parentNavigationElement);
-        return ProvidesEventGenerator.triggerInterceptor(Core.Type.NAVIGATION_ITEM, withType, node, navigation, args);
+        return ProvidesEventGenerator.triggerInterceptor(node, Core.Type.NAVIGATION_ITEM, withType, navigation, args);
     }
 
-    public static void triggerBeforeNavigationItemLoaded(String withType, Node node, Navigation navigation) {
-        OnLoadEventGenerator.triggerBeforeInterceptor(Core.Type.NAVIGATION_ITEM, withType, node, navigation, Collections.<String, Object>emptyMap());
+    public static void triggerBeforeNavigationItemLoaded(Node node, String withType, Navigation navigation) {
+        OnLoadEventGenerator.triggerBeforeInterceptor(node, Core.Type.NAVIGATION_ITEM, withType, navigation, Collections.<String, Object>emptyMap());
     }
 
-    public static void triggerAfterNavigationItemLoaded(String withType, Node node, Navigation navigation, NavigationElement navigationElement) {
-        OnLoadEventGenerator.triggerAfterInterceptor(Core.Type.NAVIGATION_ITEM, withType, node, Collections.<String, Object>emptyMap(), navigation, navigationElement);
+    public static void triggerAfterNavigationItemLoaded(Node node, String withType, Navigation navigation, NavigationElement navigationElement) {
+        OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.NAVIGATION_ITEM, withType, Collections.<String, Object>emptyMap(), navigation, navigationElement);
     }
 }

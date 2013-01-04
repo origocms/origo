@@ -3,6 +3,7 @@ package main.origo.admin.interceptors.content;
 import controllers.origo.admin.routes;
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.DashboardHelper;
+import main.origo.admin.themes.AdminTheme;
 import main.origo.core.Node;
 import main.origo.core.ThemeRepository;
 import main.origo.core.annotations.*;
@@ -84,7 +85,7 @@ public class BasicPageAdminProvider {
     public static Node createListPage(Provides.Context context) {
         AdminPage page = new AdminPage((RootNode)context.node);
         page.setTitle("List Basic Pages");
-        page.addElement(DashboardHelper.createBreadcrumb(BASE_TYPE));
+        page.addElement(DashboardHelper.createBreadcrumb(BASE_TYPE), AdminTheme.topMeta());
 
         return page;
     }
@@ -126,7 +127,7 @@ public class BasicPageAdminProvider {
         }
 
         page.setTitle("Edit Basic Page");
-        page.addElement(DashboardHelper.createBreadcrumb(BASE_TYPE));
+        page.addElement(DashboardHelper.createBreadcrumb(BASE_TYPE), AdminTheme.topMeta());
         return page;
     }
 
@@ -254,7 +255,7 @@ public class BasicPageAdminProvider {
                         addAttribute("name", BODY_PARAM).addAttribute("cols", "80").addAttribute("rows", "20"));
         context.formElement.addChild(bodyElement);
 
-        Element actionPanel = new Element.Panel().setWeight(40).addAttribute("class", "field").
+        Element actionPanel = new Element.Panel().setWeight(40).addAttribute("class", "well well-large").
                 addChild(new Element.Panel().
                         addAttribute("class", "pull-left").
                         addChild(new Element.Anchor().setWeight(20).
@@ -265,8 +266,8 @@ public class BasicPageAdminProvider {
                 ).
                 addChild(new Element.Panel().
                         addAttribute("class", "pull-right").
-                        addChild(new Element.InputSubmit().setWeight(10).addAttribute("value", "Save")).
-                        addChild(new Element.InputReset().setWeight(15).addAttribute("value", "Reset"))
+                        addChild(new Element.InputSubmit().setWeight(10).addAttribute("class", "btn btn-primary").addAttribute("value", "Save")).
+                        addChild(new Element.InputReset().setWeight(15).addAttribute("class", "btn").addAttribute("value", "Reset"))
                 );
         context.formElement.addChild(actionPanel);
 

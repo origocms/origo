@@ -1,20 +1,26 @@
 package main.origo.admin.interceptors.settings;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import controllers.origo.admin.routes;
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.DashboardHelper;
+import main.origo.admin.themes.AdminTheme;
+import main.origo.core.InterceptorRepository;
 import main.origo.core.Node;
 import main.origo.core.annotations.*;
 import main.origo.core.annotations.forms.OnSubmit;
 import main.origo.core.annotations.forms.SubmitState;
 import main.origo.core.event.ProvidesEventGenerator;
 import main.origo.core.helpers.forms.FormHelper;
+import main.origo.core.internal.CachedAnnotation;
 import main.origo.core.ui.Element;
 import models.origo.admin.AdminPage;
 import models.origo.core.EventHandler;
 import models.origo.core.RootNode;
 import models.origo.core.Settings;
+import org.apache.commons.lang3.StringUtils;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
@@ -60,30 +66,68 @@ public class EventHandlerAdminProvider {
     public static Node createEditPage(Provides.Context context) {
         AdminPage page = new AdminPage((RootNode) context.node);
         page.setTitle("Event Handlers");
-        page.addElement(DashboardHelper.createBreadcrumb(BASE_TYPE));
+        page.setThemeVariant(AdminTheme.LEFT_AND_MAIN_COLUMNS_VARIANT_NAME);
+        page.addElement(DashboardHelper.createBreadcrumb(BASE_TYPE), AdminTheme.topMeta());
         return page;
     }
 
     @OnLoad(type = Core.Type.NODE, with = EDIT_TYPE)
     public static void loadEditPage(OnLoad.Context context) {
-        Element formElement = FormHelper.createFormElement(context.node, BASE_TYPE).addAttribute("class", "form-horizontal");
-        context.node.addElement(formElement);
 
-        Map<String, EventHandler> eventHandlers = EventHandler.findAll();
-        List<String> keys = Lists.newArrayList(eventHandlers.keySet());
-        Collections.sort(keys);
+        String selectedEventType = getSelectedEventType(context);
 
-        List<String> providerTypes = Lists.newArrayList(ProvidesEventGenerator.getAllProviderTypes());
+        addEventTypeElements(context.node, selectedEventType);
+
+        addEventHandlerElements(context.node, selectedEventType);
+    }
+
+    private static String getSelectedEventType(OnLoad.Context context) {
+        String selectedEventType = (String) context.args.get("type");
+        if (StringUtils.isBlank(selectedEventType)) {
+            selectedEventType = Provides.class.getName();
+        }
+        return selectedEventType;
+    }
+
+    private static void addEventTypeElements(Node node, String selectedEventType) {
+        List<String> allEventTypes = EventHandler.findEventTypes();
+        Element eventTypeListElement = new Element.ListBulleted().
+                addAttribute("class", "nav nav-tabs nav-stacked");
+        for(String eventType : allEventTypes) {
+            String trimmedEventTypeName = eventType.substring(eventType.lastIndexOf(".")+1);
+            Element eventTypeListItem = new Element.ListItem().
+                    addChild(new Element.Anchor().
+                            addAttribute("href", routes.Dashboard.pageWithType(Admin.With.CONTENT_PAGE, EDIT_TYPE).url()+"?type="+eventType).
+                            setBody(trimmedEventTypeName));
+            if (eventType.equals(selectedEventType)) {
+                eventTypeListItem.addAttribute("class", "active");
+            }
+            eventTypeListElement.addChild(eventTypeListItem);
+        }
+        node.addElement(eventTypeListElement, AdminTheme.leftColumnMeta(), false);
+    }
+
+    private static void addEventHandlerElements(Node node, String selectedEventType) {
+
+        Element formElement = null;
+
+        Map<String, EventHandler> eventHandlers = getEventHandlers(selectedEventType);
+        List<String> keys = getEventHandlerKeys(eventHandlers);
+
+        List<String> providerTypes = Lists.newArrayList(getAllProviderTypes());
         Collections.sort(providerTypes);
         for (String providerType : providerTypes) {
-            formElement.addChild(new Element.Legend().setBody(providerType));
 
+            Element legendElement = new Element.Legend().setBody(providerType);
+            List<Element> fieldElements = Lists.newArrayList();
             for (String key : keys) {
 
                 Set<String> providers = ProvidesEventGenerator.getAllProviders(providerType, key);
 
                 if (!providers.isEmpty()) {
-                    Element inputSelect = new Element.InputSelect().setId("event-" + key).addAttribute("name", key);
+                    Element inputSelect = new Element.InputSelect().setId("event-" + key).
+                            addAttribute("class", "span5").
+                            addAttribute("name", key);
                     for (String provider : providers) {
                         Element element = new Element.InputSelectOption().setBody(provider);
                         if (eventHandlers.get(key).handlerClass.equals(provider)) {
@@ -92,21 +136,59 @@ public class EventHandlerAdminProvider {
                         inputSelect.addChild(element);
                     }
 
-                    formElement.
-                            addChild(new Element.Panel().addAttribute("class", "field control-group").
-                                    addChild(new Element.Label().addAttribute("class", "control-label").addAttribute("for", "event-" + key).setBody(key)).
-                                    addChild(new Element.Panel().addAttribute("class", "controls").
+                    fieldElements.
+                            add(new Element.Panel().addAttribute("class", "field control-group row").
+                                    addChild(new Element.Label().addAttribute("class", "control-label span4").addAttribute("for", "event-" + key).setBody(key)).
+                                    addChild(new Element.Panel().addAttribute("class", "controls span5").
                                             addChild(inputSelect))
                             );
                 }
             }
+            if (!fieldElements.isEmpty()) {
+                formElement = node.
+                        addElement(FormHelper.createFormElement(node, BASE_TYPE).addAttribute("class", "form-horizontal")).
+                        addChild(legendElement).
+                        addChildren(fieldElements);
+            }
         }
-        formElement.addChild(
-                new Element.Panel().setWeight(40).addAttribute("class", "field").
-                        addChild(new Element.InputSubmit().setWeight(10).addAttribute("value", "Save")).
-                        addChild(new Element.InputReset().setWeight(15).addAttribute("value", "Reset"))
-        );
 
+        if (formElement != null) {
+            Element actionPanel = new Element.Panel().setWeight(40).addAttribute("class", "well well-large").
+                    addChild(new Element.Panel().
+                            addAttribute("class", "pull-left").
+                            addChild(new Element.Anchor().setWeight(20).
+                                    addAttribute("class", "btn").
+                                    addAttribute("href", routes.Dashboard.dashboard(Admin.With.SETTINGS_PAGE).url()).
+                                    setBody("Cancel")
+                            )
+                    ).
+                    addChild(new Element.Panel().
+                            addAttribute("class", "pull-right").
+                            addChild(new Element.InputSubmit().setWeight(10).addAttribute("class", "btn btn-primary").addAttribute("value", "Save")).
+                            addChild(new Element.InputReset().setWeight(15).addAttribute("class", "btn").addAttribute("value", "Reset"))
+                    );
+            formElement.addChild(actionPanel);
+        } else {
+            node.addElement(new Element.Panel().
+                    addAttribute("class", "well well-big").
+                    setBody("No providers matching this type")
+            );
+        }
+
+    }
+
+    private static List<String> getEventHandlerKeys(Map<String, EventHandler> eventHandlers) {
+        List<String> keys = Lists.newArrayList(eventHandlers.keySet());
+        Collections.sort(keys);
+        return keys;
+    }
+
+    private static Map<String, EventHandler> getEventHandlers(String selectedEventType) {
+        Map<String, EventHandler> eventHandlers = Maps.newHashMap();
+        for (EventHandler eventHandler : EventHandler.findAllWithEventType(selectedEventType)) {
+            eventHandlers.put(eventHandler.withType, eventHandler);
+        }
+        return eventHandlers;
     }
 
     /**
@@ -134,5 +216,28 @@ public class EventHandlerAdminProvider {
     public static Result handleSuccess(SubmitState.Context context) {
         return Controller.redirect(routes.Dashboard.dashboard(Admin.With.SETTINGS_PAGE).url());
     }
+
+
+    /**
+     * Filters out the cached providers types.
+     * @return a list of types that have a provider (NODE, NAVIGATION, NAVIGATION_ITEM, DASHBOARD_ITEM, etc)
+     * @see main.origo.core.annotations.Core
+     */
+    private static Set<String> getAllProviderTypes() {
+        Set<String> providedTypes = Sets.newHashSet();
+        providedTypes.addAll(getAllProvides());
+        //providedTypes.addAll(getAllFormProvides());
+        return providedTypes;
+    }
+
+    private static Set<String> getAllProvides() {
+        List<CachedAnnotation> interceptors = InterceptorRepository.getInterceptors(Provides.class);
+        Set<String> providedTypes = Sets.newHashSet();
+        for (CachedAnnotation cachedAnnotation : interceptors) {
+            providedTypes.add(((Provides)cachedAnnotation.annotation).type());
+        }
+        return providedTypes;
+    }
+
 
 }

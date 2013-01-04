@@ -22,11 +22,11 @@ import java.util.Set;
  */
 public class ProvidesEventGenerator {
 
-    public static <T> T triggerInterceptor(String providesType, String withType, Node node) {
-        return triggerInterceptor(providesType, withType, node, Maps.<String, Object>newHashMap());
+    public static <T> T triggerInterceptor(Node node, String providesType, String withType) {
+        return triggerInterceptor(node, providesType, withType, Maps.<String, Object>newHashMap());
     }
 
-    public static <T> T triggerInterceptor(String providesType, String withType, Node node, Map<String, Object> args) {
+    public static <T> T triggerInterceptor(Node node, String providesType, String withType, Map<String, Object> args) {
         CachedAnnotation cachedAnnotation = findInterceptor(providesType, withType);
         try {
             //noinspection unchecked
@@ -37,7 +37,7 @@ public class ProvidesEventGenerator {
         }
     }
 
-    public static <T> T triggerInterceptor(String providesType, String withType, Node node, Navigation navigation, Map<String, Object> args) {
+    public static <T> T triggerInterceptor(Node node, String providesType, String withType, Navigation navigation, Map<String, Object> args) {
         CachedAnnotation cachedAnnotation = findInterceptor(providesType, withType);
         try {
             //noinspection unchecked
@@ -45,55 +45,6 @@ public class ProvidesEventGenerator {
         } catch (Throwable e) {
             throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
         }
-    }
-
-    /**
-     * Collects all class names of Providers that \@Provides.with has the specified "with".
-     *
-     * @param with a provided type to look for (BasicPage, StructuredPage, AdminPage, etc).
-     * @return a list of all the classes that provides a matching type
-     */
-    public static Set<String> getAllProviders(final String with) {
-        List<CachedAnnotation> cachedAnnotations = InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
-            @Override
-            public boolean isCorrectInterceptor(CachedAnnotation cacheAnnotation) {
-                return ((Provides) cacheAnnotation.annotation).with().equals(with);
-            }
-        });
-        Set<String> providedTypes = Sets.newHashSet();
-        for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
-            providedTypes.add(cachedAnnotation.method.getDeclaringClass().getName());
-        }
-        return providedTypes;
-    }
-
-    /**
-     * Filters out the cached providers matching the specified type.
-     * @param providesType the type of provider to search for (NODE, NAVIGATION, NAVIGATION_ITEM, DASHBOARD_ITEM, etc).
-     * @return a list of cached annotations
-     * @see main.origo.core.annotations.Core
-     */
-    private static List<CachedAnnotation> getAllProvidersForType(final String providesType) {
-        return InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
-            @Override
-            public boolean isCorrectInterceptor(CachedAnnotation cacheAnnotation) {
-                return ((Provides) cacheAnnotation.annotation).type().equals(providesType);
-            }
-        });
-    }
-
-    /**
-     * Filters out the cached providers types.
-     * @return a list of types that have a provider (NODE, NAVIGATION, NAVIGATION_ITEM, DASHBOARD_ITEM, etc)
-     * @see main.origo.core.annotations.Core
-     */
-    public static Set<String> getAllProviderTypes() {
-        List<CachedAnnotation> interceptors = InterceptorRepository.getInterceptors(Provides.class);
-        Set<String> providedTypes = Sets.newHashSet();
-        for (CachedAnnotation cachedAnnotation : interceptors) {
-            providedTypes.add(((Provides)cachedAnnotation.annotation).type());
-        }
-        return providedTypes;
     }
 
     /**
