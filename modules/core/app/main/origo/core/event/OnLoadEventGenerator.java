@@ -34,16 +34,20 @@ public class OnLoadEventGenerator {
         }
     }
 
-    public static void triggerBeforeInterceptor(Node node, String type, String withType, Map<String, Object> args) {
-        triggerBeforeInterceptor(type, withType, new OnLoad.Context(node, args));
+    public static void triggerBeforeInterceptor(Node node, String type, String withType, Navigation navigation) {
+        triggerBeforeInterceptor(type, withType, new OnLoad.Context(node, withType, navigation, Collections.<String, Object>emptyMap()));
     }
 
     public static void triggerBeforeInterceptor(Node node, String type, String withType, Navigation navigation, Map<String, Object> args) {
-        triggerBeforeInterceptor(type, withType, new OnLoad.Context(node, navigation, args));
+        triggerBeforeInterceptor(type, withType, new OnLoad.Context(node, withType, navigation, args));
     }
 
     public static void triggerBeforeInterceptor(Node node, String type, String withType) {
         triggerBeforeInterceptor(node, type, withType, Collections.<String, Object>emptyMap());
+    }
+
+    public static void triggerBeforeInterceptor(Node node, String type, String withType, Map<String, Object> args) {
+        triggerBeforeInterceptor(type, withType, new OnLoad.Context(node, withType, args));
     }
 
     private static void triggerAfterInterceptor(String onLoadType, String withType, OnLoad.Context context) {
@@ -59,28 +63,44 @@ public class OnLoadEventGenerator {
         }
     }
 
-    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Map<String, Object> args) {
-        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, args));
+    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Element element) {
+        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, withType, element, Collections.<String, Object>emptyMap()));
     }
 
-    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Map<String, Object> args, Element element) {
-        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, element, args));
+    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Element element, Map<String, Object> args) {
+        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, withType, element, args));
     }
 
-    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Map<String, Object> args, Navigation navigation) {
-        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, navigation, args));
+    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Navigation navigation) {
+        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, withType, navigation, Collections.<String, Object>emptyMap()));
     }
 
-    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Map<String, Object> args, Navigation navigation, NavigationElement navigationElement) {
-        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, navigation, navigationElement, args));
+    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Navigation navigation, Map<String, Object> args) {
+        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, withType, navigation, args));
     }
 
-    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Map<String, Object> args, List<NavigationElement> navigationElements) {
-        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, navigationElements, args));
+    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Navigation navigation, NavigationElement navigationElement) {
+        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, withType, navigation, navigationElement, Collections.<String, Object>emptyMap()));
+    }
+
+    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Navigation navigation, NavigationElement navigationElement, Map<String, Object> args) {
+        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, withType, navigation, navigationElement, args));
+    }
+
+    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, List<NavigationElement> navigationElements) {
+        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, withType, navigationElements, Collections.<String, Object>emptyMap()));
+    }
+
+    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, List<NavigationElement> navigationElements, Map<String, Object> args) {
+        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, withType, navigationElements, args));
     }
 
     public static void triggerAfterInterceptor(Node node, String onLoadType, String withType) {
         triggerAfterInterceptor(node, onLoadType, withType, Collections.<String, Object>emptyMap());
+    }
+
+    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Map<String, Object> args) {
+        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, withType, args));
     }
 
     private static List<CachedAnnotation> findInterceptorForType(final String onLoadType, final String withType, final boolean after) {

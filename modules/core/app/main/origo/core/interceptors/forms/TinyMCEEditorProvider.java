@@ -5,6 +5,7 @@ import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.Provides;
+import main.origo.core.helpers.ProviderHelper;
 import main.origo.core.ui.Element;
 import models.origo.core.Content;
 
@@ -18,7 +19,7 @@ public class TinyMCEEditorProvider {
 
     @OnLoad(type = Core.Type.NODE, with = Core.With.EDITOR)
     public static void setupEditor(OnLoad.Context context) {
-        if (!context.attributes.containsKey(JS_LOADED)) {
+        if (ProviderHelper.isProvider(context.withType, TinyMCEEditorProvider.class) && !context.attributes.containsKey(JS_LOADED)) {
             String jqueryTinyMCEScript = routes.Assets.at("javascripts/origo/tiny_mce/jquery.tiny_mce.js").url();
             if (jqueryTinyMCEScript != null) {
                 String tinyMCEScript = routes.Assets.at("javascripts/origo/tiny_mce/tiny_mce.js").url();
@@ -56,13 +57,8 @@ public class TinyMCEEditorProvider {
 
     @Provides(type = Core.Type.NODE, with = Core.With.EDITOR)
     public static Element createEditor(Provides.Context context) {
-        return new Element.InputTextArea().addAttribute("class", "tinymce");
-    }
-
-    @OnLoad(type = Core.Type.NODE, with = Core.With.EDITOR)
-    public static void addContent(OnLoad.Context context) {
         Content content = (Content) context.args.get("content");
-        context.element.setBody(content.value);
+        return new Element.InputTextArea().setId(content.identifier).addAttribute("class", "tinymce").setBody(content.value);
     }
 
 }

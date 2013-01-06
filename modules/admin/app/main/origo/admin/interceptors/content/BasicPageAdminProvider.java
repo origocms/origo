@@ -7,7 +7,6 @@ import main.origo.admin.themes.AdminTheme;
 import main.origo.core.Node;
 import main.origo.core.ThemeRepository;
 import main.origo.core.annotations.*;
-import main.origo.core.annotations.forms.OnLoadForm;
 import main.origo.core.annotations.forms.OnSubmit;
 import main.origo.core.annotations.forms.SubmitState;
 import main.origo.core.helpers.CoreSettingsHelper;
@@ -126,6 +125,8 @@ public class BasicPageAdminProvider {
             page = new AdminPage((RootNode) context.node);
         }
 
+        // TODO: Look up themevariant (and also meta) from DB instead of resetting here.
+        page.rootNode.themeVariant = null;
         page.setTitle("Edit Basic Page");
         page.addElement(DashboardHelper.createBreadcrumb(BASE_TYPE), AdminTheme.topMeta());
         return page;
@@ -141,8 +142,8 @@ public class BasicPageAdminProvider {
      *
      * @param context a node of the type 'origo.admin.basicpage.edit'.
      */
-    @OnLoadForm(with = BASE_TYPE)
-    public static void loadEditForm(OnLoadForm.Context context) {
+    @OnLoad(type = Core.Type.FORM, with = BASE_TYPE, after = true)
+    public static void loadEditForm(OnLoad.Context context) {
         BasicPage basicPage = BasicPage.findLatestVersion(context.node.getNodeId());
         if (basicPage == null) {
             context.node.addElement(new Element.Paragraph().setWeight(10).setBody("Page '" + context.node.getNodeId() + "' does not exist."));
@@ -153,18 +154,18 @@ public class BasicPageAdminProvider {
         Content leadContent = Content.findWithIdentifier(basicPage.leadReferenceId);
         Content bodyContent = Content.findWithIdentifier(basicPage.bodyReferenceId);
 
-        context.formElement.setId("basicpageform").addAttribute("class", "origo-basicpageform, form");
+        context.element.setId("basicpageform").addAttribute("class", "origo-basicpageform, form");
 
         /**
          * Basic Options
          */
 
-        context.formElement.addChild(new Element.Legend().setBody("Basic Information"));
+        context.element.addChild(new Element.Legend().setBody("Basic Information"));
 
         Element titleElement = new Element.Panel().setWeight(10).addAttribute("class", "field").
                 addChild(new Element.Label().setWeight(10).setBody("Title").addAttribute("for", TITLE_PARAM)).
                 addChild(new Element.InputText().setWeight(20).addAttribute("name", TITLE_PARAM).addAttribute("value", basicPage.getTitle()));
-        context.formElement.addChild(titleElement);
+        context.element.addChild(titleElement);
 
         Element themeInputSelectElement = new Element.InputSelect();
         for (CachedThemeVariant themeVariant : ThemeRepository.getAvailableThemeVariants()) {
@@ -184,12 +185,12 @@ public class BasicPageAdminProvider {
                 addChild(new Element.Label().setWeight(10).setBody("Theme Variant").addAttribute("for", THEME_VARIANT_PARAM)).
                 addChild(themeInputSelectElement.setWeight(25).addAttribute("class", "themeSelector").
                         addAttribute("name", THEME_VARIANT_PARAM));
-        context.formElement.addChild(themeVariantElement);
+        context.element.addChild(themeVariantElement);
 
         /**
          * Publishing options
          */
-        context.formElement.addChild(new Element.Legend().setBody("Publish"));
+        context.element.addChild(new Element.Legend().setBody("Publish"));
 
         String datePattern = Messages.get("date.format");
         DateFormat dateFormat = new SimpleDateFormat(datePattern);
@@ -213,7 +214,7 @@ public class BasicPageAdminProvider {
                                 addAttribute("value", formattedIfNotNull(dateFormat, basicPage.getDateUnpublished())).
                                 addAttribute("placeholder", datePattern.toLowerCase()))
                 );
-        context.formElement.addChild(publishElement);
+        context.element.addChild(publishElement);
 
         String timePattern = Messages.get("time.format");
         DateFormat timeFormat = new SimpleDateFormat(timePattern);
@@ -236,24 +237,24 @@ public class BasicPageAdminProvider {
                                 addAttribute("value", formattedIfNotNull(timeFormat, basicPage.getDateUnpublished())).
                                 addAttribute("placeholder", timePattern.toLowerCase()))
                 );
-        context.formElement.addChild(publishTimeElement);
+        context.element.addChild(publishTimeElement);
 
         /**
          * Content
          */
-        context.formElement.addChild(new Element.Legend().setBody("Content"));
+        context.element.addChild(new Element.Legend().setBody("Content"));
 
         Element leadElement = new Element.Panel().setWeight(20).addAttribute("class", "field").
                 addChild(new Element.Label().setWeight(10).setBody("Lead").addAttribute("for", LEAD_PARAM)).
                 addChild(EditorHelper.createRichTextEditor(context.node, leadContent).setWeight(20).addAttribute("class", "editor richtext").
                         addAttribute("name", LEAD_PARAM).addAttribute("cols", "80").addAttribute("rows", "10"));
-        context.formElement.addChild(leadElement);
+        context.element.addChild(leadElement);
 
         Element bodyElement = new Element.Panel().setWeight(30).addAttribute("class", "field").
                 addChild(new Element.Label().setWeight(10).setBody("Body").addAttribute("for", BODY_PARAM)).
                 addChild(EditorHelper.createRichTextEditor(context.node, bodyContent).setWeight(20).addAttribute("class", "editor richtext").
                         addAttribute("name", BODY_PARAM).addAttribute("cols", "80").addAttribute("rows", "20"));
-        context.formElement.addChild(bodyElement);
+        context.element.addChild(bodyElement);
 
         Element actionPanel = new Element.Panel().setWeight(40).addAttribute("class", "well well-large").
                 addChild(new Element.Panel().
@@ -269,7 +270,7 @@ public class BasicPageAdminProvider {
                         addChild(new Element.InputSubmit().setWeight(10).addAttribute("class", "btn btn-primary").addAttribute("value", "Save")).
                         addChild(new Element.InputReset().setWeight(15).addAttribute("class", "btn").addAttribute("value", "Reset"))
                 );
-        context.formElement.addChild(actionPanel);
+        context.element.addChild(actionPanel);
 
     }
 

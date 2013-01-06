@@ -2,6 +2,7 @@ package main.origo.bootstrapwysihtml5.interceptors;
 
 import controllers.routes;
 import main.origo.core.annotations.*;
+import main.origo.core.helpers.ProviderHelper;
 import main.origo.core.ui.Element;
 import main.origo.core.ui.RenderingContext;
 import models.origo.core.Content;
@@ -41,12 +42,12 @@ public class BootstrapWysiHTML5EditorProvider {
     @Provides(type = Core.Type.NODE, with = Core.With.EDITOR)
     public static Element createEditor(Provides.Context context) {
         Content content = (Content) context.args.get("content");
-        return new Element.InputTextArea().setId(content.identifier);
+        return new Element.InputTextArea().setId(content.identifier).addAttribute("class", "span9").setBody(content.value);
     }
 
     @OnLoad(type = Core.Type.NODE, with = Core.With.EDITOR)
     public static void setupEditor(OnLoad.Context context) {
-        if (!context.attributes.containsKey(JS_LOADED)) {
+        if (ProviderHelper.isProvider(context.withType, BootstrapWysiHTML5EditorProvider.class) && !context.attributes.containsKey(JS_LOADED)) {
             String wysiHtmlScript = routes.Assets.at("javascripts/origo/bootstrapwysihtml5/wysihtml5-0.4.0pre.min.js").url();
             context.node.addTailElement(new Element.Script().setWeight(9999).addAttribute("src", wysiHtmlScript));
             String parserRulesScript = routes.Assets.at("javascripts/origo/bootstrapwysihtml5/parser_rules/advanced.js").url();
@@ -60,8 +61,6 @@ public class BootstrapWysiHTML5EditorProvider {
 
             context.attributes.put(JS_LOADED, true);
         }
-        Content content = (Content) context.args.get("content");
-        context.element.setId(content.identifier).setBody(content.value);
     }
 
     @OnInsertElement(with = Element.InputTextArea.class, after = true)

@@ -1,7 +1,8 @@
 package main.origo.core.interceptors.forms;
 
+import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
-import main.origo.core.annotations.forms.OnLoadForm;
+import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.forms.SubmitHandler;
 import main.origo.core.annotations.forms.SubmitState;
 import main.origo.core.event.forms.OnSubmitEventGenerator;
@@ -38,10 +39,10 @@ public class DefaultSubmitHandler {
         return SubmitStateEventGenerator.triggerInterceptor(SubmitState.SUCCESS, withType, form);
     }
 
-    @OnLoadForm
-    public static void addWithTypeField(OnLoadForm.Context context) {
+    @OnLoad(type = Core.Type.FORM)
+    public static void addWithTypeField(OnLoad.Context context) {
         if (DefaultSubmitHandler.class.isAssignableFrom(SubmitHandlerEventGenerator.getActiveSubmitHandler())) {
-            context.formElement.addChild(new Element.InputHidden().addAttribute("name", WITH_TYPE).addAttribute("value", context.withType));
+            context.element.addChild(new Element.InputHidden().addAttribute("name", WITH_TYPE).addAttribute("value", context.withType));
         }
     }
 

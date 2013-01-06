@@ -19,10 +19,7 @@ import main.origo.core.ui.Element;
 import models.origo.admin.AdminPage;
 import models.origo.core.EventHandler;
 import models.origo.core.RootNode;
-import models.origo.core.Settings;
 import org.apache.commons.lang3.StringUtils;
-import play.data.DynamicForm;
-import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -116,10 +113,11 @@ public class EventHandlerAdminProvider {
 
         List<String> providerTypes = Lists.newArrayList(getAllProviderTypes());
         Collections.sort(providerTypes);
+
+        List<Element> fieldElements = Lists.newArrayList();
         for (String providerType : providerTypes) {
 
-            Element legendElement = new Element.Legend().setBody(providerType);
-            List<Element> fieldElements = Lists.newArrayList();
+            fieldElements.add(new Element.Legend().setBody(providerType));
             for (String key : keys) {
 
                 Set<String> providers = ProvidesEventGenerator.getAllProviders(providerType, key);
@@ -127,7 +125,7 @@ public class EventHandlerAdminProvider {
                 if (!providers.isEmpty()) {
                     Element inputSelect = new Element.InputSelect().setId("event-" + key).
                             addAttribute("class", "span5").
-                            addAttribute("name", key);
+                            addAttribute("name", "event."+key);
                     for (String provider : providers) {
                         Element element = new Element.InputSelectOption().setBody(provider);
                         if (eventHandlers.get(key).handlerClass.equals(provider)) {
@@ -144,12 +142,11 @@ public class EventHandlerAdminProvider {
                             );
                 }
             }
-            if (!fieldElements.isEmpty()) {
-                formElement = node.
-                        addElement(FormHelper.createFormElement(node, BASE_TYPE).addAttribute("class", "form-horizontal")).
-                        addChild(legendElement).
-                        addChildren(fieldElements);
-            }
+        }
+        if (!fieldElements.isEmpty()) {
+            formElement = node.
+                    addElement(FormHelper.createFormElement(node, BASE_TYPE).addAttribute("class", "form-horizontal")).
+                    addChildren(fieldElements);
         }
 
         if (formElement != null) {
@@ -197,16 +194,12 @@ public class EventHandlerAdminProvider {
     @OnSubmit(with = BASE_TYPE)
     public static void storeEvents(OnSubmit.Context context) {
 
-        Form form = DynamicForm.form().bindFromRequest();
-        Map<String, String> data = form.data();
-
-        Settings settings = Settings.load();
-        for (String key : data.keySet()) {
+        for (String key : context.args.keySet()) {
             if (key.startsWith("event.")) {
-                settings.setValue(key, data.get(key));
+                EventHandler handler = EventHandler.findWithWithType(key.substring("event.".length()));
+                handler.handlerClass = (String) context.args.get(key);
             }
         }
-        settings.save();
     }
 
     /**

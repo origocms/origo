@@ -24,7 +24,7 @@ public class SegmentHelper {
     }
 
     public static void triggerAfterSegmentLoaded(Node node, String withType, Segment segment, Element element) {
-        OnLoadEventGenerator.triggerAfterInterceptor(node, TYPE_SEGMENT, withType, Collections.<String, Object>singletonMap("segment", segment), element);
+        OnLoadEventGenerator.triggerAfterInterceptor(node, TYPE_SEGMENT, withType, element, Collections.<String, Object>singletonMap("segment", segment));
     }
 
 }

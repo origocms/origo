@@ -8,6 +8,7 @@ public class Core {
         public static final String NODE = "node";
         public static final String NAVIGATION = "navigation";
         public static final String NAVIGATION_ITEM = "navigation_item";
+        public static final String FORM = "form";
     }
 
     public class With {

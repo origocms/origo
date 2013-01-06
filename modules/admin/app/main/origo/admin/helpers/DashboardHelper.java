@@ -35,7 +35,7 @@ public class DashboardHelper {
         OnLoadEventGenerator.triggerBeforeInterceptor(node, Admin.Type.DASHBOARD_ITEM, withType);
         List<Element> elements = DashboardEventGenerator.triggerProvidesDashboardItemInterceptor(node, withType);
         for (Element element : elements) {
-            OnLoadEventGenerator.triggerAfterInterceptor(node, Admin.Type.DASHBOARD_ITEM, withType, Collections.<String, Object>emptyMap(), element);
+            OnLoadEventGenerator.triggerAfterInterceptor(node, Admin.Type.DASHBOARD_ITEM, withType, element, Collections.<String, Object>emptyMap());
         }
         return elements;
     }

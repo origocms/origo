@@ -42,41 +42,47 @@ public @interface OnLoad {
         public final NavigationElement navigationElement;
         public final List<NavigationElement> navigationElements;
         public final Element element;
+        public final String withType;
 
-        public Context(Node node, Map<String, Object> args) {
+        public Context(Node node, String withType, Map<String, Object> args) {
             super(node, args);
+            this.withType = withType;
             navigation = null;
             element = null;
             navigationElements = null;
             navigationElement = null;
         }
 
-        public Context(Node node, Navigation navigation, Map<String, Object> args) {
+        public Context(Node node, String withType, Navigation navigation, Map<String, Object> args) {
             super(node, args);
+            this.withType = withType;
             this.navigation = navigation;
             element = null;
             navigationElements = null;
             navigationElement = null;
         }
 
-        public Context(Node node, List<NavigationElement> navigationElements, Map<String, Object> args) {
+        public Context(Node node, String withType, List<NavigationElement> navigationElements, Map<String, Object> args) {
             super(node, args);
+            this.withType = withType;
             this.navigationElements = navigationElements;
             navigation = null;
             element = null;
             navigationElement = null;
         }
 
-        public Context(Node node, Element element, Map<String, Object> args) {
+        public Context(Node node, String withType, Element element, Map<String, Object> args) {
             super(node, args);
+            this.withType = withType;
             this.element = element;
             navigation = null;
             navigationElements = null;
             navigationElement = null;
         }
 
-        public Context(Node node, Navigation navigation, NavigationElement navigationElement, Map<String, Object> args) {
+        public Context(Node node, String withType, Navigation navigation, NavigationElement navigationElement, Map<String, Object> args) {
             super(node, args);
+            this.withType = withType;
             this.navigation = navigation;
             this.navigationElement = navigationElement;
             element = null;

@@ -38,7 +38,7 @@ public class OnSubmitEventGenerator {
             }
         });
         if (onPostInterceptors.isEmpty()) {
-            Logger.warn("No @OnSubmit interceptor for with=\'" + withType + "\'");
+            Logger.warn("No @OnSubmit interceptor for with=" + withType + "'");
         }
         return onPostInterceptors;
     }

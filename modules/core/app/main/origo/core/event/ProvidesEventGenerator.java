@@ -7,7 +7,6 @@ import main.origo.core.Navigation;
 import main.origo.core.Node;
 import main.origo.core.annotations.Provides;
 import main.origo.core.internal.CachedAnnotation;
-import play.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -27,19 +26,13 @@ public class ProvidesEventGenerator {
     }
 
     public static <T> T triggerInterceptor(Node node, String providesType, String withType, Map<String, Object> args) {
-        CachedAnnotation cachedAnnotation = findInterceptor(providesType, withType);
-        try {
-            //noinspection unchecked
-            return (T) cachedAnnotation.method.invoke(null, new Provides.Context(node, args));
-        } catch (Throwable e) {
-            Logger.error("", e);
-            throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
-        }
+        return triggerInterceptor(node, providesType, withType, null, args);
     }
 
     public static <T> T triggerInterceptor(Node node, String providesType, String withType, Navigation navigation, Map<String, Object> args) {
         CachedAnnotation cachedAnnotation = findInterceptor(providesType, withType);
         try {
+            NodeContext.current().attributes.put(withType, cachedAnnotation.method.getDeclaringClass());
             //noinspection unchecked
             return (T) cachedAnnotation.method.invoke(null, new Provides.Context(node, navigation, args));
         } catch (Throwable e) {

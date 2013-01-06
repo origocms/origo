@@ -30,7 +30,7 @@ public class EditorHelper {
     }
 
     public static void triggerAfterRichTextEditorLoaded(Node node, String withType, Element element, Content content) {
-        OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.NODE, withType, Collections.<String, Object>singletonMap("content", content), element);
+        OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.NODE, withType, element, Collections.<String, Object>singletonMap("content", content));
     }
 
 

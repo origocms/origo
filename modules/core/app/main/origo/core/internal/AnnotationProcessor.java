@@ -4,7 +4,9 @@ import main.origo.core.InitializationException;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.ThemeRepository;
 import main.origo.core.annotations.*;
-import main.origo.core.annotations.forms.*;
+import main.origo.core.annotations.forms.OnSubmit;
+import main.origo.core.annotations.forms.SubmitHandler;
+import main.origo.core.annotations.forms.SubmitState;
 import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
 import play.Logger;
@@ -49,16 +51,19 @@ public class AnnotationProcessor {
         Reflections reflections = new Reflections("");
 
         Set<Class<?>> interceptors = reflections.getTypesAnnotatedWith(Interceptor.class);
+
+        // Basic types
         scanEventHandlers(interceptors, Provides.class, Provides.Context.class);
         scanEventHandlers(interceptors, OnLoad.class, OnLoad.Context.class);
-        scanEventHandlers(interceptors, ProvidesForm.class, ProvidesForm.Context.class);
-        scanEventHandlers(interceptors, OnLoadForm.class, OnLoadForm.Context.class);
-        scanEventHandlers(interceptors, OnSubmit.class, OnSubmit.Context.class);
-        scanEventHandlers(interceptors, SubmitHandler.class, SubmitHandler.Context.class);
-        scanEventHandlers(interceptors, SubmitState.class, SubmitState.Context.class);
         scanEventHandlers(interceptors, OnInsertElement.class, OnInsertElement.Context.class);
         scanEventHandlers(interceptors, OnRemoveElement.class, OnRemoveElement.Context.class);
 
+        // Form types
+        scanEventHandlers(interceptors, OnSubmit.class, OnSubmit.Context.class);
+        scanEventHandlers(interceptors, SubmitHandler.class, SubmitHandler.Context.class);
+        scanEventHandlers(interceptors, SubmitState.class, SubmitState.Context.class);
+
+        // Themes and Decorators
         Set<Class<?>> themes = reflections.getTypesAnnotatedWith(Theme.class);
         scanThemes(themes);
 

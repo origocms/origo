@@ -19,7 +19,8 @@ public @interface OnSubmit {
     String with() default "";
 
     public class Context {
-        private Map<String, Object> args;
+
+        public Map<String, Object> args;
 
         public Context(Map<String, Object> args) {
             this.args = Maps.newHashMap();

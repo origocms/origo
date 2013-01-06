@@ -2,6 +2,7 @@ package main.origo.core.interceptors.forms;
 
 import controllers.routes;
 import main.origo.core.annotations.*;
+import main.origo.core.helpers.ProviderHelper;
 import main.origo.core.ui.Element;
 import main.origo.core.ui.RenderingContext;
 import models.origo.core.Content;
@@ -40,7 +41,7 @@ public class WysiHTML5EditorProvider {
 
     @OnLoad(type = Core.Type.NODE, with = Core.With.EDITOR)
     public static void setupEditor(OnLoad.Context context) {
-        if (!context.attributes.containsKey(JS_LOADED)) {
+        if (ProviderHelper.isProvider(context.withType, WysiHTML5EditorProvider.class) && !context.attributes.containsKey(JS_LOADED)) {
             String mainScript = routes.Assets.at("javascripts/origo/wysihtml5/wysihtml5-0.4.0pre.min.js").url();
             context.node.addTailElement(new Element.Script().setWeight(9999).addAttribute("src", mainScript).addAttribute("type", "text/javascript"));
             String parserRulesScript = routes.Assets.at("javascripts/origo/wysihtml5/parser_rules/advanced.js").url();
@@ -67,13 +68,7 @@ public class WysiHTML5EditorProvider {
     @Provides(type = Core.Type.NODE, with = Core.With.EDITOR)
     public static Element createEditor(Provides.Context context) {
         Content content = (Content) context.args.get("content");
-        return new Element.InputTextArea().setId(content.identifier);
-    }
-
-    @OnLoad(type = Core.Type.NODE, with = Core.With.EDITOR)
-    public static void addContent(OnLoad.Context context) {
-        Content content = (Content) context.args.get("content");
-        context.element.setId(content.identifier).setBody(content.value);
+        return new Element.InputTextArea().setId(content.identifier).setBody(content.value);
     }
 
 }
