@@ -11,6 +11,7 @@ import main.origo.core.internal.CachedThemeVariant;
 import main.origo.core.ui.Element;
 import main.origo.core.ui.RenderedNode;
 import main.origo.core.ui.RenderingContext;
+import models.origo.core.EventHandler;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
 import play.api.templates.Html;
@@ -149,16 +150,12 @@ public class ThemeHelper {
             return null;
         }
 
-        if (cachedDecorators.size() == 1) {
-            return setFirstDecoratorAsDefault(type, cachedDecorators);
-        }
-
-        String storedEventHandlerType = CoreSettingsHelper.getDecorator(type);
-        if (StringUtils.isBlank(storedEventHandlerType)) {
+        EventHandler storedEventHandlerType = EventHandler.findWithAnnotationAndWithType(Decorates.class.getName(), type.getName());
+        if (storedEventHandlerType == null) {
             return setFirstDecoratorAsDefault(type, cachedDecorators);
         }
         for (CachedDecorator cachedDecorator : cachedDecorators) {
-            if (storedEventHandlerType.equals(cachedDecorator.method.getDeclaringClass().getName())) {
+            if (storedEventHandlerType.handlerClass.equals(cachedDecorator.method.getDeclaringClass().getName())) {
                 return cachedDecorator;
             }
         }
@@ -166,10 +163,15 @@ public class ThemeHelper {
         return setFirstDecoratorAsDefault(type, cachedDecorators);
     }
 
-    private static CachedDecorator setFirstDecoratorAsDefault(Class<? extends Element> type, List<CachedDecorator> decorators) {
+    private static CachedDecorator setFirstDecoratorAsDefault(Class<? extends Element> elementType, List<CachedDecorator> decorators) {
         CachedDecorator annotation = decorators.iterator().next();
-        Logger.info("Setting ["+annotation.method.getDeclaringClass().getName()+"] as default for type ["+type.getName()+"]");
-        CoreSettingsHelper.setDecorator(type, annotation.method.getDeclaringClass());
+        Logger.info("Setting ["+annotation.method.getDeclaringClass().getName()+"] as default for type ["+ elementType+"]");
+        EventHandler eventHandler = new EventHandler();
+        eventHandler.annotation = Decorates.class.getName();
+        eventHandler.withType = elementType.getName();
+        eventHandler.nodeType = null;
+        eventHandler.handlerClass = annotation.method.getDeclaringClass().getName();
+        eventHandler.save();
         return annotation;
     }
 

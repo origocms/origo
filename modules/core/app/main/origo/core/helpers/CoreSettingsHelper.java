@@ -1,14 +1,10 @@
 package main.origo.core.helpers;
 
-import com.google.common.collect.Maps;
 import main.origo.core.interceptors.forms.DefaultFormProvider;
 import main.origo.core.interceptors.forms.DefaultSubmitHandler;
-import main.origo.core.ui.Element;
 import models.origo.core.Settings;
 import models.origo.core.navigation.BasicNavigation;
 import play.Logger;
-
-import java.util.Map;
 
 public class CoreSettingsHelper {
 
@@ -60,25 +56,6 @@ public class CoreSettingsHelper {
 
     public static String getSubmitHandler() {
         return getClassTypeIfExists(Keys.SUBMIT_HANDLER, DefaultSubmitHandler.class.getName());
-    }
-
-    public static String getDecorator(Class<? extends Element> type) {
-        return Settings.load().getValue("decorator."+type.getName());
-    }
-
-    public static void setDecorator(Class<? extends Element> type, Class annotatedClass) {
-        Settings.load().setValue("decorator."+type.getName(), annotatedClass.getName());
-    }
-
-    public static Map<String, String> getDecorators() {
-        Map<String, String> result = Maps.newHashMap();
-        Settings settings = Settings.load();
-        for (String key : settings.getValues().keySet()) {
-            if (key.startsWith("decorator.")) {
-                result.put(key, settings.getValue(key));
-            }
-        }
-        return result;
     }
 
     protected static String getClassTypeIfExists(String propertyName, String fallback) {

@@ -14,6 +14,22 @@ import java.util.*;
 
 public class Element {
 
+    private static class Base extends Element {
+
+        public String tagName;
+
+        private Base(String tagName, String type) {
+            super(type);
+            this.tagName = tagName;
+        }
+
+        @Override
+        public Html decorate(RenderingContext renderingContext) {
+            return base.render(tagName, this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
+        }
+
+    }
+
     public static class Raw extends Element {
 
         public Raw() {
@@ -98,22 +114,12 @@ public class Element {
         }
     }
 
-    public static class Image extends Element {
+    public static class Image extends Base {
 
         public Image() {
-            super("image");
+            super("img", "image");
         }
 
-        @Override
-        public boolean isAlwaysInBody() {
-            return true;
-        }
-
-        @Override
-        public Html decorate(RenderingContext renderingContext) {
-            //noinspection unchecked
-            return image.render(this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
-        }
     }
 
     public static class Span extends Element {
@@ -123,14 +129,9 @@ public class Element {
         }
 
         @Override
-        public boolean isAlwaysInBody() {
-            return true;
-        }
-
-        @Override
         public Html decorate(RenderingContext renderingContext) {
-            //noinspection unchecked
-            return span.render(this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
+            Html body = ThemeHelper.decorateChildren(this, renderingContext);
+            return span.render(this, body, this.getAttributes());
         }
     }
 
@@ -193,30 +194,15 @@ public class Element {
         }
     }
 
-    public static class Legend extends Element {
-
+    public static class Legend extends Base {
         public Legend() {
-            super("legend");
-        }
-
-        @Override
-        public Html decorate(RenderingContext renderingContext) {
-            Html body = ThemeHelper.decorateChildren(this, renderingContext);
-            //noinspection unchecked
-            return legend.render(this, body, this.getAttributes());
+            super("legend", "legend");
         }
     }
 
-    public static class Label extends Element {
-
+    public static class Label extends Base {
         public Label() {
-            super("label");
-        }
-
-        @Override
-        public Html decorate(RenderingContext renderingContext) {
-            //noinspection unchecked
-            return label.render(this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
+            super("label", "label");
         }
     }
 
@@ -437,8 +423,9 @@ public class Element {
 
         @Override
         public Html decorate(RenderingContext renderingContext) {
+            Html body = ThemeHelper.decorateChildren(this, renderingContext);
             //noinspection unchecked
-            return paragraph.render(this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
+            return paragraph.render(this, body, this.getAttributes());
         }
     }
 
@@ -474,26 +461,19 @@ public class Element {
         }
     }
 
-    private static class Heading extends Element {
-        private String size;
+    private static class Heading extends Base {
 
-        private Heading(String type, String size) {
-            super(type);
-            this.size = size;
+        private Heading(String tagName, String type) {
+            super(tagName, type);
         }
 
-        @Override
-        public Html decorate(RenderingContext renderingContext) {
-            //noinspection unchecked
-            return heading.render(this, size, ElementHelper.getHtmlFromBody(this), this.getAttributes());
-        }
     }
 
     public static class Heading1 extends Heading {
 
         public Heading1() {
             //noinspection unchecked
-            super("heading_1", "1");
+            super("h1", "heading_1");
         }
     }
 
@@ -501,7 +481,7 @@ public class Element {
 
         public Heading2() {
             //noinspection unchecked
-            super("heading_2", "2");
+            super("h2", "heading_2");
         }
     }
 
@@ -509,7 +489,7 @@ public class Element {
 
         public Heading3() {
             //noinspection unchecked
-            super("heading_3", "3");
+            super("h3", "heading_3");
         }
     }
 
@@ -517,7 +497,7 @@ public class Element {
 
         public Heading4() {
             //noinspection unchecked
-            super("heading_4", "4");
+            super("h4", "heading_4");
         }
     }
 
@@ -525,7 +505,7 @@ public class Element {
 
         public Heading5() {
             //noinspection unchecked
-            super("heading_5", "5");
+            super("h5", "heading_5");
         }
     }
 
@@ -533,10 +513,21 @@ public class Element {
 
         public Heading6() {
             //noinspection unchecked
-            super("heading_6", "5");
+            super("h6", "heading_6");
         }
     }
 
+    public static class Emphasize extends Base {
+        public Emphasize() {
+            super("em", "em");
+        }
+    }
+
+    public static class Strong extends Base {
+        public Strong() {
+            super("strong", "strong");
+        }
+    }
 
 
     public String id;
@@ -712,4 +703,5 @@ public class Element {
                 ", inputType=" + inputType +
                 '}';
     }
+
 }

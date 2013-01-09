@@ -1,7 +1,6 @@
 package main.origo.core.event;
 
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.Navigation;
 import main.origo.core.Node;
@@ -10,7 +9,6 @@ import main.origo.core.internal.CachedAnnotation;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Helper to trigger \@Provides origo interceptors. Should not be used directly except in core and admin, use NodeHelper
@@ -42,11 +40,11 @@ public class ProvidesEventGenerator {
 
     /**
      * Filters out the cached providers types.
-     * @return a list of all the classes that provides a matching type
+     * @return a list of all the classes that provides a matching nodeType and a withType
      * @see main.origo.core.annotations.Provides
      * @see main.origo.core.annotations.Core
      */
-    public static Set<String> getAllProviders(final String type, final String with) {
+    public static List<CachedAnnotation> getAllProviders(final String type, final String with) {
         List<CachedAnnotation> interceptors = InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation cacheAnnotation) {
@@ -54,17 +52,30 @@ public class ProvidesEventGenerator {
                 return annotation.type().equals(type) && annotation.with().equals(with);
             }
         });
-        Set<String> providedTypes = Sets.newHashSet();
-        for (CachedAnnotation cachedAnnotation : interceptors) {
-            providedTypes.add(cachedAnnotation.method.getDeclaringClass().getName());
-        }
-        return providedTypes;
+        return interceptors;
     }
 
-    private static CachedAnnotation findInterceptor(String providesType, String withType) {
-        CachedAnnotation cacheAnnotation = findProvidersForType(providesType, withType);
+    /**
+     * Filters out the cached providers types.
+     * @return a list of all the classes that provides a matching nodeType
+     * @see main.origo.core.annotations.Provides
+     * @see main.origo.core.annotations.Core
+     */
+    public static List<CachedAnnotation> getAllProviders(final String type) {
+        List<CachedAnnotation> interceptors = InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
+            @Override
+            public boolean isCorrectInterceptor(CachedAnnotation cacheAnnotation) {
+                Provides annotation = (Provides) cacheAnnotation.annotation;
+                return annotation.type().equals(type);
+            }
+        });
+        return interceptors;
+    }
+
+    public static CachedAnnotation findInterceptor(String nodeType, String withType) {
+        CachedAnnotation cacheAnnotation = findProvidersForType(nodeType, withType);
         if (cacheAnnotation == null) {
-            throw new RuntimeException("Every type (specified by using attribute 'with') must have a class annotated with @Provides to instantiate an instance. Unable to find a provider for type \'" + withType + "\'");
+            throw new RuntimeException("Every type (specified by using attribute 'with') must have a class annotated with @Provides to instantiate an instance. Unable to find a provider for type '" + nodeType + "' with '"+withType+"'");
         }
         return cacheAnnotation;
     }
@@ -77,7 +88,7 @@ public class ProvidesEventGenerator {
                 return annotation.type().equals(type) && annotation.with().equals(withType);
             }
         });
-        return EventGeneratorUtils.selectEventHandler(Provides.class, withType, providers);
+        return EventGeneratorUtils.selectEventHandler(Provides.class, type, withType, providers);
     }
 
 }
