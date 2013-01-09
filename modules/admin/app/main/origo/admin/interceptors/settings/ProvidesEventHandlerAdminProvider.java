@@ -245,15 +245,6 @@ public class ProvidesEventHandlerAdminProvider {
 
     private static List<String> getAllProvides() {
 
-/*
-        List<EventHandler> eventHandlers = EventHandler.findAllWithAnnotation(Provides.class.getName());
-        Set<String> sortedProvidedTypes = Sets.newTreeSet();
-        for(EventHandler handler : eventHandlers) {
-            sortedProvidedTypes.add(handler.nodeType);
-        }
-        return Lists.newArrayList(sortedProvidedTypes);
-*/
-
         List<CachedAnnotation> interceptors = InterceptorRepository.getInterceptors(Provides.class);
         Set<String> providedTypes = Sets.newHashSet();
         for (CachedAnnotation cachedAnnotation : interceptors) {
