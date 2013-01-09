@@ -31,7 +31,7 @@ import java.util.Set;
 @Interceptor
 public class ProvidesEventHandlerAdminProvider {
 
-    private static final String BASE_TYPE = Admin.With.SETTINGS_PAGE + ".event.provides.";
+    private static final String BASE_TYPE = Admin.With.SETTINGS_PAGE + ".event.provides";
     private static final String EDIT_TYPE = BASE_TYPE + ".Admin";
 
     /**
