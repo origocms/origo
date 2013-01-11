@@ -27,7 +27,12 @@ public class DefaultSettingsDashboardProvider {
                 setId("item.link." + Admin.With.SETTINGS_PAGE).
                 addChild(new Element.Panel().setWeight(100).
                         addChild(new Element.Heading4().setWeight(10).setBody("Settings").addAttribute("class", "title")).
-                        addChild(new Element.Anchor().setWeight(10).setBody("View").addAttribute("href", routes.Dashboard.dashboard(Admin.With.SETTINGS_PAGE).url())));
+                        addChild(new Element.Anchor().setWeight(10).setBody("View").addAttribute("href", getDashboardUrl())));
+    }
+
+    @Admin.Navigation(alias="/settings")
+    private static String getDashboardUrl() {
+        return routes.Dashboard.dashboard(Admin.With.SETTINGS_PAGE).url();
     }
 
     /*
@@ -50,8 +55,8 @@ public class DefaultSettingsDashboardProvider {
     @Provides(type = Admin.Type.DASHBOARD, with = Admin.With.SETTINGS_PAGE)
     @Relationship(parent = Admin.With.FRONT_PAGE)
     public static Element addSettingsDashboardContent(Provides.Context context) {
-        return DashboardHelper.createBasicDashboard().setId("dashboard."+Admin.With.SETTINGS_PAGE).
-            addChildren(DashboardHelper.createDashboardItems(context.node, Admin.With.SETTINGS_PAGE));
+        return DashboardHelper.createBasicDashboard().setId("dashboard."+ Admin.With.SETTINGS_PAGE).
+                addChildren(DashboardHelper.createDashboardItems(context.node, Admin.With.SETTINGS_PAGE));
     }
 
 }

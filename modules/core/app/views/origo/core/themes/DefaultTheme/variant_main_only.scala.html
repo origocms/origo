@@ -13,19 +13,19 @@
 
     @_navigation(context.node.navigation)
 
-        <header class="jumbotron subhead" id="overview">
-            <div class="container">
-                <h1>@context.node.title</h1>
-            </div>
-        </header>
-
-
+    <header class="jumbotron subhead" id="overview">
         <div class="container">
+            <h1>@context.node.title</h1>
+        </div>
+    </header>
 
-            <div class="row">
-                <div class="span12">
-                    @_region(context, "main")
-                </div>
+
+    <div class="container">
+
+        <div class="row">
+            <div class="span12">
+                @_region(context, "main")
             </div>
         </div>
+    </div>
 }

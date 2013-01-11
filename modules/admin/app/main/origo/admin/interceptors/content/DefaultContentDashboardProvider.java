@@ -27,7 +27,12 @@ public class DefaultContentDashboardProvider {
                 setId("item.link." + Admin.With.CONTENT_PAGE).
                 addChild(new Element.Panel().setWeight(10).
                         addChild(new Element.Heading4().setWeight(10).setBody("Content").addAttribute("class", "title")).
-                        addChild(new Element.Anchor().setWeight(10).setBody("View").addAttribute("href", routes.Dashboard.dashboard(Admin.With.CONTENT_PAGE).url())));
+                        addChild(new Element.Anchor().setWeight(10).setBody("View").addAttribute("href", getDashboardUrl())));
+    }
+
+    @Admin.Navigation(alias="/settings/content")
+    private static String getDashboardUrl() {
+        return routes.Dashboard.dashboard(Admin.With.CONTENT_PAGE).url();
     }
 
     /*

@@ -21,7 +21,7 @@
         <class>models.origo.core.navigation.PageIdNavigation</class>
         <class>models.origo.core.navigation.ExternalLinkNavigation</class>
 
-        <!-- Strctured Content Module -->
+        <!-- StructuredContent Module -->
 
         <class>models.origo.structuredcontent.Segment</class>
         <class>models.origo.structuredcontent.StructuredPage</class>

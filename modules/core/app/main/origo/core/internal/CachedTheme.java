@@ -9,7 +9,7 @@ import java.util.Map;
 public class CachedTheme {
 
     /**
-     * Commomn identifier for this theme.
+     * Common identifier for this theme.
      */
     private final String themeId;
 

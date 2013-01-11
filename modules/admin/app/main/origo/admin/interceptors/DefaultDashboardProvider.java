@@ -1,5 +1,6 @@
 package main.origo.admin.interceptors;
 
+import controllers.origo.admin.routes;
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.DashboardHelper;
 import main.origo.admin.themes.AdminTheme;
@@ -41,6 +42,11 @@ public class DefaultDashboardProvider {
     public static Element createFrontPageDashboard(Provides.Context context) {
         return DashboardHelper.createBasicDashboard().setId("dashboard."+Admin.With.FRONT_PAGE).
                 addChildren(DashboardHelper.createDashboardItems(context.node, Admin.With.FRONT_PAGE));
+    }
+
+    @Admin.Navigation(alias="/dashboard")
+    private static String getDashboardUrl() {
+        return routes.Dashboard.dashboard(Admin.With.FRONT_PAGE).url();
     }
 
 }

@@ -1,12 +1,11 @@
 package main.origo.core.internal;
 
+import com.google.common.collect.Lists;
 import main.origo.core.InitializationException;
 import main.origo.core.InterceptorRepository;
+import main.origo.core.ModuleRepository;
 import main.origo.core.ThemeRepository;
 import main.origo.core.annotations.*;
-import main.origo.core.annotations.forms.OnSubmit;
-import main.origo.core.annotations.forms.SubmitHandler;
-import main.origo.core.annotations.forms.SubmitState;
 import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
 import play.Logger;
@@ -14,6 +13,7 @@ import play.api.templates.Html;
 import play.mvc.Result;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +24,9 @@ public class AnnotationProcessor {
     public static void initialize() {
         InterceptorRepository.invalidate();
         ThemeRepository.invalidate();
-        scan();
+        ModuleRepository.invalidate();
+        scanAndInitModules();
+        scanModuleAnnotations();
         if (Logger.isDebugEnabled()) {
             StringBuilder sb = new StringBuilder();
             int count = 0;
@@ -47,21 +49,42 @@ public class AnnotationProcessor {
         }
     }
 
-    private static void scan() {
+    private static void scanAndInitModules() {
+        Reflections reflections = new Reflections("");
+        Set<Class<?>> modules = reflections.getTypesAnnotatedWith(Module.class);
+
+        for (Class c : modules) {
+            //noinspection unchecked
+            Module moduleAnnotation = (Module) c.getAnnotation(Module.class);
+            CachedModule cachedModule = ModuleRepository.add(moduleAnnotation, c);
+            try {
+                cachedModule.initMethod.invoke(CachedModule.class);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new InitializationException("Unable to init module", e);
+            }
+        }
+    }
+
+    private static void scanModuleAnnotations() {
+        List<CachedModule> modules = ModuleRepository.getAll();
+        List<Prototype> prototypes = Lists.newArrayList();
+        for (CachedModule module : modules) {
+            try {
+                if (module.annotationsMethod != null) {
+                    //noinspection unchecked
+                    prototypes.addAll((List<Prototype>)module.annotationsMethod.invoke(module.clazz));
+                }
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new InitializationException("Unable to get annotations from module", e);
+            }
+        }
         Reflections reflections = new Reflections("");
 
         Set<Class<?>> interceptors = reflections.getTypesAnnotatedWith(Interceptor.class);
 
-        // Basic types
-        scanEventHandlers(interceptors, Provides.class, Provides.Context.class);
-        scanEventHandlers(interceptors, OnLoad.class, OnLoad.Context.class);
-        scanEventHandlers(interceptors, OnInsertElement.class, OnInsertElement.Context.class);
-        scanEventHandlers(interceptors, OnRemoveElement.class, OnRemoveElement.Context.class);
-
-        // Form types
-        scanEventHandlers(interceptors, OnSubmit.class, OnSubmit.Context.class);
-        scanEventHandlers(interceptors, SubmitHandler.class, SubmitHandler.Context.class);
-        scanEventHandlers(interceptors, SubmitState.class, SubmitState.Context.class);
+        for(Prototype prototype : prototypes) {
+            scanEventHandlers(interceptors, prototype);
+        }
 
         // Themes and Decorators
         Set<Class<?>> themes = reflections.getTypesAnnotatedWith(Theme.class);
@@ -71,7 +94,11 @@ public class AnnotationProcessor {
         scanDecorators(themes);
     }
 
-    public static void scanEventHandlers(Set<Class<?>> classes, Class<? extends Annotation> annotationClass, Class contextClass) {
+    public static void scanEventHandlers(Set<Class<?>> classes, Prototype prototype) {
+
+        Class<? extends Annotation> annotationClass = prototype.annotation;
+        Class[] parameterTypes = prototype.expectedParameterTypes;
+        Class returnType = prototype.expectedReturnType;
 
         Logger.debug("Processing [" + annotationClass.getSimpleName() + "]");
         Logger.debug("------------------------------------------------");
@@ -80,10 +107,22 @@ public class AnnotationProcessor {
             Set<Method> methods = Reflections.getAllMethods(c, ReflectionUtils.withAnnotation(annotationClass));
             for (Method m : methods) {
                 Class[] pc = m.getParameterTypes();
-                if (pc.length > 1 || !pc[0].equals(contextClass)) {
+                if (pc.length != parameterTypes.length) {
                     throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() + "' in " +
                             " is annotated with '" + annotationClass.getName() +
-                            "' but the method does not match the required signature");
+                            "' but the method does not match the required signature (different amount of parameters)");
+                }
+                for (int i=0; i<pc.length; i++) {
+                    if (!pc[i].equals(parameterTypes[i])) {
+                        throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() + "' in " +
+                                " is annotated with '" + annotationClass.getName() +
+                                "' but the method does not match the required signature (parameter '"+parameterTypes[i].getName()+"' has the wrong type)");
+                    }
+                }
+                if (returnType != null && !returnType.isAssignableFrom(m.getReturnType())) {
+                    throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() + "' in " +
+                            " is annotated with '" + annotationClass.getName() +
+                            "' but the method does not match the required signature (wrong return type, epected ["+returnType+"] and found ["+m.getReturnType()+"])");
                 }
 
                 Logger.debug("Analyzing '" + m.getDeclaringClass() + "." + m.getName() + "'");
@@ -102,6 +141,7 @@ public class AnnotationProcessor {
     private static void scanThemes(Set<Class<?>> classes) {
 
         for (Class c : classes) {
+            //noinspection unchecked
             Theme themeAnnotation = (Theme) c.getAnnotation(Theme.class);
             ThemeRepository.addTheme(themeAnnotation.id(), c);
 
@@ -109,7 +149,7 @@ public class AnnotationProcessor {
 
             for (Method m : methods) {
 
-                assertCorrectSignature(m, Result.class, ThemeVariant.Context.class, ThemeVariant.class);
+                assertCorrectSignature(m, Result.class, ThemeVariant.class, ThemeVariant.Context.class);
 
                 ThemeVariant themeVariant = m.getAnnotation(ThemeVariant.class);
                 ThemeRepository.addThemeVariant(themeAnnotation.id(), themeVariant.id(), themeVariant.regions(), m);
@@ -120,13 +160,14 @@ public class AnnotationProcessor {
     private static void scanDecorators(Set<Class<?>> classes) {
 
         for (Class c : classes) {
+            //noinspection unchecked
             Theme themeAnnotation = (Theme) c.getAnnotation(Theme.class);
 
             Set<Method> methods = Reflections.getAllMethods(c, ReflectionUtils.withAnnotation(Decorates.class));
 
             for (Method m : methods) {
 
-                assertCorrectSignature(m, Html.class, Decorates.Context.class, Decorates.class);
+                assertCorrectSignature(m, Html.class, Decorates.class, Decorates.Context.class);
 
                 Decorates decorates = m.getAnnotation(Decorates.class);
                 if (themeAnnotation != null) {
@@ -138,12 +179,55 @@ public class AnnotationProcessor {
         }
     }
 
-    private static void assertCorrectSignature(Method m, Class returnType, Class contextClass, Class<? extends Annotation> annotationClass) {
+    private static void assertCorrectSignature(Method m, Class returnType, Class<? extends Annotation> annotationClass, Class... parameterTypes) {
         Class[] pc = m.getParameterTypes();
-        if (pc.length > 1 || !pc[0].equals(contextClass) || !m.getReturnType().equals(returnType)) {
+        if (pc.length != parameterTypes.length) {
             throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() + "' in " +
                     " is annotated with '" + annotationClass.getName() +
-                    "' but the method does not match the required signature");
+                    "' but the method does not match the required signature (different amount of parameters)");
+        }
+        for (int i=0; i<pc.length; i++) {
+            if (!pc[i].equals(parameterTypes[i])) {
+                throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() + "' in " +
+                        " is annotated with '" + annotationClass.getName() +
+                        "' but the method does not match the required signature (parameter '"+parameterTypes[i].getName()+"' has the wrong type)");
+            }
+        }
+        if (!m.getReturnType().equals(returnType)) {
+            throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() + "' in " +
+                    " is annotated with '" + annotationClass.getName() +
+                    "' but the method does not match the required signature (wrong return type)");
+        }
+    }
+
+    public static class Prototype {
+        public final Class<? extends Annotation> annotation;
+        public final Class[] expectedParameterTypes;
+        public final Class expectedReturnType;
+
+        public Prototype(Class<? extends Annotation> annotation, Class expectedReturnType, Class... expectedParameterTypes) {
+            this.annotation = annotation;
+            this.expectedParameterTypes = expectedParameterTypes;
+            this.expectedReturnType = expectedReturnType;
+        }
+
+    }
+
+    public static class Dependency {
+        public final String name;
+        public final int major;
+        public final int minor;
+        public final int patch;
+
+        public Dependency(String name, int major, int minor) {
+            this(name, major, minor, -1);
+        }
+
+        public Dependency(String name, int major, int minor, int patch) {
+            this.name = name;
+            this.major = major;
+            this.minor = minor;
+            this.patch = patch;
         }
     }
 

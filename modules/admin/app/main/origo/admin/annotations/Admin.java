@@ -4,12 +4,16 @@ import main.origo.core.ui.Element;
 import main.origo.core.ui.RenderingContext;
 import play.api.templates.Html;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 public class Admin {
 
     public static class Type {
         public static final String DASHBOARD = "dashboard";
         public static final String DASHBOARD_ITEM = "dashboard_item";
-        public static final String NAVIGATION = "navigation";
     }
 
     public static class With {
@@ -45,4 +49,9 @@ public class Admin {
 
     }
 
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.METHOD})
+    public static @interface Navigation {
+        String alias();
+    }
 }

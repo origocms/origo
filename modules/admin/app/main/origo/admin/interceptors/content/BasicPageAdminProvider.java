@@ -64,13 +64,11 @@ public class BasicPageAdminProvider {
     @Relationship(parent = Admin.With.CONTENT_PAGE)
     public static Element createDashboardItem(Provides.Context context) {
 
-        String url = routes.Dashboard.pageWithType(Admin.With.CONTENT_PAGE, LIST_TYPE).url();
-
         return new Admin.DashboardItem().addAttribute("class", "item").
                 addChild(new Element.Panel().setWeight(10).
                         addChild(new Element.Heading4().setWeight(10).setBody("Basic Page").addAttribute("class", "title")).
                         addChild(new Element.Paragraph().setWeight(20).setBody("Basic pages have a lead and a body").addAttribute("class", "description")).
-                        addChild(new Element.Anchor().setWeight(30).setBody("List All").addAttribute("href", url).addAttribute("class", "link"))
+                        addChild(new Element.Anchor().setWeight(30).setBody("List All").addAttribute("href", getProviderUrl()).addAttribute("class", "link"))
                 );
     }
 
@@ -107,6 +105,11 @@ public class BasicPageAdminProvider {
             panelElement.addChild(panel);
         }
         context.node.addElement(panelElement);
+    }
+
+    @Admin.Navigation(alias="/dashboard/basic")
+    private static String getProviderUrl() {
+        return routes.Dashboard.pageWithType(Admin.With.CONTENT_PAGE, LIST_TYPE).url();
     }
 
     /**
@@ -261,7 +264,7 @@ public class BasicPageAdminProvider {
                         addAttribute("class", "pull-left").
                         addChild(new Element.Anchor().setWeight(20).
                                 addAttribute("class", "btn").
-                                addAttribute("href", routes.Dashboard.pageWithType(Admin.With.CONTENT_PAGE, LIST_TYPE).url()).
+                                addAttribute("href", getProviderUrl()).
                                 setBody("Cancel")
                         )
                 ).

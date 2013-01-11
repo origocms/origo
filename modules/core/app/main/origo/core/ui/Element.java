@@ -689,7 +689,7 @@ public class Element {
     }
 
     public Html decorate(RenderingContext renderingContext) {
-        return new Html("Element ["+getClass().getName()+"] is not correctly decorated. Please add a decorator.");
+        return HtmlFormat.raw("Element ["+getClass().getName()+"] is not correctly decorated. Please add a decorator.");
     }
 
     @Override

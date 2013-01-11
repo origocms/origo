@@ -15,7 +15,7 @@ import models.origo.admin.AdminPage;
 import models.origo.core.RootNode;
 
 @Interceptor
-public class DefaultUserManagementDashboard {
+public class DefaultUserManagementDashboardProvider {
 
     /*
      * Dashboard Item for front page.
@@ -27,7 +27,12 @@ public class DefaultUserManagementDashboard {
                 setId("item.link." + Admin.With.USER_PAGE).
                 addChild(new Element.Panel().setWeight(20).
                         addChild(new Element.Heading4().setWeight(10).setBody("User Management").addAttribute("class", "title")).
-                        addChild(new Element.Anchor().setWeight(10).setBody("View").addAttribute("href", routes.Dashboard.dashboard(Admin.With.USER_PAGE).url())));
+                        addChild(new Element.Anchor().setWeight(10).setBody("View").addAttribute("href", getDashboardUrl())));
+    }
+
+    @Admin.Navigation(alias="/settings/user")
+    private static String getDashboardUrl() {
+        return routes.Dashboard.dashboard(Admin.With.USER_PAGE).url();
     }
 
     /*

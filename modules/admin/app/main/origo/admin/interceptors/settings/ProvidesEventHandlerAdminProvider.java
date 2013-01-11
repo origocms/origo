@@ -43,14 +43,17 @@ public class ProvidesEventHandlerAdminProvider {
     @Relationship(parent = Admin.With.SETTINGS_PAGE)
     public static Element createDashboardItem(Provides.Context context) {
 
-        String url = routes.Dashboard.pageWithType(Admin.With.CONTENT_PAGE, EDIT_TYPE).url();
-
         return new Admin.DashboardItem().addAttribute("class", "item").
                 addChild(new Element.Panel().setWeight(10).
                         addChild(new Element.Heading4().setWeight(10).setBody("Event Handlers").addAttribute("class", "title")).
                         addChild(new Element.Paragraph().setWeight(20).setBody("Select which event handler should be used for ").addAttribute("class", "description")).
-                        addChild(new Element.Anchor().setWeight(30).setBody("List All").addAttribute("href", url).addAttribute("class", "link"))
+                        addChild(new Element.Anchor().setWeight(30).setBody("List All").addAttribute("href", getProviderUrl()).addAttribute("class", "link"))
                 );
+    }
+
+    @Admin.Navigation(alias="/settings/provides")
+    private static String getProviderUrl() {
+        return routes.Dashboard.pageWithType(Admin.With.CONTENT_PAGE, EDIT_TYPE).url();
     }
 
     /**
@@ -265,7 +268,7 @@ public class ProvidesEventHandlerAdminProvider {
         for (String providerName : providerTypes) {
             Element eventTypeListItem = new Element.ListItem().
                     addChild(new Element.Anchor().
-                            addAttribute("href", routes.Dashboard.pageWithType(Admin.With.CONTENT_PAGE, EDIT_TYPE).url() + "?type=" + providerName).
+                            addAttribute("href", getProviderUrl() + "?type=" + providerName).
                             setBody(providerName));
             if (providerName.equals(selectedEventType)) {
                 eventTypeListItem.addAttribute("class", "active");
