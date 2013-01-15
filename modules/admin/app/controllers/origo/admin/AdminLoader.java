@@ -1,10 +1,10 @@
 package controllers.origo.admin;
 
 import main.origo.admin.helpers.AdminSettingsHelper;
+import main.origo.admin.helpers.NavigationHelper;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
 import main.origo.core.event.NodeContext;
-import main.origo.core.helpers.NavigationHelper;
 import main.origo.core.helpers.NodeHelper;
 import main.origo.core.helpers.ThemeHelper;
 import main.origo.core.ui.NavigationElement;
@@ -89,7 +89,7 @@ public class AdminLoader {
         return rootNode;
     }
 
-    private static Result decorateNode(Node node) {
+    private static Result decorateNode(Node node) throws NodeLoadException {
         RenderedNode renderedNode = ThemeHelper.decorate(node, ThemeHelper.loadTheme(node, AdminSettingsHelper.getThemeVariant()));
         renderedNode.navigation(getNavigation(node));
         if (Logger.isDebugEnabled()) {
@@ -98,8 +98,8 @@ public class AdminLoader {
         return ThemeHelper.render(renderedNode);
     }
 
-    public static List<NavigationElement> getNavigation(Node node) {
-        List<NavigationElement> navigationLinks = NavigationHelper.getNavigation(node, NavigationElement.ADMIN);
+    public static List<NavigationElement> getNavigation(Node node) throws NodeLoadException {
+        List<NavigationElement> navigationLinks = NavigationHelper.getNavigation(node);
         if (Logger.isDebugEnabled()) {
             Logger.debug("Navigation loaded " + navigationLinks);
         }

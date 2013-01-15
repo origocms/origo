@@ -1,38 +1,43 @@
 package main.origo.core.ui;
 
-import java.util.ArrayList;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+
 import java.util.List;
 import java.util.Set;
 
-public class NavigationElement {
+// TODO refactor to builder pattern
+public class NavigationElement implements Comparable<NavigationElement> {
 
     // Plugins can define their own sections, for example an Intranet module could define a private navigation section
     public final static String FRONT = "front";
     public final static String INTRANET = "intranet";
     public final static String EXTRANET = "extranet";
-    public final static String ADMIN = "TO BE REMOVED"; // TODO: TO BE REMOVED since we can't store this in the db
 
     public String section;
     public String title;
     public String link;
+    public int weight;
 
-    public List<NavigationElement> children;
+    public List<NavigationElement> children = Lists.newArrayList();
 
     public boolean selected;
-    public Set<String> styleClasses;
+    public Set<String> styleClasses = Sets.newHashSet();
 
-    public NavigationElement(String section, String title, String link) {
+    public NavigationElement(String section, String title, String link, int weight) {
         this.section = section;
         this.title = title;
         this.link = link;
-        children = new ArrayList<NavigationElement>();
+        this.weight = weight;
     }
 
-    public NavigationElement(String section, String title, String link, boolean selected) {
-        this.section = section;
-        this.title = title;
-        this.link = link;
+    public NavigationElement(String section, String title, String link, int weight, boolean selected) {
+        this(section, title, link, weight);
         this.selected = selected;
-        children = new ArrayList<NavigationElement>();
+    }
+
+    @Override
+    public int compareTo(NavigationElement that) {
+        return new Integer(this.weight).compareTo(that.weight);
     }
 }

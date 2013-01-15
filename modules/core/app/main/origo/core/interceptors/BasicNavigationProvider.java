@@ -29,7 +29,7 @@ import java.util.List;
  * @see models.origo.core.navigation.ExternalLinkNavigation
  */
 @Interceptor
-public class DefaultNavigationProvider {
+public class BasicNavigationProvider {
 
     @Provides(type = Core.Type.NAVIGATION, with = "models.origo.core.navigation.BasicNavigation")
     public static List<NavigationElement> createNavigation(Provides.Context context) {
@@ -75,7 +75,7 @@ public class DefaultNavigationProvider {
             if (referencedRootNode != null) {
                 Node referencedNode = ProvidesEventGenerator.triggerInterceptor(referencedRootNode, Core.Type.NODE, referencedRootNode.nodeType);
                 boolean selected = context.node.getNodeId().equals(alias.pageId);
-                return new NavigationElement(context.navigation.getSection(), referencedNode.getTitle(), navigationModel.getLink(), selected);
+                return new NavigationElement(context.navigation.getSection(), referencedNode.getTitle(), navigationModel.getLink(), context.navigation.getWeight(), selected);
             } else {
                 throw new RuntimeException("Page not found [" + alias.pageId + "]");
             }
@@ -91,7 +91,7 @@ public class DefaultNavigationProvider {
         if (referencedRootNode != null) {
             Node referencedNode = ProvidesEventGenerator.triggerInterceptor(referencedRootNode, Core.Type.NODE, referencedRootNode.nodeType);
             boolean selected = context.node.getNodeId().equals(referencedRootNode.getNodeId());
-            return new NavigationElement(context.navigation.getSection(), referencedNode.getTitle(), navigationModel.getLink(), selected);
+            return new NavigationElement(context.navigation.getSection(), referencedNode.getTitle(), navigationModel.getLink(), context.navigation.getWeight(), selected);
         } else {
             throw new RuntimeException("Page not found [" + navigationModel.pageId + "]");
         }
@@ -101,7 +101,7 @@ public class DefaultNavigationProvider {
     public static NavigationElement createExternalLinkNavigation(Provides.Context context) {
         ExternalLinkNavigation navigationModel = ExternalLinkNavigation.findWithIdentifier(context.navigation.getReferenceId());
         if (navigationModel != null) {
-            return new NavigationElement(context.navigation.getSection(), navigationModel.title, navigationModel.getLink());
+            return new NavigationElement(context.navigation.getSection(), navigationModel.title, navigationModel.getLink(), context.navigation.getWeight());
         }
         return null;
     }

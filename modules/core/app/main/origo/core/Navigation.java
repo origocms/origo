@@ -12,4 +12,6 @@ public interface Navigation<T> {
 
     Collection<T> getChildren();
 
+    int getWeight();
+
 }

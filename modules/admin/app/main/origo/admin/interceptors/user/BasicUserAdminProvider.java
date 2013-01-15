@@ -24,8 +24,8 @@ public class BasicUserAdminProvider {
                         addChild(new Element.Heading4().setWeight(10).setBody("User").addAttribute("class", "title")));
     }
 
-    @Admin.Navigation(alias="/settings/user")
-    private static String getProviderUrl() {
+    @Admin.Navigation(alias="/user/basic", key="breadcrumb.origo.admin.dashboard.user.basic")
+    public static String getProviderUrl() {
         return routes.Dashboard.pageWithType(Admin.With.USER_PAGE, EDIT_TYPE).url();
     }
 

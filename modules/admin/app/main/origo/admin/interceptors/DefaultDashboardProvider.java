@@ -44,8 +44,8 @@ public class DefaultDashboardProvider {
                 addChildren(DashboardHelper.createDashboardItems(context.node, Admin.With.FRONT_PAGE));
     }
 
-    @Admin.Navigation(alias="/dashboard")
-    private static String getDashboardUrl() {
+    @Admin.Navigation(alias="/dashboard", key = "breadcrumb.origo.admin.dashboard.frontpage", weight = 1)
+    public static String getDashboardUrl() {
         return routes.Dashboard.dashboard(Admin.With.FRONT_PAGE).url();
     }
 

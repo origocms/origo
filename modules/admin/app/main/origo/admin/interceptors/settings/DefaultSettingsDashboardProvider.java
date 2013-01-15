@@ -30,8 +30,8 @@ public class DefaultSettingsDashboardProvider {
                         addChild(new Element.Anchor().setWeight(10).setBody("View").addAttribute("href", getDashboardUrl())));
     }
 
-    @Admin.Navigation(alias="/settings")
-    private static String getDashboardUrl() {
+    @Admin.Navigation(alias="/settings", key="breadcrumb.origo.admin.dashboard.settings")
+    public static String getDashboardUrl() {
         return routes.Dashboard.dashboard(Admin.With.SETTINGS_PAGE).url();
     }
 

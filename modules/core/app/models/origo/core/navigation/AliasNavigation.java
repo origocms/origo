@@ -23,6 +23,9 @@ public class AliasNavigation {
     @Constraints.Required
     public String alias;
 
+    @Constraints.Required
+    public int weight;
+
     public String getLink() {
         Alias aliasModel = Alias.findWithPath(alias);
         if (aliasModel != null && CoreSettingsHelper.getStartPage().equals(aliasModel.pageId)) {
@@ -39,6 +42,7 @@ public class AliasNavigation {
             return null;
         }
     }
+
 
     @Override
     public String toString() {

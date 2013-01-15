@@ -30,8 +30,8 @@ public class DefaultUserManagementDashboardProvider {
                         addChild(new Element.Anchor().setWeight(10).setBody("View").addAttribute("href", getDashboardUrl())));
     }
 
-    @Admin.Navigation(alias="/settings/user")
-    private static String getDashboardUrl() {
+    @Admin.Navigation(alias="/user", key="breadcrumb.origo.admin.dashboard.user")
+    public static String getDashboardUrl() {
         return routes.Dashboard.dashboard(Admin.With.USER_PAGE).url();
     }
 

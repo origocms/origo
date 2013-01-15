@@ -8,6 +8,13 @@ import javax.persistence.*;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Basic Navigation type. Tree type structure. Provides the types AliasNavigation, ExternalLinkNavigation and PageIdNavigation.
+ * Each entity stored represents one of the 3 subtypes. BasicNavigation itself is never used in the UI, only as a common data store for the subtypes.
+ * @see AliasNavigation
+ * @see ExternalLinkNavigation
+ * @see PageIdNavigation
+ */
 @Entity(name = "basicNavigation")
 @Table(name = "navigation_basic")
 public class BasicNavigation implements Navigation<BasicNavigation>, Comparable<BasicNavigation> {
@@ -52,6 +59,11 @@ public class BasicNavigation implements Navigation<BasicNavigation>, Comparable<
     @Override
     public List<BasicNavigation> getChildren() {
         return children;
+    }
+
+    @Override
+    public int getWeight() {
+        return weight;
     }
 
     public static List<BasicNavigation> findWithSection(String section) {

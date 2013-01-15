@@ -9,4 +9,8 @@ public class NodeLoadException extends Exception {
         this.nodeId = nodeId;
     }
 
+    public NodeLoadException(String nodeId, String message, Throwable cause) {
+        super(message, cause);
+        this.nodeId = nodeId;
+    }
 }

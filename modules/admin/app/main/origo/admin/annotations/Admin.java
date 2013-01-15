@@ -53,5 +53,7 @@ public class Admin {
     @Target({ElementType.METHOD})
     public static @interface Navigation {
         String alias();
+        String key();
+        int weight() default 1000;
     }
 }
