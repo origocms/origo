@@ -34,18 +34,29 @@ public @interface Provides {
 
     String with();
 
-    public static class Context extends AbstractContext {
+    public static interface Context {
 
-        public final Navigation navigation;
+        public Node node();
+        public Map<String, Object> args();
+        public Map<String, Object> attributes();
 
-        public Context(Node node, Map<String, Object> args) {
-            super(node, args);
-            navigation = null;
+        public static class NodeContext extends AbstractContext implements Context {
+
+            public NodeContext(Node node, Map<String, Object> args) {
+                super(node, args);
+            }
         }
 
-        public Context(Node node, Navigation navigation, Map<String, Object> args) {
-            super(node, args);
-            this.navigation = navigation;
+        public static class NavigationContext extends NodeContext {
+
+            private final Navigation navigation;
+
+            public NavigationContext(Node node, Navigation navigation, Map<String, Object> args) {
+                super(node, args);
+                this.navigation = navigation;
+            }
+
+            public Navigation navigation() { return navigation; }
         }
     }
 

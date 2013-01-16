@@ -20,6 +20,8 @@ import java.util.List;
 
 public class DashboardHelper {
 
+    private static final String PREFIX = "breadcrumb.origo.admin.dashboard.";
+
     public static Element createDashboard(Node node, String withType) throws NodeLoadException {
         OnLoadEventGenerator.triggerBeforeInterceptor(node, Admin.Type.DASHBOARD, withType);
         Element element = ProvidesEventGenerator.triggerInterceptor(node, Admin.Type.DASHBOARD, withType);
@@ -74,11 +76,11 @@ public class DashboardHelper {
             }
             if (dashboardIterator.hasNext()) {
                 items.add(
-                        createBreadcrumbItem(new Element.Anchor().addAttribute("href", url).setBody(Messages.get("breadcrumb."+dashboard)), true)
+                        createBreadcrumbItem(new Element.Anchor().addAttribute("href", url).setBody(Messages.get(PREFIX +dashboard)), true)
                 );
             } else {
                 items.add(
-                        createBreadcrumbItem(new Element.Text().setBody(Messages.get("breadcrumb."+dashboard)), false)
+                        createBreadcrumbItem(new Element.Text().setBody(Messages.get(PREFIX +dashboard)), false)
                 );
             }
         }

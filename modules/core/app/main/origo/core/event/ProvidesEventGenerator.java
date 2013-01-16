@@ -32,7 +32,7 @@ public class ProvidesEventGenerator {
         try {
             NodeContext.current().attributes.put(withType, cachedAnnotation.method.getDeclaringClass());
             //noinspection unchecked
-            return (T) cachedAnnotation.method.invoke(null, new Provides.Context(node, navigation, args));
+            return (T) cachedAnnotation.method.invoke(null, new Provides.Context.NavigationContext(node, navigation, args));
         } catch (Throwable e) {
             throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
         }
@@ -45,14 +45,13 @@ public class ProvidesEventGenerator {
      * @see main.origo.core.annotations.Core
      */
     public static List<CachedAnnotation> getAllProviders(final String type, final String with) {
-        List<CachedAnnotation> interceptors = InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
+        return InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation cacheAnnotation) {
                 Provides annotation = (Provides) cacheAnnotation.annotation;
                 return annotation.type().equals(type) && annotation.with().equals(with);
             }
         });
-        return interceptors;
     }
 
     /**
@@ -62,14 +61,13 @@ public class ProvidesEventGenerator {
      * @see main.origo.core.annotations.Core
      */
     public static List<CachedAnnotation> getAllProviders(final String type) {
-        List<CachedAnnotation> interceptors = InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
+        return InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation cacheAnnotation) {
                 Provides annotation = (Provides) cacheAnnotation.annotation;
                 return annotation.type().equals(type);
             }
         });
-        return interceptors;
     }
 
     public static CachedAnnotation findInterceptor(String nodeType, String withType) {

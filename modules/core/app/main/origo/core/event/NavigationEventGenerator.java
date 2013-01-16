@@ -25,9 +25,11 @@ public class NavigationEventGenerator {
         OnLoadEventGenerator.triggerBeforeInterceptor(node, Core.Type.NAVIGATION, withType, args);
     }
 
-    public static void triggerAfterNavigationLoaded(Node node, String withType, List<NavigationElement> navigationElements, String section) {
+    public static void triggerAfterNavigationLoaded(Node node, String withType, Navigation navigation, List<NavigationElement> navigationElements, String section) {
         //TODO: Figure out how to do this with a complete type Collection<NavigationElement>.class? instead of Collection.class
-        OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.NAVIGATION, withType, navigationElements, Collections.<String, Object>singletonMap("section", section));
+        for (NavigationElement element : navigationElements) {
+            OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.NAVIGATION, withType, navigation, element, Collections.<String, Object>singletonMap("section", section));
+        }
     }
 
     /*

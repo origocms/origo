@@ -11,6 +11,7 @@ import main.origo.core.annotations.Core;
 import main.origo.core.event.ProvidesEventGenerator;
 import main.origo.core.internal.CachedAnnotation;
 import main.origo.core.ui.NavigationElement;
+import models.origo.admin.AdminNavigation;
 import org.apache.commons.lang3.StringUtils;
 import play.i18n.Messages;
 
@@ -52,20 +53,8 @@ public class NavigationHelper {
     }
 
     private static NavigationElement createNavigationElement(Node node, NavigationData navigationData) throws NodeLoadException {
-        Map<String, Object> args = Maps.newHashMap();
-        args.put("link", getLink(navigationData));
-        args.put("key", navigationData.annotation.key());
-        args.put("text", Messages.get(navigationData.annotation.key()));
-        args.put("weight", navigationData.annotation.weight());
-        return ProvidesEventGenerator.triggerInterceptor(node, Core.Type.NAVIGATION_ITEM, "origo.admin.navigation", args);
-    }
-
-    private static String getLink(NavigationData navigationData) throws NodeLoadException {
-        try {
-            return (String) navigationData.method.invoke(navigationData.method.getDeclaringClass());
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new NodeLoadException("-", "Unable to load navigation", e);
-        }
+        AdminNavigation adminNavigation = new AdminNavigation(navigationData.key(), Messages.get(navigationData.key()), navigationData.getLink(), navigationData.weight());
+        return ProvidesEventGenerator.triggerInterceptor(node, Core.Type.NAVIGATION_ITEM, "origo.admin.navigation", adminNavigation, Collections.<String, Object>emptyMap());
     }
 
     private static Map<String, NavigationData> initNavigationData() {
@@ -73,7 +62,7 @@ public class NavigationHelper {
 
         Map<String, NavigationData> result = Maps.newHashMap();
         for (NavigationData navigationData : navigationDataList) {
-            String[] aliasSplit = StringUtils.split(navigationData.annotation.alias(), "/");
+            String[] aliasSplit = StringUtils.split(navigationData.alias(), "/");
             addNavigationData(aliasSplit, result, navigationData);
         }
         return result;
@@ -88,7 +77,7 @@ public class NavigationHelper {
                     current = current.get(next).children;
                 } else {
                     if (iterator.hasNext()) {
-                        throw new InitializationException("Unable to add ["+navigationData.annotation.alias()+"] to navigation, missing parent ["+next+"].");
+                        throw new InitializationException("Unable to add ["+navigationData.alias()+"] to navigation, missing parent ["+next+"].");
                     }
                     current.put(next, navigationData);
                 }
@@ -110,7 +99,7 @@ public class NavigationHelper {
         Collections.sort(navigationDataList, new Comparator<NavigationData>() {
             @Override
             public int compare(NavigationData n1, NavigationData n2) {
-                return new Integer(n1.annotation.alias().length()).compareTo(n2.annotation.alias().length());
+                return new Integer(n1.alias().length()).compareTo(n2.alias().length());
             }
         });
         return navigationDataList;
@@ -128,15 +117,39 @@ public class NavigationHelper {
     }
 
     private static class NavigationData {
-        public Admin.Navigation annotation;
-        public Method method;
+        private Admin.Navigation annotation;
+        private Method method;
 
-        public Map<String, NavigationData> children;
+        private Map<String, NavigationData> children;
 
         private NavigationData(Admin.Navigation annotation, Method method) {
             this.annotation = annotation;
             this.method = method;
             this.children = Maps.newHashMap();
+        }
+
+        public String getLink() {
+            try {
+                return (String) method.invoke(method.getDeclaringClass());
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException("Unable to get link form NavigationData ["+annotation+"]");
+            }
+        }
+
+        public String key() {
+            return annotation.key();
+        }
+
+        public String alias() {
+            return annotation.alias();
+        }
+
+        public int weight() {
+            return annotation.weight();
+        }
+
+        public Map<String, NavigationData> children() {
+            return children;
         }
     }
 

@@ -40,34 +40,34 @@ public class WysiHTML5EditorProvider {
     }
 
     @OnLoad(type = Core.Type.NODE, with = Core.With.EDITOR)
-    public static void setupEditor(OnLoad.Context context) {
-        if (ProviderHelper.isProvider(context.withType, WysiHTML5EditorProvider.class) && !context.attributes.containsKey(JS_LOADED)) {
+    public static void setupEditor(OnLoad.Context.NodeContext context) {
+        if (ProviderHelper.isProvider(context.withType(), WysiHTML5EditorProvider.class) && !context.attributes().containsKey(JS_LOADED)) {
             String mainScript = routes.Assets.at("javascripts/origo/wysihtml5/wysihtml5-0.4.0pre.min.js").url();
-            context.node.addTailElement(new Element.Script().setWeight(9999).addAttribute("src", mainScript).addAttribute("type", "text/javascript"));
+            context.node().addTailElement(new Element.Script().setWeight(9999).addAttribute("src", mainScript).addAttribute("type", "text/javascript"));
             String parserRulesScript = routes.Assets.at("javascripts/origo/wysihtml5/parser_rules/advanced.js").url();
-            context.node.addTailElement(new Element.Script().setWeight(9999).addAttribute("src", parserRulesScript).addAttribute("type", "text/javascript"));
+            context.node().addTailElement(new Element.Script().setWeight(9999).addAttribute("src", parserRulesScript).addAttribute("type", "text/javascript"));
 
-            context.attributes.put(JS_LOADED, true);
+            context.attributes().put(JS_LOADED, true);
         }
     }
 
     @OnInsertElement(with = Element.InputTextArea.class)
     public static void insertToolbar(OnInsertElement.Context context) {
-        if (context.attributes.containsKey(JS_LOADED)) {
+        if (context.attributes().containsKey(JS_LOADED)) {
             context.parent.addChild(new WysiHtml5ToolbarElement().setId(context.element.id));
         }
     }
 
     @OnInsertElement(with = Element.InputTextArea.class, after = true)
     public static void insertScript(OnInsertElement.Context context) {
-        if (context.attributes.containsKey(JS_LOADED)) {
-            context.node.addTailElement(new WysiHtml5ScriptElement().setId(context.element.id));
+        if (context.attributes().containsKey(JS_LOADED)) {
+            context.node().addTailElement(new WysiHtml5ScriptElement().setId(context.element.id));
         }
     }
 
     @Provides(type = Core.Type.NODE, with = Core.With.EDITOR)
     public static Element createEditor(Provides.Context context) {
-        Content content = (Content) context.args.get("content");
+        Content content = (Content) context.args().get("content");
         return new Element.InputTextArea().setId(content.identifier).setBody(content.value);
     }
 

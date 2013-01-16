@@ -40,9 +40,9 @@ public class DefaultSubmitHandler {
     }
 
     @OnLoad(type = Core.Type.FORM)
-    public static void addWithTypeField(OnLoad.Context context) {
+    public static void addWithTypeField(OnLoad.Context.ElementContext context) {
         if (DefaultSubmitHandler.class.isAssignableFrom(SubmitHandlerEventGenerator.getActiveSubmitHandler())) {
-            context.element.addChild(new Element.InputHidden().addAttribute("name", WITH_TYPE).addAttribute("value", context.withType));
+            context.element().addChild(new Element.InputHidden().addAttribute("name", WITH_TYPE).addAttribute("value", context.withType()));
         }
     }
 

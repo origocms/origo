@@ -14,7 +14,7 @@ public class SegmentProvider {
 
     @Provides(type = SEGMENT, with = "models.origo.core.Content")
     public static Element createSegment(Provides.Context context) {
-        Segment segment = (Segment) context.args.get("segment");
+        Segment segment = (Segment) context.args().get("segment");
         if (!StringUtils.isBlank(segment.referenceId)) {
             Content content = Content.findWithIdentifier(segment.referenceId);
             if (content != null) {

@@ -26,11 +26,11 @@ public class DefaultDashboardProvider {
      */
     @Provides(type = Core.Type.NODE, with = Admin.With.FRONT_PAGE)
     public static Node createPage(Provides.Context context) throws NodeLoadException {
-        AdminPage page = new AdminPage((RootNode) context.node);
+        AdminPage page = new AdminPage((RootNode) context.node());
         page.setTitle("Dashboard");
 
-        context.node.addElement(DashboardHelper.createBreadcrumb(Admin.With.FRONT_PAGE), AdminTheme.topMeta());
-        context.node.addElement(DashboardHelper.createDashboard(context.node, Admin.With.FRONT_PAGE));
+        context.node().addElement(DashboardHelper.createBreadcrumb(Admin.With.FRONT_PAGE), AdminTheme.topMeta());
+        context.node().addElement(DashboardHelper.createDashboard(context.node(), Admin.With.FRONT_PAGE));
 
         return page;
     }
@@ -41,7 +41,7 @@ public class DefaultDashboardProvider {
     @Provides(type = Admin.Type.DASHBOARD, with = Admin.With.FRONT_PAGE)
     public static Element createFrontPageDashboard(Provides.Context context) {
         return DashboardHelper.createBasicDashboard().setId("dashboard."+Admin.With.FRONT_PAGE).
-                addChildren(DashboardHelper.createDashboardItems(context.node, Admin.With.FRONT_PAGE));
+                addChildren(DashboardHelper.createDashboardItems(context.node(), Admin.With.FRONT_PAGE));
     }
 
     @Admin.Navigation(alias="/dashboard", key = "breadcrumb.origo.admin.dashboard.frontpage", weight = 1)

@@ -9,9 +9,9 @@ import java.util.Map;
 
 public abstract class AbstractContext {
 
-    public final Node node;
-    public final Map<String, Object> args;
-    public final Map<String, Object> attributes;
+    private final Node node;
+    private final Map<String, Object> args;
+    private final Map<String, Object> attributes;
 
     protected AbstractContext(Node node, Map<String, Object> args) {
         this.node = node;
@@ -20,4 +20,9 @@ public abstract class AbstractContext {
         this.args.putAll(DynamicForm.form().bindFromRequest().data());
         this.attributes = NodeContext.current().attributes;
     }
+
+    public Node node() { return node; }
+    public Map<String, Object> args() { return args; }
+    public Map<String, Object> attributes() { return attributes; }
+
 }

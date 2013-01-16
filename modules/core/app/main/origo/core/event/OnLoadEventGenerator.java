@@ -22,7 +22,7 @@ import java.util.Map;
 public class OnLoadEventGenerator {
 
     private static void triggerBeforeInterceptor(String type, String withType, OnLoad.Context context) {
-        List<CachedAnnotation> interceptors = findInterceptorForType(type, !StringUtils.isBlank(withType) ? withType : context.node.getClass().getName(), false);
+        List<CachedAnnotation> interceptors = findInterceptorForType(type, !StringUtils.isBlank(withType) ? withType : context.node().getClass().getName(), false);
         if (interceptors != null && !interceptors.isEmpty()) {
             for (CachedAnnotation interceptor : interceptors) {
                 try {
@@ -34,12 +34,8 @@ public class OnLoadEventGenerator {
         }
     }
 
-    public static void triggerBeforeInterceptor(Node node, String type, String withType, Navigation navigation) {
-        triggerBeforeInterceptor(type, withType, new OnLoad.Context(node, withType, navigation, Collections.<String, Object>emptyMap()));
-    }
-
     public static void triggerBeforeInterceptor(Node node, String type, String withType, Navigation navigation, Map<String, Object> args) {
-        triggerBeforeInterceptor(type, withType, new OnLoad.Context(node, withType, navigation, args));
+        triggerBeforeInterceptor(type, withType, new OnLoad.Context.NavigationContext(node, withType, navigation, args));
     }
 
     public static void triggerBeforeInterceptor(Node node, String type, String withType) {
@@ -47,11 +43,11 @@ public class OnLoadEventGenerator {
     }
 
     public static void triggerBeforeInterceptor(Node node, String type, String withType, Map<String, Object> args) {
-        triggerBeforeInterceptor(type, withType, new OnLoad.Context(node, withType, args));
+        triggerBeforeInterceptor(type, withType, new OnLoad.Context.NodeContext(node, withType, args));
     }
 
     private static void triggerAfterInterceptor(String onLoadType, String withType, OnLoad.Context context) {
-        List<CachedAnnotation> interceptorList = findInterceptorForType(onLoadType, !StringUtils.isBlank(withType) ? withType : context.node.getClass().getName(), true);
+        List<CachedAnnotation> interceptorList = findInterceptorForType(onLoadType, !StringUtils.isBlank(withType) ? withType : context.node().getClass().getName(), true);
         if (interceptorList != null && !interceptorList.isEmpty()) {
             for (CachedAnnotation interceptor : interceptorList) {
                 try {
@@ -64,35 +60,19 @@ public class OnLoadEventGenerator {
     }
 
     public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Element element) {
-        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, withType, element, Collections.<String, Object>emptyMap()));
+        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context.ElementContext(node, withType, element, Collections.<String, Object>emptyMap()));
     }
 
     public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Element element, Map<String, Object> args) {
-        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, withType, element, args));
-    }
-
-    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Navigation navigation) {
-        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, withType, navigation, Collections.<String, Object>emptyMap()));
-    }
-
-    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Navigation navigation, Map<String, Object> args) {
-        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, withType, navigation, args));
+        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context.ElementContext(node, withType, element, args));
     }
 
     public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Navigation navigation, NavigationElement navigationElement) {
-        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, withType, navigation, navigationElement, Collections.<String, Object>emptyMap()));
+        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context.NavigationElementContext(node, withType, navigation, navigationElement, Collections.<String, Object>emptyMap()));
     }
 
     public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Navigation navigation, NavigationElement navigationElement, Map<String, Object> args) {
-        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, withType, navigation, navigationElement, args));
-    }
-
-    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, List<NavigationElement> navigationElements) {
-        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, withType, navigationElements, Collections.<String, Object>emptyMap()));
-    }
-
-    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, List<NavigationElement> navigationElements, Map<String, Object> args) {
-        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, withType, navigationElements, args));
+        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context.NavigationElementContext(node, withType, navigation, navigationElement, args));
     }
 
     public static void triggerAfterInterceptor(Node node, String onLoadType, String withType) {
@@ -100,7 +80,7 @@ public class OnLoadEventGenerator {
     }
 
     public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Map<String, Object> args) {
-        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, withType, args));
+        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context.NodeContext(node, withType, args));
     }
 
     private static List<CachedAnnotation> findInterceptorForType(final String onLoadType, final String withType, final boolean after) {

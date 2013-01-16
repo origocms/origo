@@ -52,16 +52,6 @@ public class BasicNavigation implements Navigation<BasicNavigation>, Comparable<
     }
 
     @Override
-    public BasicNavigation getParent() {
-        return parent;
-    }
-
-    @Override
-    public List<BasicNavigation> getChildren() {
-        return children;
-    }
-
-    @Override
     public int getWeight() {
         return weight;
     }

@@ -24,7 +24,7 @@ public class DashboardEventGenerator {
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
             try {
                 //noinspection unchecked
-                items.add((Element) cachedAnnotation.method.invoke(null, new Provides.Context(node, Collections.<String, Object>emptyMap())));
+                items.add((Element) cachedAnnotation.method.invoke(null, new Provides.Context.NodeContext(node, Collections.<String, Object>emptyMap())));
             } catch (Throwable e) {
                 Logger.error("", e);
                 throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());

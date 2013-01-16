@@ -9,7 +9,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,56 +36,79 @@ public @interface OnLoad {
 
     boolean after() default true;
 
-    public static class Context extends AbstractContext {
-        public final Navigation navigation;
-        public final NavigationElement navigationElement;
-        public final List<NavigationElement> navigationElements;
-        public final Element element;
-        public final String withType;
+    public static interface Context {
 
-        public Context(Node node, String withType, Map<String, Object> args) {
-            super(node, args);
-            this.withType = withType;
-            navigation = null;
-            element = null;
-            navigationElements = null;
-            navigationElement = null;
+        public Node node();
+        public String withType();
+        public Map<String, Object> args();
+        public Map<String, Object> attributes();
+
+        public static class NodeContext extends AbstractContext implements Context {
+            private final String withType;
+
+            public NodeContext(Node node, Map<String, Object> args) {
+                super(node, args);
+                this.withType = null;
+            }
+
+            public NodeContext(Node node, String withType, Map<String, Object> args) {
+                super(node, args);
+                this.withType = withType;
+            }
+
+            public String withType() {
+                return withType;
+            }
         }
 
-        public Context(Node node, String withType, Navigation navigation, Map<String, Object> args) {
-            super(node, args);
-            this.withType = withType;
-            this.navigation = navigation;
-            element = null;
-            navigationElements = null;
-            navigationElement = null;
+        public static class NavigationContext extends NodeContext {
+            private final Navigation navigation;
+
+            public NavigationContext(Node node, String withType, Navigation navigation, Map<String, Object> args) {
+                super(node, withType, args);
+                this.navigation = navigation;
+            }
+
+            public Navigation navigation() {
+                return navigation;
+            }
         }
 
-        public Context(Node node, String withType, List<NavigationElement> navigationElements, Map<String, Object> args) {
-            super(node, args);
-            this.withType = withType;
-            this.navigationElements = navigationElements;
-            navigation = null;
-            element = null;
-            navigationElement = null;
+/*
+        public static class NavigationElementsContext extends NodeContext {
+            private List<NavigationElement> navigationElements;
+
+            public NavigationElementsContext(Node node, String withType, List<NavigationElement> navigationElements, Map<String, Object> args) {
+                super(node, withType, args);
+                this.navigationElements = navigationElements;
+            }
+        }
+*/
+
+        public static class ElementContext extends NodeContext {
+            private Element element;
+
+            public ElementContext(Node node, String withType, Element element, Map<String, Object> args) {
+                super(node, withType, args);
+                this.element = element;
+            }
+
+            public Element element() {
+                return element;
+            }
         }
 
-        public Context(Node node, String withType, Element element, Map<String, Object> args) {
-            super(node, args);
-            this.withType = withType;
-            this.element = element;
-            navigation = null;
-            navigationElements = null;
-            navigationElement = null;
-        }
+        public static class NavigationElementContext extends NavigationContext {
+            private final NavigationElement navigationElement;
 
-        public Context(Node node, String withType, Navigation navigation, NavigationElement navigationElement, Map<String, Object> args) {
-            super(node, args);
-            this.withType = withType;
-            this.navigation = navigation;
-            this.navigationElement = navigationElement;
-            element = null;
-            navigationElements = null;
+            public NavigationElementContext(Node node, String withType, Navigation navigation, NavigationElement navigationElement, Map<String, Object> args) {
+                super(node, withType, navigation, args);
+                this.navigationElement = navigationElement;
+            }
+
+            public NavigationElement element() {
+                return navigationElement;
+            }
         }
     }
 
