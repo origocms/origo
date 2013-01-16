@@ -10,6 +10,8 @@ import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
 import play.Logger;
 import play.api.templates.Html;
+import play.db.jpa.JPA;
+import play.libs.F;
 import play.mvc.Result;
 
 import java.lang.annotation.Annotation;
@@ -51,18 +53,23 @@ public class AnnotationProcessor {
 
     private static void scanAndInitModules() {
         Reflections reflections = new Reflections("");
-        Set<Class<?>> modules = reflections.getTypesAnnotatedWith(Module.class);
+        final Set<Class<?>> modules = reflections.getTypesAnnotatedWith(Module.class);
 
-        for (Class c : modules) {
-            //noinspection unchecked
-            Module moduleAnnotation = (Module) c.getAnnotation(Module.class);
-            CachedModule cachedModule = ModuleRepository.add(moduleAnnotation, c);
-            try {
-                cachedModule.initMethod.invoke(CachedModule.class);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new InitializationException("Unable to init module", e);
+        JPA.withTransaction(new F.Callback0() {
+            @Override
+            public void invoke() throws Throwable {
+                for (Class c : modules) {
+                    //noinspection unchecked
+                    Module moduleAnnotation = (Module) c.getAnnotation(Module.class);
+                    CachedModule cachedModule = ModuleRepository.add(moduleAnnotation, c);
+                    try {
+                        cachedModule.initMethod.invoke(CachedModule.class);
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        throw new InitializationException("Unable to init module", e);
+                    }
+                }
             }
-        }
+        });
     }
 
     private static void scanModuleAnnotations() {

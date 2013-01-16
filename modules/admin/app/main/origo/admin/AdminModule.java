@@ -6,8 +6,6 @@ import main.origo.admin.themes.AdminTheme;
 import main.origo.core.annotations.Module;
 import main.origo.core.internal.AnnotationProcessor;
 import models.origo.core.Settings;
-import play.db.jpa.JPA;
-import play.libs.F;
 
 import java.util.Collections;
 import java.util.List;
@@ -18,15 +16,10 @@ public class AdminModule {
 
     @Module.Init
     public static void init() {
-        JPA.withTransaction(new F.Callback0() {
-            @Override
-            public void invoke() throws Throwable {
-                Settings settings = Settings.load();
-                settings.setValueIfMissing(AdminSettingsHelper.Keys.HOME_DASHBOARD_TYPE, Admin.With.FRONT_PAGE);
-                settings.setValueIfMissing(AdminSettingsHelper.Keys.THEME_VARIANT, AdminTheme.DEFAULT_VARIANT_NAME);
-                settings.save();
-            }
-        });
+        Settings settings = Settings.load();
+        settings.setValueIfMissing(AdminSettingsHelper.Keys.HOME_DASHBOARD_TYPE, Admin.With.FRONT_PAGE);
+        settings.setValueIfMissing(AdminSettingsHelper.Keys.THEME_VARIANT, AdminTheme.DEFAULT_VARIANT_NAME);
+        settings.save();
     }
 
     @Module.Annotations

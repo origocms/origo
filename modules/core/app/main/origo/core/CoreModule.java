@@ -10,8 +10,6 @@ import main.origo.core.interceptors.forms.DefaultFormProvider;
 import main.origo.core.interceptors.forms.DefaultSubmitHandler;
 import main.origo.core.internal.AnnotationProcessor;
 import models.origo.core.Settings;
-import play.db.jpa.JPA;
-import play.libs.F;
 import play.mvc.Result;
 
 import java.util.List;
@@ -22,16 +20,11 @@ public class CoreModule {
 
     @Module.Init
     public static void init() {
-        JPA.withTransaction(new F.Callback0() {
-            @Override
-            public void invoke() throws Throwable {
-                Settings settings = Settings.load();
-                settings.setValueIfMissing(CoreSettingsHelper.Keys.THEME_VARIANT, "default-main_and_left_columns");
-                settings.setValueIfMissing(CoreSettingsHelper.Keys.SUBMIT_HANDLER, DefaultSubmitHandler.class.getName());
-                settings.setValueIfMissing(CoreSettingsHelper.Keys.DEFAULT_FORM_TYPE, DefaultFormProvider.TYPE);
-                settings.save();
-            }
-        });
+        Settings settings = Settings.load();
+        settings.setValueIfMissing(CoreSettingsHelper.Keys.THEME_VARIANT, "default-main_and_left_columns");
+        settings.setValueIfMissing(CoreSettingsHelper.Keys.SUBMIT_HANDLER, DefaultSubmitHandler.class.getName());
+        settings.setValueIfMissing(CoreSettingsHelper.Keys.DEFAULT_FORM_TYPE, DefaultFormProvider.TYPE);
+        settings.save();
     }
 
     @Module.Annotations
