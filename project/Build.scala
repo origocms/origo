@@ -23,9 +23,6 @@ object ApplicationBuild extends Build {
   val core = play.Project(
     appName + "-core", appVersion, appDependencies, path = file("modules/core")
   )
-  val structuredcontent = play.Project(
-    appName + "-structuredcontent", appVersion, appDependencies, path = file("modules/structuredcontent")
-  ).dependsOn( core ).aggregate( core )
 
   /**
    * Admin and admin dependencies
@@ -40,11 +37,19 @@ object ApplicationBuild extends Build {
     appName + "-admin", appVersion, appDependencies, path = file("modules/admin")
   ).dependsOn( core, datepicker, bootstrap_wysihtml ).aggregate( core, datepicker, bootstrap_wysihtml )
 
-/*
-    val adminArea = PlayProject(
-      appName + "-admin", appVersion, path = file("modules/admin")
-    ).dependsOn(core)
-*/
+  /**
+   * Structured Content
+   */
+  val structuredcontent = play.Project(
+    appName + "-structuredcontent", appVersion, appDependencies, path = file("modules/structuredcontent")
+  ).dependsOn( core, admin ).aggregate( core, admin )
+
+
+  /*
+      val adminArea = PlayProject(
+        appName + "-admin", appVersion, path = file("modules/admin")
+      ).dependsOn(core)
+  */
 
   val main = play.Project(
       appName, appVersion, appDependencies

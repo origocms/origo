@@ -107,7 +107,7 @@ public class BasicPageAdminProvider {
         context.node().addElement(panelElement);
     }
 
-    @Admin.Navigation(alias="/content/basic", key="breadcrumb.origo.admin.dashboard.content.basicpage")
+    @Admin.Navigation(alias="/content/pages/basic", key="breadcrumb.origo.admin.dashboard.content.basicpage")
     public static String getProviderUrl() {
         return routes.Dashboard.pageWithType(Admin.With.CONTENT_PAGE, LIST_TYPE).url();
     }

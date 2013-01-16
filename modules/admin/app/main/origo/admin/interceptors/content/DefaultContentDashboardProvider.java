@@ -35,6 +35,11 @@ public class DefaultContentDashboardProvider {
         return routes.Dashboard.dashboard(Admin.With.CONTENT_PAGE).url();
     }
 
+    @Admin.Navigation(alias="/content/pages", key="breadcrumb.origo.admin.dashboard.content.pages")
+    public static String getDashboardPagesUrl() {
+        return routes.Dashboard.dashboard(Admin.With.CONTENT_PAGE).url();
+    }
+
     /*
      * Creating the Node for the Content page.
      */
