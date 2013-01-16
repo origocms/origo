@@ -11,11 +11,7 @@
             <a class="brand" href="/">Origo CMS</a>
             <div class="nav-collapse collapse">
                 <ul class="nav">
-                    @navigation.map { item =>
-                        <li @if(item.selected){ class="active"}>
-                            <a href="@item.link">@item.title</a>
-                        </li>
-                    }
+                    @_navigation_children(navigation)
                 </ul>
             </div>
         </div>

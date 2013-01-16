@@ -15,6 +15,7 @@ import models.origo.core.navigation.BasicNavigation;
 import models.origo.core.navigation.ExternalLinkNavigation;
 import models.origo.core.navigation.PageIdNavigation;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -42,6 +43,7 @@ public class BasicNavigationProvider {
             NavigationElement navigationElement = NavigationEventGenerator.triggerProvidesNavigationItemInterceptor(context.node, navigationModel.type, navigationModel);
             NavigationEventGenerator.triggerAfterNavigationItemLoaded(context.node, navigationModel.type, navigationModel, navigationElement);
             List<NavigationElement> children = createNavigationChildren(context.node, section, navigationModel, navigationElement);
+            Collections.sort(children);
             navigationElement.children.addAll(children);
             navigationElements.add(navigationElement);
         }
@@ -63,6 +65,7 @@ public class BasicNavigationProvider {
                 navigationElements.add(childNavigationElement);
             }
         }
+        Collections.sort(navigationElements);
         return navigationElements;
     }
 
