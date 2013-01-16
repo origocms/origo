@@ -27,6 +27,7 @@ import play.data.Form;
 import play.i18n.Messages;
 import play.mvc.Controller;
 import play.mvc.Result;
+import views.html.origo.admin.decorators.basicpage.list;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -45,6 +46,7 @@ public class BasicPageAdminProvider {
     private static final String BASE_TYPE = Admin.With.CONTENT_PAGE + ".basicpage";
     private static final String LIST_TYPE = BASE_TYPE + ".list";
     private static final String EDIT_TYPE = BASE_TYPE + ".edit";
+    private static final String NEW_TYPE = BASE_TYPE + ".new";
 
     private static final String TITLE_PARAM = "origo-basicpageform-title";
     private static final String PUBLISH_DATE_PARAM = "origo-basicpageform-publish-date";
@@ -83,7 +85,6 @@ public class BasicPageAdminProvider {
         AdminPage page = new AdminPage((RootNode)context.node());
         page.setTitle("List Basic Pages");
         page.addElement(DashboardHelper.createBreadcrumb(BASE_TYPE), AdminTheme.topMeta());
-
         return page;
     }
 
@@ -96,6 +97,8 @@ public class BasicPageAdminProvider {
     public static void createListPage(OnLoad.Context context) {
         List<BasicPage> basicPages = BasicPage.findAllLatestVersions();
 
+        context.node().addElement(new Element.Raw().setBody(list.render(basicPages)));
+/*
         Element panelElement = new Element.Panel().setWeight(10).addAttribute("class", "panel pages");
         for (BasicPage page : basicPages) {
             String editURL = routes.Dashboard.pageWithTypeAndIdentifier(Admin.With.CONTENT_PAGE, EDIT_TYPE, page.getNodeId()).url();
@@ -105,11 +108,33 @@ public class BasicPageAdminProvider {
             panelElement.addChild(panel);
         }
         context.node().addElement(panelElement);
+*/
     }
 
     @Admin.Navigation(alias="/content/pages/basic", key="breadcrumb.origo.admin.dashboard.content.basicpage")
     public static String getProviderUrl() {
         return routes.Dashboard.pageWithType(Admin.With.CONTENT_PAGE, LIST_TYPE).url();
+    }
+
+    @Provides(type = Core.Type.NODE, with = NEW_TYPE)
+    public static Node createNewPage(Provides.Context context) {
+        AdminPage page = new AdminPage(new RootNode(0));
+
+        // TODO: Look up themevariant (and also meta) from DB instead of resetting here.
+        page.rootNode.themeVariant = null;
+        page.setTitle("New Basic Page");
+        page.addElement(DashboardHelper.createBreadcrumb(BASE_TYPE), AdminTheme.topMeta());
+        return page;
+    }
+
+    @OnLoad(type = Core.Type.NODE, with = NEW_TYPE)
+    public static void loadNewPage(OnLoad.Context context) {
+        BasicPage page = new BasicPage();
+        page.rootNode = new RootNode(0);
+        context.attributes().put("page", page);
+        context.attributes().put("lead", new Content());
+        context.attributes().put("body", new Content());
+        context.node().addElement(FormHelper.createFormElement(context.node(), BASE_TYPE));
     }
 
     /**
@@ -137,6 +162,20 @@ public class BasicPageAdminProvider {
 
     @OnLoad(type = Core.Type.NODE, with = EDIT_TYPE)
     public static void loadEditPage(OnLoad.Context context) {
+        BasicPage basicPage = BasicPage.findLatestVersion(context.node().getNodeId());
+        if (basicPage == null) {
+            context.node().addElement(new Element.Paragraph().setWeight(10).setBody("Page '" + context.node().getNodeId() + "' does not exist."));
+            return;
+        }
+        basicPage.rootNode = RootNode.findWithNodeIdAndSpecificVersion(context.node().getNodeId(), context.node().getVersion());
+
+        Content leadContent = Content.findWithIdentifier(basicPage.leadReferenceId);
+        Content bodyContent = Content.findWithIdentifier(basicPage.bodyReferenceId);
+
+        context.attributes().put("page", basicPage);
+        context.attributes().put("lead", leadContent);
+        context.attributes().put("body", bodyContent);
+
         context.node().addElement(FormHelper.createFormElement(context.node(), BASE_TYPE));
     }
 
@@ -147,15 +186,10 @@ public class BasicPageAdminProvider {
      */
     @OnLoad(type = Core.Type.FORM, with = BASE_TYPE, after = true)
     public static void loadEditForm(OnLoad.Context.ElementContext context) {
-        BasicPage basicPage = BasicPage.findLatestVersion(context.node().getNodeId());
-        if (basicPage == null) {
-            context.node().addElement(new Element.Paragraph().setWeight(10).setBody("Page '" + context.node().getNodeId() + "' does not exist."));
-            return;
-        }
-        basicPage.rootNode = RootNode.findWithNodeIdAndSpecificVersion(context.node().getNodeId(), context.node().getVersion());
 
-        Content leadContent = Content.findWithIdentifier(basicPage.leadReferenceId);
-        Content bodyContent = Content.findWithIdentifier(basicPage.bodyReferenceId);
+        BasicPage basicPage = (BasicPage) context.attributes().get("page");
+        Content leadContent = (Content) context.attributes().get("lead");
+        Content bodyContent = (Content) context.attributes().get("body");
 
         context.element().setId("basicpageform").addAttribute("class", "origo-basicpageform, form");
 
@@ -297,10 +331,14 @@ public class BasicPageAdminProvider {
         Integer version = FormHelper.getNodeVersion(data);
         RootNode oldRootNode = RootNode.findWithNodeIdAndSpecificVersion(nodeId, version);
         if (oldRootNode == null) {
-            throw new RuntimeException("Root node with id='" + nodeId + "' does not exist");
+            oldRootNode = new RootNode(0);
         }
 
         BasicPage latestVersion = BasicPage.findLatestVersion(nodeId);
+        if (latestVersion == null) {
+            latestVersion = new BasicPage();
+            latestVersion.nodeId = oldRootNode.getNodeId();
+        }
         latestVersion.rootNode = oldRootNode;
 
         // TODO: Validation
@@ -316,12 +354,12 @@ public class BasicPageAdminProvider {
         }
 
         Content leadContent = Content.findWithIdentifier(latestVersion.leadReferenceId);
-        if (!leadContent.value.equals(data.get(LEAD_PARAM))) {
+        if (leadContent == null || !leadContent.value.equals(data.get(LEAD_PARAM))) {
             newVersion = true;
         }
 
         Content bodyContent = Content.findWithIdentifier(latestVersion.bodyReferenceId);
-        if (!bodyContent.value.equals(data.get(BODY_PARAM))) {
+        if (bodyContent == null || !bodyContent.value.equals(data.get(BODY_PARAM))) {
             newVersion = true;
         }
 

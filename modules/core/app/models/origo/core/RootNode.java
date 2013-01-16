@@ -230,75 +230,95 @@ public final class RootNode implements Node {
     }
 
     public static List<RootNode> findAllCurrentVersions(Date today) {
-        String queryString = "select n from models.origo.core.RootNode n " +
-                "where n.version = (" +
-                "select max(n2.version) from models.origo.core.RootNode n2 " +
-                "where n2.nodeId = n.nodeId and " +
-                "(n2.publish = null or n2.publish < :today) and" +
-                "(n2.unPublish = null or n2.unPublish >= :today)" +
-                ")";
-        final Query query = JPA.em().createQuery(queryString);
-        query.setParameter("today", today);
-        List<RootNode> nodes = query.getResultList();
-        initializeNodes(nodes);
-        return nodes;
+        try {
+            String queryString = "select n from models.origo.core.RootNode n " +
+                    "where n.version = (" +
+                    "select max(n2.version) from models.origo.core.RootNode n2 " +
+                    "where n2.nodeId = n.nodeId and " +
+                    "(n2.publish = null or n2.publish < :today) and" +
+                    "(n2.unPublish = null or n2.unPublish >= :today)" +
+                    ")";
+            final Query query = JPA.em().createQuery(queryString);
+            query.setParameter("today", today);
+            List<RootNode> nodes = query.getResultList();
+            initializeNodes(nodes);
+            return nodes;
+        } catch (NoResultException e) {
+            return Collections.emptyList();
+        }
     }
 
     public static RootNode findWithNodeIdAndSpecificVersion(String nodeId, Integer version) {
-        String queryString = "select n from models.origo.core.RootNode n " +
-                "where n.nodeId = :nodeId and n.version = :version";
-        final Query query = JPA.em().createQuery(queryString);
-        query.setParameter("nodeId", nodeId);
-        query.setParameter("version", version);
-        RootNode node = (RootNode) query.getSingleResult();
-        if (node != null) {
-            initializeNode(node);
+        try {
+            String queryString = "select n from models.origo.core.RootNode n " +
+                    "where n.nodeId = :nodeId and n.version = :version";
+            final Query query = JPA.em().createQuery(queryString);
+            query.setParameter("nodeId", nodeId);
+            query.setParameter("version", version);
+            RootNode node = (RootNode) query.getSingleResult();
+            if (node != null) {
+                initializeNode(node);
+            }
+            return node;
+        } catch (NoResultException e) {
+            return null;
         }
-        return node;
     }
 
     public static RootNode findLatestPublishedVersionWithNodeId(String nodeId, Date today) {
-        String queryString = "select distinct n from models.origo.core.RootNode n " +
-                "where n.nodeId = :nodeId and " +
-                "(n.publish = null or n.publish < :today) and " +
-                "(n.unPublish = null or n.unPublish >= :today) " +
-                "order by n.version desc";
-        final Query query = JPA.em().createQuery(queryString);
-        query.setParameter("nodeId", nodeId);
-        query.setParameter("today", today);
-        List<RootNode> nodes = query.getResultList();
-        if (nodes.isEmpty()) {
+        try {
+            String queryString = "select distinct n from models.origo.core.RootNode n " +
+                    "where n.nodeId = :nodeId and " +
+                    "(n.publish = null or n.publish < :today) and " +
+                    "(n.unPublish = null or n.unPublish >= :today) " +
+                    "order by n.version desc";
+            final Query query = JPA.em().createQuery(queryString);
+            query.setParameter("nodeId", nodeId);
+            query.setParameter("today", today);
+            List<RootNode> nodes = query.getResultList();
+            if (nodes.isEmpty()) {
+                return null;
+            }
+            RootNode node = nodes.get(0);
+            initializeNode(node);
+            return node;
+        } catch (NoResultException e) {
             return null;
         }
-        RootNode node = nodes.get(0);
-        initializeNode(node);
-        return node;
     }
 
     public static RootNode findLatestVersionWithNodeId(String nodeId) {
-        String queryString = "select distinct n from models.origo.core.RootNode n " +
-                "where n.nodeId = :nodeId " +
-                "order by n.version desc";
-        final Query query = JPA.em().createQuery(queryString);
-        query.setParameter("nodeId", nodeId);
-        List<RootNode> nodes = query.getResultList();
-        if (nodes.isEmpty()) {
+        try {
+            String queryString = "select distinct n from models.origo.core.RootNode n " +
+                    "where n.nodeId = :nodeId " +
+                    "order by n.version desc";
+            final Query query = JPA.em().createQuery(queryString);
+            query.setParameter("nodeId", nodeId);
+            List<RootNode> nodes = query.getResultList();
+            if (nodes.isEmpty()) {
+                return null;
+            }
+            RootNode node = nodes.get(0);
+            initializeNode(node);
+            return node;
+        } catch (NoResultException e) {
             return null;
         }
-        RootNode node = nodes.get(0);
-        initializeNode(node);
-        return node;
     }
 
     public static List<RootNode> findAllVersionsWithNodeId(String nodeId) {
-        String queryString = "select distinct n from models.origo.core.RootNode n " +
-                "where n.nodeId = :nodeId " +
-                "order by n.version desc";
-        final Query query = JPA.em().createQuery(queryString);
-        query.setParameter("nodeId", nodeId);
-        List<RootNode> nodes = query.getResultList();
-        initializeNodes(nodes);
-        return nodes;
+        try {
+            String queryString = "select distinct n from models.origo.core.RootNode n " +
+                    "where n.nodeId = :nodeId " +
+                    "order by n.version desc";
+            final Query query = JPA.em().createQuery(queryString);
+            query.setParameter("nodeId", nodeId);
+            List<RootNode> nodes = query.getResultList();
+            initializeNodes(nodes);
+            return nodes;
+        } catch (NoResultException e) {
+            return Collections.emptyList();
+        }
     }
 
     public RootNode copy() {

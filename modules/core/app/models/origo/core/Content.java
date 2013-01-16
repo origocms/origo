@@ -25,6 +25,7 @@ public class Content {
 
     public Content() {
         this.identifier = UUID.randomUUID().toString();
+        this.value = "";
     }
 
     public static Content findWithIdentifier(String identifier) {

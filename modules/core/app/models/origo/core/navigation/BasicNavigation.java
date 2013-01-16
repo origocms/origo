@@ -56,7 +56,15 @@ public class BasicNavigation implements Navigation<BasicNavigation>, Comparable<
         return weight;
     }
 
-    public static List<BasicNavigation> findWithSection(String section) {
+    public static List<BasicNavigation> findWithSectionWithoutParent(String section) {
+        final Query query = JPA.em().createQuery("select bn from models.origo.core.navigation.BasicNavigation bn where bn.section=:section and parent is null");
+        query.setParameter("section", section);
+        List<BasicNavigation> resultList = query.getResultList();
+        Collections.sort(resultList);
+        return resultList;
+    }
+
+    public static List<BasicNavigation> findAllWithSection(String section) {
         final Query query = JPA.em().createQuery("select bn from models.origo.core.navigation.BasicNavigation bn where bn.section=:section");
         query.setParameter("section", section);
         List<BasicNavigation> resultList = query.getResultList();

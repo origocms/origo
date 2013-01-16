@@ -58,7 +58,10 @@ public class TinyMCEEditorProvider {
     @Provides(type = Core.Type.NODE, with = Core.With.EDITOR)
     public static Element createEditor(Provides.Context context) {
         Content content = (Content) context.args().get("content");
-        return new Element.InputTextArea().setId(content.identifier).addAttribute("class", "tinymce").setBody(content.value);
+        if (content != null) {
+            return new Element.InputTextArea().setId(content.identifier).setBody(content.value);
+        } else {
+            return new Element.InputTextArea();
+        }
     }
-
 }

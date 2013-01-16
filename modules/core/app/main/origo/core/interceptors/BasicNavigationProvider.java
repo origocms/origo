@@ -37,7 +37,7 @@ public class BasicNavigationProvider {
         List<NavigationElement> navigationElements = Lists.newArrayList();
         String section = (String) context.args().get("section");
         NavigationEventGenerator.triggerBeforeNavigationLoaded(context.node(), BasicNavigation.class.getName(), section);
-        List<BasicNavigation> navigationModels = BasicNavigation.findWithSection(section);
+        List<BasicNavigation> navigationModels = BasicNavigation.findWithSectionWithoutParent(section);
         for (BasicNavigation navigationModel : navigationModels) {
             NavigationEventGenerator.triggerBeforeNavigationItemLoaded(context.node(), navigationModel.type, navigationModel);
             NavigationElement navigationElement = NavigationEventGenerator.triggerProvidesNavigationItemInterceptor(context.node(), navigationModel.type, navigationModel);
