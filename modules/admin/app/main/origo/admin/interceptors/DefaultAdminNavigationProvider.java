@@ -18,7 +18,7 @@ public class DefaultAdminNavigationProvider {
 
         // TODO: Set this selected somehow
         //boolean selected = context.node.getNodeId().equals(alias.pageId);
-        return new NavigationElement("admin", text, link, weight, false);
+        return new NavigationElement().setSection("admin").setTitle(text).setLink(link).setWeight(weight).setSelected(false);
     }
 
 }

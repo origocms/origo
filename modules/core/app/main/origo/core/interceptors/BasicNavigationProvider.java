@@ -75,7 +75,12 @@ public class BasicNavigationProvider {
             if (referencedRootNode != null) {
                 Node referencedNode = ProvidesEventGenerator.triggerInterceptor(referencedRootNode, Core.Type.NODE, referencedRootNode.nodeType);
                 boolean selected = context.node.getNodeId().equals(alias.pageId);
-                return new NavigationElement(context.navigation.getSection(), referencedNode.getTitle(), navigationModel.getLink(), context.navigation.getWeight(), selected);
+                return new NavigationElement().
+                        setSection(context.navigation.getSection()).
+                        setTitle(referencedNode.getTitle()).
+                        setLink(navigationModel.getLink()).
+                        setWeight(context.navigation.getWeight()).
+                        setSelected(selected);
             } else {
                 throw new RuntimeException("Page not found [" + alias.pageId + "]");
             }
@@ -91,7 +96,12 @@ public class BasicNavigationProvider {
         if (referencedRootNode != null) {
             Node referencedNode = ProvidesEventGenerator.triggerInterceptor(referencedRootNode, Core.Type.NODE, referencedRootNode.nodeType);
             boolean selected = context.node.getNodeId().equals(referencedRootNode.getNodeId());
-            return new NavigationElement(context.navigation.getSection(), referencedNode.getTitle(), navigationModel.getLink(), context.navigation.getWeight(), selected);
+            return new NavigationElement().
+                    setSection(context.navigation.getSection()).
+                    setTitle(referencedNode.getTitle()).
+                    setLink(navigationModel.getLink()).
+                    setWeight(context.navigation.getWeight()).
+                    setSelected(selected);
         } else {
             throw new RuntimeException("Page not found [" + navigationModel.pageId + "]");
         }
@@ -101,7 +111,11 @@ public class BasicNavigationProvider {
     public static NavigationElement createExternalLinkNavigation(Provides.Context context) {
         ExternalLinkNavigation navigationModel = ExternalLinkNavigation.findWithIdentifier(context.navigation.getReferenceId());
         if (navigationModel != null) {
-            return new NavigationElement(context.navigation.getSection(), navigationModel.title, navigationModel.getLink(), context.navigation.getWeight());
+            return new NavigationElement().
+                    setSection(context.navigation.getSection()).
+                    setTitle(navigationModel.title).
+                    setLink(navigationModel.getLink()).
+                    setWeight(context.navigation.getWeight());
         }
         return null;
     }

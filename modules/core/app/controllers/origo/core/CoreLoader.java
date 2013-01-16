@@ -69,7 +69,7 @@ public class CoreLoader {
 
         // TODO: Could this be done without using the request?
         if (url.equalsIgnoreCase(Http.Context.current().request().path())) {
-            Logger.warn("No page-not-found page defined, sending 404");
+            Logger.warn("Using fallback not-found handling, sending 404 with no content");
             return Controller.notFound();
         }
         Logger.debug("Redirecting to Page-Not-Found Page");
@@ -89,7 +89,7 @@ public class CoreLoader {
         }
         // TODO: Could this be done without using the request?
         if (url.equalsIgnoreCase(Http.Context.current().request().path())) {
-            Logger.warn("No page-load-error page defined, sending 500");
+            Logger.warn("Using fallback error handling, sending 500 with no content");
             return Controller.internalServerError();
         }
         Logger.debug("Redirecting to Internal Error Page");

@@ -1,12 +1,9 @@
 package main.origo.core.ui;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 import java.util.List;
-import java.util.Set;
 
-// TODO refactor to builder pattern
 public class NavigationElement implements Comparable<NavigationElement> {
 
     // Plugins can define their own sections, for example an Intranet module could define a private navigation section
@@ -18,22 +15,41 @@ public class NavigationElement implements Comparable<NavigationElement> {
     public String title;
     public String link;
     public int weight;
+    public boolean selected;
 
     public List<NavigationElement> children = Lists.newArrayList();
 
-    public boolean selected;
-    public Set<String> styleClasses = Sets.newHashSet();
-
-    public NavigationElement(String section, String title, String link, int weight) {
-        this.section = section;
-        this.title = title;
-        this.link = link;
-        this.weight = weight;
+    public NavigationElement() {
     }
 
-    public NavigationElement(String section, String title, String link, int weight, boolean selected) {
-        this(section, title, link, weight);
+    public NavigationElement setSection(String section) {
+        this.section = section;
+        return this;
+    }
+
+    public NavigationElement setTitle(String title) {
+        this.title = title;
+        return this;
+    }
+
+    public NavigationElement setLink(String link) {
+        this.link = link;
+        return this;
+    }
+
+    public NavigationElement setWeight(int weight) {
+        this.weight = weight;
+        return this;
+    }
+
+    public NavigationElement setSelected(boolean selected) {
         this.selected = selected;
+        return this;
+    }
+
+    public NavigationElement addChild(NavigationElement navigationElement) {
+        this.children.add(navigationElement);
+        return this;
     }
 
     @Override
