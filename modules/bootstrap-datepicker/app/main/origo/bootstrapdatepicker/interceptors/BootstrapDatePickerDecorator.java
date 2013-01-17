@@ -28,7 +28,7 @@ public class BootstrapDatePickerDecorator {
     @OnInsertElement(with = Element.InputText.class, input = Date.class)
     public static void addJavascriptSrc(OnInsertElement.Context context) {
         if(!context.attributes().containsKey(JS_LOADED)) {
-            String script = routes.Assets.at("javascripts/origo/bootstrapdatepicker/bootstrap-datepicker.min.js").url();
+            String script = routes.Assets.at("javascripts/origo/bootstrapdatepicker/bootstrap-datepicker.js").url();
             context.node().addTailElement(new Element.Script().addAttribute("src", script));
             String style = routes.Assets.at("stylesheets/origo/bootstrapdatepicker/datepicker-custom.css").url();
             context.node().addHeadElement(new Element.Link().addAttribute("href", style).addAttribute("rel", "stylesheet"));

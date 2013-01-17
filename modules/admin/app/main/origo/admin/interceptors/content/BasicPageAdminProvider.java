@@ -2,9 +2,6 @@ package main.origo.admin.interceptors.content;
 
 import controllers.origo.admin.routes;
 import main.origo.admin.annotations.Admin;
-import main.origo.admin.helpers.DashboardHelper;
-import main.origo.admin.themes.AdminTheme;
-import main.origo.core.Node;
 import main.origo.core.ThemeRepository;
 import main.origo.core.annotations.*;
 import main.origo.core.annotations.forms.OnSubmit;
@@ -14,7 +11,6 @@ import main.origo.core.helpers.forms.EditorHelper;
 import main.origo.core.helpers.forms.FormHelper;
 import main.origo.core.internal.CachedThemeVariant;
 import main.origo.core.ui.Element;
-import models.origo.admin.AdminPage;
 import models.origo.core.BasicPage;
 import models.origo.core.Content;
 import models.origo.core.RootNode;
@@ -27,12 +23,10 @@ import play.data.Form;
 import play.i18n.Messages;
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.html.origo.admin.decorators.basicpage.list;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,10 +37,10 @@ import java.util.Map;
 @Interceptor
 public class BasicPageAdminProvider {
 
-    private static final String BASE_TYPE = Admin.With.CONTENT_PAGE + ".basicpage";
-    private static final String LIST_TYPE = BASE_TYPE + ".list";
-    private static final String EDIT_TYPE = BASE_TYPE + ".edit";
-    private static final String NEW_TYPE = BASE_TYPE + ".new";
+    public static final String BASE_TYPE = Admin.With.CONTENT_PAGE + ".basicpage";
+    public static final String LIST_TYPE = BASE_TYPE + ".list";
+    public static final String EDIT_TYPE = BASE_TYPE + ".edit";
+    public static final String NEW_TYPE = BASE_TYPE + ".new";
 
     private static final String TITLE_PARAM = "origo-basicpageform-title";
     private static final String PUBLISH_DATE_PARAM = "origo-basicpageform-publish-date";
@@ -74,109 +68,9 @@ public class BasicPageAdminProvider {
                 );
     }
 
-    /**
-     * Provides a type with the static name 'origo.admin.basicpage.list'.
-     *
-     * @param context contains a root node with an node id
-     * @return a node to be presented as part of the admin UI
-     */
-    @Provides(type = Core.Type.NODE, with = LIST_TYPE)
-    public static Node createListPage(Provides.Context context) {
-        AdminPage page = new AdminPage((RootNode)context.node());
-        page.setTitle("List Basic Pages");
-        page.addElement(DashboardHelper.createBreadcrumb(BASE_TYPE), AdminTheme.topMeta());
-        return page;
-    }
-
-    /**
-     * Adds content to the nodes with the static name 'origo.admin.basicpage.list'.
-     *
-     * @param context contains a node of the type 'origo.admin.basicpage.list'.
-     */
-    @OnLoad(type = Core.Type.NODE, with = LIST_TYPE)
-    public static void createListPage(OnLoad.Context context) {
-        List<BasicPage> basicPages = BasicPage.findAllLatestVersions();
-
-        context.node().addElement(new Element.Raw().setBody(list.render(basicPages)));
-/*
-        Element panelElement = new Element.Panel().setWeight(10).addAttribute("class", "panel pages");
-        for (BasicPage page : basicPages) {
-            String editURL = routes.Dashboard.pageWithTypeAndIdentifier(Admin.With.CONTENT_PAGE, EDIT_TYPE, page.getNodeId()).url();
-            Element panel = new Element.Panel().
-                    addChild(new Element.Anchor().setWeight(10).setBody(page.getTitle()).addAttribute("href", editURL)).
-                    addChild(new Element.Text().setWeight(20).setBody(" (" + page.nodeId + " / " + page.getVersion() + ")"));
-            panelElement.addChild(panel);
-        }
-        context.node().addElement(panelElement);
-*/
-    }
-
     @Admin.Navigation(alias="/content/pages/basic", key="breadcrumb.origo.admin.dashboard.content.basicpage")
     public static String getProviderUrl() {
         return routes.Dashboard.pageWithType(Admin.With.CONTENT_PAGE, LIST_TYPE).url();
-    }
-
-    @Provides(type = Core.Type.NODE, with = NEW_TYPE)
-    public static Node createNewPage(Provides.Context context) {
-        AdminPage page = new AdminPage(new RootNode(0));
-
-        // TODO: Look up themevariant (and also meta) from DB instead of resetting here.
-        page.rootNode.themeVariant = null;
-        page.setTitle("New Basic Page");
-        page.addElement(DashboardHelper.createBreadcrumb(BASE_TYPE), AdminTheme.topMeta());
-        return page;
-    }
-
-    @OnLoad(type = Core.Type.NODE, with = NEW_TYPE)
-    public static void loadNewPage(OnLoad.Context context) {
-        BasicPage page = new BasicPage();
-        page.rootNode = new RootNode(0);
-        context.attributes().put("page", page);
-        context.attributes().put("lead", new Content());
-        context.attributes().put("body", new Content());
-        context.node().addElement(FormHelper.createFormElement(context.node(), BASE_TYPE));
-    }
-
-    /**
-     * Provides a type with the static name 'origo.admin.basicpage.edit'.
-     *
-     * @param context containing a root node with an node id
-     * @return a node to be presented as part of the admin UI
-     */
-    @Provides(type = Core.Type.NODE, with = EDIT_TYPE)
-    public static Node createEditPage(Provides.Context context) {
-        AdminPage page;
-
-        if (context.node().getVersion() == null || context.node().getVersion() == 0) {
-            page = new AdminPage(RootNode.findLatestVersionWithNodeId(context.node().getNodeId()).copy());
-        } else {
-            page = new AdminPage((RootNode) context.node());
-        }
-
-        // TODO: Look up themevariant (and also meta) from DB instead of resetting here.
-        page.rootNode.themeVariant = null;
-        page.setTitle("Edit Basic Page");
-        page.addElement(DashboardHelper.createBreadcrumb(BASE_TYPE), AdminTheme.topMeta());
-        return page;
-    }
-
-    @OnLoad(type = Core.Type.NODE, with = EDIT_TYPE)
-    public static void loadEditPage(OnLoad.Context context) {
-        BasicPage basicPage = BasicPage.findLatestVersion(context.node().getNodeId());
-        if (basicPage == null) {
-            context.node().addElement(new Element.Paragraph().setWeight(10).setBody("Page '" + context.node().getNodeId() + "' does not exist."));
-            return;
-        }
-        basicPage.rootNode = RootNode.findWithNodeIdAndSpecificVersion(context.node().getNodeId(), context.node().getVersion());
-
-        Content leadContent = Content.findWithIdentifier(basicPage.leadReferenceId);
-        Content bodyContent = Content.findWithIdentifier(basicPage.bodyReferenceId);
-
-        context.attributes().put("page", basicPage);
-        context.attributes().put("lead", leadContent);
-        context.attributes().put("body", bodyContent);
-
-        context.node().addElement(FormHelper.createFormElement(context.node(), BASE_TYPE));
     }
 
     /**
