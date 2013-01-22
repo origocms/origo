@@ -194,6 +194,20 @@ public class Element {
         }
     }
 
+    public static class Fieldset extends Element {
+
+        public Fieldset() {
+            super("fieldset");
+        }
+
+        @Override
+        public Html decorate(RenderingContext renderingContext) {
+            Html body = ThemeHelper.decorateChildren(this, renderingContext);
+            //noinspection unchecked
+            return fieldset.render(this, body, this.getAttributes());
+        }
+    }
+
     public static class Legend extends Base {
         public Legend() {
             super("legend", "legend");
@@ -538,6 +552,8 @@ public class Element {
 
     private int weight;
 
+    private Element parent;
+
     private List<Element> children = Lists.newLinkedList();
 
     private Html body;
@@ -612,11 +628,15 @@ public class Element {
     }
 
     public Element setChildren(List<Element> children) {
+        for (Element child : children) {
+            child.parent = this;
+        }
         this.children = children;
         return this;
     }
 
     public Element addChild(Element element) {
+        element.parent = this;
         ElementEventGenerator.triggerBeforeInsert(this, element);
         this.children.add(element);
         ElementEventGenerator.triggerAfterInsert(this, element);

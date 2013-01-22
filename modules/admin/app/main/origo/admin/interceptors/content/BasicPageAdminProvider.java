@@ -91,12 +91,15 @@ public class BasicPageAdminProvider {
          * Basic Options
          */
 
-        context.element().addChild(new Element.Legend().setBody("Basic Information"));
+        Element basicFieldSet = new Element.Fieldset().setId("basic");
+        context.element().addChild(basicFieldSet);
+
+        basicFieldSet.addChild(new Element.Legend().setBody("Basic Information"));
 
         Element titleElement = new Element.Panel().setWeight(10).addAttribute("class", "field").
                 addChild(new Element.Label().setWeight(10).setBody("Title").addAttribute("for", TITLE_PARAM)).
                 addChild(new Element.InputText().setWeight(20).addAttribute("name", TITLE_PARAM).addAttribute("value", basicPage.getTitle()));
-        context.element().addChild(titleElement);
+        basicFieldSet.addChild(titleElement);
 
         Element themeInputSelectElement = new Element.InputSelect();
         for (CachedThemeVariant themeVariant : ThemeRepository.getAvailableThemeVariants()) {
@@ -116,12 +119,16 @@ public class BasicPageAdminProvider {
                 addChild(new Element.Label().setWeight(10).setBody("Theme Variant").addAttribute("for", THEME_VARIANT_PARAM)).
                 addChild(themeInputSelectElement.setWeight(25).addAttribute("class", "themeSelector").
                         addAttribute("name", THEME_VARIANT_PARAM));
-        context.element().addChild(themeVariantElement);
+        basicFieldSet.addChild(themeVariantElement);
 
         /**
          * Publishing options
          */
-        context.element().addChild(new Element.Legend().setBody("Publish"));
+
+        Element publishingFieldSet = new Element.Fieldset().setId("publishing");
+        context.element().addChild(publishingFieldSet);
+
+        publishingFieldSet.addChild(new Element.Legend().setBody("Publish"));
 
         String datePattern = Messages.get("date.format");
         DateFormat dateFormat = new SimpleDateFormat(datePattern);
@@ -145,7 +152,7 @@ public class BasicPageAdminProvider {
                                 addAttribute("value", formattedIfNotNull(dateFormat, basicPage.getDateUnpublished())).
                                 addAttribute("placeholder", datePattern.toLowerCase()))
                 );
-        context.element().addChild(publishElement);
+        publishingFieldSet.addChild(publishElement);
 
         String timePattern = Messages.get("time.format");
         DateFormat timeFormat = new SimpleDateFormat(timePattern);
@@ -168,24 +175,28 @@ public class BasicPageAdminProvider {
                                 addAttribute("value", formattedIfNotNull(timeFormat, basicPage.getDateUnpublished())).
                                 addAttribute("placeholder", timePattern.toLowerCase()))
                 );
-        context.element().addChild(publishTimeElement);
+        publishingFieldSet.addChild(publishTimeElement);
 
         /**
          * Content
          */
-        context.element().addChild(new Element.Legend().setBody("Content"));
+
+        Element contentFieldSet = new Element.Fieldset().setId("content");
+        context.element().addChild(contentFieldSet);
+
+        contentFieldSet.addChild(new Element.Legend().setBody("Content"));
 
         Element leadElement = new Element.Panel().setWeight(20).addAttribute("class", "field").
                 addChild(new Element.Label().setWeight(10).setBody("Lead").addAttribute("for", LEAD_PARAM)).
                 addChild(EditorHelper.createRichTextEditor(context.node(), leadContent).setWeight(20).addAttribute("class", "editor richtext").
                         addAttribute("name", LEAD_PARAM).addAttribute("cols", "80").addAttribute("rows", "10"));
-        context.element().addChild(leadElement);
+        contentFieldSet.addChild(leadElement);
 
         Element bodyElement = new Element.Panel().setWeight(30).addAttribute("class", "field").
                 addChild(new Element.Label().setWeight(10).setBody("Body").addAttribute("for", BODY_PARAM)).
                 addChild(EditorHelper.createRichTextEditor(context.node(), bodyContent).setWeight(20).addAttribute("class", "editor richtext").
                         addAttribute("name", BODY_PARAM).addAttribute("cols", "80").addAttribute("rows", "20"));
-        context.element().addChild(bodyElement);
+        contentFieldSet.addChild(bodyElement);
 
         Element actionPanel = new Element.Panel().setWeight(40).addAttribute("class", "well well-large").
                 addChild(new Element.Panel().
@@ -201,7 +212,7 @@ public class BasicPageAdminProvider {
                         addChild(new Element.InputSubmit().setWeight(10).addAttribute("class", "btn btn-primary").addAttribute("value", "Save")).
                         addChild(new Element.InputReset().setWeight(15).addAttribute("class", "btn").addAttribute("value", "Reset"))
                 );
-        context.element().addChild(actionPanel);
+        contentFieldSet.addChild(actionPanel);
 
     }
 
