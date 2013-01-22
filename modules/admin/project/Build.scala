@@ -22,7 +22,6 @@ object ApplicationBuild extends Build {
   ).aggregate(
     datepicker
   ).settings(
-
   )
 
 }

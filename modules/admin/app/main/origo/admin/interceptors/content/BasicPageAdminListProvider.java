@@ -42,17 +42,6 @@ public class BasicPageAdminListProvider {
         List<BasicPage> basicPages = BasicPage.findAllLatestVersions();
 
         context.node().addElement(new Element.Raw().setBody(list.render(basicPages)));
-/*
-        Element panelElement = new Element.Panel().setWeight(10).addAttribute("class", "panel pages");
-        for (BasicPage page : basicPages) {
-            String editURL = routes.Dashboard.pageWithTypeAndIdentifier(Admin.With.CONTENT_PAGE, EDIT_TYPE, page.getNodeId()).url();
-            Element panel = new Element.Panel().
-                    addChild(new Element.Anchor().setWeight(10).setBody(page.getTitle()).addAttribute("href", editURL)).
-                    addChild(new Element.Text().setWeight(20).setBody(" (" + page.nodeId + " / " + page.getVersion() + ")"));
-            panelElement.addChild(panel);
-        }
-        context.node().addElement(panelElement);
-*/
     }
 
 

@@ -60,7 +60,7 @@ public class BootstrapWysiHTML5EditorProvider {
             String bootstrapWysiHtmlScript = routes.Assets.at("javascripts/origo/bootstrapwysihtml5/bootstrap-wysihtml5.js").url();
             context.node().addTailElement(new Element.Script().setWeight(9999).addAttribute("src", bootstrapWysiHtmlScript));
 
-            String mainStyle = routes.Assets.at("stylesheets/origo/bootstrapwysihtml5/bootstrap-wysihtml5.css").url();
+            String mainStyle = routes.Assets.at("stylesheets/origo/bootstrapwysihtml5/bootstrap-wysihtml5.min.css").url();
             context.node().addHeadElement(new Element.Link().addAttribute("href", mainStyle).addAttribute("rel", "stylesheet"));
 
             context.attributes().put(JS_LOADED, true);
