@@ -11,11 +11,10 @@ import models.origo.core.Meta;
 import play.api.templates.Html;
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.html.origo.admin.decorators.dashboard;
-import views.html.origo.admin.decorators.dashboard_item;
 import views.html.origo.admin.themes.AdminTheme.variant_main_and_left_columns;
 import views.html.origo.admin.themes.AdminTheme.variant_main_only;
 import views.html.origo.admin.themes.AdminTheme.variant_three_columns;
+import views.html.origo.core.decorators.base;
 
 import java.util.Collections;
 
@@ -48,7 +47,7 @@ public class AdminTheme {
     @Decorates(types = Admin.Dashboard.class)
     public static Html decorateDashboard(Decorates.Context context) {
         Html body = ThemeHelper.decorateChildren(context.element, context.renderingContext);
-        return dashboard.render(context.element, body,
+        return base.render("div", context.element, body,
                 ElementHelper.combineAttributes(context.element.getAttributes(),
                         Collections.singletonMap("class", defaultDashboardClasses() + " row-fluid")));
     }
@@ -60,7 +59,7 @@ public class AdminTheme {
     @Decorates(types = Admin.DashboardItem.class)
     public static Html decorateDashboardItem(Decorates.Context context) {
         Html body = ThemeHelper.decorateChildren(context.element, context.renderingContext);
-        return dashboard_item.render(context.element, body,
+        return base.render("div", context.element, body,
                 ElementHelper.combineAttributes(context.element.getAttributes(),
                         Collections.singletonMap("class", defaultDashboardItemClasses() + " span3")));
     }

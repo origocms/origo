@@ -6,6 +6,7 @@ import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.Provides;
 import main.origo.core.annotations.Relationship;
 import main.origo.core.ui.Element;
+import views.html.origo.admin.dashboard_item;
 
 @Interceptor
 public class StructurePageAdminProvider {
@@ -27,12 +28,7 @@ public class StructurePageAdminProvider {
     @Provides(type = Admin.Type.DASHBOARD_ITEM, with = BASE_TYPE)
     @Relationship(parent = Admin.With.CONTENT_PAGE)
     public static Element createDashboardItem(Provides.Context context) {
-
-        return new Admin.DashboardItem().addAttribute("class", "item").
-                addChild(new Element.Panel().setWeight(10).
-                        addChild(new Element.Heading4().setWeight(10).setBody("Structured Page").addAttribute("class", "title")).
-                        addChild(new Element.Paragraph().setWeight(20).setBody("Structured pages have several slots for content, content can be re-used in several pages.").addAttribute("class", "description")).
-                        addChild(new Element.Anchor().setWeight(30).setBody("List All").addAttribute("href", getProviderUrl()).addAttribute("class", "link"))
-                );
+        return new Admin.DashboardItem().
+                addChild(new Element.Raw().setBody(dashboard_item.render("Structured Page", "Structured pages have several slots for content, content can be re-used in several pages.", getProviderUrl(), "List All")));
     }
 }

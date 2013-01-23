@@ -13,6 +13,7 @@ import main.origo.core.annotations.Relationship;
 import main.origo.core.ui.Element;
 import models.origo.admin.AdminPage;
 import models.origo.core.RootNode;
+import views.html.origo.admin.dashboard_item;
 
 @Interceptor
 public class DefaultSettingsDashboardProvider {
@@ -24,10 +25,7 @@ public class DefaultSettingsDashboardProvider {
     @Relationship(parent = Admin.With.FRONT_PAGE)
     public static Element addSettingsDashboardItemToFrontPage(Provides.Context context) {
         return DashboardHelper.createBasicDashboardItem().
-                setId("item.link." + Admin.With.SETTINGS_PAGE).
-                addChild(new Element.Panel().setWeight(100).
-                        addChild(new Element.Heading4().setWeight(10).setBody("Settings").addAttribute("class", "title")).
-                        addChild(new Element.Anchor().setWeight(10).setBody("View").addAttribute("href", getDashboardUrl())));
+                addChild(new Element.Raw().setBody(dashboard_item.render("Settings", "", getDashboardUrl(), "View")));
     }
 
     @Admin.Navigation(alias="/settings", key="breadcrumb.origo.admin.dashboard.settings")

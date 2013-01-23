@@ -23,6 +23,7 @@ import play.data.Form;
 import play.i18n.Messages;
 import play.mvc.Controller;
 import play.mvc.Result;
+import views.html.origo.admin.dashboard_item;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -59,16 +60,11 @@ public class BasicPageAdminProvider {
     @Provides(type = Admin.Type.DASHBOARD_ITEM, with = BASE_TYPE)
     @Relationship(parent = Admin.With.CONTENT_PAGE)
     public static Element createDashboardItem(Provides.Context context) {
-
-        return new Admin.DashboardItem().addAttribute("class", "item").
-                addChild(new Element.Panel().setWeight(10).
-                        addChild(new Element.Heading4().setWeight(10).setBody("Basic Page").addAttribute("class", "title")).
-                        addChild(new Element.Paragraph().setWeight(20).setBody("Basic pages have a lead and a body").addAttribute("class", "description")).
-                        addChild(new Element.Anchor().setWeight(30).setBody("List All").addAttribute("href", getProviderUrl()).addAttribute("class", "link"))
-                );
+        return new Admin.DashboardItem().
+                addChild(new Element.Raw().setBody(dashboard_item.render("Basic Page", "Basic pages have a lead and a body", getProviderUrl(), "List All")));
     }
 
-    @Admin.Navigation(alias="/content/pages/basic", key="breadcrumb.origo.admin.dashboard.content.basicpage")
+    @Admin.Navigation(alias = "/content/pages/basic", key = "breadcrumb.origo.admin.dashboard.content.basicpage")
     public static String getProviderUrl() {
         return routes.Dashboard.pageWithType(Admin.With.CONTENT_PAGE, LIST_TYPE).url();
     }
@@ -135,9 +131,9 @@ public class BasicPageAdminProvider {
         Element publishElement = new Element.Panel().setWeight(15).addAttribute("class", "field").
                 addChild(new Element.Panel().addAttribute("class", "panel split-left").
                         addChild(new Element.Label().setWeight(10).setBody("From Date").
-                                addAttribute("for", "date-"+PUBLISH_DATE_PARAM)
+                                addAttribute("for", "date-" + PUBLISH_DATE_PARAM)
                         ).
-                        addChild(new Element.InputText(Date.class).setId("date-"+PUBLISH_DATE_PARAM).
+                        addChild(new Element.InputText(Date.class).setId("date-" + PUBLISH_DATE_PARAM).
                                 addAttribute("name", PUBLISH_DATE_PARAM).
                                 addAttribute("value", formattedIfNotNull(dateFormat, basicPage.getDatePublished())).
                                 addAttribute("placeholder", datePattern.toLowerCase())
@@ -145,9 +141,9 @@ public class BasicPageAdminProvider {
                 ).
                 addChild(new Element.Panel().addAttribute("class", "panel split-right").
                         addChild(new Element.Label().setWeight(10).setBody("Until Date").
-                                addAttribute("for", "date-"+UNPUBLISH_DATE_PARAM)
+                                addAttribute("for", "date-" + UNPUBLISH_DATE_PARAM)
                         ).
-                        addChild(new Element.InputText(Date.class).setId("date-"+UNPUBLISH_DATE_PARAM).
+                        addChild(new Element.InputText(Date.class).setId("date-" + UNPUBLISH_DATE_PARAM).
                                 addAttribute("name", UNPUBLISH_DATE_PARAM).
                                 addAttribute("value", formattedIfNotNull(dateFormat, basicPage.getDateUnpublished())).
                                 addAttribute("placeholder", datePattern.toLowerCase()))
@@ -159,18 +155,18 @@ public class BasicPageAdminProvider {
         Element publishTimeElement = new Element.Panel().setWeight(15).addAttribute("class", "field").
                 addChild(new Element.Panel().addAttribute("class", "panel split-left").
                         addChild(new Element.Label().setWeight(10).setBody("From Time").
-                                addAttribute("for", "date-"+PUBLISH_TIME_PARAM)
+                                addAttribute("for", "date-" + PUBLISH_TIME_PARAM)
                         ).
-                        addChild(new Element.InputText().setId("date-"+PUBLISH_TIME_PARAM).
+                        addChild(new Element.InputText().setId("date-" + PUBLISH_TIME_PARAM).
                                 addAttribute("name", PUBLISH_TIME_PARAM).
                                 addAttribute("value", formattedIfNotNull(timeFormat, basicPage.getDatePublished())).
                                 addAttribute("placeholder", timePattern.toLowerCase()))
                 ).
                 addChild(new Element.Panel().addAttribute("class", "panel split-right").
                         addChild(new Element.Label().setWeight(10).setBody("Until Time").
-                                addAttribute("for", "date-"+UNPUBLISH_TIME_PARAM)
+                                addAttribute("for", "date-" + UNPUBLISH_TIME_PARAM)
                         ).
-                        addChild(new Element.InputText().setId("date-"+UNPUBLISH_TIME_PARAM).
+                        addChild(new Element.InputText().setId("date-" + UNPUBLISH_TIME_PARAM).
                                 addAttribute("name", UNPUBLISH_TIME_PARAM).
                                 addAttribute("value", formattedIfNotNull(timeFormat, basicPage.getDateUnpublished())).
                                 addAttribute("placeholder", timePattern.toLowerCase()))

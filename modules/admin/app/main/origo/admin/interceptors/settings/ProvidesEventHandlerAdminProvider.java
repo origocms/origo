@@ -22,6 +22,7 @@ import models.origo.core.RootNode;
 import org.apache.commons.lang3.StringUtils;
 import play.mvc.Controller;
 import play.mvc.Result;
+import views.html.origo.admin.dashboard_item;
 
 import java.util.Collections;
 import java.util.List;
@@ -43,15 +44,11 @@ public class ProvidesEventHandlerAdminProvider {
     @Relationship(parent = Admin.With.SETTINGS_PAGE)
     public static Element createDashboardItem(Provides.Context context) {
 
-        return new Admin.DashboardItem().addAttribute("class", "item").
-                addChild(new Element.Panel().setWeight(10).
-                        addChild(new Element.Heading4().setWeight(10).setBody("Event Handlers").addAttribute("class", "title")).
-                        addChild(new Element.Paragraph().setWeight(20).setBody("Select which event handler should be used for ").addAttribute("class", "description")).
-                        addChild(new Element.Anchor().setWeight(30).setBody("List All").addAttribute("href", getProviderUrl()).addAttribute("class", "link"))
-                );
+        return new Admin.DashboardItem().
+                addChild(new Element.Raw().setBody(dashboard_item.render("Event Handlers", "Select which event handler should be used for each type", getProviderUrl(), "List All")));
     }
 
-    @Admin.Navigation(alias="/settings/provides", key="breadcrumb.origo.admin.dashboard.settings.event.provides")
+    @Admin.Navigation(alias = "/settings/provides", key = "breadcrumb.origo.admin.dashboard.settings.event.provides")
     public static String getProviderUrl() {
         return routes.Dashboard.pageWithType(Admin.With.CONTENT_PAGE, EDIT_TYPE).url();
     }
@@ -153,7 +150,7 @@ public class ProvidesEventHandlerAdminProvider {
     private static Set<String> getWithTypes(List<CachedAnnotation> interceptors) {
         Set<String> providedTypes = Sets.newHashSet();
         for (CachedAnnotation cachedAnnotation : interceptors) {
-            providedTypes.add(((Provides)cachedAnnotation.annotation).with());
+            providedTypes.add(((Provides) cachedAnnotation.annotation).with());
         }
         return providedTypes;
     }
