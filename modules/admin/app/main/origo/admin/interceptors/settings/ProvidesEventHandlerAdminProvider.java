@@ -163,7 +163,7 @@ public class ProvidesEventHandlerAdminProvider {
             node.addElement(FormHelper.createFormElement(node, BASE_TYPE).
                     addAttribute("class", "form-horizontal").
                     addChild(new Element.InputHidden().addAttribute("name", "type").addAttribute("value", selectedEventType)).
-                    addChildren(fieldElements).
+                    addChild(new Element.Fieldset().setId("handlers").addChildren(fieldElements)).
                     addChild(createButtonPanel()));
         } else {
             node.addElement(new Element.Panel().
