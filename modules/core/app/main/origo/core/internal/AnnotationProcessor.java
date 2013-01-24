@@ -17,6 +17,7 @@ import play.mvc.Result;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -113,22 +114,32 @@ public class AnnotationProcessor {
         for (Class c : classes) {
             Set<Method> methods = Reflections.getAllMethods(c, ReflectionUtils.withAnnotation(annotationClass));
             for (Method m : methods) {
+                if (!Modifier.isStatic(m.getModifiers())) {
+                    throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() +
+                            "' is annotated with '" + annotationClass.getName() +
+                            "' but the method is not static");
+                }
+                if (Modifier.isPrivate(m.getModifiers()) || Modifier.isProtected(m.getModifiers())) {
+                    throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() +
+                            "' is annotated with '" + annotationClass.getName() +
+                            "' but the method is not public");
+                }
                 Class[] pc = m.getParameterTypes();
                 if (pc.length != parameterTypes.length) {
-                    throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() + "' in " +
-                            " is annotated with '" + annotationClass.getName() +
+                    throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() +
+                            "' is annotated with '" + annotationClass.getName() +
                             "' but the method does not match the required signature (different amount of parameters)");
                 }
                 for (int i=0; i<pc.length; i++) {
                     if (!parameterTypes[i].isAssignableFrom(pc[i])) {
-                        throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() + "' in " +
-                                " is annotated with '" + annotationClass.getName() +
+                        throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() +
+                                "' is annotated with '" + annotationClass.getName() +
                                 "' but the method does not match the required signature (parameter '"+parameterTypes[i].getName()+"' has the wrong type)");
                     }
                 }
                 if (returnType != null && !returnType.isAssignableFrom(m.getReturnType())) {
-                    throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() + "' in " +
-                            " is annotated with '" + annotationClass.getName() +
+                    throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() +
+                            "' is annotated with '" + annotationClass.getName() +
                             "' but the method does not match the required signature (wrong return type, epected ["+returnType+"] and found ["+m.getReturnType()+"])");
                 }
 

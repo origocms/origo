@@ -281,7 +281,7 @@ public class InitialTestData {
         fourthNavigation.save();
         AliasNavigation fourthAlias = new AliasNavigation();
         fourthAlias.identifier = fourthNavigation.getReferenceId();
-        fourthAlias.alias = "fourth";
+        fourthAlias.aliasId = Alias.findFirstAliasForPageId("2c36c55dd-956e-4b78-18c4-eef7e56aa17").id;
         fourthAlias.save();
 
         // External - Google

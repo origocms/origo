@@ -38,7 +38,7 @@ public class DefaultSettingsDashboardProvider {
      */
     @Provides(type = Core.Type.NODE, with = Admin.With.SETTINGS_PAGE)
     public static Node addSettingsDashboard(Provides.Context context) throws NodeLoadException {
-        AdminPage page = new AdminPage((RootNode) context.node());
+        AdminPage page = new AdminPage(Admin.With.SETTINGS_PAGE, (RootNode) context.node());
         page.setTitle("Settings - Dashboard");
 
         context.node().addElement(DashboardHelper.createBreadcrumb(Admin.With.SETTINGS_PAGE), AdminTheme.topMeta());

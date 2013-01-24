@@ -72,7 +72,7 @@ public class BasicNavigationProvider {
     @Provides(type = Core.Type.NAVIGATION_ITEM, with = "models.origo.core.navigation.AliasNavigation")
     public static NavigationElement createAliasNavigation(Provides.Context.NavigationContext context) {
         AliasNavigation navigationModel = AliasNavigation.findWithIdentifier(context.navigation().getReferenceId());
-        Alias alias = Alias.findWithPath(navigationModel.alias);
+        Alias alias = Alias.findWithId(navigationModel.aliasId);
         if (alias != null) {
             RootNode referencedRootNode = RootNode.findLatestPublishedVersionWithNodeId(alias.pageId, new Date());
             if (referencedRootNode != null) {
@@ -88,7 +88,7 @@ public class BasicNavigationProvider {
                 throw new RuntimeException("Page not found [" + alias.pageId + "]");
             }
         } else {
-            throw new RuntimeException("Alias not found [" + navigationModel.alias + "]");
+            throw new RuntimeException("Alias not found [" + navigationModel.aliasId + "]");
         }
     }
 

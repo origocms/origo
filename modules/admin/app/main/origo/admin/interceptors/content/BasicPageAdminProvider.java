@@ -232,7 +232,7 @@ public class BasicPageAdminProvider {
         Integer version = FormHelper.getNodeVersion(data);
         RootNode oldRootNode = RootNode.findWithNodeIdAndSpecificVersion(nodeId, version);
         if (oldRootNode == null) {
-            oldRootNode = new RootNode(0);
+            oldRootNode = new RootNode(nodeId, 0);
         }
 
         BasicPage latestVersion = BasicPage.findLatestVersion(nodeId);
@@ -273,6 +273,7 @@ public class BasicPageAdminProvider {
             newPageVersion.rootNode.themeVariant = data.get(THEME_VARIANT_PARAM);
             newPageVersion.rootNode.publish = parseDate(data.get(PUBLISH_DATE_PARAM), data.get(PUBLISH_TIME_PARAM));
             newPageVersion.rootNode.unPublish = parseDate(data.get(UNPUBLISH_DATE_PARAM), data.get(UNPUBLISH_TIME_PARAM));
+            newPageVersion.rootNode.nodeType = BasicPage.class.getName();
 
             // Lead Content
             Content newLeadContent = new Content();

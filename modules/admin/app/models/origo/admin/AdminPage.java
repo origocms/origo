@@ -11,20 +11,20 @@ import java.util.Set;
 
 public class AdminPage implements Node {
 
-    public String nodeId;
-
-    public String title;
+    public String type;
 
     public RootNode rootNode;
 
-    public AdminPage(RootNode node) {
+    public String title;
+
+    public AdminPage(String type, RootNode node) {
+        this.type = type;
         this.rootNode = node;
-        this.nodeId = node.getNodeId();
     }
 
     @Override
     public String getNodeId() {
-        return this.nodeId;
+        return this.rootNode.getNodeId();
     }
 
     @Override
@@ -134,7 +134,7 @@ public class AdminPage implements Node {
     @Override
     public String toString() {
         return new StringBuilder().append("AdminPage {").
-                append("nodeId='").append(nodeId).append("\', ").
+                append("type='").append(type).append("\', ").
                 append("title='").append(title).append("\', ").
                 append("themeVariant='").append(getThemeVariant()).append("\', ").
                 toString();

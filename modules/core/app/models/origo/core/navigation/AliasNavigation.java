@@ -19,19 +19,18 @@ public class AliasNavigation {
     @Column(unique = true)
     public String identifier;
 
-    // TODO: It would be better to have alias point to the id of an Alias instead (but that is really hard with yaml)
     @Constraints.Required
-    public String alias;
+    public Long aliasId;
 
     @Constraints.Required
     public int weight;
 
     public String getLink() {
-        Alias aliasModel = Alias.findWithPath(alias);
+        Alias aliasModel = Alias.findWithId(aliasId);
         if (aliasModel != null && CoreSettingsHelper.getStartPage().equals(aliasModel.pageId)) {
             return CoreSettingsHelper.getBaseUrl();
         }
-        return CoreSettingsHelper.getBaseUrl() + alias;
+        return CoreSettingsHelper.getBaseUrl() + aliasModel.path;
     }
 
     public static AliasNavigation findWithIdentifier(String identifier) {
@@ -49,7 +48,7 @@ public class AliasNavigation {
         return new StringBuilder().
                 append("AliasNavigation {").
                 append("identifier='").append(identifier).append('\'').
-                append(", alias='").append(alias).append('\'').
+                append(", alias='").append(aliasId).append('\'').
                 append('}').
                 toString();
     }

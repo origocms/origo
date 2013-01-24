@@ -17,6 +17,7 @@ import java.util.Map;
 public @interface OnSubmit {
 
     String with() default "";
+    int weight() default 1000;
 
     public class Context {
 

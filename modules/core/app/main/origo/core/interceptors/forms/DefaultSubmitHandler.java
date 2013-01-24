@@ -29,7 +29,7 @@ public class DefaultSubmitHandler {
 
         String withType = getWithType(form);
         if (withType == null) {
-            Logger.error("DefaultSubmitHandler requires a request parameter  named '" + WITH_TYPE + "' to be present in the request");
+            Logger.error("DefaultSubmitHandler requires a request parameter named '" + WITH_TYPE + "' to be present in the request");
         }
 
         // TODO: insert validation here

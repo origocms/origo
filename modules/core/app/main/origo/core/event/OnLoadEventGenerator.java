@@ -9,6 +9,7 @@ import main.origo.core.ui.Element;
 import main.origo.core.ui.NavigationElement;
 import org.apache.commons.lang3.StringUtils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -52,8 +53,10 @@ public class OnLoadEventGenerator {
             for (CachedAnnotation interceptor : interceptorList) {
                 try {
                     interceptor.method.invoke(null, context);
-                } catch (Throwable e) {
-                    throw new RuntimeException("", e);
+                } catch (InvocationTargetException e) {
+                    throw new RuntimeException("Unable to invoke method", e.getCause());
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException("Unable to invoke method", e.getCause());
                 }
             }
         }

@@ -45,7 +45,7 @@ public class DefaultContentDashboardProvider {
      */
     @Provides(type = Core.Type.NODE, with = Admin.With.CONTENT_PAGE)
     public static Node addContentDashboard(Provides.Context context) throws NodeLoadException {
-        AdminPage page = new AdminPage((RootNode) context.node());
+        AdminPage page = new AdminPage(Admin.With.CONTENT_PAGE, (RootNode) context.node());
         page.setTitle("Content - Dashboard");
 
         context.node().addElement(DashboardHelper.createBreadcrumb(Admin.With.CONTENT_PAGE), AdminTheme.topMeta());

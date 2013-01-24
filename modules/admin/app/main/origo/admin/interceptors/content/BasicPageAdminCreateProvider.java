@@ -19,7 +19,7 @@ public class BasicPageAdminCreateProvider {
 
     @Provides(type = Core.Type.NODE, with = BasicPageAdminProvider.NEW_TYPE)
     public static Node createNewPage(Provides.Context context) {
-        AdminPage page = new AdminPage(new RootNode(0));
+        AdminPage page = new AdminPage(BasicPageAdminProvider.NEW_TYPE, new RootNode(0));
 
         // TODO: Look up themevariant (and also meta) from DB instead of resetting here.
         page.rootNode.themeVariant = null;
@@ -50,9 +50,9 @@ public class BasicPageAdminCreateProvider {
         AdminPage page;
 
         if (context.node().getVersion() == null || context.node().getVersion() == 0) {
-            page = new AdminPage(RootNode.findLatestVersionWithNodeId(context.node().getNodeId()).copy());
+            page = new AdminPage(BasicPageAdminProvider.EDIT_TYPE, RootNode.findLatestVersionWithNodeId(context.node().getNodeId()).copy());
         } else {
-            page = new AdminPage((RootNode) context.node());
+            page = new AdminPage(BasicPageAdminProvider.EDIT_TYPE, (RootNode) context.node());
         }
 
         // TODO: Look up themevariant (and also meta) from DB instead of resetting here.
