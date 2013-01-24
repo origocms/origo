@@ -1,4 +1,4 @@
-package main.origo.admin.interceptors.content;
+package main.origo.admin.interceptors.content.basicpage;
 
 import main.origo.admin.helpers.DashboardHelper;
 import main.origo.admin.themes.AdminTheme;

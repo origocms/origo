@@ -1,4 +1,4 @@
-package main.origo.admin.interceptors.content;
+package main.origo.admin.interceptors.content.basicpage;
 
 import controllers.origo.admin.routes;
 import main.origo.admin.annotations.Admin;

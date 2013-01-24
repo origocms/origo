@@ -1,6 +1,7 @@
 package main.origo.admin.interceptors.content;
 
 import com.google.common.collect.Sets;
+import main.origo.admin.interceptors.content.basicpage.BasicPageAdminProvider;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnInsertElement;
 import main.origo.core.annotations.forms.OnSubmit;
