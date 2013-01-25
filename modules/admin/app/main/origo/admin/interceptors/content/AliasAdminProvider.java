@@ -19,6 +19,7 @@ public class AliasAdminProvider {
 
     private static final String ALIAS_PARAM = "alias";
 
+    // TODO: Hard coded for now, should be moved to configuration
     private static Set<String> types = Sets.newHashSet(
             BasicPageAdminProvider.EDIT_TYPE,
             BasicPageAdminProvider.NEW_TYPE

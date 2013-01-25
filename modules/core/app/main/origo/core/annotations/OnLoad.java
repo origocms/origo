@@ -33,7 +33,7 @@ public @interface OnLoad {
     String type();
 
     String with() default "";
-
+    int weight() default 1000;
     boolean after() default true;
 
     public static interface Context {

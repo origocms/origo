@@ -7,6 +7,8 @@ import main.origo.core.internal.CachedAnnotation;
 import main.origo.core.ui.Element;
 import play.Logger;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ElementEventGenerator {
@@ -64,7 +66,7 @@ public class ElementEventGenerator {
     }
 
     private static List<CachedAnnotation> findOnInsertInterceptors(final Class withType, final Class inputType, final boolean before) {
-        return InterceptorRepository.getInterceptors(OnInsertElement.class, new CachedAnnotation.InterceptorSelector() {
+        List<CachedAnnotation> interceptors = InterceptorRepository.getInterceptors(OnInsertElement.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation cachedAnnotation) {
                 OnInsertElement annotation = (OnInsertElement) cachedAnnotation.annotation;
@@ -72,10 +74,19 @@ public class ElementEventGenerator {
                         (inputType == null || annotation.input().equals(inputType));
             }
         });
+        Collections.sort(interceptors, new Comparator<CachedAnnotation>() {
+            @Override
+            public int compare(CachedAnnotation o1, CachedAnnotation o2) {
+                int weight1 = ((OnInsertElement) o1.annotation).weight();
+                int weight2 = ((OnInsertElement) o2.annotation).weight();
+                return new Integer(weight1).compareTo(weight2);
+            }
+        });
+        return interceptors;
     }
 
     private static List<CachedAnnotation> findOnRemoveInterceptors(final Class withType, final Class inputType, final boolean before) {
-        return InterceptorRepository.getInterceptors(OnRemoveElement.class, new CachedAnnotation.InterceptorSelector() {
+        List<CachedAnnotation> interceptors = InterceptorRepository.getInterceptors(OnRemoveElement.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation cachedAnnotation) {
                 OnRemoveElement annotation = (OnRemoveElement) cachedAnnotation.annotation;
@@ -83,5 +94,14 @@ public class ElementEventGenerator {
                         (inputType == null || annotation.input().equals(inputType));
             }
         });
+        Collections.sort(interceptors, new Comparator<CachedAnnotation>() {
+            @Override
+            public int compare(CachedAnnotation o1, CachedAnnotation o2) {
+                int weight1 = ((OnRemoveElement) o1.annotation).weight();
+                int weight2 = ((OnRemoveElement) o2.annotation).weight();
+                return new Integer(weight1).compareTo(weight2);
+            }
+        });
+        return interceptors;
     }
 }

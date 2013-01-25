@@ -16,7 +16,7 @@ public @interface OnRemoveElement {
     Class<? extends Element> with();
 
     boolean after() default false;
-
+    int weight() default 1000;
     Class input() default String.class;
 
     public static class Context extends AbstractContext {

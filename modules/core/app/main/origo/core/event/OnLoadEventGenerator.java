@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -87,7 +88,7 @@ public class OnLoadEventGenerator {
     }
 
     private static List<CachedAnnotation> findInterceptorForType(final String onLoadType, final String withType, final boolean after) {
-        return InterceptorRepository.getInterceptors(OnLoad.class, new CachedAnnotation.InterceptorSelector() {
+        List<CachedAnnotation> interceptors = InterceptorRepository.getInterceptors(OnLoad.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation cachedAnnotation) {
                 OnLoad annotation = ((OnLoad) cachedAnnotation.annotation);
@@ -95,6 +96,15 @@ public class OnLoadEventGenerator {
                         (StringUtils.isBlank(annotation.with()) || annotation.with().equals(withType));
             }
         });
+        Collections.sort(interceptors, new Comparator<CachedAnnotation>() {
+            @Override
+            public int compare(CachedAnnotation o1, CachedAnnotation o2) {
+                int weight1 = ((OnLoad) o1.annotation).weight();
+                int weight2 = ((OnLoad) o2.annotation).weight();
+                return new Integer(weight1).compareTo(weight2);
+            }
+        });
+        return interceptors;
     }
 
 }
