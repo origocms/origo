@@ -171,12 +171,11 @@ public class Element {
 
         @Override
         public Html decorate(RenderingContext renderingContext) {
-            Html body = ElementHelper.getHtmlFromBody(this);
             if (this.hasChildren()) {
-                body = ThemeHelper.decorateChildren(this, renderingContext);
+                return list_item.render(this, ThemeHelper.decorateChildren(this, renderingContext), this.getAttributes());
+            } else {
+                return list_item.render(this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
             }
-            //noinspection unchecked
-            return list_item.render(this, body, this.getAttributes());
         }
     }
 
@@ -217,6 +216,15 @@ public class Element {
     public static class Label extends Base {
         public Label() {
             super("label", "label");
+        }
+
+        @Override
+        public Html decorate(RenderingContext renderingContext) {
+            if (this.hasChildren()) {
+                return label.render(this, ThemeHelper.decorateChildren(this, renderingContext), this.getAttributes());
+            } else {
+                return label.render(this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
+            }
         }
     }
 
@@ -265,12 +273,11 @@ public class Element {
 
         @Override
         public Html decorate(RenderingContext renderingContext) {
-            Html body = ElementHelper.getHtmlFromBody(this);
             if (this.hasChildren()) {
-                body.$plus(ThemeHelper.decorateChildren(this, renderingContext));
+                return textarea.render(this, ThemeHelper.decorateChildren(this, renderingContext), this.getAttributes());
+            } else {
+                return textarea.render(this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
             }
-            //noinspection unchecked
-            return textarea.render(this, body, this.getAttributes());
         }
     }
 
@@ -285,7 +292,7 @@ public class Element {
 
         @Override
         public Html decorate(RenderingContext renderingContext) {
-            Map<String, String> attributes = ElementHelper.combineAttributes(Collections.<String, String>singletonMap("type", "radiobutton"), this.getAttributes());
+            Map<String, String> attributes = ElementHelper.combineAttributes(Collections.<String, String>singletonMap("type", "radio"), this.getAttributes());
             //noinspection unchecked
             return input.render(this, null, attributes);
         }
@@ -320,12 +327,11 @@ public class Element {
 
         @Override
         public Html decorate(RenderingContext renderingContext) {
-            Html body = ElementHelper.getHtmlFromBody(this);
             if (this.hasChildren()) {
-                body.$plus(ThemeHelper.decorateChildren(this, renderingContext));
+                return select_option.render(this, ThemeHelper.decorateChildren(this, renderingContext), this.getAttributes());
+            } else {
+                return select_option.render(this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
             }
-            //noinspection unchecked
-            return select_option.render(this, body, this.getAttributes());
         }
     }
 

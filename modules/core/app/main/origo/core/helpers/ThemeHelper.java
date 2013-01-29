@@ -15,7 +15,6 @@ import models.origo.core.EventHandler;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
 import play.api.templates.Html;
-import play.api.templates.HtmlFormat;
 import play.mvc.Result;
 
 import java.util.List;
@@ -104,18 +103,16 @@ public class ThemeHelper {
     }
 
     public static Html decorateChildren(Element parent, RenderingContext renderingContext) {
-        Html decoratedOutput;
-        if (parent.hasBody()) {
-            decoratedOutput = parent.getBody();
-        } else {
-            decoratedOutput = HtmlFormat.raw("");
-        }
+        Html decoratedOutput = Html.empty();
         if (parent.hasChildren()) {
             renderingContext.nest(parent);
             for (Element childElement : parent.getChildren()) {
                 decoratedOutput.$plus(decorate(childElement, renderingContext));
             }
             renderingContext.unNest();
+        }
+        if (parent.hasBody()) {
+            decoratedOutput.$plus(parent.getBody());
         }
         return decoratedOutput;
     }
