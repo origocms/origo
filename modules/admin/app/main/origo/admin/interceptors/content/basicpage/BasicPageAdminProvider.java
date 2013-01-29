@@ -6,6 +6,8 @@ import main.origo.core.ThemeRepository;
 import main.origo.core.annotations.*;
 import main.origo.core.annotations.forms.OnSubmit;
 import main.origo.core.annotations.forms.SubmitState;
+import main.origo.core.event.forms.OnCreateEventGenerator;
+import main.origo.core.event.forms.OnUpdateEventGenerator;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.helpers.forms.EditorHelper;
 import main.origo.core.helpers.forms.FormHelper;
@@ -266,6 +268,12 @@ public class BasicPageAdminProvider {
 
         if (newVersion) {
 
+            if (oldRootNode.version == 0) {
+                OnCreateEventGenerator.triggerBeforeInterceptors("models.origo.core.BasicPage", latestVersion);
+            } else {
+                OnUpdateEventGenerator.triggerBeforeInterceptors("models.origo.core.BasicPage", latestVersion);
+            }
+
             BasicPage newPageVersion = latestVersion.copy();
 
             // Properties
@@ -289,7 +297,16 @@ public class BasicPageAdminProvider {
 
             newPageVersion.rootNode.save();
             newPageVersion.save();
+
+            if (oldRootNode.version == 0) {
+                OnCreateEventGenerator.triggerAfterInterceptors("models.origo.core.BasicPage", newPageVersion);
+            } else {
+                OnUpdateEventGenerator.triggerAfterInterceptors("models.origo.core.BasicPage", newPageVersion);
+            }
+
         } else {
+
+            OnUpdateEventGenerator.triggerBeforeInterceptors("models.origo.core.BasicPage", latestVersion);
 
             // Properties
             latestVersion.rootNode.publish = parseDate(data.get(PUBLISH_DATE_PARAM), data.get(PUBLISH_TIME_PARAM));
@@ -297,6 +314,8 @@ public class BasicPageAdminProvider {
 
             latestVersion.rootNode.save();
             latestVersion.save();
+
+            OnUpdateEventGenerator.triggerAfterInterceptors("models.origo.core.BasicPage", latestVersion);
         }
 
     }
