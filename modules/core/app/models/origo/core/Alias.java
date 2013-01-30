@@ -77,4 +77,8 @@ public class Alias {
         JPA.em().persist(this);
         return this;
     }
+
+    public void delete() {
+        JPA.em().remove(this);
+    }
 }

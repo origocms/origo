@@ -12,9 +12,9 @@ import views.html.origo.core.decorators.forms.*;
 
 import java.util.*;
 
-public class Element {
+public class Element<T extends Element> {
 
-    private static class Base extends Element {
+    private static class Base<T extends Element> extends Element<T> {
 
         public String tagName;
 
@@ -25,12 +25,13 @@ public class Element {
 
         @Override
         public Html decorate(RenderingContext renderingContext) {
-            return base.render(tagName, this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
+            //noinspection unchecked
+            return base.render(tagName, (Element)this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
         }
 
     }
 
-    public static class Raw extends Element {
+    public static class Raw extends Element<Raw> {
 
         public Raw() {
             super("raw");
@@ -42,7 +43,7 @@ public class Element {
         }
     }
 
-    public static class Meta extends Element {
+    public static class Meta extends Element<Meta> {
 
         public Meta() {
             super("meta");
@@ -56,11 +57,11 @@ public class Element {
         @Override
         public Html decorate(RenderingContext renderingContext) {
             //noinspection unchecked
-            return meta.render(this, ElementHelper.getHtmlFromBody(this), getAttributes());
+            return meta.render((Element)this, ElementHelper.getHtmlFromBody(this), getAttributes());
         }
     }
 
-    public static class Script extends Element {
+    public static class Script extends Element<Script> {
 
         public Script() {
             super("script");
@@ -74,11 +75,11 @@ public class Element {
         @Override
         public Html decorate(RenderingContext renderingContext) {
             //noinspection unchecked
-            return script.render(this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
+            return script.render((Element)this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
         }
     }
 
-    public static class Style extends Element {
+    public static class Style extends Element<Style> {
 
         public Style() {
             super("style");
@@ -92,11 +93,11 @@ public class Element {
         @Override
         public Html decorate(RenderingContext renderingContext) {
             //noinspection unchecked
-            return style.render(this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
+            return style.render((Element)this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
         }
     }
 
-    public static class Link extends Element {
+    public static class Link extends Element<Link> {
 
         public Link() {
             super("link");
@@ -110,11 +111,11 @@ public class Element {
         @Override
         public Html decorate(RenderingContext renderingContext) {
             //noinspection unchecked
-            return link.render(this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
+            return link.render((Element)this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
         }
     }
 
-    public static class Image extends Base {
+    public static class Image extends Base<Image> {
 
         public Image() {
             super("img", "image");
@@ -122,7 +123,7 @@ public class Element {
 
     }
 
-    public static class Span extends Element {
+    public static class Span extends Element<Span> {
 
         public Span() {
             super("span");
@@ -131,11 +132,12 @@ public class Element {
         @Override
         public Html decorate(RenderingContext renderingContext) {
             Html body = ThemeHelper.decorateChildren(this, renderingContext);
-            return span.render(this, body, this.getAttributes());
+            //noinspection unchecked
+            return span.render((Element)this, body, this.getAttributes());
         }
     }
 
-    public static class ListBulleted extends Element {
+    public static class ListBulleted extends Element<ListBulleted> {
 
         public ListBulleted() {
             super("list_bulleted");
@@ -145,11 +147,11 @@ public class Element {
         public Html decorate(RenderingContext renderingContext) {
             Html body = ThemeHelper.decorateChildren(this, renderingContext);
             //noinspection unchecked
-            return list.render("ul", this, body, this.getAttributes());
+            return list.render("ul", (Element)this, body, this.getAttributes());
         }
     }
 
-    public static class ListOrdered extends Element {
+    public static class ListOrdered extends Element<ListOrdered> {
 
         public ListOrdered() {
             super("list_ordered");
@@ -159,11 +161,11 @@ public class Element {
         public Html decorate(RenderingContext renderingContext) {
             Html body = ThemeHelper.decorateChildren(this, renderingContext);
             //noinspection unchecked
-            return list.render("ol", this, body, this.getAttributes());
+            return list.render("ol", (Element)this, body, this.getAttributes());
         }
     }
 
-    public static class ListItem extends Element {
+    public static class ListItem extends Element<ListItem> {
 
         public ListItem() {
             super("list_item");
@@ -172,14 +174,16 @@ public class Element {
         @Override
         public Html decorate(RenderingContext renderingContext) {
             if (this.hasChildren()) {
-                return list_item.render(this, ThemeHelper.decorateChildren(this, renderingContext), this.getAttributes());
+                //noinspection unchecked
+                return list_item.render((Element)this, ThemeHelper.decorateChildren(this, renderingContext), this.getAttributes());
             } else {
-                return list_item.render(this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
+                //noinspection unchecked
+                return list_item.render((Element)this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
             }
         }
     }
 
-    public static class Form extends Element {
+    public static class Form extends Element<Form> {
 
         public Form() {
             super("form");
@@ -189,13 +193,13 @@ public class Element {
         public Html decorate(RenderingContext renderingContext) {
             Html body = ThemeHelper.decorateChildren(this, renderingContext);
             //noinspection unchecked
-            return form.render(this, body, this.getAttributes());
+            return form.render((Element)this, body, this.getAttributes());
         }
     }
 
-    public static class Fieldset extends Element {
+    public static class FieldSet extends Element<FieldSet> {
 
-        public Fieldset() {
+        public FieldSet() {
             super("fieldset");
         }
 
@@ -203,17 +207,17 @@ public class Element {
         public Html decorate(RenderingContext renderingContext) {
             Html body = ThemeHelper.decorateChildren(this, renderingContext);
             //noinspection unchecked
-            return fieldset.render(this, body, this.getAttributes());
+            return fieldset.render((Element)this, body, this.getAttributes());
         }
     }
 
-    public static class Legend extends Base {
+    public static class Legend extends Base<Legend> {
         public Legend() {
             super("legend", "legend");
         }
     }
 
-    public static class Label extends Base {
+    public static class Label extends Base<Label> {
         public Label() {
             super("label", "label");
         }
@@ -221,14 +225,16 @@ public class Element {
         @Override
         public Html decorate(RenderingContext renderingContext) {
             if (this.hasChildren()) {
-                return label.render(this, ThemeHelper.decorateChildren(this, renderingContext), this.getAttributes());
+                //noinspection unchecked
+                return label.render((Element)this, ThemeHelper.decorateChildren(this, renderingContext), this.getAttributes());
             } else {
-                return label.render(this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
+                //noinspection unchecked
+                return label.render((Element)this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
             }
         }
     }
 
-    public static class InputHidden extends Element {
+    public static class InputHidden extends Element<InputHidden> {
 
         public InputHidden() {
             super("input_hidden", String.class);
@@ -241,11 +247,11 @@ public class Element {
         public Html decorate(RenderingContext renderingContext) {
             Map<String, String> attributes = ElementHelper.combineAttributes(Collections.<String, String>singletonMap("type", "hidden"), this.getAttributes());
             //noinspection unchecked
-            return input.render(this, null, attributes);
+            return input.render((Element)this, null, attributes);
         }
     }
 
-    public static class InputText extends Element {
+    public static class InputText extends Element<InputText> {
 
         public InputText() {
             super("input_text", String.class);
@@ -258,11 +264,11 @@ public class Element {
         public Html decorate(RenderingContext renderingContext) {
             Map<String, String> attributes = ElementHelper.combineAttributes(Collections.<String, String>singletonMap("type", "text"), this.getAttributes());
             //noinspection unchecked
-            return input.render(this, null, attributes);
+            return input.render((Element)this, null, attributes);
         }
     }
 
-    public static class InputTextArea extends Element {
+    public static class InputTextArea extends Element<InputTextArea> {
 
         public InputTextArea() {
             super("input_textarea", String.class);
@@ -274,14 +280,16 @@ public class Element {
         @Override
         public Html decorate(RenderingContext renderingContext) {
             if (this.hasChildren()) {
-                return textarea.render(this, ThemeHelper.decorateChildren(this, renderingContext), this.getAttributes());
+                //noinspection unchecked
+                return textarea.render((Element)this, ThemeHelper.decorateChildren(this, renderingContext), this.getAttributes());
             } else {
-                return textarea.render(this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
+                //noinspection unchecked
+                return textarea.render((Element)this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
             }
         }
     }
 
-    public static class InputRadioButton extends Element {
+    public static class InputRadioButton extends Element<InputRadioButton> {
 
         public InputRadioButton() {
             super("input_radiobutton", String.class);
@@ -294,11 +302,27 @@ public class Element {
         public Html decorate(RenderingContext renderingContext) {
             Map<String, String> attributes = ElementHelper.combineAttributes(Collections.<String, String>singletonMap("type", "radio"), this.getAttributes());
             //noinspection unchecked
+            return input.render((Element)this, null, attributes);
+        }
+    }
+
+    public static class InputCheckbox extends Element<InputCheckbox> {
+
+        public InputCheckbox() {
+            super("input_checkbox", String.class);
+        }
+        public InputCheckbox(Class c) {
+            super("input_checkbox", c);
+        }
+
+        @Override
+        public Html decorate(RenderingContext renderingContext) {
+            Map<String, String> attributes = ElementHelper.combineAttributes(Collections.<String, String>singletonMap("type", "checkbox"), this.getAttributes());
             return input.render(this, null, attributes);
         }
     }
 
-    public static class InputSelect extends Element {
+    public static class InputSelect extends Element<InputSelect> {
 
         public InputSelect() {
             super("input_select", String.class);
@@ -311,11 +335,11 @@ public class Element {
         public Html decorate(RenderingContext renderingContext) {
             Html body = ThemeHelper.decorateChildren(this, renderingContext);
             //noinspection unchecked
-            return select.render(this, body, this.getAttributes());
+            return select.render((Element)this, body, this.getAttributes());
         }
     }
 
-    public static class InputSelectOption extends Element {
+    public static class InputSelectOption extends Element<InputSelectOption> {
 
         public InputSelectOption() {
             super("input_select_option", String.class);
@@ -328,14 +352,16 @@ public class Element {
         @Override
         public Html decorate(RenderingContext renderingContext) {
             if (this.hasChildren()) {
-                return select_option.render(this, ThemeHelper.decorateChildren(this, renderingContext), this.getAttributes());
+                //noinspection unchecked
+                return select_option.render((Element)this, ThemeHelper.decorateChildren(this, renderingContext), this.getAttributes());
             } else {
-                return select_option.render(this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
+                //noinspection unchecked
+                return select_option.render((Element)this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
             }
         }
     }
 
-    public static class InputButton extends Element {
+    public static class InputButton extends Element<InputButton> {
 
         public InputButton() {
             super("input_button");
@@ -345,11 +371,11 @@ public class Element {
         public Html decorate(RenderingContext renderingContext) {
             Map<String, String> attributes = ElementHelper.combineAttributes(Collections.<String, String>singletonMap("type", "button"), this.getAttributes());
             //noinspection unchecked
-            return input.render(this, null, attributes);
+            return input.render((Element)this, null, attributes);
         }
     }
 
-    public static class InputSubmit extends Element {
+    public static class InputSubmit extends Element<InputSubmit> {
 
         public InputSubmit() {
             super("input_submit");
@@ -359,11 +385,11 @@ public class Element {
         public Html decorate(RenderingContext renderingContext) {
             Map<String, String> attributes = ElementHelper.combineAttributes(Collections.<String, String>singletonMap("type", "submit"), this.getAttributes());
             //noinspection unchecked
-            return input.render(this, null, attributes);
+            return input.render((Element)this, null, attributes);
         }
     }
 
-    public static class InputReset extends Element {
+    public static class InputReset extends Element<InputReset> {
 
         public InputReset() {
             super("input_reset");
@@ -373,11 +399,11 @@ public class Element {
         public Html decorate(RenderingContext renderingContext) {
             Map<String, String> attributes = ElementHelper.combineAttributes(Collections.<String, String>singletonMap("type", "reset"), this.getAttributes());
             //noinspection unchecked
-            return input.render(this, null, attributes);
+            return input.render((Element)this, null, attributes);
         }
     }
 
-    public static class InputImage extends Element {
+    public static class InputImage extends Element<InputImage> {
 
         public InputImage() {
             super("input_image", String.class);
@@ -390,11 +416,11 @@ public class Element {
         public Html decorate(RenderingContext renderingContext) {
             Map<String, String> attributes = ElementHelper.combineAttributes(Collections.<String, String>singletonMap("type", "image"), this.getAttributes());
             //noinspection unchecked
-            return input.render(this, null, attributes);
+            return input.render((Element)this, null, attributes);
         }
     }
 
-    public static class InputFile extends Element {
+    public static class InputFile extends Element<InputFile> {
 
         public InputFile() {
             super("input_file", String.class);
@@ -404,11 +430,11 @@ public class Element {
         public Html decorate(RenderingContext renderingContext) {
             Map<String, String> attributes = ElementHelper.combineAttributes(Collections.<String, String>singletonMap("type", "file"), this.getAttributes());
             //noinspection unchecked
-            return input.render(this, null, attributes);
+            return input.render((Element)this, null, attributes);
         }
     }
 
-    public static class InputPassword extends Element {
+    public static class InputPassword extends Element<InputPassword> {
 
         public InputPassword() {
             super("input_password", String.class);
@@ -418,11 +444,11 @@ public class Element {
         public Html decorate(RenderingContext renderingContext) {
             Map<String, String> attributes = ElementHelper.combineAttributes(Collections.<String, String>singletonMap("type", "password"), this.getAttributes());
             //noinspection unchecked
-            return input.render(this, null, attributes);
+            return input.render((Element)this, null, attributes);
         }
     }
 
-    public static class Panel extends Element {
+    public static class Panel extends Element<Panel> {
 
         public Panel() {
             super("panel");
@@ -431,11 +457,12 @@ public class Element {
         @Override
         public Html decorate(RenderingContext renderingContext) {
             Html body = ThemeHelper.decorateChildren(this, renderingContext);
-            return panel.render(this, body, this.getAttributes());
+            //noinspection unchecked
+            return panel.render((Element)this, body, this.getAttributes());
         }
     }
 
-    public static class Paragraph extends Element {
+    public static class Paragraph extends Element<Paragraph> {
 
         public Paragraph() {
             super("paragaph");
@@ -445,11 +472,11 @@ public class Element {
         public Html decorate(RenderingContext renderingContext) {
             Html body = ThemeHelper.decorateChildren(this, renderingContext);
             //noinspection unchecked
-            return paragraph.render(this, body, this.getAttributes());
+            return paragraph.render((Element)this, body, this.getAttributes());
         }
     }
 
-    public static class Text extends Element {
+    public static class Text extends Element<Text> {
 
         public Text() {
             super("text");
@@ -461,11 +488,11 @@ public class Element {
         @Override
         public Html decorate(RenderingContext renderingContext) {
             //noinspection unchecked
-            return text.render(this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
+            return text.render((Element)this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
         }
     }
 
-    public static class Anchor extends Element {
+    public static class Anchor extends Element<Anchor> {
 
         public Anchor() {
             super("anchor");
@@ -477,11 +504,12 @@ public class Element {
             if (this.hasChildren()) {
                 body = ThemeHelper.decorateChildren(this, renderingContext);
             }
-            return anchor.render(this, body, this.getAttributes());
+            //noinspection unchecked
+            return anchor.render((Element)this, body, this.getAttributes());
         }
     }
 
-    private static class Heading extends Base {
+    private static class Heading<T extends Element> extends Base<T> {
 
         private Heading(String tagName, String type) {
             super(tagName, type);
@@ -489,61 +517,55 @@ public class Element {
 
     }
 
-    public static class Heading1 extends Heading {
+    public static class Heading1 extends Heading<Heading1> {
 
         public Heading1() {
-            //noinspection unchecked
             super("h1", "heading_1");
         }
     }
 
-    public static class Heading2 extends Heading {
+    public static class Heading2 extends Heading<Heading2> {
 
         public Heading2() {
-            //noinspection unchecked
             super("h2", "heading_2");
         }
     }
 
-    public static class Heading3 extends Heading {
+    public static class Heading3 extends Heading<Heading3> {
 
         public Heading3() {
-            //noinspection unchecked
             super("h3", "heading_3");
         }
     }
 
-    public static class Heading4 extends Heading {
+    public static class Heading4 extends Heading<Heading4> {
 
         public Heading4() {
-            //noinspection unchecked
             super("h4", "heading_4");
         }
     }
 
-    public static class Heading5 extends Heading {
+    public static class Heading5 extends Heading<Heading4> {
 
         public Heading5() {
-            //noinspection unchecked
             super("h5", "heading_5");
         }
     }
 
-    public static class Heading6 extends Heading {
+    public static class Heading6 extends Heading<Heading5> {
 
         public Heading6() {
-            //noinspection unchecked
             super("h6", "heading_6");
         }
     }
 
-    public static class Emphasize extends Base {
+    public static class Emphasize extends Base<Emphasize> {
         public Emphasize() {
             super("em", "em");
         }
     }
 
-    public static class Strong extends Base {
+    public static class Strong extends Base<Strong> {
         public Strong() {
             super("strong", "strong");
         }
@@ -560,7 +582,7 @@ public class Element {
 
     private Element parent;
 
-    private List<Element> children = Lists.newLinkedList();
+    private List<Element<? extends Element>> children = Lists.newLinkedList();
 
     private Html body;
 
@@ -602,58 +624,58 @@ public class Element {
         return Collections.unmodifiableMap(attributes);
     }
 
-    public Element setAttributes(Map<String, String> attributes) {
+    public T setAttributes(Map<String, String> attributes) {
         this.attributes = attributes;
-        return this;
+        return (T) this;
     }
 
-    public Element addAttribute(String name, String value) {
+    public T addAttribute(String name, String value) {
         if (this.attributes.containsKey(name)) {
             this.attributes.put(name, this.attributes.get(name).concat(" ").concat(value));
         } else {
             this.attributes.put(name, value);
         }
-        return this;
+        return (T) this;
     }
 
     public int getWeight() {
         return this.weight;
     }
 
-    public Element setWeight(int weight) {
+    public T setWeight(int weight) {
         this.weight = weight;
-        return this;
+        return (T) this;
     }
 
     public boolean hasChildren() {
         return getChildren() != null && !getChildren().isEmpty();
     }
 
-    public List<Element> getChildren() {
-        return Collections.unmodifiableList(children);
+    public List<Element<? extends Element>> getChildren() {
+        return children;
     }
 
-    public Element setChildren(List<Element> children) {
+    public T setChildren(List<Element<? extends Element>> children) {
         for (Element child : children) {
             child.parent = this;
         }
         this.children = children;
-        return this;
+        return (T) this;
     }
 
-    public Element addChild(Element element) {
+    public T addChild(Element element) {
         element.parent = this;
         ElementEventGenerator.triggerBeforeInsert(this, element);
         this.children.add(element);
         ElementEventGenerator.triggerAfterInsert(this, element);
-        return this;
+        return (T) this;
     }
 
-    public Element addChildren(Collection<? extends Element> elements) {
+    public T addChildren(Collection<? extends Element> elements) {
         for (Element element : elements) {
             addChild(element);
         }
-        return this;
+        return (T) this;
     }
 
     public boolean removeChild(Element element) {
@@ -671,13 +693,13 @@ public class Element {
         return body;
     }
 
-    public Element setBody(String body) {
+    public T setBody(String body) {
         return setBody(HtmlFormat.raw(body));
     }
 
-    public Element setBody(Html body) {
+    public T setBody(Html body) {
         this.body = body;
-        return this;
+        return (T) this;
     }
 
     public boolean isAlwaysInHead() {

@@ -11,6 +11,7 @@ public class NavigationElement implements Comparable<NavigationElement> {
     public final static String INTRANET = "intranet";
     public final static String EXTRANET = "extranet";
 
+    public String id;
     public String section;
     public String title;
     public String link;
@@ -22,34 +23,8 @@ public class NavigationElement implements Comparable<NavigationElement> {
     public NavigationElement() {
     }
 
-    public NavigationElement setSection(String section) {
-        this.section = section;
-        return this;
-    }
-
-    public NavigationElement setTitle(String title) {
-        this.title = title;
-        return this;
-    }
-
-    public NavigationElement setLink(String link) {
-        this.link = link;
-        return this;
-    }
-
-    public NavigationElement setWeight(int weight) {
-        this.weight = weight;
-        return this;
-    }
-
-    public NavigationElement setSelected(boolean selected) {
-        this.selected = selected;
-        return this;
-    }
-
-    public NavigationElement addChild(NavigationElement navigationElement) {
-        this.children.add(navigationElement);
-        return this;
+    public List<NavigationElement> children() {
+        return children;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package main.origo.core.event.forms;
 
 import main.origo.core.InterceptorRepository;
+import main.origo.core.Navigation;
 import main.origo.core.Node;
 import main.origo.core.annotations.forms.OnDelete;
 import main.origo.core.internal.CachedAnnotation;
@@ -13,6 +14,35 @@ import java.util.List;
 import java.util.Map;
 
 public class OnDeleteEventGenerator {
+
+    public static void triggerBeforeInterceptors(String withType, Navigation navigation) {
+        triggerBeforeInterceptors(withType, navigation, Collections.<String, Object>emptyMap());
+    }
+
+    public static void triggerBeforeInterceptors(String withType, Navigation navigation, Map<String, Object> args) {
+        triggerInterceptors(withType, navigation, args, false);
+    }
+
+    public static void triggerAfterInterceptors(String withType, Navigation navigation) {
+        triggerAfterInterceptors(withType, navigation, Collections.<String, Object>emptyMap());
+    }
+
+    public static void triggerAfterInterceptors(String withType, Navigation navigation, Map<String, Object> args) {
+        triggerInterceptors(withType, navigation, args, true);
+    }
+
+    private static void triggerInterceptors(String withType, Navigation navigation, Map<String, Object> args, boolean after) {
+        List<CachedAnnotation> cachedAnnotations = findOnPostInterceptorsWithType(withType, after);
+        for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
+            try {
+                //noinspection unchecked
+                cachedAnnotation.method.invoke(null, new OnDelete.NavigationContext(navigation, args));
+            } catch (Throwable e) {
+                Logger.error("", e);
+                throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
+            }
+        }
+    }
 
     public static void triggerBeforeInterceptors(String withType, Node node) {
         triggerBeforeInterceptors(withType, node, Collections.<String, Object>emptyMap());
@@ -35,7 +65,7 @@ public class OnDeleteEventGenerator {
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
             try {
                 //noinspection unchecked
-                cachedAnnotation.method.invoke(null, new OnDelete.Context(node, args));
+                cachedAnnotation.method.invoke(null, new OnDelete.NodeContext(node, args));
             } catch (Throwable e) {
                 Logger.error("", e);
                 throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());

@@ -14,6 +14,8 @@ import java.util.Date;
 @Table(name = "navigation_page_id")
 public class PageIdNavigation {
 
+    public static final String TYPE = "models.origo.core.navigation.PageIdNavigation";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long id;
@@ -50,5 +52,9 @@ public class PageIdNavigation {
     public PageIdNavigation save() {
         JPA.em().persist(this);
         return this;
+    }
+
+    public void delete() {
+        JPA.em().remove(this);
     }
 }

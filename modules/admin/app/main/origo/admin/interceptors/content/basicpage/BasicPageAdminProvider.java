@@ -53,6 +53,7 @@ public class BasicPageAdminProvider {
     private static final String THEME_VARIANT_PARAM = "origo-basicpageform-theme-variant";
     private static final String LEAD_PARAM = "origo-basicpageform-lead";
     private static final String BODY_PARAM = "origo-basicpageform-body";
+    private static final String TYPE = "models.origo.core.BasicPage";
 
     /**
      * Dashboard element for the content dashboard page.
@@ -89,15 +90,10 @@ public class BasicPageAdminProvider {
          * Basic Options
          */
 
-        Element basicFieldSet = new Element.Fieldset().setId("basic");
+        Element basicFieldSet = new Element.FieldSet().setId("basic");
         context.element().addChild(basicFieldSet);
 
         basicFieldSet.addChild(new Element.Legend().setBody("Basic Information"));
-
-        Element titleElement = new Element.Panel().setWeight(10).addAttribute("class", "field").
-                addChild(new Element.Label().setWeight(10).setBody("Title").addAttribute("for", TITLE_PARAM)).
-                addChild(new Element.InputText().setWeight(20).addAttribute("name", TITLE_PARAM).addAttribute("value", basicPage.getTitle()));
-        basicFieldSet.addChild(titleElement);
 
         Element themeInputSelectElement = new Element.InputSelect();
         for (CachedThemeVariant themeVariant : ThemeRepository.getAvailableThemeVariants()) {
@@ -113,17 +109,42 @@ public class BasicPageAdminProvider {
             }
             themeInputSelectElement.addChild(optionElement);
         }
-        Element themeVariantElement = new Element.Panel().setWeight(20).addAttribute("class", "field").
-                addChild(new Element.Label().setWeight(10).setBody("Theme Variant").addAttribute("for", THEME_VARIANT_PARAM)).
-                addChild(themeInputSelectElement.setWeight(25).addAttribute("class", "themeSelector").
-                        addAttribute("name", THEME_VARIANT_PARAM));
-        basicFieldSet.addChild(themeVariantElement);
+
+        basicFieldSet.addChild(new Element.Panel().addAttribute("class", "row-fluid").
+                addChild(new Element.Panel().setWeight(10).addAttribute("class", "field span3").
+                        addChild(new Element.Label().setWeight(10).setBody("Title").addAttribute("for", TITLE_PARAM)).
+                        addChild(new Element.InputText().setWeight(20).addAttribute("name", TITLE_PARAM).addAttribute("value", basicPage.getTitle()))).
+                addChild(new Element.Panel().setWeight(20).addAttribute("class", "field").
+                        addChild(new Element.Label().setWeight(10).setBody("Theme Variant").addAttribute("for", THEME_VARIANT_PARAM)).
+                        addChild(themeInputSelectElement.setWeight(25).addAttribute("class", "themeSelector").
+                                addAttribute("name", THEME_VARIANT_PARAM))));
+
+        /**
+         * Content
+         */
+
+        Element contentFieldSet = new Element.FieldSet().setId("content");
+        context.element().addChild(contentFieldSet);
+
+        contentFieldSet.addChild(new Element.Legend().setBody("Content"));
+
+        Element leadElement = new Element.Panel().setWeight(20).addAttribute("class", "field").
+                addChild(new Element.Label().setWeight(10).setBody("Lead").addAttribute("for", LEAD_PARAM)).
+                addChild(EditorHelper.createRichTextEditor(context.node(), leadContent).setWeight(20).addAttribute("class", "editor richtext").
+                        addAttribute("name", LEAD_PARAM).addAttribute("cols", "80").addAttribute("rows", "10"));
+        contentFieldSet.addChild(leadElement);
+
+        Element bodyElement = new Element.Panel().setWeight(30).addAttribute("class", "field").
+                addChild(new Element.Label().setWeight(10).setBody("Body").addAttribute("for", BODY_PARAM)).
+                addChild(EditorHelper.createRichTextEditor(context.node(), bodyContent).setWeight(20).addAttribute("class", "editor richtext").
+                        addAttribute("name", BODY_PARAM).addAttribute("cols", "80").addAttribute("rows", "20"));
+        contentFieldSet.addChild(bodyElement);
 
         /**
          * Publishing options
          */
 
-        Element publishingFieldSet = new Element.Fieldset().setId("publishing");
+        Element publishingFieldSet = new Element.FieldSet().setId("publishing");
         context.element().addChild(publishingFieldSet);
 
         publishingFieldSet.addChild(new Element.Legend().setBody("Publish"));
@@ -175,28 +196,7 @@ public class BasicPageAdminProvider {
                 );
         publishingFieldSet.addChild(publishTimeElement);
 
-        /**
-         * Content
-         */
-
-        Element contentFieldSet = new Element.Fieldset().setId("content");
-        context.element().addChild(contentFieldSet);
-
-        contentFieldSet.addChild(new Element.Legend().setBody("Content"));
-
-        Element leadElement = new Element.Panel().setWeight(20).addAttribute("class", "field").
-                addChild(new Element.Label().setWeight(10).setBody("Lead").addAttribute("for", LEAD_PARAM)).
-                addChild(EditorHelper.createRichTextEditor(context.node(), leadContent).setWeight(20).addAttribute("class", "editor richtext").
-                        addAttribute("name", LEAD_PARAM).addAttribute("cols", "80").addAttribute("rows", "10"));
-        contentFieldSet.addChild(leadElement);
-
-        Element bodyElement = new Element.Panel().setWeight(30).addAttribute("class", "field").
-                addChild(new Element.Label().setWeight(10).setBody("Body").addAttribute("for", BODY_PARAM)).
-                addChild(EditorHelper.createRichTextEditor(context.node(), bodyContent).setWeight(20).addAttribute("class", "editor richtext").
-                        addAttribute("name", BODY_PARAM).addAttribute("cols", "80").addAttribute("rows", "20"));
-        contentFieldSet.addChild(bodyElement);
-
-        Element actionPanel = new Element.Panel().setWeight(40).addAttribute("class", "well well-large").
+        context.element().addChild(new Element.Panel().setWeight(40).addAttribute("class", "well well-large").
                 addChild(new Element.Panel().
                         addAttribute("class", "pull-left").
                         addChild(new Element.Anchor().setWeight(20).
@@ -209,8 +209,7 @@ public class BasicPageAdminProvider {
                         addAttribute("class", "pull-right").
                         addChild(new Element.InputSubmit().setWeight(10).addAttribute("class", "btn btn-primary").addAttribute("value", "Save")).
                         addChild(new Element.InputReset().setWeight(15).addAttribute("class", "btn").addAttribute("value", "Reset"))
-                );
-        contentFieldSet.addChild(actionPanel);
+                ));
 
     }
 
@@ -269,9 +268,9 @@ public class BasicPageAdminProvider {
         if (newVersion) {
 
             if (oldRootNode.version == 0) {
-                OnCreateEventGenerator.triggerBeforeInterceptors("models.origo.core.BasicPage", latestVersion);
+                OnCreateEventGenerator.triggerBeforeInterceptors(TYPE, latestVersion);
             } else {
-                OnUpdateEventGenerator.triggerBeforeInterceptors("models.origo.core.BasicPage", latestVersion);
+                OnUpdateEventGenerator.triggerBeforeInterceptors(TYPE, latestVersion);
             }
 
             BasicPage newPageVersion = latestVersion.copy();
@@ -299,14 +298,14 @@ public class BasicPageAdminProvider {
             newPageVersion.save();
 
             if (oldRootNode.version == 0) {
-                OnCreateEventGenerator.triggerAfterInterceptors("models.origo.core.BasicPage", newPageVersion);
+                OnCreateEventGenerator.triggerAfterInterceptors(TYPE, newPageVersion);
             } else {
-                OnUpdateEventGenerator.triggerAfterInterceptors("models.origo.core.BasicPage", newPageVersion);
+                OnUpdateEventGenerator.triggerAfterInterceptors(TYPE, newPageVersion);
             }
 
         } else {
 
-            OnUpdateEventGenerator.triggerBeforeInterceptors("models.origo.core.BasicPage", latestVersion);
+            OnUpdateEventGenerator.triggerBeforeInterceptors(TYPE, latestVersion);
 
             // Properties
             latestVersion.rootNode.publish = parseDate(data.get(PUBLISH_DATE_PARAM), data.get(PUBLISH_TIME_PARAM));
@@ -315,7 +314,7 @@ public class BasicPageAdminProvider {
             latestVersion.rootNode.save();
             latestVersion.save();
 
-            OnUpdateEventGenerator.triggerAfterInterceptors("models.origo.core.BasicPage", latestVersion);
+            OnUpdateEventGenerator.triggerAfterInterceptors(TYPE, latestVersion);
         }
 
     }

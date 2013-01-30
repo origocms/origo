@@ -19,6 +19,8 @@ import java.util.List;
 @Table(name = "navigation_basic")
 public class BasicNavigation implements Navigation<BasicNavigation>, Comparable<BasicNavigation> {
 
+    public static final String TYPE = "models.origo.core.navigation.BasicNavigation";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long id;
@@ -54,6 +56,26 @@ public class BasicNavigation implements Navigation<BasicNavigation>, Comparable<
     @Override
     public int getWeight() {
         return weight;
+    }
+
+    public static BasicNavigation findWithId(long id) {
+        try {
+            final Query query = JPA.em().createQuery("select bn from models.origo.core.navigation.BasicNavigation bn where bn.id=:id");
+            query.setParameter("id", id);
+            return (BasicNavigation) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    public static BasicNavigation findWithReferenceIdentifier(String referenceId) {
+        try {
+            final Query query = JPA.em().createQuery("select bn from models.origo.core.navigation.BasicNavigation bn where bn.referenceId=:reference");
+            query.setParameter("reference", referenceId);
+            return (BasicNavigation) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     public static List<BasicNavigation> findWithSectionWithoutParent(String section) {
@@ -93,5 +115,9 @@ public class BasicNavigation implements Navigation<BasicNavigation>, Comparable<
     public BasicNavigation save() {
         JPA.em().persist(this);
         return this;
+    }
+
+    public void delete() {
+        JPA.em().remove(this);
     }
 }

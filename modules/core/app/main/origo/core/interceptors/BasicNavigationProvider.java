@@ -32,7 +32,7 @@ import java.util.List;
 @Interceptor
 public class BasicNavigationProvider {
 
-    @Provides(type = Core.Type.NAVIGATION, with = "models.origo.core.navigation.BasicNavigation")
+    @Provides(type = Core.Type.NAVIGATION, with = BasicNavigation.TYPE)
     public static List<NavigationElement> createNavigation(Provides.Context.NavigationContext context) {
         List<NavigationElement> navigationElements = Lists.newArrayList();
         String section = (String) context.args().get("section");
@@ -69,7 +69,7 @@ public class BasicNavigationProvider {
         return navigationElements;
     }
 
-    @Provides(type = Core.Type.NAVIGATION_ITEM, with = "models.origo.core.navigation.AliasNavigation")
+    @Provides(type = Core.Type.NAVIGATION_ITEM, with = AliasNavigation.TYPE)
     public static NavigationElement createAliasNavigation(Provides.Context.NavigationContext context) {
         AliasNavigation navigationModel = AliasNavigation.findWithIdentifier(context.navigation().getReferenceId());
         Alias alias = Alias.findWithId(navigationModel.aliasId);
@@ -78,12 +78,14 @@ public class BasicNavigationProvider {
             if (referencedRootNode != null) {
                 Node referencedNode = ProvidesEventGenerator.triggerInterceptor(referencedRootNode, Core.Type.NODE, referencedRootNode.nodeType);
                 boolean selected = context.node().getNodeId().equals(alias.pageId);
-                return new NavigationElement().
-                        setSection(context.navigation().getSection()).
-                        setTitle(referencedNode.getTitle()).
-                        setLink(navigationModel.getLink()).
-                        setWeight(context.navigation().getWeight()).
-                        setSelected(selected);
+                NavigationElement ne = new NavigationElement();
+                ne.id = navigationModel.identifier;
+                ne.section = context.navigation().getSection();
+                ne.title = referencedNode.getTitle();
+                ne.link = navigationModel.getLink();
+                ne.weight = context.navigation().getWeight();
+                ne.selected = selected;
+                return ne;
             } else {
                 throw new RuntimeException("Page not found [" + alias.pageId + "]");
             }
@@ -92,33 +94,37 @@ public class BasicNavigationProvider {
         }
     }
 
-    @Provides(type = Core.Type.NAVIGATION_ITEM, with = "models.origo.core.navigation.PageIdNavigation")
+    @Provides(type = Core.Type.NAVIGATION_ITEM, with = PageIdNavigation.TYPE)
     public static NavigationElement createPageIdNavigation(Provides.Context.NavigationContext context) {
         PageIdNavigation navigationModel = PageIdNavigation.findWithIdentifier(context.navigation().getReferenceId());
         RootNode referencedRootNode = RootNode.findLatestPublishedVersionWithNodeId(navigationModel.pageId, new Date());
         if (referencedRootNode != null) {
             Node referencedNode = ProvidesEventGenerator.triggerInterceptor(referencedRootNode, Core.Type.NODE, referencedRootNode.nodeType);
             boolean selected = context.node().getNodeId().equals(referencedRootNode.getNodeId());
-            return new NavigationElement().
-                    setSection(context.navigation().getSection()).
-                    setTitle(referencedNode.getTitle()).
-                    setLink(navigationModel.getLink()).
-                    setWeight(context.navigation().getWeight()).
-                    setSelected(selected);
+            NavigationElement ne = new NavigationElement();
+            ne.id = navigationModel.identifier;
+            ne.section = context.navigation().getSection();
+            ne.title = referencedNode.getTitle();
+            ne.link = navigationModel.getLink();
+            ne.weight = context.navigation().getWeight();
+            ne.selected = selected;
+            return ne;
         } else {
             throw new RuntimeException("Page not found [" + navigationModel.pageId + "]");
         }
     }
 
-    @Provides(type = Core.Type.NAVIGATION_ITEM, with = "models.origo.core.navigation.ExternalLinkNavigation")
+    @Provides(type = Core.Type.NAVIGATION_ITEM, with = ExternalLinkNavigation.TYPE)
     public static NavigationElement createExternalLinkNavigation(Provides.Context.NavigationContext context) {
         ExternalLinkNavigation navigationModel = ExternalLinkNavigation.findWithIdentifier(context.navigation().getReferenceId());
         if (navigationModel != null) {
-            return new NavigationElement().
-                    setSection(context.navigation().getSection()).
-                    setTitle(navigationModel.title).
-                    setLink(navigationModel.getLink()).
-                    setWeight(context.navigation().getWeight());
+            NavigationElement ne = new NavigationElement();
+            ne.id = navigationModel.identifier;
+            ne.section = context.navigation().getSection();
+            ne.title = navigationModel.title;
+            ne.link = navigationModel.getLink();
+            ne.weight = context.navigation().getWeight();
+            return ne;
         }
         return null;
     }

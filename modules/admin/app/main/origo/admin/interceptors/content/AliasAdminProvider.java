@@ -9,6 +9,7 @@ import main.origo.core.helpers.forms.FormHelper;
 import main.origo.core.ui.Element;
 import models.origo.admin.AdminPage;
 import models.origo.core.Alias;
+import org.apache.commons.lang3.StringUtils;
 import play.data.DynamicForm;
 
 import java.util.Map;
@@ -17,7 +18,8 @@ import java.util.Set;
 @Interceptor
 public class AliasAdminProvider {
 
-    private static final String ALIAS_PARAM = "alias";
+    private static final String USE_ALIAS_PARAM = "use_alias";
+    private static final String ALIAS_VALUE_PARAM = "alias";
 
     // TODO: Hard coded for now, should be moved to configuration
     private static Set<String> types = Sets.newHashSet(
@@ -25,18 +27,26 @@ public class AliasAdminProvider {
             BasicPageAdminProvider.NEW_TYPE
     );
 
-    @OnInsertElement(with = Element.Fieldset.class, after = true)
-    public static void addAliasFieldset(OnInsertElement.Context context) {
+    @OnInsertElement(with = Element.FieldSet.class, after = true)
+    public static void addAliasFieldSet(OnInsertElement.Context context) {
         AdminPage adminPage = (AdminPage) context.node();
-        if (types.contains(adminPage.type) && context.element.getId().equals("basic")) {
+        if (types.contains(adminPage.type) && context.element.getId().equals("content")) {
 
             Alias alias = Alias.findFirstAliasForPageId(context.node().getNodeId());
 
-            context.parent.addChild(new Element.Fieldset().
+            context.parent.addChild(new Element.FieldSet().
                     addChild(new Element.Legend().setBody("Alias")).
+                    addChild(new Element.Panel().
+                            addChild(new Element.Label().addAttribute("class", "checkbox").
+                                    addChild(new Element.InputCheckbox(Boolean.class).
+                                            addAttribute("name", USE_ALIAS_PARAM).
+                                            addAttribute("value", "true").
+                                            addAttribute("checked", alias != null ? "checked" : "")
+                                    ).
+                                    setBody("Add Alias"))).
                     addChild(new Element.Panel().setWeight(20).addAttribute("class", "field").
-                            addChild(new Element.Label().setWeight(10).setBody("URL part").addAttribute("for", "text-" + ALIAS_PARAM))).
-                    addChild(new Element.InputText().setId("text-" + ALIAS_PARAM).addAttribute("name", ALIAS_PARAM).addAttribute("value", alias != null ? alias.path : ""))
+                            addChild(new Element.Label().setWeight(10).setBody("URL part").addAttribute("for", "text-" + ALIAS_VALUE_PARAM))).
+                    addChild(new Element.InputText().setId("text-" + ALIAS_VALUE_PARAM).addAttribute("name", ALIAS_VALUE_PARAM).addAttribute("value", alias != null ? alias.path : ""))
             );
         }
     }
@@ -49,21 +59,29 @@ public class AliasAdminProvider {
 
         DynamicForm form = DynamicForm.form().bindFromRequest();
         Map<String, String> data = form.data();
-        if (data.containsKey(ALIAS_PARAM)) {
+        if (!StringUtils.isEmpty(data.get(USE_ALIAS_PARAM))) {
+            if (data.containsKey(ALIAS_VALUE_PARAM)) {
+                String nodeId = FormHelper.getNodeId(data);
+                String path = getUrlPart(data);
+                Alias alias = Alias.findFirstAliasForPageId(nodeId);
+                if (alias != null) {
+                    alias.path = path;
+                } else {
+                    new Alias(path, nodeId).save();
+                }
+            }
+        } else {
             String nodeId = FormHelper.getNodeId(data);
-            String path = getUrlPart(data);
             Alias alias = Alias.findFirstAliasForPageId(nodeId);
             if (alias != null) {
-                alias.path = path;
-            } else {
-                new Alias(path, nodeId).save();
+                alias.delete();
             }
         }
 
     }
 
     private static String getUrlPart(Map<String, String> data) {
-        String path = data.get(ALIAS_PARAM);
+        String path = data.get(ALIAS_VALUE_PARAM);
         while (path.startsWith("/")) {
             path = path.substring(1);
         }

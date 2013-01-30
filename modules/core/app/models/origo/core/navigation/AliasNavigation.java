@@ -11,6 +11,8 @@ import javax.persistence.*;
 @Table(name = "navigation_alias")
 public class AliasNavigation {
 
+    public static final String TYPE = "models.origo.core.navigation.AliasNavigation";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long id;
@@ -33,6 +35,15 @@ public class AliasNavigation {
         return CoreSettingsHelper.getBaseUrl() + aliasModel.path;
     }
 
+    public static AliasNavigation findWithAlias(Long aliasId) {
+        try {
+            return (AliasNavigation) JPA.em().createQuery("from models.origo.core.navigation.AliasNavigation where aliasId=:alias").
+                    setParameter("alias", aliasId).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
     public static AliasNavigation findWithIdentifier(String identifier) {
         try {
             return (AliasNavigation) JPA.em().createQuery("from models.origo.core.navigation.AliasNavigation where identifier=:identifier").
@@ -41,7 +52,6 @@ public class AliasNavigation {
             return null;
         }
     }
-
 
     @Override
     public String toString() {
@@ -56,5 +66,9 @@ public class AliasNavigation {
     public AliasNavigation save() {
         JPA.em().persist(this);
         return this;
+    }
+
+    public void delete() {
+        JPA.em().remove(this);
     }
 }

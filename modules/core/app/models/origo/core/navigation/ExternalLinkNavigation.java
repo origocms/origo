@@ -9,6 +9,8 @@ import javax.persistence.*;
 @Table(name = "navigation_external_link")
 public class ExternalLinkNavigation {
 
+    public static final String TYPE = "models.origo.core.navigation.ExternalLinkNavigation";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long id;
@@ -40,4 +42,9 @@ public class ExternalLinkNavigation {
         JPA.em().persist(this);
         return this;
     }
+
+    public void delete() {
+        JPA.em().remove(this);
+    }
+
 }

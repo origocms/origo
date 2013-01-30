@@ -16,11 +16,14 @@ public class DefaultAdminNavigationProvider {
 
         // TODO: Set this selected somehow
         //boolean selected = context.node.getNodeId().equals(alias.pageId);
-        return new NavigationElement().setSection("admin").
-                setTitle(navigation.getText()).
-                setLink(navigation.getLink()).
-                setWeight(navigation.getWeight()).
-                setSelected(false);
+
+        NavigationElement ne = new NavigationElement();
+        ne.section = "admin";
+        ne.title = navigation.getText();
+        ne.link = navigation.getLink();
+        ne.weight = navigation.getWeight();
+        ne.selected = false;
+        return ne;
     }
 
 }

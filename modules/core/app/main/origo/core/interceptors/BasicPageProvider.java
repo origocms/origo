@@ -17,7 +17,9 @@ import org.apache.commons.lang3.StringUtils;
 @Interceptor
 public class BasicPageProvider {
 
-    @Provides(type = "node", with = "models.origo.core.BasicPage")
+    public static final String TYPE = "models.origo.core.BasicPage";
+
+    @Provides(type = "node", with = TYPE)
     public static BasicPage loadPage(Provides.Context context) throws NodeNotFoundException {
 
         BasicPage page = BasicPage.findWithNodeIdAndSpecificVersion(context.node().getNodeId(), context.node().getVersion());
@@ -29,7 +31,7 @@ public class BasicPageProvider {
         return page;
     }
 
-    @OnLoad(type = "node", with = "models.origo.core.BasicPage")
+    @OnLoad(type = "node", with = TYPE)
     public static void loadContent(OnLoad.Context context) {
         context.node().addElement(loadContent(((BasicPage) context.node()).leadReferenceId));
         context.node().addElement(loadContent(((BasicPage) context.node()).bodyReferenceId));

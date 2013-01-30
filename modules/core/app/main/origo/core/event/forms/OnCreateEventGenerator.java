@@ -1,6 +1,7 @@
 package main.origo.core.event.forms;
 
 import main.origo.core.InterceptorRepository;
+import main.origo.core.Navigation;
 import main.origo.core.Node;
 import main.origo.core.annotations.forms.OnCreate;
 import main.origo.core.internal.CachedAnnotation;
@@ -14,12 +15,41 @@ import java.util.Map;
 
 public class OnCreateEventGenerator {
 
+    public static void triggerBeforeInterceptors(String withType) {
+        triggerBeforeInterceptors(withType, Collections.<String, Object>emptyMap());
+    }
+
+    public static void triggerBeforeInterceptors(String withType, Map<String, Object> args) {
+        triggerNavigationInterceptors(withType, null, args, false);
+    }
+
+    public static void triggerAfterInterceptors(String withType, Navigation navigation) {
+        triggerAfterInterceptors(withType, navigation, Collections.<String, Object>emptyMap());
+    }
+
+    public static void triggerAfterInterceptors(String withType, Navigation navigation, Map<String, Object> args) {
+        triggerNavigationInterceptors(withType, navigation, args, true);
+    }
+
+    private static void triggerNavigationInterceptors(String withType, Navigation navigation, Map<String, Object> args, boolean after) {
+        List<CachedAnnotation> cachedAnnotations = findOnPostInterceptorsWithType(withType, after);
+        for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
+            try {
+                //noinspection unchecked
+                cachedAnnotation.method.invoke(null, new OnCreate.NavigationContext(navigation, args));
+            } catch (Throwable e) {
+                Logger.error("", e);
+                throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
+            }
+        }
+    }
+
     public static void triggerBeforeInterceptors(String withType, Node node) {
         triggerBeforeInterceptors(withType, node, Collections.<String, Object>emptyMap());
     }
 
     public static void triggerBeforeInterceptors(String withType, Node node, Map<String, Object> args) {
-        triggerInterceptors(withType, node, args, false);
+        triggerNodeInterceptors(withType, node, args, false);
     }
 
     public static void triggerAfterInterceptors(String withType, Node node) {
@@ -27,15 +57,15 @@ public class OnCreateEventGenerator {
     }
 
     public static void triggerAfterInterceptors(String withType, Node node, Map<String, Object> args) {
-        triggerInterceptors(withType, node, args, true);
+        triggerNodeInterceptors(withType, node, args, true);
     }
 
-    private static void triggerInterceptors(String withType, Node node, Map<String, Object> args, boolean after) {
+    private static void triggerNodeInterceptors(String withType, Node node, Map<String, Object> args, boolean after) {
         List<CachedAnnotation> cachedAnnotations = findOnPostInterceptorsWithType(withType, after);
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
             try {
                 //noinspection unchecked
-                cachedAnnotation.method.invoke(null, new OnCreate.Context(node, args));
+                cachedAnnotation.method.invoke(null, new OnCreate.NodeContext(node, args));
             } catch (Throwable e) {
                 Logger.error("", e);
                 throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
