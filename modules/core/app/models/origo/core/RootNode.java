@@ -167,9 +167,9 @@ public final class RootNode implements Node {
         element.setWeight(weight);
         elements.get(regionKey).add(element);
         if (reorderElementsBelow) {
-            ElementHelper.repositionUIElements(elements.get(regionKey), element);
+            ElementHelper.repositionElements(elements.get(regionKey), element);
         }
-        ElementHelper.reorderUIElements(elements.get(regionKey));
+        ElementHelper.reorderElements(elements.get(regionKey));
         return element;
     }
 
@@ -195,7 +195,7 @@ public final class RootNode implements Node {
 
     private boolean removeElement(Element element, String regionKey) {
         if (elements.get(regionKey).remove(element)) {
-            ElementHelper.reorderUIElements(elements.get(regionKey));
+            ElementHelper.reorderElements(elements.get(regionKey));
             return true;
         }
         return false;

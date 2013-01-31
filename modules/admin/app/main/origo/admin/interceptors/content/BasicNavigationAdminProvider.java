@@ -86,7 +86,7 @@ public class BasicNavigationAdminProvider {
                             setBody("Page Id"));
 
             // Setup the wrapper for the fieldset element
-            context.parent.addChild(new Element.FieldSet().
+            context.parent.addChild(new Element.FieldSet().setWeight(200).
                     addChild(new Element.Legend().setBody("Navigation")).
                     addChild(new Element.Panel().
                             addChild(new Element.Label().addAttribute("class", "checkbox").

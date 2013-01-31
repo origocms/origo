@@ -34,7 +34,7 @@ public class AliasAdminProvider {
 
             Alias alias = Alias.findFirstAliasForPageId(context.node().getNodeId());
 
-            context.parent.addChild(new Element.FieldSet().
+            context.parent.addChild(new Element.FieldSet().setWeight(100).
                     addChild(new Element.Legend().setBody("Alias")).
                     addChild(new Element.Panel().
                             addChild(new Element.Label().addAttribute("class", "checkbox").

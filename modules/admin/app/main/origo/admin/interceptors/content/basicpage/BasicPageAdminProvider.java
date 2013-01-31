@@ -144,7 +144,7 @@ public class BasicPageAdminProvider {
          * Publishing options
          */
 
-        Element publishingFieldSet = new Element.FieldSet().setId("publishing");
+        Element publishingFieldSet = new Element.FieldSet().setId("publishing").setWeight(50);
         context.element().addChild(publishingFieldSet);
 
         publishingFieldSet.addChild(new Element.Legend().setBody("Publish"));
@@ -196,7 +196,7 @@ public class BasicPageAdminProvider {
                 );
         publishingFieldSet.addChild(publishTimeElement);
 
-        context.element().addChild(new Element.Panel().setWeight(40).addAttribute("class", "well well-large").
+        context.element().addChild(new Element.Panel().setId("actions").setWeight(1000).addAttribute("class", "well well-large").
                 addChild(new Element.Panel().
                         addAttribute("class", "pull-left").
                         addChild(new Element.Anchor().setWeight(20).

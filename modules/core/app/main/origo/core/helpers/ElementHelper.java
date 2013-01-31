@@ -31,16 +31,16 @@ public class ElementHelper {
         return result;
     }
 
-    public static void reorderUIElements(List<Element> elements) {
+    public static void reorderElements(List<Element> elements) {
         Collections.sort(elements, new Comparator<Element>() {
             @Override
             public int compare(Element element, Element element1) {
-                return (element.getWeight() >= element1.getWeight()) ? 1 : 0;
+                return new Integer(element.getWeight()).compareTo(element1.getWeight());
             }
         });
     }
 
-    public static void repositionUIElements(List<Element> elements, Element element) {
+    public static void repositionElements(List<Element> elements, Element element) {
         for (Element elem : elements) {
             if (elem.getWeight() >= element.getWeight()) {
                 elem.setWeight(elem.getWeight() + 1);
