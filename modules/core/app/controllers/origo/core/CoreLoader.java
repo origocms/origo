@@ -64,7 +64,11 @@ public class CoreLoader {
             url = CoreSettingsHelper.getBaseUrl() + "" + alias.path;
         } else {
             // Defaulting to /page-not-found
-            url = CoreSettingsHelper.getBaseUrl() + "page-not-found";
+            if (CoreSettingsHelper.getBaseUrl() != null) {
+                url = CoreSettingsHelper.getBaseUrl() + "page-not-found";
+            } else {
+                url = "/page-not-found";
+            }
         }
 
         // TODO: Could this be done without using the request?
@@ -85,7 +89,11 @@ public class CoreLoader {
             url = CoreSettingsHelper.getBaseUrl() + "" + alias.path;
         } else {
             // Defaulting to /error
-            url = CoreSettingsHelper.getBaseUrl() + "error";
+            if (CoreSettingsHelper.getBaseUrl() != null) {
+                url = CoreSettingsHelper.getBaseUrl() + "error";
+            } else {
+                url = "/error";
+            }
         }
         // TODO: Could this be done without using the request?
         if (url.equalsIgnoreCase(Http.Context.current().request().path())) {
