@@ -66,8 +66,9 @@ public class AliasAdminProvider {
                 Alias alias = Alias.findFirstAliasForPageId(nodeId);
                 if (alias != null) {
                     alias.path = path;
+                    alias.update();
                 } else {
-                    new Alias(path, nodeId).save();
+                    new Alias(path, nodeId).create();
                 }
             }
         } else {

@@ -1,6 +1,7 @@
 package models.origo.core;
 
 import main.origo.core.Node;
+import main.origo.core.annotations.Core;
 import main.origo.core.ui.Element;
 import play.data.validation.Constraints;
 import play.db.jpa.JPA;
@@ -20,7 +21,9 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "page_basic", uniqueConstraints = @UniqueConstraint(name = "pageVersion", columnNames = {"parentNodeId", "parentVersion"}))
-public class BasicPage implements Node {
+public class BasicPage extends Model<BasicPage> implements Node {
+
+    public static final String TYPE = Core.With.CONTENT_PAGE + ".basicpage";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -47,6 +50,7 @@ public class BasicPage implements Node {
     public String bodyReferenceId;
 
     public BasicPage() {
+        super(TYPE);
         this.title = "";
     }
 
@@ -252,11 +256,6 @@ public class BasicPage implements Node {
         } catch (NoResultException e) {
             return Collections.emptyList();
         }
-    }
-
-    public BasicPage save() {
-        JPA.em().persist(this);
-        return this;
     }
 
 }

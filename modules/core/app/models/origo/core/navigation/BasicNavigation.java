@@ -1,6 +1,10 @@
 package models.origo.core.navigation;
 
 import main.origo.core.Navigation;
+import main.origo.core.event.forms.OnCreateEventGenerator;
+import main.origo.core.event.forms.OnDeleteEventGenerator;
+import main.origo.core.event.forms.OnUpdateEventGenerator;
+import models.origo.core.Model;
 import play.data.validation.Constraints;
 import play.db.jpa.JPA;
 
@@ -11,13 +15,14 @@ import java.util.List;
 /**
  * Basic Navigation type. Tree type structure. Provides the types AliasNavigation, ExternalLinkNavigation and PageIdNavigation.
  * Each entity stored represents one of the 3 subtypes. BasicNavigation itself is never used in the UI, only as a common data store for the subtypes.
+ *
  * @see AliasNavigation
  * @see ExternalLinkNavigation
  * @see PageIdNavigation
  */
 @Entity(name = "basicNavigation")
 @Table(name = "navigation_basic")
-public class BasicNavigation implements Navigation<BasicNavigation>, Comparable<BasicNavigation> {
+public class BasicNavigation extends Model<BasicNavigation> implements Navigation<BasicNavigation>, Comparable<BasicNavigation> {
 
     public static final String TYPE = "models.origo.core.navigation.BasicNavigation";
 
@@ -43,6 +48,10 @@ public class BasicNavigation implements Navigation<BasicNavigation>, Comparable<
     @Constraints.Required
     public int weight;
 
+    public BasicNavigation() {
+        super(TYPE);
+    }
+
     @Override
     public String getReferenceId() {
         return referenceId;
@@ -56,6 +65,11 @@ public class BasicNavigation implements Navigation<BasicNavigation>, Comparable<
     @Override
     public int getWeight() {
         return weight;
+    }
+
+    @Override
+    public String type() {
+        return type;
     }
 
     public static BasicNavigation findWithId(long id) {
@@ -112,12 +126,27 @@ public class BasicNavigation implements Navigation<BasicNavigation>, Comparable<
         return new Integer(weight).compareTo(navigation.weight);
     }
 
-    public BasicNavigation save() {
-        JPA.em().persist(this);
-        return this;
+    public void doCreate(BasicNavigation b) {
+        OnCreateEventGenerator.triggerBeforeInterceptors(TYPE, this);
+        OnCreateEventGenerator.triggerBeforeInterceptors(this.type, this);
+        JPA.em().persist(b);
+        OnCreateEventGenerator.triggerAfterInterceptors(this.type, this);
+        OnCreateEventGenerator.triggerAfterInterceptors(TYPE, this);
     }
 
-    public void delete() {
-        JPA.em().remove(this);
+    public void doUpdate(BasicNavigation b) {
+        OnUpdateEventGenerator.triggerBeforeInterceptors(TYPE, this);
+        OnUpdateEventGenerator.triggerBeforeInterceptors(this.type, this);
+        JPA.em().merge(b);
+        OnUpdateEventGenerator.triggerAfterInterceptors(this.type, this);
+        OnUpdateEventGenerator.triggerAfterInterceptors(TYPE, this);
+    }
+
+    public void doDelete(BasicNavigation b) {
+        OnDeleteEventGenerator.triggerBeforeInterceptors(TYPE, this);
+        OnDeleteEventGenerator.triggerBeforeInterceptors(this.type, this);
+        JPA.em().remove(b);
+        OnDeleteEventGenerator.triggerAfterInterceptors(this.type, this);
+        OnDeleteEventGenerator.triggerBeforeInterceptors(TYPE, this);
     }
 }

@@ -8,4 +8,5 @@ public interface Navigation<T> {
 
     int getWeight();
 
+    String type();
 }

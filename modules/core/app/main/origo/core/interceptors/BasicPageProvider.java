@@ -20,7 +20,7 @@ public class BasicPageProvider {
     public static final String TYPE = "models.origo.core.BasicPage";
 
     @Provides(type = "node", with = TYPE)
-    public static BasicPage loadPage(Provides.Context context) throws NodeNotFoundException {
+    public static BasicPage loadPage(Provides.Context.NodeContext context) throws NodeNotFoundException {
 
         BasicPage page = BasicPage.findWithNodeIdAndSpecificVersion(context.node().getNodeId(), context.node().getVersion());
         if (page == null) {
@@ -32,7 +32,7 @@ public class BasicPageProvider {
     }
 
     @OnLoad(type = "node", with = TYPE)
-    public static void loadContent(OnLoad.Context context) {
+    public static void loadContent(OnLoad.Context.NodeContext context) {
         context.node().addElement(loadContent(((BasicPage) context.node()).leadReferenceId));
         context.node().addElement(loadContent(((BasicPage) context.node()).bodyReferenceId));
     }

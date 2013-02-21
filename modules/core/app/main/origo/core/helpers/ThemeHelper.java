@@ -169,7 +169,7 @@ public class ThemeHelper {
         eventHandler.withType = elementType.getName();
         eventHandler.nodeType = null;
         eventHandler.handlerClass = annotation.method.getDeclaringClass().getName();
-        eventHandler.save();
+        eventHandler.create();
         return annotation;
     }
 

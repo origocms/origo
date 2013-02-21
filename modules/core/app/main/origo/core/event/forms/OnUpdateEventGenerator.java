@@ -36,7 +36,7 @@ public class OnUpdateEventGenerator {
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
             try {
                 //noinspection unchecked
-                cachedAnnotation.method.invoke(null, new OnUpdate.NavigationContext(navigation, args));
+                cachedAnnotation.method.invoke(null, new OnUpdate.Context.NavigationContext(navigation, args));
             } catch (Throwable e) {
                 Logger.error("", e);
                 throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
@@ -65,7 +65,36 @@ public class OnUpdateEventGenerator {
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
             try {
                 //noinspection unchecked
-                cachedAnnotation.method.invoke(null, new OnUpdate.NodeContext(node, args));
+                cachedAnnotation.method.invoke(null, new OnUpdate.Context.NodeContext(node, args));
+            } catch (Throwable e) {
+                Logger.error("", e);
+                throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
+            }
+        }
+    }
+
+    public static void triggerBeforeInterceptors(String withType, Object object) {
+        triggerBeforeInterceptors(withType, object, Collections.<String, Object>emptyMap());
+    }
+
+    public static void triggerBeforeInterceptors(String withType, Object object, Map<String, Object> args) {
+        triggerInterceptors(withType, object, args, false);
+    }
+
+    public static void triggerAfterInterceptors(String withType, Object object) {
+        triggerAfterInterceptors(withType, object, Collections.<String, Object>emptyMap());
+    }
+
+    public static void triggerAfterInterceptors(String withType, Object object, Map<String, Object> args) {
+        triggerInterceptors(withType, object, args, true);
+    }
+
+    private static void triggerInterceptors(String withType, Object object, Map<String, Object> args, boolean after) {
+        List<CachedAnnotation> cachedAnnotations = findOnPostInterceptorsWithType(withType, after);
+        for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
+            try {
+                //noinspection unchecked
+                cachedAnnotation.method.invoke(null, new OnUpdate.Context.DefaultContext(object, args));
             } catch (Throwable e) {
                 Logger.error("", e);
                 throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
@@ -82,7 +111,7 @@ public class OnUpdateEventGenerator {
             }
         });
         if (onPostInterceptors.isEmpty()) {
-            Logger.debug("No @OnUpdate interceptor for with=" + withType + "' and after='"+after+"'");
+            Logger.trace("No @OnUpdate interceptor for with=" + withType + "' and after='"+after+"'");
         }
         Collections.sort(onPostInterceptors, new Comparator<CachedAnnotation>() {
             @Override

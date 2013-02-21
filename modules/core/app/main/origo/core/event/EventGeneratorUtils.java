@@ -36,7 +36,7 @@ public class EventGeneratorUtils {
         eventHandler.withType = withType;
         eventHandler.annotation = annotationType.getName();
         eventHandler.handlerClass = annotation.method.getDeclaringClass().getName();
-        eventHandler.save();
+        eventHandler.create();
         return annotation;
     }
 }

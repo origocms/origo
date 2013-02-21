@@ -3,6 +3,7 @@ package models.origo.core.navigation;
 import main.origo.core.helpers.CoreSettingsHelper;
 import models.origo.core.Alias;
 import models.origo.core.BasicPage;
+import models.origo.core.Model;
 import play.data.validation.Constraints;
 import play.db.jpa.JPA;
 
@@ -12,7 +13,7 @@ import java.util.Date;
 
 @Entity(name = "pageIdNavigation")
 @Table(name = "navigation_page_id")
-public class PageIdNavigation {
+public class PageIdNavigation extends Model<PageIdNavigation> {
 
     public static final String TYPE = "models.origo.core.navigation.PageIdNavigation";
 
@@ -26,6 +27,10 @@ public class PageIdNavigation {
 
     @Constraints.Required
     public String pageId;
+
+    public PageIdNavigation() {
+        super(TYPE);
+    }
 
     public String getLink() {
         Collection<Alias> aliases = Alias.findWithPageId(pageId);
@@ -49,12 +54,4 @@ public class PageIdNavigation {
         }
     }
 
-    public PageIdNavigation save() {
-        JPA.em().persist(this);
-        return this;
-    }
-
-    public void delete() {
-        JPA.em().remove(this);
-    }
 }

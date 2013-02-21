@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "meta")
-public class Meta {
+public class Meta extends Model<Meta> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,6 +29,10 @@ public class Meta {
     @Constraints.Required
     public String region;
 
+    public Meta() {
+        super("meta");
+    }
+
     public static Meta findWithNodeIdAndSpecificVersion(String nodeId, Integer version, String referenceId) {
         try {
             String queryString = "select distinct m from models.origo.core.Meta m " +
@@ -48,11 +52,6 @@ public class Meta {
         meta.region = "main";
         meta.weight = 100;
         return meta;
-    }
-
-    public Meta save() {
-        JPA.em().merge(this);
-        return this;
     }
 
 }

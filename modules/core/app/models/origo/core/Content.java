@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "content")
-public class Content {
+public class Content extends Model<Content> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,6 +24,7 @@ public class Content {
     public String value;
 
     public Content() {
+        super("content");
         this.identifier = UUID.randomUUID().toString();
         this.value = "";
     }
@@ -37,8 +38,4 @@ public class Content {
         }
     }
 
-    public Content save() {
-        JPA.em().merge(this);
-        return this;
-    }
 }

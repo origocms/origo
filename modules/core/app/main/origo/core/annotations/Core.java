@@ -12,6 +12,7 @@ public class Core {
     }
 
     public class With {
+        public static final String CONTENT_PAGE = "content";
         public static final String EDITOR = "origo.core.richtexteditor";
     }
 }

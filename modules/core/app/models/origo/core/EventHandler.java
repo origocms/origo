@@ -8,7 +8,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "handlers")
-public class EventHandler {
+public class EventHandler extends Model<EventHandler> {
+
+    public static final String TYPE = "EventHandler";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -18,6 +20,10 @@ public class EventHandler {
     public String nodeType;
     public String withType;
     public String handlerClass;
+
+    public EventHandler() {
+        super(TYPE);
+    }
 
     public static EventHandler findWithNodeTypeAndWithType(String nodeType, String withType) {
         try {
@@ -99,8 +105,4 @@ public class EventHandler {
         }
     }
 
-    public EventHandler save() {
-        JPA.em().persist(this);
-        return this;
-    }
 }

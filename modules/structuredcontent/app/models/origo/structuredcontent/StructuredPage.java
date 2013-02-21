@@ -1,6 +1,10 @@
 package models.origo.structuredcontent;
 
 import main.origo.core.Node;
+import main.origo.core.annotations.Core;
+import main.origo.core.event.forms.OnCreateEventGenerator;
+import main.origo.core.event.forms.OnDeleteEventGenerator;
+import main.origo.core.event.forms.OnUpdateEventGenerator;
 import main.origo.core.ui.Element;
 import models.origo.core.Meta;
 import models.origo.core.RootNode;
@@ -191,8 +195,23 @@ public class StructuredPage implements Node {
                 getSingleResult();
     }
 
-    public StructuredPage save() {
-        JPA.em().merge(this);
+    public StructuredPage create() {
+        OnCreateEventGenerator.triggerBeforeInterceptors(Core.With.CONTENT_PAGE+".structured", this);
+        JPA.em().persist(this);
+        OnCreateEventGenerator.triggerAfterInterceptors(Core.With.CONTENT_PAGE+".structured", this);
         return this;
+    }
+
+    public StructuredPage update() {
+        OnUpdateEventGenerator.triggerBeforeInterceptors(Core.With.CONTENT_PAGE+".structured", this);
+        JPA.em().merge(this);
+        OnUpdateEventGenerator.triggerAfterInterceptors(Core.With.CONTENT_PAGE+".structured", this);
+        return this;
+    }
+
+    public void delete() {
+        OnDeleteEventGenerator.triggerBeforeInterceptors(Core.With.CONTENT_PAGE+".structured", this);
+        JPA.em().remove(this);
+        OnDeleteEventGenerator.triggerAfterInterceptors(Core.With.CONTENT_PAGE+".structured", this);
     }
 }

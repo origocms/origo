@@ -36,7 +36,7 @@ public class OnDeleteEventGenerator {
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
             try {
                 //noinspection unchecked
-                cachedAnnotation.method.invoke(null, new OnDelete.NavigationContext(navigation, args));
+                cachedAnnotation.method.invoke(null, new OnDelete.Context.NavigationContext(navigation, args));
             } catch (Throwable e) {
                 Logger.error("", e);
                 throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
@@ -65,7 +65,7 @@ public class OnDeleteEventGenerator {
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
             try {
                 //noinspection unchecked
-                cachedAnnotation.method.invoke(null, new OnDelete.NodeContext(node, args));
+                cachedAnnotation.method.invoke(null, new OnDelete.Context.NodeContext(node, args));
             } catch (Throwable e) {
                 Logger.error("", e);
                 throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
@@ -73,7 +73,36 @@ public class OnDeleteEventGenerator {
         }
     }
 
-    private static List<CachedAnnotation> findOnPostInterceptorsWithType(final String withType, final boolean after) {
+    public static void triggerBeforeInterceptors(String withType, Object object) {
+        triggerBeforeInterceptors(withType, object, Collections.<String, Object>emptyMap());
+    }
+
+    public static void triggerBeforeInterceptors(String withType, Object object, Map<String, Object> args) {
+        triggerInterceptors(withType, object, args, false);
+    }
+
+    public static void triggerAfterInterceptors(String withType, Object object) {
+        triggerAfterInterceptors(withType, object, Collections.<String, Object>emptyMap());
+    }
+
+    public static void triggerAfterInterceptors(String withType, Object object, Map<String, Object> args) {
+        triggerInterceptors(withType, object, args, true);
+    }
+
+    private static void triggerInterceptors(String withType, Object object, Map<String, Object> args, boolean after) {
+        List<CachedAnnotation> cachedAnnotations = findOnPostInterceptorsWithType(withType, after);
+        for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
+            try {
+                //noinspection unchecked
+                cachedAnnotation.method.invoke(null, new OnDelete.Context.DefaultContext(object, args));
+            } catch (Throwable e) {
+                Logger.error("", e);
+                throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
+            }
+        }
+    }
+
+    private static List<CachedAnnotation> findOnPostInterceptorsWithType(final String withType, final Class contextType, final boolean after) {
         List<CachedAnnotation> onPostInterceptors = InterceptorRepository.getInterceptors(OnDelete.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation interceptor) {
@@ -82,7 +111,7 @@ public class OnDeleteEventGenerator {
             }
         });
         if (onPostInterceptors.isEmpty()) {
-            Logger.debug("No @OnDelete interceptor for with=" + withType + "' and after='"+after+"'");
+            Logger.trace("No @OnDelete interceptor for with=" + withType + "' and after='"+after+"'");
         }
         Collections.sort(onPostInterceptors, new Comparator<CachedAnnotation>() {
             @Override

@@ -13,7 +13,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "root", uniqueConstraints = @UniqueConstraint(name = "nodeVersion", columnNames = {"nodeId", "version"}))
-public final class RootNode implements Node {
+public final class RootNode extends Model<RootNode> implements Node {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -53,6 +53,7 @@ public final class RootNode implements Node {
     private Map<String, LinkedList<Element>> elements = Maps.newHashMap();
 
     protected RootNode() {
+        super("root");
     }
 
     public RootNode(Integer version) {
@@ -60,6 +61,7 @@ public final class RootNode implements Node {
     }
 
     public RootNode(String nodeId, Integer version) {
+        this();
         this.nodeId = nodeId;
         this.version = version;
     }
@@ -333,11 +335,5 @@ public final class RootNode implements Node {
         copy.themeVariant = themeVariant;
         return copy;
     }
-
-    public RootNode save() {
-        JPA.em().persist(this);
-        return this;
-    }
-
 
 }

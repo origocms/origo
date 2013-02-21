@@ -24,6 +24,7 @@ import play.data.DynamicForm;
 import play.data.Form;
 import play.i18n.Messages;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import views.html.origo.admin.dashboard_item;
 
@@ -40,7 +41,7 @@ import java.util.Map;
 @Interceptor
 public class BasicPageAdminProvider {
 
-    public static final String BASE_TYPE = Admin.With.CONTENT_PAGE + ".basicpage";
+    public static final String BASE_TYPE = Core.With.CONTENT_PAGE + ".basicpage";
     public static final String LIST_TYPE = BASE_TYPE + ".list";
     public static final String EDIT_TYPE = BASE_TYPE + ".edit";
     public static final String NEW_TYPE = BASE_TYPE + ".new";
@@ -61,7 +62,7 @@ public class BasicPageAdminProvider {
      * @return a Element that contains a dashboard element.
      */
     @Provides(type = Admin.Type.DASHBOARD_ITEM, with = BASE_TYPE)
-    @Relationship(parent = Admin.With.CONTENT_PAGE)
+    @Relationship(parent = Core.With.CONTENT_PAGE)
     public static Element createDashboardItem(Provides.Context context) {
         return new Admin.DashboardItem().
                 addChild(new Element.Raw().setBody(dashboard_item.render("Basic Page", "Basic pages have a lead and a body", getProviderUrl(), "List All")));
@@ -69,7 +70,7 @@ public class BasicPageAdminProvider {
 
     @Admin.Navigation(alias = "/content/pages/basic", key = "breadcrumb.origo.admin.dashboard.content.basicpage")
     public static String getProviderUrl() {
-        return routes.Dashboard.pageWithType(Admin.With.CONTENT_PAGE, LIST_TYPE).url();
+        return routes.Dashboard.pageWithType(Core.With.CONTENT_PAGE, LIST_TYPE).absoluteURL(Http.Context.current().request());
     }
 
     /**
@@ -256,22 +257,16 @@ public class BasicPageAdminProvider {
         }
 
         Content leadContent = Content.findWithIdentifier(latestVersion.leadReferenceId);
-        if (leadContent == null || !leadContent.value.equals(data.get(LEAD_PARAM))) {
+        if (leadContent == null || !leadContent.value.equals(data.get(LEAD_PARAM).trim())) {
             newVersion = true;
         }
 
         Content bodyContent = Content.findWithIdentifier(latestVersion.bodyReferenceId);
-        if (bodyContent == null || !bodyContent.value.equals(data.get(BODY_PARAM))) {
+        if (bodyContent == null || !bodyContent.value.equals(data.get(BODY_PARAM).trim())) {
             newVersion = true;
         }
 
         if (newVersion) {
-
-            if (oldRootNode.version == 0) {
-                OnCreateEventGenerator.triggerBeforeInterceptors(TYPE, latestVersion);
-            } else {
-                OnUpdateEventGenerator.triggerBeforeInterceptors(TYPE, latestVersion);
-            }
 
             BasicPage newPageVersion = latestVersion.copy();
 
@@ -286,16 +281,21 @@ public class BasicPageAdminProvider {
             Content newLeadContent = new Content();
             newLeadContent.value = data.get(LEAD_PARAM);
             newPageVersion.leadReferenceId = newLeadContent.identifier;
-            newLeadContent.save();
+            newLeadContent.create();
 
             // Body Content
             Content newBodyContent = new Content();
             newBodyContent.value = data.get(BODY_PARAM);
             newPageVersion.bodyReferenceId = newBodyContent.identifier;
-            newBodyContent.save();
+            newBodyContent.create();
 
-            newPageVersion.rootNode.save();
-            newPageVersion.save();
+            if (oldRootNode.version == 0) {
+                newPageVersion.rootNode.create();
+                newPageVersion.create();
+            } else {
+                newPageVersion.rootNode.update();
+                newPageVersion.update();
+            }
 
             if (oldRootNode.version == 0) {
                 OnCreateEventGenerator.triggerAfterInterceptors(TYPE, newPageVersion);
@@ -311,8 +311,8 @@ public class BasicPageAdminProvider {
             latestVersion.rootNode.publish = parseDate(data.get(PUBLISH_DATE_PARAM), data.get(PUBLISH_TIME_PARAM));
             latestVersion.rootNode.unPublish = parseDate(data.get(UNPUBLISH_DATE_PARAM), data.get(UNPUBLISH_TIME_PARAM));
 
-            latestVersion.rootNode.save();
-            latestVersion.save();
+            latestVersion.rootNode.update();
+            latestVersion.update();
 
             OnUpdateEventGenerator.triggerAfterInterceptors(TYPE, latestVersion);
         }
@@ -343,7 +343,7 @@ public class BasicPageAdminProvider {
      */
     @SubmitState(with = BASE_TYPE)
     public static Result handleSuccess(SubmitState.Context context) {
-        return Controller.redirect(routes.Dashboard.pageWithType(Admin.With.CONTENT_PAGE, LIST_TYPE));
+        return Controller.redirect(routes.Dashboard.pageWithType(Core.With.CONTENT_PAGE, LIST_TYPE));
     }
 
 }

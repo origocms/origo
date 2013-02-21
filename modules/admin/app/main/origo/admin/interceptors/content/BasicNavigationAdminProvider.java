@@ -7,9 +7,8 @@ import main.origo.core.annotations.OnInsertElement;
 import main.origo.core.annotations.forms.OnCreate;
 import main.origo.core.annotations.forms.OnDelete;
 import main.origo.core.annotations.forms.OnSubmit;
-import main.origo.core.event.forms.OnCreateEventGenerator;
+import main.origo.core.annotations.forms.OnUpdate;
 import main.origo.core.event.forms.OnDeleteEventGenerator;
-import main.origo.core.event.forms.OnUpdateEventGenerator;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.helpers.NavigationHelper;
 import main.origo.core.helpers.forms.FormHelper;
@@ -172,7 +171,6 @@ public class BasicNavigationAdminProvider {
             BasicNavigation currentNavigation = BasicNavigation.findWithReferenceIdentifier(referenceId);
             if (currentNavigation != null) {
                 OnDeleteEventGenerator.triggerBeforeInterceptors(BasicPageProvider.TYPE, currentNavigation);
-                deleteType(currentNavigation);
                 currentNavigation.delete();
                 OnDeleteEventGenerator.triggerAfterInterceptors(BasicPageProvider.TYPE, currentNavigation);
             }
@@ -181,46 +179,102 @@ public class BasicNavigationAdminProvider {
     }
 
     private static void updateNavigation(BasicNavigation navigation, BasicNavigation newParent, Map<String, String> data) {
-        OnUpdateEventGenerator.triggerBeforeInterceptors(BasicPageProvider.TYPE, navigation);
-
+        boolean changed = false;
         String type = data.get(TYPE_PARAM);
-        if (!navigation.type.equals(type) || (newParent == null || !newParent.equals(navigation.parent))) {
-            deleteType(navigation);
-            OnUpdateEventGenerator.triggerBeforeInterceptors(type, navigation);
+        if (!navigation.type.equals(type)) {
             navigation.type = type;
-            navigation.parent = newParent;
-            OnUpdateEventGenerator.triggerAfterInterceptors(type, navigation);
+            changed = true;
         }
-
-        OnUpdateEventGenerator.triggerAfterInterceptors(BasicPageProvider.TYPE, navigation);
+        if (navigation.parent != null && newParent == null || newParent != null && !newParent.equals(navigation.parent)) {
+            navigation.parent = newParent;
+            changed = true;
+        }
+        if (changed) {
+            navigation.update();
+        }
     }
 
     private static void createNewNavigation(BasicNavigation newParent, Map<String, String> data) {
 
-        OnCreateEventGenerator.triggerBeforeInterceptors(BasicPageProvider.TYPE);
-
         String type = data.get(TYPE_PARAM);
         String referenceId = data.get(NAVIGATION_ID_PARAM);
 
-        OnCreateEventGenerator.triggerBeforeInterceptors(type);
         BasicNavigation navigation = new BasicNavigation();
         navigation.type = type;
         navigation.parent = newParent;
         navigation.referenceId = referenceId;
-        OnCreateEventGenerator.triggerAfterInterceptors(type, navigation);
+        navigation.create();
 
-        OnCreateEventGenerator.triggerAfterInterceptors(BasicPageProvider.TYPE, navigation);
-
-    }
-
-    public static void deleteType(BasicNavigation navigation) {
-        OnDeleteEventGenerator.triggerBeforeInterceptors(navigation.type, navigation);
-        // Nuthin to do here?
-        OnDeleteEventGenerator.triggerAfterInterceptors(navigation.type, navigation);
     }
 
     @OnCreate(with = AliasNavigation.TYPE)
-    public void storeAliasNavigation(OnCreate.NavigationContext context) {
+    public static void storeAliasNavigation(OnCreate.Context context) {
+
+        DynamicForm form = DynamicForm.form().bindFromRequest();
+        Map<String, String> data = form.data();
+
+        String nodeId = FormHelper.getNodeId(data);
+        String referenceId = data.get(NAVIGATION_ID_PARAM);
+
+        if (nodeId != null) {
+            Alias alias = Alias.findFirstAliasForPageId(nodeId);
+            if (alias != null) {
+                AliasNavigation aliasNavigation = new AliasNavigation();
+                aliasNavigation.identifier = referenceId;
+                aliasNavigation.aliasId = alias.id;
+                aliasNavigation.create();
+            } else {
+                throw new RuntimeException("Unable to find the alias for node [" + nodeId + "]");
+            }
+        }
+    }
+
+    @OnCreate(with = PageIdNavigation.TYPE)
+    public static void storePageIdNavigation(OnCreate.Context context) {
+
+        DynamicForm form = DynamicForm.form().bindFromRequest();
+        Map<String, String> data = form.data();
+
+        String nodeId = FormHelper.getNodeId(data);
+        String referenceId = data.get(NAVIGATION_ID_PARAM);
+
+        if (nodeId != null) {
+            PageIdNavigation navigation = new PageIdNavigation();
+            navigation.identifier = referenceId;
+            navigation.pageId = nodeId;
+        }
+    }
+
+    @OnDelete(with = PageIdNavigation.TYPE)
+    public static void removeOldPageIdNavigation(OnDelete.Context.NavigationContext context) {
+        PageIdNavigation navigation = PageIdNavigation.findWithIdentifier(context.navigation.getReferenceId());
+        if (navigation != null) {
+            navigation.delete();
+        }
+    }
+
+    @OnDelete(with = AliasNavigation.TYPE)
+    public static void removeOldAliasNavigation(OnDelete.Context.NavigationContext context) {
+        AliasNavigation navigation = AliasNavigation.findWithIdentifier(context.navigation.getReferenceId());
+        if (navigation != null) {
+            navigation.delete();
+        }
+    }
+
+    @OnUpdate(with = BasicNavigation.TYPE)
+    public static void cleanupNavigation(OnUpdate.Context.NavigationContext context) {
+        AliasNavigation aliasNavigation = AliasNavigation.findWithIdentifier(context.navigation.getReferenceId());
+        if (aliasNavigation != null && !context.navigation.type().equals(AliasNavigation.TYPE)) {
+            aliasNavigation.delete();
+        }
+        PageIdNavigation pageIdNavigation = PageIdNavigation.findWithIdentifier(context.navigation.getReferenceId());
+        if (pageIdNavigation != null && !context.navigation.type().equals(PageIdNavigation.TYPE)) {
+            pageIdNavigation.delete();
+        }
+    }
+
+    @OnUpdate(with = AliasNavigation.TYPE)
+    public static void updateAliasNavigation(OnUpdate.Context.NavigationContext context) {
 
         DynamicForm form = DynamicForm.form().bindFromRequest();
         Map<String, String> data = form.data();
@@ -229,18 +283,26 @@ public class BasicNavigationAdminProvider {
         String referenceId = data.get(NAVIGATION_ID_PARAM);
 
         Alias alias = Alias.findFirstAliasForPageId(nodeId);
-        if (alias != null) {
-            AliasNavigation aliasNavigation = new AliasNavigation();
+        if (alias == null) {
+            throw new RuntimeException("Unable to find the alias for node [" + nodeId + "]");
+        }
+
+        AliasNavigation aliasNavigation = AliasNavigation.findWithIdentifier(context.navigation.getReferenceId());
+        if (aliasNavigation == null) {
+            aliasNavigation = new AliasNavigation();
             aliasNavigation.identifier = referenceId;
             aliasNavigation.aliasId = alias.id;
+            aliasNavigation.create();
         } else {
-            throw new RuntimeException("Unable to find the alias for node [" + nodeId + "]");
+            aliasNavigation.identifier = referenceId;
+            aliasNavigation.aliasId = alias.id;
+            aliasNavigation.update();
         }
 
     }
 
-    @OnCreate(with = PageIdNavigation.TYPE)
-    public void storePageIdNavigation(OnCreate.NavigationContext context) {
+    @OnUpdate(with = PageIdNavigation.TYPE)
+    public static void updatePageIdNavigation(OnUpdate.Context.NavigationContext context) {
 
         DynamicForm form = DynamicForm.form().bindFromRequest();
         Map<String, String> data = form.data();
@@ -248,21 +310,18 @@ public class BasicNavigationAdminProvider {
         String nodeId = FormHelper.getNodeId(data);
         String referenceId = data.get(NAVIGATION_ID_PARAM);
 
-        PageIdNavigation navigation = new PageIdNavigation();
-        navigation.identifier = referenceId;
-        navigation.pageId = nodeId;
+        PageIdNavigation pageIdNavigation = PageIdNavigation.findWithIdentifier(((OnUpdate.Context.NavigationContext) context).navigation.getReferenceId());
+        if (pageIdNavigation == null) {
+            pageIdNavigation = new PageIdNavigation();
+            pageIdNavigation.identifier = referenceId;
+            pageIdNavigation.pageId = nodeId;
+            pageIdNavigation.create();
+        } else {
+            pageIdNavigation.identifier = referenceId;
+            pageIdNavigation.pageId = nodeId;
+            pageIdNavigation.update();
+        }
     }
 
-    @OnDelete(with = PageIdNavigation.TYPE)
-    public void removeOldPageIdNavigation(OnDelete.NavigationContext context) {
-        PageIdNavigation navigation = PageIdNavigation.findWithIdentifier(context.navigation.getReferenceId());
-        navigation.delete();
-    }
-
-    @OnDelete(with = AliasNavigation.TYPE)
-    public void removeOldAliasNavigation(OnDelete.NavigationContext context) {
-        AliasNavigation navigation = AliasNavigation.findWithIdentifier(context.navigation.getReferenceId());
-        navigation.delete();
-    }
 
 }

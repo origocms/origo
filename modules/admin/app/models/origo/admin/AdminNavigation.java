@@ -31,6 +31,11 @@ public class AdminNavigation implements Navigation<AdminNavigation> {
         return weight;
     }
 
+    @Override
+    public String type() {
+        return "admin";
+    }
+
     public String getKey() {
         return key;
     }

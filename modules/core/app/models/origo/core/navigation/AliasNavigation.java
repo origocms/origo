@@ -2,6 +2,7 @@ package models.origo.core.navigation;
 
 import main.origo.core.helpers.CoreSettingsHelper;
 import models.origo.core.Alias;
+import models.origo.core.Model;
 import play.data.validation.Constraints;
 import play.db.jpa.JPA;
 
@@ -9,7 +10,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "navigation_alias")
-public class AliasNavigation {
+public class AliasNavigation extends Model<AliasNavigation> {
 
     public static final String TYPE = "models.origo.core.navigation.AliasNavigation";
 
@@ -26,6 +27,10 @@ public class AliasNavigation {
 
     @Constraints.Required
     public int weight;
+
+    public AliasNavigation() {
+        super(TYPE);
+    }
 
     public String getLink() {
         Alias aliasModel = Alias.findWithId(aliasId);
@@ -53,7 +58,6 @@ public class AliasNavigation {
         }
     }
 
-    @Override
     public String toString() {
         return new StringBuilder().
                 append("AliasNavigation {").
@@ -63,12 +67,4 @@ public class AliasNavigation {
                 toString();
     }
 
-    public AliasNavigation save() {
-        JPA.em().persist(this);
-        return this;
-    }
-
-    public void delete() {
-        JPA.em().remove(this);
-    }
 }

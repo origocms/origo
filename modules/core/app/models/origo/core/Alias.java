@@ -10,7 +10,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "aliases")
-public class Alias {
+public class Alias extends Model {
+
+    public static ThreadLocal<Boolean> PROCESSING = new ThreadLocal<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,9 +26,11 @@ public class Alias {
     public String pageId;
 
     protected Alias() {
+        super("alias");
     }
 
     public Alias(String path, String pageId) {
+        this();
         this.path = path;
         this.pageId = pageId;
     }
@@ -73,12 +77,4 @@ public class Alias {
         return aliases.iterator().next();
     }
 
-    public Alias save() {
-        JPA.em().persist(this);
-        return this;
-    }
-
-    public void delete() {
-        JPA.em().remove(this);
-    }
 }

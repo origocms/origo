@@ -2,9 +2,7 @@ package main.origo.core;
 
 import com.google.common.collect.Lists;
 import main.origo.core.annotations.*;
-import main.origo.core.annotations.forms.OnSubmit;
-import main.origo.core.annotations.forms.SubmitHandler;
-import main.origo.core.annotations.forms.SubmitState;
+import main.origo.core.annotations.forms.*;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.interceptors.forms.DefaultFormProvider;
 import main.origo.core.interceptors.forms.DefaultSubmitHandler;
@@ -41,6 +39,11 @@ public class CoreModule {
         annotations.add(new AnnotationProcessor.Prototype(OnSubmit.class, null, OnSubmit.Context.class));
         annotations.add(new AnnotationProcessor.Prototype(SubmitHandler.class, Result.class, SubmitHandler.Context.class));
         annotations.add(new AnnotationProcessor.Prototype(SubmitState.class, Result.class, SubmitState.Context.class));
+
+        // Data types
+        annotations.add(new AnnotationProcessor.Prototype(OnCreate.class, null, OnCreate.Context.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnUpdate.class, null, OnUpdate.Context.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnDelete.class, null, OnDelete.Context.class));
 
         return annotations;
     }

@@ -15,12 +15,12 @@ import java.util.Map;
 
 public class OnCreateEventGenerator {
 
-    public static void triggerBeforeInterceptors(String withType) {
-        triggerBeforeInterceptors(withType, Collections.<String, Object>emptyMap());
+    public static void triggerBeforeInterceptors(String withType, Navigation navigation) {
+        triggerBeforeInterceptors(withType, navigation, Collections.<String, Object>emptyMap());
     }
 
-    public static void triggerBeforeInterceptors(String withType, Map<String, Object> args) {
-        triggerNavigationInterceptors(withType, null, args, false);
+    public static void triggerBeforeInterceptors(String withType, Navigation navigation, Map<String, Object> args) {
+        triggerNavigationInterceptors(withType, navigation, args, false);
     }
 
     public static void triggerAfterInterceptors(String withType, Navigation navigation) {
@@ -36,7 +36,7 @@ public class OnCreateEventGenerator {
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
             try {
                 //noinspection unchecked
-                cachedAnnotation.method.invoke(null, new OnCreate.NavigationContext(navigation, args));
+                cachedAnnotation.method.invoke(null, new OnCreate.Context.NavigationContext(navigation, args));
             } catch (Throwable e) {
                 Logger.error("", e);
                 throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
@@ -65,7 +65,36 @@ public class OnCreateEventGenerator {
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
             try {
                 //noinspection unchecked
-                cachedAnnotation.method.invoke(null, new OnCreate.NodeContext(node, args));
+                cachedAnnotation.method.invoke(null, new OnCreate.Context.NodeContext(node, args));
+            } catch (Throwable e) {
+                Logger.error("", e);
+                throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
+            }
+        }
+    }
+
+    public static void triggerBeforeInterceptors(String withType, Object object) {
+        triggerBeforeInterceptors(withType, object, Collections.<String, Object>emptyMap());
+    }
+
+    public static void triggerBeforeInterceptors(String withType, Object object, Map<String, Object> args) {
+        triggerObjectInterceptors(withType, object, args, false);
+    }
+
+    public static void triggerAfterInterceptors(String withType, Object object) {
+        triggerAfterInterceptors(withType, object, Collections.<String, Object>emptyMap());
+    }
+
+    public static void triggerAfterInterceptors(String withType, Object object, Map<String, Object> args) {
+        triggerObjectInterceptors(withType, object, args, true);
+    }
+
+    private static void triggerObjectInterceptors(String withType, Object object, Map<String, Object> args, boolean after) {
+        List<CachedAnnotation> cachedAnnotations = findOnPostInterceptorsWithType(withType, after);
+        for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
+            try {
+                //noinspection unchecked
+                cachedAnnotation.method.invoke(null, new OnCreate.Context.DefaultContext(object, args));
             } catch (Throwable e) {
                 Logger.error("", e);
                 throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
@@ -82,7 +111,7 @@ public class OnCreateEventGenerator {
             }
         });
         if (onPostInterceptors.isEmpty()) {
-            Logger.debug("No @OnCreate interceptor for with=" + withType + "' and after='"+after+"'");
+            Logger.trace("No @OnCreate interceptor for with=" + withType + "' and after='"+after+"'");
         }
         Collections.sort(onPostInterceptors, new Comparator<CachedAnnotation>() {
             @Override
