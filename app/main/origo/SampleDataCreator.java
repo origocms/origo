@@ -286,12 +286,25 @@ public class SampleDataCreator {
         fourthAlias.aliasId = Alias.findFirstAliasForPageId("2c36c55dd-956e-4b78-18c4-eef7e56aa17").id;
         fourthAlias.create();
 
+        // Placeholder
+        BasicNavigation groupNavigation = new BasicNavigation();
+        groupNavigation.type = "models.origo.core.navigation.ExternalLinkNavigation";
+        groupNavigation.section = "front";
+        groupNavigation.referenceId = "05f68985-a21f-48fc-85af-1599115656c0";
+        groupNavigation.weight = 3;
+        groupNavigation.create();
+        ExternalLinkNavigation placeholderNavigation = new ExternalLinkNavigation();
+        placeholderNavigation.identifier = groupNavigation.getReferenceId();
+        placeholderNavigation.link = "http:///";
+        placeholderNavigation.title = "External";
+        placeholderNavigation.create();
+
         // External - Google
         BasicNavigation externalNavigation = new BasicNavigation();
         externalNavigation.type = "models.origo.core.navigation.ExternalLinkNavigation";
         externalNavigation.section = "front";
         externalNavigation.referenceId = "58e15bfa-da4f-4f6b-a15a-51ab6c82e670";
-        externalNavigation.parent = fourthNavigation;
+        externalNavigation.parent = groupNavigation;
         externalNavigation.weight = 2;
         externalNavigation.create();
         ExternalLinkNavigation external = new ExternalLinkNavigation();
@@ -299,6 +312,7 @@ public class SampleDataCreator {
         external.title = "Google";
         external.link = "http://www.google.com";
         external.create();
+
     }
 
 }
