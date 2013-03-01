@@ -72,7 +72,7 @@ public class BasicNavigationAdminProvider {
             }
             Element.InputRadioButton pageIdInputRadioButton = new Element.InputRadioButton().addAttribute("name", TYPE_PARAM).addAttribute("value", PageIdNavigation.TYPE);
             if (currentNavigation != null && currentNavigation.type.equals(PageIdNavigation.TYPE)) {
-                aliasInputRadioButton.addAttribute("checked", "checked");
+                pageIdInputRadioButton.addAttribute("checked", "checked");
             }
             Element navigationTypeElement = new Element.Panel().
                     addChild(new Element.Label().addAttribute("class", "radio").
