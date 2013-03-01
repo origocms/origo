@@ -36,7 +36,7 @@ public class OnDeleteEventGenerator {
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
             try {
                 //noinspection unchecked
-                cachedAnnotation.method.invoke(null, new OnDelete.Context.NavigationContext(navigation, args));
+                cachedAnnotation.method.invoke(null, new OnDelete.Context(navigation, args));
             } catch (Throwable e) {
                 Logger.error("", e);
                 throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
@@ -65,7 +65,7 @@ public class OnDeleteEventGenerator {
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
             try {
                 //noinspection unchecked
-                cachedAnnotation.method.invoke(null, new OnDelete.Context.NodeContext(node, args));
+                cachedAnnotation.method.invoke(null, new OnDelete.Context(node, args));
             } catch (Throwable e) {
                 Logger.error("", e);
                 throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
@@ -94,7 +94,7 @@ public class OnDeleteEventGenerator {
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
             try {
                 //noinspection unchecked
-                cachedAnnotation.method.invoke(null, new OnDelete.Context.DefaultContext(object, args));
+                cachedAnnotation.method.invoke(null, new OnDelete.Context(object, args));
             } catch (Throwable e) {
                 Logger.error("", e);
                 throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
@@ -102,7 +102,7 @@ public class OnDeleteEventGenerator {
         }
     }
 
-    private static List<CachedAnnotation> findOnPostInterceptorsWithType(final String withType, final Class contextType, final boolean after) {
+    private static List<CachedAnnotation> findOnPostInterceptorsWithType(final String withType, final boolean after) {
         List<CachedAnnotation> onPostInterceptors = InterceptorRepository.getInterceptors(OnDelete.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation interceptor) {

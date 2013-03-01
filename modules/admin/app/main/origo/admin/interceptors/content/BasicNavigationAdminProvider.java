@@ -2,17 +2,15 @@ package main.origo.admin.interceptors.content;
 
 import com.google.common.collect.Sets;
 import main.origo.admin.interceptors.content.basicpage.BasicPageAdminProvider;
+import main.origo.core.Navigation;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnInsertElement;
 import main.origo.core.annotations.forms.OnCreate;
-import main.origo.core.annotations.forms.OnDelete;
 import main.origo.core.annotations.forms.OnSubmit;
 import main.origo.core.annotations.forms.OnUpdate;
-import main.origo.core.event.forms.OnDeleteEventGenerator;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.helpers.NavigationHelper;
 import main.origo.core.helpers.forms.FormHelper;
-import main.origo.core.interceptors.BasicPageProvider;
 import main.origo.core.ui.Element;
 import main.origo.core.ui.NavigationElement;
 import models.origo.admin.AdminPage;
@@ -170,9 +168,7 @@ public class BasicNavigationAdminProvider {
             String referenceId = data.get(NAVIGATION_ID_PARAM);
             BasicNavigation currentNavigation = BasicNavigation.findWithReferenceIdentifier(referenceId);
             if (currentNavigation != null) {
-                OnDeleteEventGenerator.triggerBeforeInterceptors(BasicPageProvider.TYPE, currentNavigation);
                 currentNavigation.delete();
-                OnDeleteEventGenerator.triggerAfterInterceptors(BasicPageProvider.TYPE, currentNavigation);
             }
         }
 
@@ -245,36 +241,20 @@ public class BasicNavigationAdminProvider {
         }
     }
 
-    @OnDelete(with = PageIdNavigation.TYPE)
-    public static void removeOldPageIdNavigation(OnDelete.Context.NavigationContext context) {
-        PageIdNavigation navigation = PageIdNavigation.findWithIdentifier(context.navigation.getReferenceId());
-        if (navigation != null) {
-            navigation.delete();
-        }
-    }
-
-    @OnDelete(with = AliasNavigation.TYPE)
-    public static void removeOldAliasNavigation(OnDelete.Context.NavigationContext context) {
-        AliasNavigation navigation = AliasNavigation.findWithIdentifier(context.navigation.getReferenceId());
-        if (navigation != null) {
-            navigation.delete();
-        }
-    }
-
     @OnUpdate(with = BasicNavigation.TYPE)
-    public static void cleanupNavigation(OnUpdate.Context.NavigationContext context) {
-        AliasNavigation aliasNavigation = AliasNavigation.findWithIdentifier(context.navigation.getReferenceId());
-        if (aliasNavigation != null && !context.navigation.type().equals(AliasNavigation.TYPE)) {
+    public static void cleanupNavigation(OnUpdate.Context context) {
+        AliasNavigation aliasNavigation = AliasNavigation.findWithIdentifier(((Navigation)context.object).getReferenceId());
+        if (aliasNavigation != null && !((Navigation)context.object).type().equals(AliasNavigation.TYPE)) {
             aliasNavigation.delete();
         }
-        PageIdNavigation pageIdNavigation = PageIdNavigation.findWithIdentifier(context.navigation.getReferenceId());
-        if (pageIdNavigation != null && !context.navigation.type().equals(PageIdNavigation.TYPE)) {
+        PageIdNavigation pageIdNavigation = PageIdNavigation.findWithIdentifier(((Navigation)context.object).getReferenceId());
+        if (pageIdNavigation != null && !((Navigation)context.object).type().equals(PageIdNavigation.TYPE)) {
             pageIdNavigation.delete();
         }
     }
 
     @OnUpdate(with = AliasNavigation.TYPE)
-    public static void updateAliasNavigation(OnUpdate.Context.NavigationContext context) {
+    public static void updateAliasNavigation(OnUpdate.Context context) {
 
         DynamicForm form = DynamicForm.form().bindFromRequest();
         Map<String, String> data = form.data();
@@ -287,7 +267,7 @@ public class BasicNavigationAdminProvider {
             throw new RuntimeException("Unable to find the alias for node [" + nodeId + "]");
         }
 
-        AliasNavigation aliasNavigation = AliasNavigation.findWithIdentifier(context.navigation.getReferenceId());
+        AliasNavigation aliasNavigation = AliasNavigation.findWithIdentifier(((Navigation)context.object).getReferenceId());
         if (aliasNavigation == null) {
             aliasNavigation = new AliasNavigation();
             aliasNavigation.identifier = referenceId;
@@ -302,7 +282,7 @@ public class BasicNavigationAdminProvider {
     }
 
     @OnUpdate(with = PageIdNavigation.TYPE)
-    public static void updatePageIdNavigation(OnUpdate.Context.NavigationContext context) {
+    public static void updatePageIdNavigation(OnUpdate.Context context) {
 
         DynamicForm form = DynamicForm.form().bindFromRequest();
         Map<String, String> data = form.data();
@@ -310,7 +290,7 @@ public class BasicNavigationAdminProvider {
         String nodeId = FormHelper.getNodeId(data);
         String referenceId = data.get(NAVIGATION_ID_PARAM);
 
-        PageIdNavigation pageIdNavigation = PageIdNavigation.findWithIdentifier(((OnUpdate.Context.NavigationContext) context).navigation.getReferenceId());
+        PageIdNavigation pageIdNavigation = PageIdNavigation.findWithIdentifier(((Navigation)context.object).getReferenceId());
         if (pageIdNavigation == null) {
             pageIdNavigation = new PageIdNavigation();
             pageIdNavigation.identifier = referenceId;
