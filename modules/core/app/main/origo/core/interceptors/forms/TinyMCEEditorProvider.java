@@ -18,13 +18,13 @@ public class TinyMCEEditorProvider {
     private static final String JS_LOADED = "tinymce_js_loaded";
 
     @OnLoad(type = Core.Type.NODE, with = Core.With.EDITOR)
-    public static void setupEditor(OnLoad.Context.NodeContext context) {
-        if (ProviderHelper.isProvider(context.withType(), TinyMCEEditorProvider.class) && !context.attributes().containsKey(JS_LOADED)) {
+    public static void setupEditor(OnLoad.Context context) {
+        if (ProviderHelper.isProvider(context.withType, TinyMCEEditorProvider.class) && !context.attributes.containsKey(JS_LOADED)) {
             String jqueryTinyMCEScript = routes.Assets.at("javascripts/origo/tiny_mce/jquery.tiny_mce.js").url();
             if (jqueryTinyMCEScript != null) {
                 String tinyMCEScript = routes.Assets.at("javascripts/origo/tiny_mce/tiny_mce.js").url();
-                context.node().addTailElement(new Element.Script().setId(Core.With.EDITOR+"_src").setWeight(9999).addAttribute("type", "text/javascript").addAttribute("src", jqueryTinyMCEScript));
-                context.node().addTailElement(new Element.Script().setId(Core.With.EDITOR+"_invocation").setWeight(10000).addAttribute("type", "text/javascript").
+                context.node.addTailElement(new Element.Script().setId(Core.With.EDITOR+"_src").setWeight(9999).addAttribute("type", "text/javascript").addAttribute("src", jqueryTinyMCEScript));
+                context.node.addTailElement(new Element.Script().setId(Core.With.EDITOR+"_invocation").setWeight(10000).addAttribute("type", "text/javascript").
                         setBody(
                                 "$().ready(function() {\n" +
                                         "  $('textarea.tinymce').tinymce({\n" +
@@ -51,13 +51,13 @@ public class TinyMCEEditorProvider {
                 );
             }
 
-            context.attributes().put(JS_LOADED, true);
+            context.attributes.put(JS_LOADED, true);
         }
     }
 
     @Provides(type = Core.Type.NODE, with = Core.With.EDITOR)
     public static Element createEditor(Provides.Context context) {
-        Content content = (Content) context.args().get("content");
+        Content content = (Content) context.args.get("content");
         if (content != null) {
             return new Element.InputTextArea().setId(content.identifier).setBody(content.value);
         } else {

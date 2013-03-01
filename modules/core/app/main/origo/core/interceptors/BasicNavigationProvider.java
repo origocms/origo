@@ -1,6 +1,7 @@
 package main.origo.core.interceptors;
 
 import com.google.common.collect.Lists;
+import main.origo.core.Navigation;
 import main.origo.core.Node;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
@@ -33,21 +34,21 @@ import java.util.List;
 public class BasicNavigationProvider {
 
     @Provides(type = Core.Type.NAVIGATION, with = BasicNavigation.TYPE)
-    public static List<NavigationElement> createNavigation(Provides.Context.NavigationContext context) {
+    public static List<NavigationElement> createNavigation(Provides.Context context) {
         List<NavigationElement> navigationElements = Lists.newArrayList();
-        String section = (String) context.args().get("section");
-        NavigationEventGenerator.triggerBeforeNavigationLoaded(context.node(), BasicNavigation.class.getName(), section);
+        String section = (String) context.args.get("section");
+        NavigationEventGenerator.triggerBeforeNavigationLoaded(context.node, BasicNavigation.class.getName(), section);
         List<BasicNavigation> navigationModels = BasicNavigation.findWithSectionWithoutParent(section);
         for (BasicNavigation navigationModel : navigationModels) {
-            NavigationEventGenerator.triggerBeforeNavigationItemLoaded(context.node(), navigationModel.type, navigationModel);
-            NavigationElement navigationElement = NavigationEventGenerator.triggerProvidesNavigationItemInterceptor(context.node(), navigationModel.type, navigationModel);
-            NavigationEventGenerator.triggerAfterNavigationItemLoaded(context.node(), navigationModel.type, navigationModel, navigationElement);
-            List<NavigationElement> children = createNavigationChildren(context.node(), section, navigationModel, navigationElement);
+            NavigationEventGenerator.triggerBeforeNavigationItemLoaded(context.node, navigationModel.type, navigationModel);
+            NavigationElement navigationElement = NavigationEventGenerator.triggerProvidesNavigationItemInterceptor(context.node, navigationModel.type, navigationModel);
+            NavigationEventGenerator.triggerAfterNavigationItemLoaded(context.node, navigationModel.type, navigationModel, navigationElement);
+            List<NavigationElement> children = createNavigationChildren(context.node, section, navigationModel, navigationElement);
             Collections.sort(children);
             navigationElement.children.addAll(children);
             navigationElements.add(navigationElement);
         }
-        NavigationEventGenerator.triggerAfterNavigationLoaded(context.node(), BasicNavigation.class.getName(), context.navigation(),  navigationElements, section);
+        NavigationEventGenerator.triggerAfterNavigationLoaded(context.node, BasicNavigation.class.getName(), (Navigation) context.args.get("navigation"),  navigationElements, section);
         return navigationElements;
     }
 
@@ -70,20 +71,21 @@ public class BasicNavigationProvider {
     }
 
     @Provides(type = Core.Type.NAVIGATION_ITEM, with = AliasNavigation.TYPE)
-    public static NavigationElement createAliasNavigation(Provides.Context.NavigationContext context) {
-        AliasNavigation navigationModel = AliasNavigation.findWithIdentifier(context.navigation().getReferenceId());
+    public static NavigationElement createAliasNavigation(Provides.Context context) {
+        Navigation navigation = (Navigation) context.args.get("navigation");
+        AliasNavigation navigationModel = AliasNavigation.findWithIdentifier(navigation.getReferenceId());
         Alias alias = Alias.findWithId(navigationModel.aliasId);
         if (alias != null) {
             RootNode referencedRootNode = RootNode.findLatestPublishedVersionWithNodeId(alias.pageId, new Date());
             if (referencedRootNode != null) {
                 Node referencedNode = ProvidesEventGenerator.triggerInterceptor(referencedRootNode, Core.Type.NODE, referencedRootNode.nodeType);
-                boolean selected = context.node().getNodeId().equals(alias.pageId);
+                boolean selected = context.node.getNodeId().equals(alias.pageId);
                 NavigationElement ne = new NavigationElement();
                 ne.id = navigationModel.identifier;
-                ne.section = context.navigation().getSection();
+                ne.section = navigation.getSection();
                 ne.title = referencedNode.getTitle();
                 ne.link = navigationModel.getLink();
-                ne.weight = context.navigation().getWeight();
+                ne.weight = navigation.getWeight();
                 ne.selected = selected;
                 return ne;
             } else {
@@ -95,18 +97,19 @@ public class BasicNavigationProvider {
     }
 
     @Provides(type = Core.Type.NAVIGATION_ITEM, with = PageIdNavigation.TYPE)
-    public static NavigationElement createPageIdNavigation(Provides.Context.NavigationContext context) {
-        PageIdNavigation navigationModel = PageIdNavigation.findWithIdentifier(context.navigation().getReferenceId());
+    public static NavigationElement createPageIdNavigation(Provides.Context context) {
+        Navigation navigation = (Navigation) context.args.get("navigation");
+        PageIdNavigation navigationModel = PageIdNavigation.findWithIdentifier(navigation.getReferenceId());
         RootNode referencedRootNode = RootNode.findLatestPublishedVersionWithNodeId(navigationModel.pageId, new Date());
         if (referencedRootNode != null) {
             Node referencedNode = ProvidesEventGenerator.triggerInterceptor(referencedRootNode, Core.Type.NODE, referencedRootNode.nodeType);
-            boolean selected = context.node().getNodeId().equals(referencedRootNode.getNodeId());
+            boolean selected = context.node.getNodeId().equals(referencedRootNode.getNodeId());
             NavigationElement ne = new NavigationElement();
             ne.id = navigationModel.identifier;
-            ne.section = context.navigation().getSection();
+            ne.section = navigation.getSection();
             ne.title = referencedNode.getTitle();
             ne.link = navigationModel.getLink();
-            ne.weight = context.navigation().getWeight();
+            ne.weight = navigation.getWeight();
             ne.selected = selected;
             return ne;
         } else {
@@ -115,15 +118,16 @@ public class BasicNavigationProvider {
     }
 
     @Provides(type = Core.Type.NAVIGATION_ITEM, with = ExternalLinkNavigation.TYPE)
-    public static NavigationElement createExternalLinkNavigation(Provides.Context.NavigationContext context) {
-        ExternalLinkNavigation navigationModel = ExternalLinkNavigation.findWithIdentifier(context.navigation().getReferenceId());
+    public static NavigationElement createExternalLinkNavigation(Provides.Context context) {
+        Navigation navigation = (Navigation) context.args.get("navigation");
+        ExternalLinkNavigation navigationModel = ExternalLinkNavigation.findWithIdentifier(navigation.getReferenceId());
         if (navigationModel != null) {
             NavigationElement ne = new NavigationElement();
             ne.id = navigationModel.identifier;
-            ne.section = context.navigation().getSection();
+            ne.section = navigation.getSection();
             ne.title = navigationModel.title;
             ne.link = navigationModel.getLink();
-            ne.weight = context.navigation().getWeight();
+            ne.weight = navigation.getWeight();
             return ne;
         }
         return null;

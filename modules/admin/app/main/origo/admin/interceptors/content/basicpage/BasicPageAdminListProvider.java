@@ -26,7 +26,7 @@ public class BasicPageAdminListProvider {
      */
     @Provides(type = Core.Type.NODE, with = BasicPageAdminProvider.LIST_TYPE)
     public static Node createListPage(Provides.Context context) {
-        AdminPage page = new AdminPage(BasicPageAdminProvider.LIST_TYPE, (RootNode)context.node());
+        AdminPage page = new AdminPage(BasicPageAdminProvider.LIST_TYPE, (RootNode)context.node);
         page.setTitle("List Basic Pages");
         page.addElement(DashboardHelper.createBreadcrumb(BasicPageAdminProvider.BASE_TYPE), AdminTheme.topMeta());
         return page;
@@ -41,7 +41,7 @@ public class BasicPageAdminListProvider {
     public static void createListPage(OnLoad.Context context) {
         List<BasicPage> basicPages = BasicPage.findAllLatestVersions();
 
-        context.node().addElement(new Element.Raw().setBody(list.render(basicPages)));
+        context.node.addElement(new Element.Raw().setBody(list.render(basicPages)));
     }
 
 

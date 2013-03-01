@@ -19,11 +19,11 @@ public class StructuredPageProvider {
 
     @Provides(type = Core.Type.NODE, with = "models.origo.structuredcontent.StructuredPage")
     public static Node loadPage(Provides.Context context) throws NodeNotFoundException {
-        StructuredPage page = StructuredPage.findWithNodeIdAndSpecificVersion(context.node().getNodeId(), context.node().getVersion());
+        StructuredPage page = StructuredPage.findWithNodeIdAndSpecificVersion(context.node.getNodeId(), context.node.getVersion());
         if (page == null) {
-            throw new NodeNotFoundException(context.node().getNodeId());
+            throw new NodeNotFoundException(context.node.getNodeId());
         }
-        page.rootNode = (RootNode) context.node();
+        page.rootNode = (RootNode) context.node;
 
         return page;
     }
@@ -31,12 +31,12 @@ public class StructuredPageProvider {
     @OnLoad(type = Core.Type.NODE, with = "models.origo.structuredcontent.StructuredPage")
     public static void loadContent(OnLoad.Context context) {
 
-        List<Segment> segmentModels = Segment.findWithNodeIdAndSpecificVersion(context.node().getNodeId(), context.node().getVersion());
+        List<Segment> segmentModels = Segment.findWithNodeIdAndSpecificVersion(context.node.getNodeId(), context.node.getVersion());
         for (Segment segment : segmentModels) {
-            SegmentHelper.triggerBeforeSegmentLoaded(context.node(), segment.type, segment);
-            Element element = SegmentHelper.triggerSegmentProvider(context.node(), segment.type, segment);
-            SegmentHelper.triggerAfterSegmentLoaded(context.node(), segment.type, segment, element);
-            context.node().addElement(element);
+            SegmentHelper.triggerBeforeSegmentLoaded(context.node, segment.type, segment);
+            Element element = SegmentHelper.triggerSegmentProvider(context.node, segment.type, segment);
+            SegmentHelper.triggerAfterSegmentLoaded(context.node, segment.type, segment, element);
+            context.node.addElement(element);
         }
 
     }

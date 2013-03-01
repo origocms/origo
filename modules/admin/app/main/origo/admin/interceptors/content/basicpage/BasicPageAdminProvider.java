@@ -79,20 +79,21 @@ public class BasicPageAdminProvider {
      * @param context a node of the type 'origo.admin.basicpage.edit'.
      */
     @OnLoad(type = Core.Type.FORM, with = BASE_TYPE, after = true)
-    public static void loadEditForm(OnLoad.Context.ElementContext context) {
+    public static void loadEditForm(OnLoad.Context context) {
 
-        BasicPage basicPage = (BasicPage) context.attributes().get("page");
-        Content leadContent = (Content) context.attributes().get("lead");
-        Content bodyContent = (Content) context.attributes().get("body");
+        BasicPage basicPage = (BasicPage) context.attributes.get("page");
+        Content leadContent = (Content) context.attributes.get("lead");
+        Content bodyContent = (Content) context.attributes.get("body");
 
-        context.element().setId("basicpageform").addAttribute("class", "origo-basicpageform, form");
+        Element element = (Element) context.args.get("element");
+        element.setId("basicpageform").addAttribute("class", "origo-basicpageform, form");
 
         /**
          * Basic Options
          */
 
         Element basicFieldSet = new Element.FieldSet().setId("basic");
-        context.element().addChild(basicFieldSet);
+        element.addChild(basicFieldSet);
 
         basicFieldSet.addChild(new Element.Legend().setBody("Basic Information"));
 
@@ -125,19 +126,19 @@ public class BasicPageAdminProvider {
          */
 
         Element contentFieldSet = new Element.FieldSet().setId("content");
-        context.element().addChild(contentFieldSet);
+        element.addChild(contentFieldSet);
 
         contentFieldSet.addChild(new Element.Legend().setBody("Content"));
 
         Element leadElement = new Element.Panel().setWeight(20).addAttribute("class", "field").
                 addChild(new Element.Label().setWeight(10).setBody("Lead").addAttribute("for", LEAD_PARAM)).
-                addChild(EditorHelper.createRichTextEditor(context.node(), leadContent).setWeight(20).addAttribute("class", "editor richtext").
+                addChild(EditorHelper.createRichTextEditor(context.node, leadContent).setWeight(20).addAttribute("class", "editor richtext").
                         addAttribute("name", LEAD_PARAM).addAttribute("cols", "80").addAttribute("rows", "10"));
         contentFieldSet.addChild(leadElement);
 
         Element bodyElement = new Element.Panel().setWeight(30).addAttribute("class", "field").
                 addChild(new Element.Label().setWeight(10).setBody("Body").addAttribute("for", BODY_PARAM)).
-                addChild(EditorHelper.createRichTextEditor(context.node(), bodyContent).setWeight(20).addAttribute("class", "editor richtext").
+                addChild(EditorHelper.createRichTextEditor(context.node, bodyContent).setWeight(20).addAttribute("class", "editor richtext").
                         addAttribute("name", BODY_PARAM).addAttribute("cols", "80").addAttribute("rows", "20"));
         contentFieldSet.addChild(bodyElement);
 
@@ -146,7 +147,7 @@ public class BasicPageAdminProvider {
          */
 
         Element publishingFieldSet = new Element.FieldSet().setId("publishing").setWeight(50);
-        context.element().addChild(publishingFieldSet);
+        element.addChild(publishingFieldSet);
 
         publishingFieldSet.addChild(new Element.Legend().setBody("Publish"));
 
@@ -197,7 +198,7 @@ public class BasicPageAdminProvider {
                 );
         publishingFieldSet.addChild(publishTimeElement);
 
-        context.element().addChild(new Element.Panel().setId("actions").setWeight(1000).addAttribute("class", "well well-large").
+        element.addChild(new Element.Panel().setId("actions").setWeight(1000).addAttribute("class", "well well-large").
                 addChild(new Element.Panel().
                         addAttribute("class", "pull-left").
                         addChild(new Element.Anchor().setWeight(20).

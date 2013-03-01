@@ -40,11 +40,11 @@ public class DefaultUserManagementDashboardProvider {
      */
     @Provides(type = Core.Type.NODE, with = Admin.With.USER_PAGE)
     public static Node createUserDashboard(Provides.Context context) throws NodeLoadException {
-        AdminPage page = new AdminPage(Admin.With.USER_PAGE, (RootNode) context.node());
+        AdminPage page = new AdminPage(Admin.With.USER_PAGE, (RootNode) context.node);
         page.setTitle("User Management - Dashboard");
         page.addElement(DashboardHelper.createBreadcrumb(Admin.With.USER_PAGE), AdminTheme.topMeta());
 
-        context.node().addElement(DashboardHelper.createDashboard(context.node(), Admin.With.USER_PAGE));
+        context.node.addElement(DashboardHelper.createDashboard(context.node, Admin.With.USER_PAGE));
 
         return page;
     }
@@ -56,7 +56,7 @@ public class DefaultUserManagementDashboardProvider {
     @Relationship(parent = Admin.With.FRONT_PAGE)
     public static Element addUserDashboardContent(Provides.Context context) {
         return DashboardHelper.createBasicDashboard().setId("dashboard."+Admin.With.USER_PAGE).
-                addChildren(DashboardHelper.createDashboardItems(context.node(), Admin.With.USER_PAGE));
+                addChildren(DashboardHelper.createDashboardItems(context.node, Admin.With.USER_PAGE));
     }
 
 }

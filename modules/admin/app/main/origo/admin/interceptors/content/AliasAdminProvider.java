@@ -29,10 +29,10 @@ public class AliasAdminProvider {
 
     @OnInsertElement(with = Element.FieldSet.class, after = true)
     public static void addAliasFieldSet(OnInsertElement.Context context) {
-        AdminPage adminPage = (AdminPage) context.node();
+        AdminPage adminPage = (AdminPage) context.node;
         if (types.contains(adminPage.type) && context.element.getId().equals("content")) {
 
-            Alias alias = Alias.findFirstAliasForPageId(context.node().getNodeId());
+            Alias alias = Alias.findFirstAliasForPageId(context.node.getNodeId());
 
             context.parent.addChild(new Element.FieldSet().setWeight(100).
                     addChild(new Element.Legend().setBody("Alias")).

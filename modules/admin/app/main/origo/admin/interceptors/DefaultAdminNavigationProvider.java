@@ -10,9 +10,9 @@ import models.origo.admin.AdminNavigation;
 public class DefaultAdminNavigationProvider {
 
     @Provides(type = Core.Type.NAVIGATION_ITEM, with = "origo.admin.navigation")
-    public static NavigationElement createAliasNavigation(Provides.Context.NavigationContext context) {
+    public static NavigationElement createAliasNavigation(Provides.Context context) {
 
-        AdminNavigation navigation = (AdminNavigation) context.navigation();
+        AdminNavigation navigation = (AdminNavigation) context.args.get("navigation");
 
         // TODO: Set this selected somehow
         //boolean selected = context.node.getNodeId().equals(alias.pageId);

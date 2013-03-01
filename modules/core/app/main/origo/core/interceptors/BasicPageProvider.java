@@ -20,21 +20,21 @@ public class BasicPageProvider {
     public static final String TYPE = "models.origo.core.BasicPage";
 
     @Provides(type = "node", with = TYPE)
-    public static BasicPage loadPage(Provides.Context.NodeContext context) throws NodeNotFoundException {
+    public static BasicPage loadPage(Provides.Context context) throws NodeNotFoundException {
 
-        BasicPage page = BasicPage.findWithNodeIdAndSpecificVersion(context.node().getNodeId(), context.node().getVersion());
+        BasicPage page = BasicPage.findWithNodeIdAndSpecificVersion(context.node.getNodeId(), context.node.getVersion());
         if (page == null) {
-            throw new NodeNotFoundException(context.node().getNodeId());
+            throw new NodeNotFoundException(context.node.getNodeId());
         }
-        page.rootNode = (RootNode) context.node();
+        page.rootNode = (RootNode) context.node;
 
         return page;
     }
 
     @OnLoad(type = "node", with = TYPE)
-    public static void loadContent(OnLoad.Context.NodeContext context) {
-        context.node().addElement(loadContent(((BasicPage) context.node()).leadReferenceId));
-        context.node().addElement(loadContent(((BasicPage) context.node()).bodyReferenceId));
+    public static void loadContent(OnLoad.Context context) {
+        context.node.addElement(loadContent(((BasicPage) context.node).leadReferenceId));
+        context.node.addElement(loadContent(((BasicPage) context.node).bodyReferenceId));
     }
 
     private static Element loadContent(String referenceId) {

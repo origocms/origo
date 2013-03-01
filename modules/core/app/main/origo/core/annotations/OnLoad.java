@@ -9,6 +9,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -36,80 +37,51 @@ public @interface OnLoad {
     int weight() default 1000;
     boolean after() default true;
 
-    public static interface Context {
+    public static class Context extends AbstractContext {
 
-        public Node node();
-        public String withType();
-        public Map<String, Object> args();
-        public Map<String, Object> attributes();
+        public String withType;
 
-        public static class NodeContext extends AbstractContext implements Context {
-            private final String withType;
-
-            public NodeContext(Node node, Map<String, Object> args) {
-                super(node, args);
-                this.withType = null;
-            }
-
-            public NodeContext(Node node, String withType, Map<String, Object> args) {
-                super(node, args);
-                this.withType = withType;
-            }
-
-            public String withType() {
-                return withType;
-            }
+        public Context(Node node, Map<String, Object> args) {
+            super(node, args);
+            this.withType = null;
         }
 
-        public static class NavigationContext extends NodeContext {
-            private final Navigation navigation;
-
-            public NavigationContext(Node node, String withType, Navigation navigation, Map<String, Object> args) {
-                super(node, withType, args);
-                this.navigation = navigation;
-            }
-
-            public Navigation navigation() {
-                return navigation;
-            }
+        public Context(Node node, String withType, Map<String, Object> args) {
+            super(node, args);
+            this.withType = withType;
         }
 
-/*
-        public static class NavigationElementsContext extends NodeContext {
-            private List<NavigationElement> navigationElements;
-
-            public NavigationElementsContext(Node node, String withType, List<NavigationElement> navigationElements, Map<String, Object> args) {
-                super(node, withType, args);
-                this.navigationElements = navigationElements;
-            }
-        }
-*/
-
-        public static class ElementContext extends NodeContext {
-            private Element element;
-
-            public ElementContext(Node node, String withType, Element element, Map<String, Object> args) {
-                super(node, withType, args);
-                this.element = element;
-            }
-
-            public Element element() {
-                return element;
-            }
+        public Context(Node node, String withType, Navigation navigation) {
+            this(node, withType, navigation, Collections.<String, Object>emptyMap());
         }
 
-        public static class NavigationElementContext extends NavigationContext {
-            private final NavigationElement navigationElement;
-
-            public NavigationElementContext(Node node, String withType, Navigation navigation, NavigationElement navigationElement, Map<String, Object> args) {
-                super(node, withType, navigation, args);
-                this.navigationElement = navigationElement;
-            }
-
-            public NavigationElement element() {
-                return navigationElement;
-            }
+        public Context(Node node, String withType, Navigation navigation, Map<String, Object> args) {
+            super(node, args);
+            this.withType = withType;
+            this.args.put("navigation", navigation);
         }
+
+        public Context(Node node, String withType, Element element) {
+            this(node, withType, element, Collections.<String, Object>emptyMap());
+        }
+
+        public Context(Node node, String withType, Element element, Map<String, Object> args) {
+            super(node, args);
+            this.withType = withType;
+            this.args.put("element", element);
+        }
+
+        public Context(Node node, String withType, Navigation navigation, NavigationElement element) {
+            this(node, withType, navigation, element, Collections.<String, Object>emptyMap());
+        }
+
+        public Context(Node node, String withType, Navigation navigation, NavigationElement element, Map<String, Object> args) {
+            super(node, args);
+            this.withType = withType;
+            this.args.put("navigation", navigation);
+            this.args.put("navigation.element", element);
+        }
+
     }
 
 }

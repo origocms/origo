@@ -32,7 +32,7 @@ public class ProvidesEventGenerator {
         try {
             NodeContext.current().attributes.put(withType, cachedAnnotation.method.getDeclaringClass());
             //noinspection unchecked
-            return (T) cachedAnnotation.method.invoke(null, new Provides.Context.NavigationContext(node, navigation, args));
+            return (T) cachedAnnotation.method.invoke(null, new Provides.Context(node, navigation, args));
         } catch (Throwable e) {
             throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
         }

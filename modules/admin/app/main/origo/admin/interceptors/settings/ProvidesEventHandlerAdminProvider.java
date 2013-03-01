@@ -61,7 +61,7 @@ public class ProvidesEventHandlerAdminProvider {
      */
     @Provides(type = Core.Type.NODE, with = EDIT_TYPE)
     public static Node createEditPage(Provides.Context context) {
-        AdminPage page = new AdminPage(EDIT_TYPE, (RootNode) context.node());
+        AdminPage page = new AdminPage(EDIT_TYPE, (RootNode) context.node);
         page.setTitle("Event Handlers");
         page.setThemeVariant(AdminTheme.LEFT_AND_MAIN_COLUMNS_VARIANT_NAME);
         page.addElement(DashboardHelper.createBreadcrumb(BASE_TYPE), AdminTheme.topMeta());
@@ -75,12 +75,12 @@ public class ProvidesEventHandlerAdminProvider {
 
         if (!providerTypes.isEmpty()) {
 
-            String selectedEventType = getSelectedEventType(context.args(), providerTypes);
-            addProviderTypeElements(context.node(), providerTypes, selectedEventType);
-            addProviderElements(context.node(), selectedEventType);
+            String selectedEventType = getSelectedEventType(context.args, providerTypes);
+            addProviderTypeElements(context.node, providerTypes, selectedEventType);
+            addProviderElements(context.node, selectedEventType);
 
         } else {
-            context.node().addElement(new Element.Panel().
+            context.node.addElement(new Element.Panel().
                     addAttribute("class", "well well-big").
                     setBody("No handlers found."));
         }

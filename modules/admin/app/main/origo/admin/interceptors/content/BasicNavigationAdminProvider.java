@@ -45,7 +45,7 @@ public class BasicNavigationAdminProvider {
             return;
         }
 
-        AdminPage adminPage = (AdminPage) context.node();
+        AdminPage adminPage = (AdminPage) context.node;
         if (types.contains(adminPage.type) && context.element.getId().equals("content")) {
 
             List<NavigationElement> navigationElements = NavigationHelper.getNavigation(adminPage.rootNode, NavigationElement.FRONT);

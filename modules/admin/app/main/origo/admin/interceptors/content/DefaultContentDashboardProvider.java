@@ -45,11 +45,11 @@ public class DefaultContentDashboardProvider {
      */
     @Provides(type = Core.Type.NODE, with = Core.With.CONTENT_PAGE)
     public static Node addContentDashboard(Provides.Context context) throws NodeLoadException {
-        AdminPage page = new AdminPage(Core.With.CONTENT_PAGE, (RootNode) context.node());
+        AdminPage page = new AdminPage(Core.With.CONTENT_PAGE, (RootNode) context.node);
         page.setTitle("Content - Dashboard");
 
-        context.node().addElement(DashboardHelper.createBreadcrumb(Core.With.CONTENT_PAGE), AdminTheme.topMeta());
-        context.node().addElement(DashboardHelper.createDashboard(context.node(), Core.With.CONTENT_PAGE));
+        context.node.addElement(DashboardHelper.createBreadcrumb(Core.With.CONTENT_PAGE), AdminTheme.topMeta());
+        context.node.addElement(DashboardHelper.createDashboard(context.node, Core.With.CONTENT_PAGE));
 
         return page;
     }
@@ -62,7 +62,7 @@ public class DefaultContentDashboardProvider {
     public static Element addContentDashboardContent(Provides.Context context) {
         return DashboardHelper.createBasicDashboard().
                 setId("dashboard." + Core.With.CONTENT_PAGE).
-                addChildren(DashboardHelper.createDashboardItems(context.node(), Core.With.CONTENT_PAGE));
+                addChildren(DashboardHelper.createDashboardItems(context.node, Core.With.CONTENT_PAGE));
     }
 
 }

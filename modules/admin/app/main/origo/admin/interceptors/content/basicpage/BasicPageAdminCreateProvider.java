@@ -32,10 +32,10 @@ public class BasicPageAdminCreateProvider {
     public static void loadNewPage(OnLoad.Context context) {
         BasicPage page = new BasicPage();
         page.rootNode = new RootNode(0);
-        context.attributes().put("page", page);
-        context.attributes().put("lead", new Content());
-        context.attributes().put("body", new Content());
-        context.node().addElement(FormHelper.createFormElement(context.node(), BasicPageAdminProvider.BASE_TYPE));
+        context.attributes.put("page", page);
+        context.attributes.put("lead", new Content());
+        context.attributes.put("body", new Content());
+        context.node.addElement(FormHelper.createFormElement(context.node, BasicPageAdminProvider.BASE_TYPE));
     }
 
 
@@ -49,10 +49,10 @@ public class BasicPageAdminCreateProvider {
     public static Node createEditPage(Provides.Context context) {
         AdminPage page;
 
-        if (context.node().getVersion() == null || context.node().getVersion() == 0) {
-            page = new AdminPage(BasicPageAdminProvider.EDIT_TYPE, RootNode.findLatestVersionWithNodeId(context.node().getNodeId()).copy());
+        if (context.node.getVersion() == null || context.node.getVersion() == 0) {
+            page = new AdminPage(BasicPageAdminProvider.EDIT_TYPE, RootNode.findLatestVersionWithNodeId(context.node.getNodeId()).copy());
         } else {
-            page = new AdminPage(BasicPageAdminProvider.EDIT_TYPE, (RootNode) context.node());
+            page = new AdminPage(BasicPageAdminProvider.EDIT_TYPE, (RootNode) context.node);
         }
 
         // TODO: Look up themevariant (and also meta) from DB instead of resetting here.
@@ -64,21 +64,21 @@ public class BasicPageAdminCreateProvider {
 
     @OnLoad(type = Core.Type.NODE, with = BasicPageAdminProvider.EDIT_TYPE)
     public static void loadEditPage(OnLoad.Context context) {
-        BasicPage basicPage = BasicPage.findLatestVersion(context.node().getNodeId());
+        BasicPage basicPage = BasicPage.findLatestVersion(context.node.getNodeId());
         if (basicPage == null) {
-            context.node().addElement(new Element.Paragraph().setWeight(10).setBody("Page '" + context.node().getNodeId() + "' does not exist."));
+            context.node.addElement(new Element.Paragraph().setWeight(10).setBody("Page '" + context.node.getNodeId() + "' does not exist."));
             return;
         }
-        basicPage.rootNode = RootNode.findWithNodeIdAndSpecificVersion(context.node().getNodeId(), context.node().getVersion());
+        basicPage.rootNode = RootNode.findWithNodeIdAndSpecificVersion(context.node.getNodeId(), context.node.getVersion());
 
         Content leadContent = Content.findWithIdentifier(basicPage.leadReferenceId);
         Content bodyContent = Content.findWithIdentifier(basicPage.bodyReferenceId);
 
-        context.attributes().put("page", basicPage);
-        context.attributes().put("lead", leadContent);
-        context.attributes().put("body", bodyContent);
+        context.attributes.put("page", basicPage);
+        context.attributes.put("lead", leadContent);
+        context.attributes.put("body", bodyContent);
 
-        context.node().addElement(FormHelper.createFormElement(context.node(), BasicPageAdminProvider.BASE_TYPE));
+        context.node.addElement(FormHelper.createFormElement(context.node, BasicPageAdminProvider.BASE_TYPE));
     }
 
 }
