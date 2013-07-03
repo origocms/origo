@@ -109,7 +109,8 @@ public class BasicNavigationAdminProvider {
 
     private static NavigationElement getSelectedNavigationId(List<NavigationElement> navigationElements) {
         for (NavigationElement navigationElement : navigationElements) {
-            if (navigationElement.selected) {
+
+            if (navigationElement.selected && navigationElement.children().isEmpty()) {
                 return navigationElement;
             }
             NavigationElement element = getSelectedNavigationId(navigationElement.children());
@@ -203,8 +204,11 @@ public class BasicNavigationAdminProvider {
 
     }
 
-    @OnCreate(with = AliasNavigation.TYPE)
+    @OnCreate(with = BasicNavigation.TYPE)
     public static void storeAliasNavigation(OnCreate.Context context) {
+        if (!((Navigation)context.object).type().equals(AliasNavigation.TYPE)) {
+            return;
+        }
 
         DynamicForm form = DynamicForm.form().bindFromRequest();
         Map<String, String> data = form.data();
@@ -225,8 +229,11 @@ public class BasicNavigationAdminProvider {
         }
     }
 
-    @OnCreate(with = PageIdNavigation.TYPE)
+    @OnCreate(with = BasicNavigation.TYPE)
     public static void storePageIdNavigation(OnCreate.Context context) {
+        if (!((Navigation)context.object).type().equals(PageIdNavigation.TYPE)) {
+            return;
+        }
 
         DynamicForm form = DynamicForm.form().bindFromRequest();
         Map<String, String> data = form.data();
@@ -241,7 +248,7 @@ public class BasicNavigationAdminProvider {
         }
     }
 
-    @OnUpdate(with = BasicNavigation.TYPE)
+    @OnUpdate(with = BasicNavigation.TYPE, weight = 2000)
     public static void cleanupNavigation(OnUpdate.Context context) {
         AliasNavigation aliasNavigation = AliasNavigation.findWithIdentifier(((Navigation)context.object).getReferenceId());
         if (aliasNavigation != null && !((Navigation)context.object).type().equals(AliasNavigation.TYPE)) {
@@ -253,8 +260,11 @@ public class BasicNavigationAdminProvider {
         }
     }
 
-    @OnUpdate(with = AliasNavigation.TYPE)
+    @OnUpdate(with = BasicNavigation.TYPE)
     public static void updateAliasNavigation(OnUpdate.Context context) {
+        if (!((Navigation)context.object).type().equals(AliasNavigation.TYPE)) {
+            return;
+        }
 
         DynamicForm form = DynamicForm.form().bindFromRequest();
         Map<String, String> data = form.data();
@@ -267,7 +277,7 @@ public class BasicNavigationAdminProvider {
             throw new RuntimeException("Unable to find the alias for node [" + nodeId + "]");
         }
 
-        AliasNavigation aliasNavigation = AliasNavigation.findWithIdentifier(((Navigation)context.object).getReferenceId());
+        AliasNavigation aliasNavigation = AliasNavigation.findWithIdentifier(((BasicNavigation)context.object).getReferenceId());
         if (aliasNavigation == null) {
             aliasNavigation = new AliasNavigation();
             aliasNavigation.identifier = referenceId;
@@ -281,8 +291,11 @@ public class BasicNavigationAdminProvider {
 
     }
 
-    @OnUpdate(with = PageIdNavigation.TYPE)
+    @OnUpdate(with = BasicNavigation.TYPE)
     public static void updatePageIdNavigation(OnUpdate.Context context) {
+        if (!((Navigation)context.object).type().equals(PageIdNavigation.TYPE)) {
+            return;
+        }
 
         DynamicForm form = DynamicForm.form().bindFromRequest();
         Map<String, String> data = form.data();

@@ -10,7 +10,7 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 # Home page
 GET     /setup                              controllers.origo.Setup.index()
-POST    /setup                              controllers.origo.Setup.submit(create:Boolean)
+GET     /setup/submit                       controllers.origo.Setup.submit(create:Boolean)
 GET     /                                   controllers.origo.Application.index()
 GET     /:identifier                        controllers.origo.Application.page(identifier:String)
 GET     /:identifier/$version<[0-9]+>       controllers.origo.Application.pageVersion(identifier:String, version:Integer)
