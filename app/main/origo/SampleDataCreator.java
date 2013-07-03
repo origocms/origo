@@ -18,6 +18,7 @@ public class SampleDataCreator {
             createPage2();
             createPage3();
             createPage4();
+            createPage5();
             createAliases();
             createNavigation();
         }
@@ -244,6 +245,32 @@ public class SampleDataCreator {
 
     }
 
+    private static void createPage5() {
+
+        Content lead = new Content();
+        lead.identifier = "244ee89f-5edb-4f6d-9544-c9f67a6b9ea6";
+        lead.value = "Goblin abracadabra dobbawacko, \"whack roo dee shnazzle,\" boo shnozzle wuggle fling nip razzle-wacko...crungle hum dee! Flung bam dizzle loo bleeb shnaz nip ingle? Zonkha-izzle-boo!";
+        lead.create();
+
+        Content body = new Content();
+        body.identifier = "18cb6c2b-70eb-4ca4-a96b-b97772f4564f";
+        body.value = "Blung wooble duh tizzle bam wiggle? Ho nip doo Principal Skinner shnuzzlecringle. Flung yap bling boo crongle-blob!! Zap zap da Chaka Khan zonkshnazzle. Dee boo Smithers flibzung! Blob ha blang zip flap twaddle dee blob? Flib da zongity blooflee. Dingleloo-zapping-bling!\n\n\"Bam ingle da?\" slop flibfloo. Da yip yap Kenny wubbletang. Yap blab goblinwiggle. Ha crangle hum wobble cringely wogglewibble, loo flang razz roo slappy shnizzlecrangle zoom. Jingle flee cringlewacko, \"blung ha duh bang,\" roo blee tongle tingle loo razz-zang...hizzy zap duh! \"Boo dobba dee?\" quibble razzwacko. Flob hum hizzle duh wubble bizzle yap blee? Zip ha Luke zonkshnazzle!";
+        body.create();
+
+        RootNode node = new RootNode("699eb321-7545-4b27-8a7f-94a4442d2046", 1);
+        node.nodeType = "models.origo.core.BasicPage";
+        node.create();
+
+        BasicPage page = new BasicPage();
+        page.nodeId = node.nodeId;
+        page.version = node.version;
+        page.title = "Fifth Page";
+        page.leadReferenceId = lead.identifier;
+        page.bodyReferenceId = body.identifier;
+        page.create();
+
+    }
+
     private static void createAliases() {
 
         // ### Alias ###
@@ -286,18 +313,18 @@ public class SampleDataCreator {
         fourthAlias.aliasId = Alias.findFirstAliasForPageId("2c36c55dd-956e-4b78-18c4-eef7e56aa17").id;
         fourthAlias.create();
 
-        // Placeholder
+        // External
         BasicNavigation groupNavigation = new BasicNavigation();
-        groupNavigation.type = "models.origo.core.navigation.ExternalLinkNavigation";
+        groupNavigation.type = "models.origo.core.navigation.PageIdNavigation";
         groupNavigation.section = "front";
-        groupNavigation.referenceId = "05f68985-a21f-48fc-85af-1599115656c0";
+        groupNavigation.referenceId = "6dd82bcb-3f42-4f5d-8c13-4e2ed1d4ef21";
         groupNavigation.weight = 3;
         groupNavigation.create();
-        ExternalLinkNavigation placeholderNavigation = new ExternalLinkNavigation();
-        placeholderNavigation.identifier = groupNavigation.getReferenceId();
-        placeholderNavigation.link = "http:///";
-        placeholderNavigation.title = "External";
-        placeholderNavigation.create();
+        PageIdNavigation externalNavigationHolder = new PageIdNavigation();
+        externalNavigationHolder.identifier = groupNavigation.getReferenceId();
+        externalNavigationHolder.pageId = "699eb321-7545-4b27-8a7f-94a4442d2046";
+        externalNavigationHolder.identifier = "6dd82bcb-3f42-4f5d-8c13-4e2ed1d4ef21";
+        externalNavigationHolder.create();
 
         // External - Google
         BasicNavigation externalNavigation = new BasicNavigation();
