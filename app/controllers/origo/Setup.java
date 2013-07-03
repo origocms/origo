@@ -8,16 +8,15 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.origo.setup.index;
 
-@Component
 public class Setup extends Controller {
 
     @Transactional
-    public Result index() {
+    public static Result index() {
         return ok(index.render());
     }
 
     @Transactional
-    public Result submit(boolean create) {
+    public static Result submit(boolean create) {
         if (create) {
             SampleDataCreator.create();
             Settings.load().setValue("origo.basicdata.insert", "false");
