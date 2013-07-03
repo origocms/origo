@@ -9,11 +9,10 @@ import play.mvc.Result;
 import views.html.origo.application.error;
 import views.html.origo.application.not_found;
 
-@Component
 public class Application extends Controller {
 
     @Transactional
-    public Result index() {
+    public static Result index() {
         if (shouldRedirectToSetupPage()) {
             return redirect(routes.Setup.index());
         }
@@ -21,7 +20,7 @@ public class Application extends Controller {
     }
 
     @Transactional
-    public Result page(String identifier) {
+    public static Result page(String identifier) {
         if (shouldRedirectToSetupPage()) {
             return redirect(routes.Setup.index());
         }
@@ -30,7 +29,7 @@ public class Application extends Controller {
     }
 
     @Transactional
-    public Result pageVersion(String identifier, int version) {
+    public static Result pageVersion(String identifier, int version) {
         if (shouldRedirectToSetupPage()) {
             return redirect(routes.Setup.index());
         }
@@ -38,11 +37,11 @@ public class Application extends Controller {
         return checkForFallBackPages(result);
     }
 
-    private boolean shouldRedirectToSetupPage() {
+    private static boolean shouldRedirectToSetupPage() {
         return Settings.load().getValueAsBoolean("origo.basicdata.insert") == null;
     }
 
-    private Result checkForFallBackPages(Result result) {
+    private static Result checkForFallBackPages(Result result) {
         if (result.toString().contains("404")) {
             return notFound(not_found.render());
         } else if (result.toString().contains("500")) {

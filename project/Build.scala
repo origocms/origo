@@ -13,8 +13,7 @@ object ApplicationBuild extends Build {
     filters,
     "mysql" % "mysql-connector-java" % "5.1.18",
     "org.hibernate" % "hibernate-entitymanager" % "4.1.1.Final",
-    "org.reflections" % "reflections" % "0.9.8",
-    "org.springframework" % "spring-context" % "3.1.3.RELEASE"
+    "org.reflections" % "reflections" % "0.9.8"
   )
 
   /**

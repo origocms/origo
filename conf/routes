@@ -9,8 +9,8 @@
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 # Home page
-GET     /setup                              @controllers.origo.Setup.index()
-GET     /setup/:create                      @controllers.origo.Setup.submit(create:Boolean)
-GET     /                                   @controllers.origo.Application.index()
-GET     /:identifier                        @controllers.origo.Application.page(identifier:String)
-GET     /:identifier/$version<[0-9]+>       @controllers.origo.Application.pageVersion(identifier:String, version:Integer)
+GET     /setup                              controllers.origo.Setup.index()
+GET     /setup/submit                       controllers.origo.Setup.submit(create:Boolean)
+GET     /                                   controllers.origo.Application.index()
+GET     /:identifier                        controllers.origo.Application.page(identifier:String)
+GET     /:identifier/$version<[0-9]+>       controllers.origo.Application.pageVersion(identifier:String, version:Integer)

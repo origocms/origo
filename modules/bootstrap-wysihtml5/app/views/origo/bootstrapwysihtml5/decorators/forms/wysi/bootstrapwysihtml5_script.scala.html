@@ -1,6 +1,8 @@
 @(id:String)
 <script type="text/javascript">
-    $('#@id').wysihtml5({
-        customTemplates : customTemplates
-    });
+    $(document).ready(function() {
+        $('#@id').wysihtml5({
+            customTemplates : customTemplates
+        });
+    })
 </script>

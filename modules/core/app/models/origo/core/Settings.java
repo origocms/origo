@@ -99,7 +99,7 @@ public class Settings {
 
     public static Settings load() {
         try {
-            return (Settings) JPA.em().createQuery("select s from models.origo.core.Settings s", Settings.class).getSingleResult();
+            return (Settings) JPA.em().createQuery("select s from models.origo.core.Settings s").getSingleResult();
         } catch (NoResultException ignored) {
         }
         return new Settings();

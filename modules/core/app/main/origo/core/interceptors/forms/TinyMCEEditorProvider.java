@@ -26,8 +26,8 @@ public class TinyMCEEditorProvider {
                 context.node.addTailElement(new Element.Script().setId(Core.With.EDITOR+"_src").setWeight(9999).addAttribute("type", "text/javascript").addAttribute("src", jqueryTinyMCEScript));
                 context.node.addTailElement(new Element.Script().setId(Core.With.EDITOR+"_invocation").setWeight(10000).addAttribute("type", "text/javascript").
                         setBody(
-                                "$().ready(function() {\n" +
-                                        "  $('textarea.editor').tinymce({\n" +
+                                "$(document).ready(function() {\n" +
+                                        "  $('textarea.tinymce').tinymce({\n" +
                                         "    script_url : '" + tinyMCEScript + "',\n" +
                                         "// General options\n" +
                                         "      theme : \"advanced\",\n" +

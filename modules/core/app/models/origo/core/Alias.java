@@ -12,8 +12,6 @@ import java.util.List;
 @Table(name = "aliases")
 public class Alias extends Model {
 
-    public static ThreadLocal<Boolean> PROCESSING = new ThreadLocal<>();
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long id;

@@ -126,27 +126,4 @@ public class BasicNavigation extends Model<BasicNavigation> implements Navigatio
         return new Integer(weight).compareTo(navigation.weight);
     }
 
-    public void doCreate(BasicNavigation b) {
-        OnCreateEventGenerator.triggerBeforeInterceptors(TYPE, this);
-        OnCreateEventGenerator.triggerBeforeInterceptors(this.type, this);
-        JPA.em().persist(b);
-        OnCreateEventGenerator.triggerAfterInterceptors(this.type, this);
-        OnCreateEventGenerator.triggerAfterInterceptors(TYPE, this);
-    }
-
-    public void doUpdate(BasicNavigation b) {
-        OnUpdateEventGenerator.triggerBeforeInterceptors(TYPE, this);
-        OnUpdateEventGenerator.triggerBeforeInterceptors(this.type, this);
-        JPA.em().merge(b);
-        OnUpdateEventGenerator.triggerAfterInterceptors(this.type, this);
-        OnUpdateEventGenerator.triggerAfterInterceptors(TYPE, this);
-    }
-
-    public void doDelete(BasicNavigation b) {
-        OnDeleteEventGenerator.triggerBeforeInterceptors(TYPE, this);
-        OnDeleteEventGenerator.triggerBeforeInterceptors(this.type, this);
-        JPA.em().remove(b);
-        OnDeleteEventGenerator.triggerAfterInterceptors(this.type, this);
-        OnDeleteEventGenerator.triggerBeforeInterceptors(TYPE, this);
-    }
 }

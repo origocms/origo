@@ -6,11 +6,10 @@ import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-@Component
 public class Submit extends Controller {
 
     @Transactional
-    public Result submit() {
+    public static Result submit() {
         final String postHandlerName = SubmitHandlerEventGenerator.getRegisteredSubmitHandlerName();
         return SubmitHandlerEventGenerator.triggerSubmitHandler(postHandlerName);
     }
