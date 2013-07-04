@@ -12,7 +12,7 @@ public class SegmentProvider {
 
     public static final String SEGMENT = "segment";
 
-    @Provides(type = SEGMENT, with = "models.origo.core.Content")
+    @Provides(type = SEGMENT, with = Content.TYPE)
     public static Element createSegment(Provides.Context context) {
         Segment segment = (Segment) context.args.get("segment");
         if (!StringUtils.isBlank(segment.referenceId)) {

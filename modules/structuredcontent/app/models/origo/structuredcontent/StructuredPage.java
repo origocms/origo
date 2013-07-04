@@ -20,6 +20,8 @@ import java.util.Set;
 @Table(name="page_structured", uniqueConstraints = @UniqueConstraint(name = "pageVersion", columnNames = {"parentNodeId", "parentVersion"}))
 public class StructuredPage implements Node {
 
+    public static final String TYPE = Core.With.CONTENT_PAGE + ".structuredpage";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long id;

@@ -13,9 +13,9 @@ import java.util.Date;
 
 @Entity(name = "pageIdNavigation")
 @Table(name = "navigation_page_id")
-public class PageIdNavigation extends Model<PageIdNavigation> {
+public class InternalPageIdNavigation extends Model<InternalPageIdNavigation> {
 
-    public static final String TYPE = "models.origo.core.navigation.PageIdNavigation";
+    public static final String TYPE = "origo.navigation.pageid";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,16 +28,20 @@ public class PageIdNavigation extends Model<PageIdNavigation> {
     @Constraints.Required
     public String pageId;
 
-    public PageIdNavigation() {
+    public InternalPageIdNavigation() {
         super(TYPE);
     }
 
     public String getLink() {
+        if (CoreSettingsHelper.getStartPage().equals(pageId)) {
+            return CoreSettingsHelper.getBaseUrl();
+        }
         Collection<Alias> aliases = Alias.findWithPageId(pageId);
+        return getAliasUrl(aliases);
+    }
+
+    private String getAliasUrl(Collection<Alias> aliases) {
         if (aliases == null || aliases.isEmpty()) {
-            if (CoreSettingsHelper.getStartPage().equals(pageId)) {
-                return CoreSettingsHelper.getBaseUrl();
-            }
             return CoreSettingsHelper.getBaseUrl() + BasicPage.findCurrentVersion(pageId, new Date()).getNodeId();
         } else {
             Alias alias = aliases.iterator().next();
@@ -45,9 +49,9 @@ public class PageIdNavigation extends Model<PageIdNavigation> {
         }
     }
 
-    public static PageIdNavigation findWithIdentifier(String identifier) {
+    public static InternalPageIdNavigation findWithIdentifier(String identifier) {
         try {
-            return (PageIdNavigation) JPA.em().createQuery("from models.origo.core.navigation.PageIdNavigation where identifier=:identifier").
+            return (InternalPageIdNavigation) JPA.em().createQuery("from "+InternalPageIdNavigation.class.getName()+" where identifier=:identifier").
                     setParameter("identifier", identifier).getSingleResult();
         } catch (NoResultException e) {
             return null;

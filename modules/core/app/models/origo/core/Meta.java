@@ -10,6 +10,8 @@ import javax.persistence.*;
 @Table(name = "meta")
 public class Meta extends Model<Meta> {
 
+    public static final String TYPE = "origo.meta";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long id;
@@ -35,7 +37,7 @@ public class Meta extends Model<Meta> {
 
     public static Meta findWithNodeIdAndSpecificVersion(String nodeId, Integer version, String referenceId) {
         try {
-            String queryString = "select distinct m from models.origo.core.Meta m " +
+            String queryString = "select distinct m from "+Meta.class.getName()+" m " +
                     "where m.nodeId = :nodeId and m.version = :version and m.referenceId = :referenceId";
             final Query query = JPA.em().createQuery(queryString);
             query.setParameter("version", version).setParameter("nodeId", nodeId).setParameter("referenceId", referenceId);

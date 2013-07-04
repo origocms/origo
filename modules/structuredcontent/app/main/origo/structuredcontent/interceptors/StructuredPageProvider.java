@@ -17,7 +17,7 @@ import java.util.List;
 @Interceptor
 public class StructuredPageProvider {
 
-    @Provides(type = Core.Type.NODE, with = "models.origo.structuredcontent.StructuredPage")
+    @Provides(type = Core.Type.NODE, with = StructuredPage.TYPE)
     public static Node loadPage(Provides.Context context) throws NodeNotFoundException {
         StructuredPage page = StructuredPage.findWithNodeIdAndSpecificVersion(context.node.getNodeId(), context.node.getVersion());
         if (page == null) {
@@ -28,7 +28,7 @@ public class StructuredPageProvider {
         return page;
     }
 
-    @OnLoad(type = Core.Type.NODE, with = "models.origo.structuredcontent.StructuredPage")
+    @OnLoad(type = Core.Type.NODE, with = StructuredPage.TYPE)
     public static void loadContent(OnLoad.Context context) {
 
         List<Segment> segmentModels = Segment.findWithNodeIdAndSpecificVersion(context.node.getNodeId(), context.node.getVersion());

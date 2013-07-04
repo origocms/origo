@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Interceptor
-public class AliasAdminProvider {
+public class AliasPageAdminProvider {
 
     private static final String USE_ALIAS_PARAM = "use_alias";
     private static final String ALIAS_VALUE_PARAM = "alias";
@@ -34,15 +34,17 @@ public class AliasAdminProvider {
 
             Alias alias = Alias.findFirstAliasForPageId(context.node.getNodeId());
 
+            Element.InputCheckbox useAliasCheckbox = new Element.InputCheckbox(Boolean.class).
+                    addAttribute("name", USE_ALIAS_PARAM).
+                    addAttribute("value", "true");
+            if (alias != null) {
+                useAliasCheckbox.addAttribute("checked", "checked");
+            }
             context.parent.addChild(new Element.FieldSet().setWeight(100).
                     addChild(new Element.Legend().setBody("Alias")).
                     addChild(new Element.Panel().
                             addChild(new Element.Label().addAttribute("class", "checkbox").
-                                    addChild(new Element.InputCheckbox(Boolean.class).
-                                            addAttribute("name", USE_ALIAS_PARAM).
-                                            addAttribute("value", "true").
-                                            addAttribute("checked", alias != null ? "checked" : "")
-                                    ).
+                                    addChild(useAliasCheckbox).
                                     setBody("Add Alias"))).
                     addChild(new Element.Panel().setWeight(20).addAttribute("class", "field").
                             addChild(new Element.Label().setWeight(10).setBody("URL part").addAttribute("for", "text-" + ALIAS_VALUE_PARAM))).
@@ -52,9 +54,9 @@ public class AliasAdminProvider {
     }
 
     /**
-     * Hooks in to the submit process and stores a an alias for a page when the page is submitted.
+     * Hooks in to the submit process and stores an alias for a page when the page is submitted.
      */
-    @OnSubmit
+    @OnSubmit(weight = 1000)
     public static void storeAlias(OnSubmit.Context context) {
 
         DynamicForm form = DynamicForm.form().bindFromRequest();
@@ -78,7 +80,6 @@ public class AliasAdminProvider {
                 alias.delete();
             }
         }
-
     }
 
     private static String getUrlPart(Map<String, String> data) {

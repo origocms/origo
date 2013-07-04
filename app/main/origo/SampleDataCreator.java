@@ -2,10 +2,9 @@ package main.origo;
 
 import main.origo.core.helpers.CoreSettingsHelper;
 import models.origo.core.*;
-import models.origo.core.navigation.AliasNavigation;
 import models.origo.core.navigation.BasicNavigation;
 import models.origo.core.navigation.ExternalLinkNavigation;
-import models.origo.core.navigation.PageIdNavigation;
+import models.origo.core.navigation.InternalPageIdNavigation;
 import models.origo.structuredcontent.Segment;
 import models.origo.structuredcontent.StructuredPage;
 
@@ -57,11 +56,11 @@ public class SampleDataCreator {
         content_side_3.create();
 
         RootNode node1 = new RootNode("aa1755dd-18c4-4b78-956e-eef7e562c36c", 1);
-        node1.nodeType = "models.origo.structuredcontent.StructuredPage";
+        node1.nodeType = StructuredPage.TYPE;
         node1.create();
 
         RootNode node2 = new RootNode("aa1755dd-18c4-4b78-956e-eef7e562c36c", 2);
-        node2.nodeType = "models.origo.structuredcontent.StructuredPage";
+        node2.nodeType = StructuredPage.TYPE;
         node2.create();
 
         StructuredPage page1 = new StructuredPage(); // Page 1 version 1
@@ -80,35 +79,35 @@ public class SampleDataCreator {
         Segment segment_1_1 = new Segment(); // Page 1 version 1, Segment 1
         segment_1_1.nodeId = node1.getNodeId();
         segment_1_1.version = node1.getVersion();
-        segment_1_1.type = "models.origo.core.Content";
+        segment_1_1.type = Content.TYPE;
         segment_1_1.referenceId = content_side_2.identifier;
         segment_1_1.create();
 
         Segment segment_1_2 = new Segment(); // Page 1 version 1, Segment 2
         segment_1_2.nodeId = node1.getNodeId();
         segment_1_2.version = node1.getVersion();
-        segment_1_2.type = "models.origo.core.Content";
+        segment_1_2.type = Content.TYPE;
         segment_1_2.referenceId = content_main_1.identifier;
         segment_1_2.create();
 
         Segment segment_1_3 = new Segment(); // Page 1 version 1, Segment 3
         segment_1_3.nodeId = node1.getNodeId();
         segment_1_3.version = node1.getVersion();
-        segment_1_3.type = "models.origo.core.Content";
+        segment_1_3.type = Content.TYPE;
         segment_1_3.referenceId = content_side_2.identifier;
         segment_1_3.create();
 
         Segment segment_2_1 = new Segment(); // Page 1 version 2, Segment 1
         segment_2_1.nodeId = node2.getNodeId();
         segment_2_1.version = node2.getVersion();
-        segment_2_1.type = "models.origo.core.Content";
+        segment_2_1.type = Content.TYPE;
         segment_2_1.referenceId = content_side_3.identifier;
         segment_2_1.create();
 
         Segment segment_2_2 = new Segment(); // Page 1 version 2, Segment 2
         segment_2_2.nodeId = node2.getNodeId();
         segment_2_2.version = node2.getVersion();
-        segment_2_2.type = "models.origo.core.Content";
+        segment_2_2.type = Content.TYPE;
         segment_2_2.referenceId = content_main_1.identifier;
         segment_2_2.create();
 
@@ -172,7 +171,7 @@ public class SampleDataCreator {
         body.create();
 
         RootNode node = new RootNode("c9615819-0556-4e70-b6a9-a66c5b8d4c1a", 1);
-        node.nodeType = "models.origo.core.BasicPage";
+        node.nodeType = BasicPage.TYPE;
         node.themeVariant = "default-main_only";
         node.create();
 
@@ -201,7 +200,7 @@ public class SampleDataCreator {
         body.create();
 
         RootNode node = new RootNode("1cf699a7-a0c4-4be0-855f-466042a36a8d", 1);
-        node.nodeType = "models.origo.core.BasicPage";
+        node.nodeType = BasicPage.TYPE;
         node.themeVariant = "default-main_only";
         node.create();
 
@@ -232,7 +231,7 @@ public class SampleDataCreator {
         body.create();
 
         RootNode node = new RootNode("2c36c55dd-956e-4b78-18c4-eef7e56aa17", 1);
-        node.nodeType = "models.origo.core.BasicPage";
+        node.nodeType = BasicPage.TYPE;
         node.create();
 
         BasicPage page = new BasicPage();
@@ -258,7 +257,7 @@ public class SampleDataCreator {
         body.create();
 
         RootNode node = new RootNode("699eb321-7545-4b27-8a7f-94a4442d2046", 1);
-        node.nodeType = "models.origo.core.BasicPage";
+        node.nodeType = BasicPage.TYPE;
         node.create();
 
         BasicPage page = new BasicPage();
@@ -291,44 +290,43 @@ public class SampleDataCreator {
     private static void createNavigation() {
         // Start Page
         BasicNavigation startNavigation = new BasicNavigation();
-        startNavigation.type = "models.origo.core.navigation.PageIdNavigation";
+        startNavigation.type = InternalPageIdNavigation.TYPE;
         startNavigation.section = "front";
         startNavigation.referenceId = "3f2d9e2e-12dc-4917-9a58-40d325e9784e";
         startNavigation.weight = 1;
         startNavigation.create();
-        PageIdNavigation startPageId = new PageIdNavigation();
+        InternalPageIdNavigation startPageId = new InternalPageIdNavigation();
         startPageId.identifier = startNavigation.getReferenceId();
         startPageId.pageId = "aa1755dd-18c4-4b78-956e-eef7e562c36c";
         startPageId.create();
 
         // Fourth
         BasicNavigation fourthNavigation = new BasicNavigation();
-        fourthNavigation.type = "models.origo.core.navigation.AliasNavigation";
+        fourthNavigation.type = InternalPageIdNavigation.TYPE;
         fourthNavigation.section = "front";
         fourthNavigation.referenceId = "a8129a97-70fa-40b7-93e4-2a1caf181a0d";
         fourthNavigation.weight = 3;
         fourthNavigation.create();
-        AliasNavigation fourthAlias = new AliasNavigation();
+        InternalPageIdNavigation fourthAlias = new InternalPageIdNavigation();
         fourthAlias.identifier = fourthNavigation.getReferenceId();
-        fourthAlias.aliasId = Alias.findFirstAliasForPageId("2c36c55dd-956e-4b78-18c4-eef7e56aa17").id;
+        fourthAlias.pageId = "2c36c55dd-956e-4b78-18c4-eef7e56aa17";
         fourthAlias.create();
 
         // External
         BasicNavigation groupNavigation = new BasicNavigation();
-        groupNavigation.type = "models.origo.core.navigation.PageIdNavigation";
+        groupNavigation.type = InternalPageIdNavigation.TYPE;
         groupNavigation.section = "front";
         groupNavigation.referenceId = "6dd82bcb-3f42-4f5d-8c13-4e2ed1d4ef21";
         groupNavigation.weight = 3;
         groupNavigation.create();
-        PageIdNavigation externalNavigationHolder = new PageIdNavigation();
+        InternalPageIdNavigation externalNavigationHolder = new InternalPageIdNavigation();
         externalNavigationHolder.identifier = groupNavigation.getReferenceId();
         externalNavigationHolder.pageId = "699eb321-7545-4b27-8a7f-94a4442d2046";
-        externalNavigationHolder.identifier = "6dd82bcb-3f42-4f5d-8c13-4e2ed1d4ef21";
         externalNavigationHolder.create();
 
         // External - Google
         BasicNavigation externalNavigation = new BasicNavigation();
-        externalNavigation.type = "models.origo.core.navigation.ExternalLinkNavigation";
+        externalNavigation.type = ExternalLinkNavigation.TYPE;
         externalNavigation.section = "front";
         externalNavigation.referenceId = "58e15bfa-da4f-4f6b-a15a-51ab6c82e670";
         externalNavigation.parent = groupNavigation;

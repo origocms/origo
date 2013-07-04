@@ -65,7 +65,7 @@ public class ThemeHelper {
 
     /**
      * Sets all the regions in the rendered node so the template can access them without
-     * nullpointer even if the page has no ui elements.
+     * nullpointer even if the region has no ui elements.
      *
      * @param themeVariant the theme variant that holds the regions available
      * @param renderedNode the node about to rendered
@@ -106,7 +106,7 @@ public class ThemeHelper {
         Html decoratedOutput = Html.empty();
         if (parent.hasChildren()) {
             renderingContext.nest(parent);
-            final List<Element<? extends Element>> children = parent.getChildren();
+            final List<Element> children = parent.getChildren();
             for (Element childElement : children) {
                 decoratedOutput.$plus(decorate(childElement, renderingContext));
             }

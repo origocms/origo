@@ -54,7 +54,6 @@ public class BasicPageAdminProvider {
     private static final String THEME_VARIANT_PARAM = "origo-basicpageform-theme-variant";
     private static final String LEAD_PARAM = "origo-basicpageform-lead";
     private static final String BODY_PARAM = "origo-basicpageform-body";
-    private static final String TYPE = "models.origo.core.BasicPage";
 
     /**
      * Dashboard element for the content dashboard page.
@@ -276,7 +275,7 @@ public class BasicPageAdminProvider {
             newPageVersion.rootNode.themeVariant = data.get(THEME_VARIANT_PARAM);
             newPageVersion.rootNode.publish = parseDate(data.get(PUBLISH_DATE_PARAM), data.get(PUBLISH_TIME_PARAM));
             newPageVersion.rootNode.unPublish = parseDate(data.get(UNPUBLISH_DATE_PARAM), data.get(UNPUBLISH_TIME_PARAM));
-            newPageVersion.rootNode.nodeType = BasicPage.class.getName();
+            newPageVersion.rootNode.nodeType = BasicPage.TYPE;
 
             // Lead Content
             Content newLeadContent = new Content();
@@ -299,14 +298,14 @@ public class BasicPageAdminProvider {
             }
 
             if (oldRootNode.version == 0) {
-                OnCreateEventGenerator.triggerAfterInterceptors(TYPE, newPageVersion);
+                OnCreateEventGenerator.triggerAfterInterceptors(BasicPage.TYPE, newPageVersion);
             } else {
-                OnUpdateEventGenerator.triggerAfterInterceptors(TYPE, newPageVersion);
+                OnUpdateEventGenerator.triggerAfterInterceptors(BasicPage.TYPE, newPageVersion);
             }
 
         } else {
 
-            OnUpdateEventGenerator.triggerBeforeInterceptors(TYPE, latestVersion);
+            OnUpdateEventGenerator.triggerBeforeInterceptors(BasicPage.TYPE, latestVersion);
 
             // Properties
             latestVersion.rootNode.publish = parseDate(data.get(PUBLISH_DATE_PARAM), data.get(PUBLISH_TIME_PARAM));
@@ -315,7 +314,7 @@ public class BasicPageAdminProvider {
             latestVersion.rootNode.update();
             latestVersion.update();
 
-            OnUpdateEventGenerator.triggerAfterInterceptors(TYPE, latestVersion);
+            OnUpdateEventGenerator.triggerAfterInterceptors(BasicPage.TYPE, latestVersion);
         }
 
     }

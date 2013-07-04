@@ -50,7 +50,7 @@ public final class RootNode extends Model<RootNode> implements Node {
      * A list of Elements for each region on the page. The key is the region name.
      */
     @Transient
-    private Map<String, LinkedList<Element>> elements = Maps.newHashMap();
+    private Map<String, ArrayList<Element>> elements = Maps.newHashMap();
 
     protected RootNode() {
         super("root");
@@ -164,7 +164,7 @@ public final class RootNode extends Model<RootNode> implements Node {
 
     private Element addElement(Element element, boolean reorderElementsBelow, String regionKey, int weight) {
         if (!elements.containsKey(regionKey)) {
-            elements.put(regionKey, Lists.<Element>newLinkedList());
+            elements.put(regionKey, Lists.<Element>newArrayList());
         }
         element.setWeight(weight);
         elements.get(regionKey).add(element);
@@ -220,7 +220,7 @@ public final class RootNode extends Model<RootNode> implements Node {
 
     private static void initializeNode(RootNode node) {
         node.elements = Maps.newHashMap();
-        node.elements.put(HEAD, Lists.<Element>newLinkedList());
+        node.elements.put(HEAD, Lists.<Element>newArrayList());
         node.headElement = Maps.newHashMap();
         node.tailElement = Maps.newHashMap();
     }
@@ -233,9 +233,9 @@ public final class RootNode extends Model<RootNode> implements Node {
 
     public static List<RootNode> findAllCurrentVersions(Date today) {
         try {
-            String queryString = "select n from models.origo.core.RootNode n " +
+            String queryString = "select n from "+RootNode.class.getName()+" n " +
                     "where n.version = (" +
-                    "select max(n2.version) from models.origo.core.RootNode n2 " +
+                    "select max(n2.version) from "+RootNode.class.getName()+" n2 " +
                     "where n2.nodeId = n.nodeId and " +
                     "(n2.publish = null or n2.publish < :today) and" +
                     "(n2.unPublish = null or n2.unPublish >= :today)" +
@@ -252,7 +252,7 @@ public final class RootNode extends Model<RootNode> implements Node {
 
     public static RootNode findWithNodeIdAndSpecificVersion(String nodeId, Integer version) {
         try {
-            String queryString = "select n from models.origo.core.RootNode n " +
+            String queryString = "select n from "+RootNode.class.getName()+" n " +
                     "where n.nodeId = :nodeId and n.version = :version";
             final Query query = JPA.em().createQuery(queryString);
             query.setParameter("nodeId", nodeId);
@@ -269,7 +269,7 @@ public final class RootNode extends Model<RootNode> implements Node {
 
     public static RootNode findLatestPublishedVersionWithNodeId(String nodeId, Date today) {
         try {
-            String queryString = "select distinct n from models.origo.core.RootNode n " +
+            String queryString = "select distinct n from "+RootNode.class.getName()+" n " +
                     "where n.nodeId = :nodeId and " +
                     "(n.publish = null or n.publish < :today) and " +
                     "(n.unPublish = null or n.unPublish >= :today) " +
@@ -291,7 +291,7 @@ public final class RootNode extends Model<RootNode> implements Node {
 
     public static RootNode findLatestVersionWithNodeId(String nodeId) {
         try {
-            String queryString = "select distinct n from models.origo.core.RootNode n " +
+            String queryString = "select distinct n from "+RootNode.class.getName()+" n " +
                     "where n.nodeId = :nodeId " +
                     "order by n.version desc";
             final Query query = JPA.em().createQuery(queryString);
@@ -310,7 +310,7 @@ public final class RootNode extends Model<RootNode> implements Node {
 
     public static List<RootNode> findAllVersionsWithNodeId(String nodeId) {
         try {
-            String queryString = "select distinct n from models.origo.core.RootNode n " +
+            String queryString = "select distinct n from "+RootNode.class.getName()+" n " +
                     "where n.nodeId = :nodeId " +
                     "order by n.version desc";
             final Query query = JPA.em().createQuery(queryString);

@@ -9,12 +9,10 @@ import main.origo.core.annotations.Provides;
 import main.origo.core.event.NavigationEventGenerator;
 import main.origo.core.event.ProvidesEventGenerator;
 import main.origo.core.ui.NavigationElement;
-import models.origo.core.Alias;
 import models.origo.core.RootNode;
-import models.origo.core.navigation.AliasNavigation;
 import models.origo.core.navigation.BasicNavigation;
 import models.origo.core.navigation.ExternalLinkNavigation;
-import models.origo.core.navigation.PageIdNavigation;
+import models.origo.core.navigation.InternalPageIdNavigation;
 
 import java.util.Collections;
 import java.util.Date;
@@ -26,8 +24,7 @@ import java.util.List;
  * relationships. It provides the type BasicNavigation.
  *
  * @see models.origo.core.navigation.BasicNavigation
- * @see models.origo.core.navigation.AliasNavigation
- * @see models.origo.core.navigation.PageIdNavigation
+ * @see models.origo.core.navigation.InternalPageIdNavigation
  * @see models.origo.core.navigation.ExternalLinkNavigation
  */
 @Interceptor
@@ -48,7 +45,7 @@ public class BasicNavigationProvider {
             navigationElement.children.addAll(children);
             navigationElements.add(navigationElement);
         }
-        NavigationEventGenerator.triggerAfterNavigationLoaded(context.node, BasicNavigation.class.getName(), (Navigation) context.args.get("navigation"),  navigationElements, section);
+        NavigationEventGenerator.triggerAfterNavigationLoaded(context.node, BasicNavigation.class.getName(), (Navigation) context.args.get("navigation"), navigationElements, section);
         return navigationElements;
     }
 
@@ -70,36 +67,10 @@ public class BasicNavigationProvider {
         return navigationElements;
     }
 
-    @Provides(type = Core.Type.NAVIGATION_ITEM, with = AliasNavigation.TYPE)
-    public static NavigationElement createAliasNavigation(Provides.Context context) {
-        Navigation navigation = (Navigation) context.args.get("navigation");
-        AliasNavigation navigationModel = AliasNavigation.findWithIdentifier(navigation.getReferenceId());
-        Alias alias = Alias.findWithId(navigationModel.aliasId);
-        if (alias != null) {
-            RootNode referencedRootNode = RootNode.findLatestPublishedVersionWithNodeId(alias.pageId, new Date());
-            if (referencedRootNode != null) {
-                Node referencedNode = ProvidesEventGenerator.triggerInterceptor(referencedRootNode, Core.Type.NODE, referencedRootNode.nodeType);
-                boolean selected = context.node.getNodeId().equals(alias.pageId);
-                NavigationElement ne = new NavigationElement();
-                ne.id = navigationModel.identifier;
-                ne.section = navigation.getSection();
-                ne.title = referencedNode.getTitle();
-                ne.link = navigationModel.getLink();
-                ne.weight = navigation.getWeight();
-                ne.selected = selected;
-                return ne;
-            } else {
-                throw new RuntimeException("Page not found [" + alias.pageId + "]");
-            }
-        } else {
-            throw new RuntimeException("Alias not found [" + navigationModel.aliasId + "]");
-        }
-    }
-
-    @Provides(type = Core.Type.NAVIGATION_ITEM, with = PageIdNavigation.TYPE)
+    @Provides(type = Core.Type.NAVIGATION_ITEM, with = InternalPageIdNavigation.TYPE)
     public static NavigationElement createPageIdNavigation(Provides.Context context) {
         Navigation navigation = (Navigation) context.args.get("navigation");
-        PageIdNavigation navigationModel = PageIdNavigation.findWithIdentifier(navigation.getReferenceId());
+        InternalPageIdNavigation navigationModel = InternalPageIdNavigation.findWithIdentifier(navigation.getReferenceId());
         RootNode referencedRootNode = RootNode.findLatestPublishedVersionWithNodeId(navigationModel.pageId, new Date());
         if (referencedRootNode != null) {
             Node referencedNode = ProvidesEventGenerator.triggerInterceptor(referencedRootNode, Core.Type.NODE, referencedRootNode.nodeType);

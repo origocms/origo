@@ -2,6 +2,7 @@ package main.origo.core.interceptors;
 
 
 import main.origo.core.NodeNotFoundException;
+import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.Provides;
@@ -17,7 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 @Interceptor
 public class BasicPageProvider {
 
-    public static final String TYPE = "models.origo.core.BasicPage";
+    public static final String TYPE = Core.With.CONTENT_PAGE + ".basicpage";
 
     @Provides(type = "node", with = TYPE)
     public static BasicPage loadPage(Provides.Context context) throws NodeNotFoundException {

@@ -16,9 +16,8 @@
         <class>models.origo.core.RootNode</class>
         <class>models.origo.core.Settings</class>
         <class>models.origo.core.EventHandler</class>
-        <class>models.origo.core.navigation.AliasNavigation</class>
         <class>models.origo.core.navigation.BasicNavigation</class>
-        <class>models.origo.core.navigation.PageIdNavigation</class>
+        <class>models.origo.core.navigation.InternalPageIdNavigation</class>
         <class>models.origo.core.navigation.ExternalLinkNavigation</class>
 
         <!-- StructuredContent Module -->

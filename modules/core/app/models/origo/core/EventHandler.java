@@ -10,7 +10,7 @@ import java.util.List;
 @Table(name = "handlers")
 public class EventHandler extends Model<EventHandler> {
 
-    public static final String TYPE = "EventHandler";
+    public static final String TYPE = "origo.eventhandler";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,7 +28,7 @@ public class EventHandler extends Model<EventHandler> {
     public static EventHandler findWithNodeTypeAndWithType(String nodeType, String withType) {
         try {
             return (EventHandler) JPA.em().
-                    createQuery("from models.origo.core.EventHandler an where an.nodeType=:nodeType and an.withType=:withType").
+                    createQuery("from "+EventHandler.class.getName()+" an where an.nodeType=:nodeType and an.withType=:withType").
                     setParameter("nodeType", nodeType).
                     setParameter("withType", withType).
                     getSingleResult();
@@ -40,7 +40,7 @@ public class EventHandler extends Model<EventHandler> {
     public static EventHandler findWithAnnotationAndWithType(String annotation, String withType) {
         try {
             return (EventHandler) JPA.em().
-                    createQuery("from models.origo.core.EventHandler eh where eh.annotation=:annotation and eh.withType=:withType").
+                    createQuery("from "+EventHandler.class.getName()+" eh where eh.annotation=:annotation and eh.withType=:withType").
                     setParameter("annotation", annotation).
                     setParameter("withType", withType).
                     getSingleResult();
@@ -51,13 +51,13 @@ public class EventHandler extends Model<EventHandler> {
 
     public static List<String> findEventTypes() {
         return JPA.em().
-                createQuery("select distinct nodeType from models.origo.core.EventHandler").
+                createQuery("select distinct nodeType from "+EventHandler.class.getName()+"").
                 getResultList();
     }
 
     public static List<EventHandler> findAllWithAnnotation(String annotation) {
         try {
-            return JPA.em().createQuery("select distinct eh from models.origo.core.EventHandler eh where eh.annotation=:annotation").
+            return JPA.em().createQuery("select distinct eh from "+EventHandler.class.getName()+" eh where eh.annotation=:annotation").
                     setParameter("annotation", annotation).
                     getResultList();
         } catch (NoResultException e) {
@@ -67,7 +67,7 @@ public class EventHandler extends Model<EventHandler> {
 
     public static boolean existsWithAnnotationAndNodeType(String annotation, String nodeType) {
         try {
-            return 0 < (Long) JPA.em().createQuery("select count(*) from models.origo.core.EventHandler eh where eh.annotation=:annotation and eh.nodeType=:nodeType").
+            return 0 < (Long) JPA.em().createQuery("select count(*) from "+EventHandler.class.getName()+" eh where eh.annotation=:annotation and eh.nodeType=:nodeType").
                     setParameter("annotation", annotation).
                     setParameter("nodeType", nodeType).
                     getSingleResult();
@@ -78,7 +78,7 @@ public class EventHandler extends Model<EventHandler> {
 
     public static List<EventHandler> findAllWithAnnotationAndNodeType(String annotation, String nodeType) {
         try {
-            return JPA.em().createQuery("select distinct eh from models.origo.core.EventHandler eh where eh.annotation=:annotation and eh.nodeType=:nodeType").
+            return JPA.em().createQuery("select distinct eh from "+EventHandler.class.getName()+" eh where eh.annotation=:annotation and eh.nodeType=:nodeType").
                     setParameter("annotation", annotation).
                     setParameter("nodeType", nodeType).
                     getResultList();
@@ -89,7 +89,7 @@ public class EventHandler extends Model<EventHandler> {
 
     public static List<EventHandler> findAllWithEventType(String nodeType) {
         try {
-            return JPA.em().createQuery("select distinct eh from models.origo.core.EventHandler eh where eh.nodeType=:nodeType").
+            return JPA.em().createQuery("select distinct eh from "+EventHandler.class.getName()+" eh where eh.nodeType=:nodeType").
                     setParameter("nodeType", nodeType).
                     getResultList();
         } catch (NoResultException e) {
@@ -99,7 +99,7 @@ public class EventHandler extends Model<EventHandler> {
 
     public static List<EventHandler> findAll() {
         try {
-            return JPA.em().createQuery("select distinct eh from models.origo.core.EventHandler eh").getResultList();
+            return JPA.em().createQuery("select distinct eh from "+EventHandler.class.getName()+" eh").getResultList();
         } catch (NoResultException e) {
             return Lists.newArrayList();
         }

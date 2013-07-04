@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Table(name = "navigation_external_link")
 public class ExternalLinkNavigation extends Model<ExternalLinkNavigation> {
 
-    public static final String TYPE = "models.origo.core.navigation.ExternalLinkNavigation";
+    public static final String TYPE = "origo.navigation.external";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -36,7 +36,7 @@ public class ExternalLinkNavigation extends Model<ExternalLinkNavigation> {
 
     public static ExternalLinkNavigation findWithIdentifier(String identifier) {
         try {
-            return (ExternalLinkNavigation) JPA.em().createQuery("from models.origo.core.navigation.ExternalLinkNavigation where identifier=:identifier").
+            return (ExternalLinkNavigation) JPA.em().createQuery("from "+ExternalLinkNavigation.class.getName()+" where identifier=:identifier").
                     setParameter("identifier", identifier).getSingleResult();
         } catch (NoResultException e) {
             return null;

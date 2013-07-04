@@ -47,7 +47,7 @@ public class CoreSettingsHelper {
     }
 
     public static String getNavigationType() {
-        return getClassTypeIfExists(Keys.NAVIGATION_TYPE, BasicNavigation.class.getName());
+        return getClassTypeIfExists(Keys.NAVIGATION_TYPE, BasicNavigation.TYPE);
     }
 
     public static String getDefaultFormType() {

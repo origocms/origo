@@ -181,7 +181,7 @@ public class BasicPage extends Model<BasicPage> implements Node {
 
     public static List<BasicPage> findAllCurrentVersions(Date asOfDate) {
         try {
-            String queryString = "select p from models.origo.core.BasicPage p " +
+            String queryString = "select p from "+BasicPage.class.getName()+" p " +
                     "where p.id in (" +
                     "select n.id from models.origo.core.RootNode n where n.version = (" +
                     "select max(n2.version) from models.origo.core.RootNode n2 " +
@@ -199,7 +199,7 @@ public class BasicPage extends Model<BasicPage> implements Node {
 
     public static BasicPage findCurrentVersion(String nodeId, Date asOfDate) {
         try {
-            String queryString = "select p from models.origo.core.BasicPage p " +
+            String queryString = "select p from "+BasicPage.class.getName()+" p " +
                     "where p.nodeId = :nodeId and p.id in (" +
                     "select n.id from models.origo.core.RootNode n where n.version = (" +
                     "select max(n2.version) from models.origo.core.RootNode n2 " +
@@ -218,7 +218,7 @@ public class BasicPage extends Model<BasicPage> implements Node {
 
     public static BasicPage findLatestVersion(String nodeId) {
         try {
-            String queryString = "select p from models.origo.core.BasicPage p " +
+            String queryString = "select p from "+BasicPage.class.getName()+" p " +
                     "where p.nodeId = :nodeId and p.version = (" +
                     "select max(n.version) from models.origo.core.RootNode n " +
                     "where n.nodeId = p.nodeId" +
@@ -233,7 +233,7 @@ public class BasicPage extends Model<BasicPage> implements Node {
 
     public static BasicPage findWithNodeIdAndSpecificVersion(String nodeId, Integer version) {
         try {
-            String queryString = "select p from models.origo.core.BasicPage p " +
+            String queryString = "select p from "+BasicPage.class.getName()+" p " +
                     "where p.nodeId = :nodeId and p.version = :version";
             final Query query = JPA.em().createQuery(queryString);
             query.setParameter("nodeId", nodeId);
@@ -246,7 +246,7 @@ public class BasicPage extends Model<BasicPage> implements Node {
 
     public static List<BasicPage> findAllLatestVersions() {
         try {
-            String queryString = "select p from models.origo.core.BasicPage p " +
+            String queryString = "select p from "+BasicPage.class.getName()+" p " +
                     "where p.version = (" +
                     "select max(n.version) from models.origo.core.RootNode n " +
                     "where n.nodeId = p.nodeId" +

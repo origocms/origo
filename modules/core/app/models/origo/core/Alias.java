@@ -12,6 +12,8 @@ import java.util.List;
 @Table(name = "aliases")
 public class Alias extends Model {
 
+    public static final String TYPE = "origo.alias";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long id;
@@ -24,7 +26,7 @@ public class Alias extends Model {
     public String pageId;
 
     protected Alias() {
-        super("alias");
+        super(TYPE);
     }
 
     public Alias(String path, String pageId) {
@@ -42,14 +44,14 @@ public class Alias extends Model {
         return new StringBuilder().
                 append("Alias {").
                 append("path='").append(path).append("\', ").
-                append("page='").append(pageId).append('\'').
+                append("pageId='").append(pageId).append('\'').
                 append('}').
                 toString();
     }
 
     public static Alias findWithPath(String path) {
         try {
-            final Query query = JPA.em().createQuery("from models.origo.core.Alias an where an.path=:path");
+            final Query query = JPA.em().createQuery("from "+Alias.class.getName()+" an where an.path=:path");
             query.setParameter("path", path);
             return (Alias) query.getSingleResult();
         } catch (NoResultException e) {
@@ -59,7 +61,7 @@ public class Alias extends Model {
 
     public static List<Alias> findWithPageId(String pageId) {
         try {
-            final Query query = JPA.em().createQuery("from models.origo.core.Alias an where an.pageId=:pageId");
+            final Query query = JPA.em().createQuery("from "+Alias.class.getName()+" an where an.pageId=:pageId");
             query.setParameter("pageId", pageId);
             return query.getResultList();
         } catch (NoResultException e) {
