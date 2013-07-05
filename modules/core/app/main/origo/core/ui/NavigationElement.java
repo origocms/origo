@@ -23,10 +23,6 @@ public class NavigationElement implements Comparable<NavigationElement> {
     public NavigationElement() {
     }
 
-    public List<NavigationElement> children() {
-        return children;
-    }
-
     @Override
     public int compareTo(NavigationElement that) {
         return new Integer(this.weight).compareTo(that.weight);

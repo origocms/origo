@@ -18,9 +18,9 @@ import org.apache.commons.lang3.StringUtils;
 @Interceptor
 public class BasicPageProvider {
 
-    public static final String TYPE = Core.With.CONTENT_PAGE + ".basicpage";
+    public static final String TYPE = BasicPage.TYPE;
 
-    @Provides(type = "node", with = TYPE)
+    @Provides(type = Core.Type.NODE, with = TYPE)
     public static BasicPage loadPage(Provides.Context context) throws NodeNotFoundException {
 
         BasicPage page = BasicPage.findWithNodeIdAndSpecificVersion(context.node.getNodeId(), context.node.getVersion());
@@ -32,7 +32,7 @@ public class BasicPageProvider {
         return page;
     }
 
-    @OnLoad(type = "node", with = TYPE)
+    @OnLoad(type = Core.Type.NODE, with = TYPE)
     public static void loadContent(OnLoad.Context context) {
         context.node.addElement(loadContent(((BasicPage) context.node).leadReferenceId));
         context.node.addElement(loadContent(((BasicPage) context.node).bodyReferenceId));

@@ -7,12 +7,13 @@ import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.Provides;
 import main.origo.core.annotations.Relationship;
 import main.origo.core.ui.Element;
+import models.origo.structuredcontent.StructuredPage;
 import views.html.origo.admin.dashboard_item;
 
 @Interceptor
 public class StructurePageAdminProvider {
 
-    private static final String BASE_TYPE = Core.With.CONTENT_PAGE + ".structuredpage";
+    private static final String BASE_TYPE = StructuredPage.TYPE;
     private static final String LIST_TYPE = BASE_TYPE + ".list";
     private static final String EDIT_TYPE = BASE_TYPE + ".edit";
 
@@ -30,6 +31,6 @@ public class StructurePageAdminProvider {
     @Relationship(parent = Core.With.CONTENT_PAGE)
     public static Element createDashboardItem(Provides.Context context) {
         return new Admin.DashboardItem().
-                addChild(new Element.Raw().setBody(dashboard_item.render("Structured Page", "Structured pages have several slots for content, content can be re-used in several pages.", getProviderUrl(), "List All")));
+                addChild(new Element.Raw().setBody(dashboard_item.render("Structured Page", "Structured pages have several slots for content and content can be re-used in several pages.", getProviderUrl(), "List All")));
     }
 }

@@ -89,7 +89,7 @@ public class BasicNavigationPageAdminProvider {
             if (navigationElement.selected) {
                 return navigationElement;
             }
-            NavigationElement element = getSelectedNavigationId(navigationElement.children());
+            NavigationElement element = getSelectedNavigationId(navigationElement.children);
             if (element != null) {
                 return element;
             }
