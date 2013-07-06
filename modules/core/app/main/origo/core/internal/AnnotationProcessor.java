@@ -18,6 +18,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -59,11 +60,23 @@ public class AnnotationProcessor {
         JPA.withTransaction(new F.Callback0() {
             @Override
             public void invoke() throws Throwable {
+                // First pass: Add all modules
                 for (Class c : modules) {
                     //noinspection unchecked
                     Module moduleAnnotation = (Module) c.getAnnotation(Module.class);
+                    ModuleRepository.add(moduleAnnotation, c);
+                }
+                // Second pass: Verify dependencies
+                for (Class c : modules) {
+                    Module moduleAnnotation = (Module) c.getAnnotation(Module.class);
                     CachedModule cachedModule = ModuleRepository.add(moduleAnnotation, c);
+                    assertModuleDependencies(cachedModule);
+                }
+                // Third pass: Init all modules
+                for (Class c : modules) {
                     try {
+                        Module moduleAnnotation = (Module) c.getAnnotation(Module.class);
+                        CachedModule cachedModule = ModuleRepository.getModule(moduleAnnotation.name());
                         cachedModule.initMethod.invoke(CachedModule.class);
                     } catch (IllegalAccessException | InvocationTargetException e) {
                         throw new InitializationException("Unable to init module", e);
@@ -197,6 +210,18 @@ public class AnnotationProcessor {
         }
     }
 
+    private static void assertModuleDependencies(CachedModule cachedModule) {
+        try
+        {
+            Collection<Module.Dependencies> dependencies = (Collection<Module.Dependencies>)cachedModule.dependenciesMethod.invoke(cachedModule, new Object[]{});
+
+            // TODO Implement checking of min and max module version
+
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new InitializationException("Unable to get annotations from module", e);
+        }
+    }
+
     private static void assertCorrectSignature(Method m, Class returnType, Class<? extends Annotation> annotationClass, Class... parameterTypes) {
         Class[] pc = m.getParameterTypes();
         if (pc.length != parameterTypes.length) {
@@ -232,17 +257,24 @@ public class AnnotationProcessor {
     }
 
     public static class Dependency {
+
         public final String name;
+        public final boolean minimum;
         public final int major;
         public final int minor;
         public final int patch;
 
         public Dependency(String name, int major, int minor) {
-            this(name, major, minor, -1);
+            this(name, true, major, minor, -1);
         }
 
-        public Dependency(String name, int major, int minor, int patch) {
+        public Dependency(String name, boolean minimum, int major, int minor) {
+            this(name, minimum, major, minor, -1);
+        }
+
+        public Dependency(String name, boolean minimum, int major, int minor, int patch) {
             this.name = name;
+            this.minimum = minimum;
             this.major = major;
             this.minor = minor;
             this.patch = patch;
