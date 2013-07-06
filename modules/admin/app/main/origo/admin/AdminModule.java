@@ -29,6 +29,6 @@ public class AdminModule {
 
     @Module.Dependencies
     public static List<AnnotationProcessor.Dependency> dependencies() {
-        return Collections.singletonList(new AnnotationProcessor.Dependency("core", 0, 1));
+        return Collections.singletonList(new AnnotationProcessor.Dependency("core", true, 0, 1));
     }
 }

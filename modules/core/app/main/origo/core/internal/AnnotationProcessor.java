@@ -55,25 +55,24 @@ public class AnnotationProcessor {
 
     private static void scanAndInitModules() {
         Reflections reflections = new Reflections("");
-        final Set<Class<?>> modules = reflections.getTypesAnnotatedWith(Module.class);
+        final Set<Class<?>> modulesClasses = reflections.getTypesAnnotatedWith(Module.class);
 
         JPA.withTransaction(new F.Callback0() {
             @Override
             public void invoke() throws Throwable {
+
                 // First pass: Add all modules
-                for (Class c : modules) {
+                for (Class c : modulesClasses) {
                     //noinspection unchecked
-                    Module moduleAnnotation = (Module) c.getAnnotation(Module.class);
-                    ModuleRepository.add(moduleAnnotation, c);
+                    ModuleRepository.add((Module) c.getAnnotation(Module.class), c);
                 }
                 // Second pass: Verify dependencies
-                for (Class c : modules) {
+                for (Class c : modulesClasses) {
                     Module moduleAnnotation = (Module) c.getAnnotation(Module.class);
-                    CachedModule cachedModule = ModuleRepository.add(moduleAnnotation, c);
-                    assertModuleDependencies(cachedModule);
+                    assertModuleDependencies(ModuleRepository.getModule(moduleAnnotation.name()));
                 }
                 // Third pass: Init all modules
-                for (Class c : modules) {
+                for (Class c : modulesClasses) {
                     try {
                         Module moduleAnnotation = (Module) c.getAnnotation(Module.class);
                         CachedModule cachedModule = ModuleRepository.getModule(moduleAnnotation.name());
@@ -210,12 +209,42 @@ public class AnnotationProcessor {
         }
     }
 
-    private static void assertModuleDependencies(CachedModule cachedModule) {
+    private static void assertModuleDependencies(CachedModule module) {
         try
         {
-            Collection<Module.Dependencies> dependencies = (Collection<Module.Dependencies>)cachedModule.dependenciesMethod.invoke(cachedModule, new Object[]{});
+            if (module.dependenciesMethod == null) {
+                Logger.debug("Module '"+module.name+"' has no dependencies listed");
+                return;
+            }
 
-            // TODO Implement checking of min and max module version
+            @SuppressWarnings("unchecked") Collection<Dependency> dependencies = (Collection<Dependency>)module.dependenciesMethod.invoke(module);
+
+            for(Dependency dependency : dependencies) {
+                CachedModule provider = ModuleRepository.getModule(dependency.name);
+                if (provider == null) {
+                    throw new InitializationException("Module '"+module.name+"' requires '"+dependency+"' but it is not installed");
+                }
+                Logger.debug("Module '"+module.name+"' requires module '"+dependency.name+"' ");
+                if (dependency.minimum) {
+                    if (dependency.major < provider.moduleVersion.major()) {
+                        if (dependency.minor < provider.moduleVersion.minor()) {
+                            if (dependency.patch < provider.moduleVersion.patch()) {
+                                throw new InitializationException("Module '"+module.name+"' requires '"+dependency+"' but the installed version is "+provider.version());
+                            }
+                        }
+                    }
+                } else {
+                    if (dependency.major > provider.moduleVersion.major()) {
+                        if (dependency.minor > provider.moduleVersion.minor()) {
+                            if(dependency.patch > provider.moduleVersion.patch()) {
+                                throw new InitializationException("Module '"+module.name+"' requires '"+dependency+"' but the installed version is "+provider.version());
+                            }
+                        }
+                    }
+                }
+            }
+
+            Logger.debug("Module '"+module.name+", all dependencies satisfied");
 
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new InitializationException("Unable to get annotations from module", e);
@@ -265,11 +294,11 @@ public class AnnotationProcessor {
         public final int patch;
 
         public Dependency(String name, int major, int minor) {
-            this(name, true, major, minor, -1);
+            this(name, true, major, minor);
         }
 
         public Dependency(String name, boolean minimum, int major, int minor) {
-            this(name, minimum, major, minor, -1);
+            this(name, minimum, major, minor, 0);
         }
 
         public Dependency(String name, boolean minimum, int major, int minor, int patch) {
@@ -279,6 +308,13 @@ public class AnnotationProcessor {
             this.minor = minor;
             this.patch = patch;
         }
-    }
 
+        public String toString() {
+            return "Module "+name+" ("+version()+")";
+        }
+
+        public String version() {
+            return (minimum?">=":"<")+major+(minor!=-1?"."+minor:"")+(patch!=-1?"."+patch:"");
+        }
+    }
 }

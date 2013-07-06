@@ -26,7 +26,7 @@ public class ModuleRepository {
         Method dependenciesMethod = getSingleMethod(c, Module.Dependencies.class);
         Method annotationsMethod = getSingleMethod(c, Module.Annotations.class);
 
-        CachedModule value = new CachedModule(c, module, moduleVersionAnnotation,
+        CachedModule value = new CachedModule(module.name(), c, module, moduleVersionAnnotation,
                 initMethod, annotationsMethod, dependenciesMethod);
         modules.put(module.name(), value);
         return value;

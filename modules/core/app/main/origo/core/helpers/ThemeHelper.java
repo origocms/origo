@@ -106,7 +106,7 @@ public class ThemeHelper {
         Html decoratedOutput = Html.empty();
         if (parent.hasChildren()) {
             renderingContext.nest(parent);
-            final List<Element> children = parent.getChildren();
+            @SuppressWarnings("unchecked") final List<Element> children = parent.getChildren();
             for (Element childElement : children) {
                 decoratedOutput.$plus(decorate(childElement, renderingContext));
             }

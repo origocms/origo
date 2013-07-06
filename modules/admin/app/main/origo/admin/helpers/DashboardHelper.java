@@ -58,7 +58,7 @@ public class DashboardHelper {
         List<String> dashboards = createDashboardTrail(withType);
         List<Element.ListItem> items = createBreadcrumbItems(dashboards);
 
-        return (Element.ListBulleted) new Element.ListBulleted().
+        return new Element.ListBulleted().
                 addAttribute("class", "breadcrumb").
                 addChildren(items);
     }
@@ -89,7 +89,7 @@ public class DashboardHelper {
     }
 
     private static Element.ListItem createBreadcrumbItem(Element innerElement, boolean addDivider) {
-        Element.ListItem listItemElement = (Element.ListItem) new Element.ListItem().addChild(innerElement);
+        Element.ListItem listItemElement = new Element.ListItem().addChild(innerElement);
         if (addDivider) {
             listItemElement.addChild(
                     new Element.Span().addAttribute("class", "divider").setBody("/")
