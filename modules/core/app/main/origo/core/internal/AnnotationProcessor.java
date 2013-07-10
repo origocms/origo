@@ -7,6 +7,11 @@ import main.origo.core.ThemeRepository;
 import main.origo.core.annotations.*;
 import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
+import org.reflections.scanners.*;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
+import org.reflections.util.FilterBuilder;
+import org.springframework.util.CollectionUtils;
 import play.Logger;
 import play.api.templates.Html;
 import play.db.jpa.JPA;
@@ -17,10 +22,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class AnnotationProcessor {
 
@@ -31,7 +33,14 @@ public class AnnotationProcessor {
         scanAndInitModules();
         scanModuleSuppliedAnnotations();
         if (Logger.isDebugEnabled()) {
+
             StringBuilder sb = new StringBuilder();
+            for (CachedModule cachedModule : ModuleRepository.getAll()) {
+                sb.append(" - ").append(cachedModule).append("\n");
+            }
+            Logger.debug("Modules registered: " + ModuleRepository.getAll().size() + "\n" + sb.toString());
+
+            sb = new StringBuilder();
             int count = 0;
             Map<Class<? extends Annotation>, List<CachedAnnotation>> interceptorMap = InterceptorRepository.getInterceptorMap();
             for (Class<? extends Annotation> a : interceptorMap.keySet()) {
@@ -53,8 +62,8 @@ public class AnnotationProcessor {
     }
 
     private static void scanAndInitModules() {
-        Reflections reflections = new Reflections("");
-        final Set<Class<?>> modulesClasses = reflections.getTypesAnnotatedWith(Module.class);
+
+        final List<Class<?>> modulesClasses = getSortedModuleClasses();
 
         JPA.withTransaction(new F.Callback0() {
             @Override
@@ -75,31 +84,48 @@ public class AnnotationProcessor {
                     try {
                         Module moduleAnnotation = (Module) c.getAnnotation(Module.class);
                         CachedModule cachedModule = ModuleRepository.getModule(moduleAnnotation.name());
-                        cachedModule.initMethod.invoke(CachedModule.class);
+                        if (cachedModule.initMethod != null) {
+                            cachedModule.initMethod.invoke(CachedModule.class);
+                        }
                     } catch (IllegalAccessException | InvocationTargetException e) {
                         throw new InitializationException("Unable to init module", e);
                     }
                 }
             }
         });
+
     }
 
     private static void scanModuleSuppliedAnnotations() {
+
+        List<Prototype> annotationPrototypes = new ArrayList<>();
+
         for (CachedModule module : ModuleRepository.getAll()) {
+
+            Logger.trace("------------------------------------------------");
+            Logger.trace("- Processing module '"+module.name+"' ("+Arrays.toString(module.annotation.packages())+")");
+            Logger.trace("------------------------------------------------");
+
             for (String packageToScan : module.annotation.packages()) {
-                Reflections reflections = new Reflections(packageToScan);
+
+                Reflections reflections = new Reflections(
+                        new ConfigurationBuilder()
+                                .addUrls(ClasspathHelper.forPackage(packageToScan))
+                                .setScanners(new TypeAnnotationsScanner(), new SubTypesScanner()));
 
                 Set<Class<?>> interceptors = reflections.getTypesAnnotatedWith(Interceptor.class);
 
                 try {
                     if (module.annotationsMethod != null) {
                         //noinspection unchecked
-                        for (Prototype prototype : (List<Prototype>) module.annotationsMethod.invoke(module.clazz)) {
-                            scanEventHandlers(interceptors, prototype);
-                        }
+                        annotationPrototypes.addAll((List<Prototype>) module.annotationsMethod.invoke(module.clazz));
                     }
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     throw new InitializationException("Unable to get annotations from module", e);
+                }
+
+                for (Prototype prototype : annotationPrototypes) {
+                    scanEventHandlers(interceptors, prototype);
                 }
 
                 // Themes and Decorators
@@ -118,8 +144,7 @@ public class AnnotationProcessor {
         Class[] parameterTypes = prototype.expectedParameterTypes;
         Class returnType = prototype.expectedReturnType;
 
-        Logger.debug("Processing [" + annotationClass.getSimpleName() + "]");
-        Logger.debug("------------------------------------------------");
+        Logger.trace("- - Processing [" + annotationClass.getSimpleName() + "]");
 
         for (Class c : classes) {
             Set<Method> methods = Reflections.getAllMethods(c, ReflectionUtils.withAnnotation(annotationClass));
@@ -153,7 +178,7 @@ public class AnnotationProcessor {
                             "' but the method does not match the required signature (wrong return type, epected [" + returnType + "] and found [" + m.getReturnType() + "])");
                 }
 
-                Logger.debug("Analyzing '" + m.getDeclaringClass() + "." + m.getName() + "'");
+                Logger.trace("- - - Found '" + m.getDeclaringClass() + "." + m.getName() + "'");
 
                 Relationship relationship = m.getAnnotation(Relationship.class);
                 if (relationship != null) {
@@ -163,7 +188,7 @@ public class AnnotationProcessor {
                 }
             }
         }
-        Logger.debug(" ");
+        Logger.trace(" ");
     }
 
     private static void scanThemes(Set<Class<?>> classes) {
@@ -210,7 +235,7 @@ public class AnnotationProcessor {
     private static void assertModuleDependencies(CachedModule module) {
         try {
             if (module.dependenciesMethod == null) {
-                Logger.debug("Module '" + module.name + "' has no dependencies listed");
+                Logger.debug("Module '" + module.name + "' has no dependencies");
                 return;
             }
 
@@ -221,7 +246,7 @@ public class AnnotationProcessor {
                 if (provider == null) {
                     throw new InitializationException("Module '" + module.name + "' requires '" + dependency + "' but it is not installed");
                 }
-                Logger.debug("Module '" + module.name + "' requires module '" + dependency.name + "' ");
+                Logger.debug("Module '" + module.name + "' requires module '" + dependency + "' ");
                 if (dependency.minimum) {
                     if (dependency.major < provider.moduleVersion.major()) {
                         if (dependency.minor < provider.moduleVersion.minor()) {
@@ -240,8 +265,6 @@ public class AnnotationProcessor {
                     }
                 }
             }
-
-            Logger.debug("Module '" + module.name + ", all dependencies satisfied");
 
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new InitializationException("Unable to get annotations from module", e);
@@ -267,6 +290,23 @@ public class AnnotationProcessor {
                     " is annotated with '" + annotationClass.getName() +
                     "' but the method does not match the required signature (wrong return type)");
         }
+    }
+
+    private static List<Class<?>> getSortedModuleClasses() {
+        Reflections reflections = new Reflections("");
+        final Set<Class<?>> modulesClasses = reflections.getTypesAnnotatedWith(Module.class);
+
+        final List<Class<?>> sortedModulesClasses = new ArrayList<>();
+        sortedModulesClasses.addAll(modulesClasses);
+        Collections.sort(sortedModulesClasses, new Comparator<Class<?>>() {
+            @Override
+            public int compare(Class c1, Class c2) {
+                Module m1 = (Module) c1.getAnnotation(Module.class);
+                Module m2 = (Module) c2.getAnnotation(Module.class);
+                return new Integer(m1.order()).compareTo(m2.order());
+            }
+        });
+        return sortedModulesClasses;
     }
 
     public static class Prototype {

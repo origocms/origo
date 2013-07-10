@@ -12,9 +12,11 @@ import play.mvc.Result;
 
 import java.util.List;
 
-@Module(name="core", order=0, packages = "main.origo.core")
+@Module(name=CoreModule.NAME, order=0, packages = "main.origo.core")
 @Module.Version(major = 0, minor = 1, patch = 0)
 public class CoreModule {
+
+    public static final String NAME = "origo.core";
 
     @Module.Init
     public static void init() {

@@ -19,6 +19,10 @@ public class ModuleRepository {
         if (modules.containsKey(module.name())) {
             throw new InitializationException("Duplicate Module name ["+module.name()+"]");
         }
+        if (module.order() <= 0 && !module.name().equals(CoreModule.NAME)) {
+            throw new InitializationException("Order must be higher than 0");
+        }
+
         //noinspection unchecked
         Module.Version moduleVersionAnnotation = (Module.Version) c.getAnnotation(Module.Version.class);
 

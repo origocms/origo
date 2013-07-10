@@ -10,7 +10,7 @@ import models.origo.core.Settings;
 import java.util.Collections;
 import java.util.List;
 
-@Module(name = "admin", order = 100, packages = "main.origo.admin")
+@Module(name = "origo.admin", order = 100, packages = "main.origo.admin")
 @Module.Version(major = 0, minor = 1, patch = 0)
 public class AdminModule {
 
@@ -29,6 +29,6 @@ public class AdminModule {
 
     @Module.Dependencies
     public static List<AnnotationProcessor.Dependency> dependencies() {
-        return Collections.singletonList(new AnnotationProcessor.Dependency("core", true, 0, 1));
+        return Collections.singletonList(new AnnotationProcessor.Dependency("origo.core", 0, 1));
     }
 }

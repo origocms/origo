@@ -1,6 +1,5 @@
 package main.origo.core.internal;
 
-import main.origo.core.InitializationException;
 import main.origo.core.annotations.Module;
 
 import java.lang.reflect.Method;
@@ -18,9 +17,6 @@ public class CachedModule implements Comparable<CachedModule> {
     public final Method dependenciesMethod;
 
     public CachedModule(String name, Class clazz, Module annotation, Module.Version moduleVersion, Method initMethod, Method annotationsMethod, Method dependencies) {
-        if (annotation.order() <= 0 && !annotation.name().equals("core")) {
-            throw new InitializationException("Order must be higher than 0");
-        }
         this.name = name;
         this.annotation = annotation;
         this.clazz = clazz;
