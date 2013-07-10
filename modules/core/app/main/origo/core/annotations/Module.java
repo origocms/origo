@@ -17,6 +17,12 @@ public @interface Module {
     int order();
 
     /**
+     * The packages to scan for
+     * @return
+     */
+    String[] packages();
+
+    /**
      *  The version of this module.
      */
     @Target({ElementType.TYPE})

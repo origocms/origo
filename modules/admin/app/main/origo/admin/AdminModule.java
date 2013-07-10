@@ -10,7 +10,7 @@ import models.origo.core.Settings;
 import java.util.Collections;
 import java.util.List;
 
-@Module(name = "admin", order = 100)
+@Module(name = "admin", order = 100, packages = "main.origo.admin")
 @Module.Version(major = 0, minor = 1, patch = 0)
 public class AdminModule {
 

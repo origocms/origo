@@ -1,6 +1,5 @@
 package main.origo.core.internal;
 
-import com.google.common.collect.Lists;
 import main.origo.core.InitializationException;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.ModuleRepository;
@@ -30,7 +29,7 @@ public class AnnotationProcessor {
         ThemeRepository.invalidate();
         ModuleRepository.invalidate();
         scanAndInitModules();
-        scanModuleAnnotations();
+        scanModuleSuppliedAnnotations();
         if (Logger.isDebugEnabled()) {
             StringBuilder sb = new StringBuilder();
             int count = 0;
@@ -85,33 +84,32 @@ public class AnnotationProcessor {
         });
     }
 
-    private static void scanModuleAnnotations() {
-        List<CachedModule> modules = ModuleRepository.getAll();
-        List<Prototype> prototypes = Lists.newArrayList();
-        for (CachedModule module : modules) {
-            try {
-                if (module.annotationsMethod != null) {
-                    //noinspection unchecked
-                    prototypes.addAll((List<Prototype>)module.annotationsMethod.invoke(module.clazz));
+    private static void scanModuleSuppliedAnnotations() {
+        for (CachedModule module : ModuleRepository.getAll()) {
+            for (String packageToScan : module.annotation.packages()) {
+                Reflections reflections = new Reflections(packageToScan);
+
+                Set<Class<?>> interceptors = reflections.getTypesAnnotatedWith(Interceptor.class);
+
+                try {
+                    if (module.annotationsMethod != null) {
+                        //noinspection unchecked
+                        for (Prototype prototype : (List<Prototype>) module.annotationsMethod.invoke(module.clazz)) {
+                            scanEventHandlers(interceptors, prototype);
+                        }
+                    }
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    throw new InitializationException("Unable to get annotations from module", e);
                 }
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new InitializationException("Unable to get annotations from module", e);
+
+                // Themes and Decorators
+                Set<Class<?>> themes = reflections.getTypesAnnotatedWith(Theme.class);
+                scanThemes(themes);
+
+                scanDecorators(interceptors);
+                scanDecorators(themes);
             }
         }
-        Reflections reflections = new Reflections("");
-
-        Set<Class<?>> interceptors = reflections.getTypesAnnotatedWith(Interceptor.class);
-
-        for(Prototype prototype : prototypes) {
-            scanEventHandlers(interceptors, prototype);
-        }
-
-        // Themes and Decorators
-        Set<Class<?>> themes = reflections.getTypesAnnotatedWith(Theme.class);
-        scanThemes(themes);
-
-        scanDecorators(interceptors);
-        scanDecorators(themes);
     }
 
     public static void scanEventHandlers(Set<Class<?>> classes, Prototype prototype) {
@@ -142,17 +140,17 @@ public class AnnotationProcessor {
                             "' is annotated with '" + annotationClass.getName() +
                             "' but the method does not match the required signature (different amount of parameters)");
                 }
-                for (int i=0; i<pc.length; i++) {
+                for (int i = 0; i < pc.length; i++) {
                     if (!parameterTypes[i].isAssignableFrom(pc[i])) {
                         throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() +
                                 "' is annotated with '" + annotationClass.getName() +
-                                "' but the method does not match the required signature (parameter '"+parameterTypes[i].getName()+"' has the wrong type)");
+                                "' but the method does not match the required signature (parameter '" + parameterTypes[i].getName() + "' has the wrong type)");
                     }
                 }
                 if (returnType != null && !returnType.isAssignableFrom(m.getReturnType())) {
                     throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() +
                             "' is annotated with '" + annotationClass.getName() +
-                            "' but the method does not match the required signature (wrong return type, epected ["+returnType+"] and found ["+m.getReturnType()+"])");
+                            "' but the method does not match the required signature (wrong return type, epected [" + returnType + "] and found [" + m.getReturnType() + "])");
                 }
 
                 Logger.debug("Analyzing '" + m.getDeclaringClass() + "." + m.getName() + "'");
@@ -210,41 +208,40 @@ public class AnnotationProcessor {
     }
 
     private static void assertModuleDependencies(CachedModule module) {
-        try
-        {
+        try {
             if (module.dependenciesMethod == null) {
-                Logger.debug("Module '"+module.name+"' has no dependencies listed");
+                Logger.debug("Module '" + module.name + "' has no dependencies listed");
                 return;
             }
 
-            @SuppressWarnings("unchecked") Collection<Dependency> dependencies = (Collection<Dependency>)module.dependenciesMethod.invoke(module);
+            @SuppressWarnings("unchecked") Collection<Dependency> dependencies = (Collection<Dependency>) module.dependenciesMethod.invoke(module);
 
-            for(Dependency dependency : dependencies) {
+            for (Dependency dependency : dependencies) {
                 CachedModule provider = ModuleRepository.getModule(dependency.name);
                 if (provider == null) {
-                    throw new InitializationException("Module '"+module.name+"' requires '"+dependency+"' but it is not installed");
+                    throw new InitializationException("Module '" + module.name + "' requires '" + dependency + "' but it is not installed");
                 }
-                Logger.debug("Module '"+module.name+"' requires module '"+dependency.name+"' ");
+                Logger.debug("Module '" + module.name + "' requires module '" + dependency.name + "' ");
                 if (dependency.minimum) {
                     if (dependency.major < provider.moduleVersion.major()) {
                         if (dependency.minor < provider.moduleVersion.minor()) {
                             if (dependency.patch < provider.moduleVersion.patch()) {
-                                throw new InitializationException("Module '"+module.name+"' requires '"+dependency+"' but the installed version is "+provider.version());
+                                throw new InitializationException("Module '" + module.name + "' requires '" + dependency + "' but the installed version is " + provider.version());
                             }
                         }
                     }
                 } else {
                     if (dependency.major > provider.moduleVersion.major()) {
                         if (dependency.minor > provider.moduleVersion.minor()) {
-                            if(dependency.patch > provider.moduleVersion.patch()) {
-                                throw new InitializationException("Module '"+module.name+"' requires '"+dependency+"' but the installed version is "+provider.version());
+                            if (dependency.patch > provider.moduleVersion.patch()) {
+                                throw new InitializationException("Module '" + module.name + "' requires '" + dependency + "' but the installed version is " + provider.version());
                             }
                         }
                     }
                 }
             }
 
-            Logger.debug("Module '"+module.name+", all dependencies satisfied");
+            Logger.debug("Module '" + module.name + ", all dependencies satisfied");
 
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new InitializationException("Unable to get annotations from module", e);
@@ -258,11 +255,11 @@ public class AnnotationProcessor {
                     " is annotated with '" + annotationClass.getName() +
                     "' but the method does not match the required signature (different amount of parameters)");
         }
-        for (int i=0; i<pc.length; i++) {
+        for (int i = 0; i < pc.length; i++) {
             if (!pc[i].equals(parameterTypes[i])) {
                 throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() + "' in " +
                         " is annotated with '" + annotationClass.getName() +
-                        "' but the method does not match the required signature (parameter '"+parameterTypes[i].getName()+"' has the wrong type)");
+                        "' but the method does not match the required signature (parameter '" + parameterTypes[i].getName() + "' has the wrong type)");
             }
         }
         if (!m.getReturnType().equals(returnType)) {
@@ -310,11 +307,11 @@ public class AnnotationProcessor {
         }
 
         public String toString() {
-            return "Module "+name+" ("+version()+")";
+            return "Module " + name + " (" + version() + ")";
         }
 
         public String version() {
-            return (minimum?">=":"<")+major+(minor!=-1?"."+minor:"")+(patch!=-1?"."+patch:"");
+            return (minimum ? ">=" : "<") + major + (minor != -1 ? "." + minor : "") + (patch != -1 ? "." + patch : "");
         }
     }
 }
