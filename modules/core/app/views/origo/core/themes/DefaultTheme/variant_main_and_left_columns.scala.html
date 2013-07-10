@@ -11,26 +11,28 @@
 
 @theme(context.node, head, scripts) {
 
-    @_navigation(context.node.navigation)
-
-    <header class="jumbotron subhead" id="overview">
-        <div class="container">
-            <h1>@context.node.title</h1>
-        </div>
-    </header>
-
-
     <div class="container">
 
-       <div class="row">
-            <div class="span3">
-                @_region(context, "left")
+        <h1 class="muted">Origo CMS</h1>
+
+        @_navigation(context.node.navigation)
+
+        <div class="container">
+
+            <div class="masthead">
+                <h2>@context.node.title</h2>
             </div>
 
-            <div class="span9">
-                @_region(context, "main")
+            <div class="row">
+                <div class="span3">
+                    @_region(context, "left")
+                </div>
+
+                <div class="span9">
+                    @_region(context, "main")
+                </div>
             </div>
         </div>
-    </div>
 
+    </div>
 }
