@@ -1,0 +1,38 @@
+@(context: main.origo.core.annotations.ThemeVariant.Context)
+
+@import views.html.origo.core.tags._
+
+@head = {
+    <link rel='stylesheet' href='@routes.Assets.at("stylesheets/origo/core/default_main_and_left_columns.min.css")' xmlns="http://www.w3.org/1999/html">
+}
+
+@scripts = {
+}
+
+@theme(context.node, head, scripts) {
+
+    <div class="container">
+
+        <h1 class="muted">Origo CMS</h1>
+
+        @_navigation(context.node.navigation)
+
+        <div class="container">
+
+            <div class="masthead">
+                <h2>@context.node.title</h2>
+            </div>
+
+            <div class="row">
+                <div class="span3">
+                    @_region(context, "left")
+                </div>
+
+                <div class="span9">
+                    @_region(context, "main")
+                </div>
+            </div>
+        </div>
+
+    </div>
+}

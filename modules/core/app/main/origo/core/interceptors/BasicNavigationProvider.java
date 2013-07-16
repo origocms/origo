@@ -58,7 +58,7 @@ public class BasicNavigationProvider {
             if (childNavigationElement != null) {
                 NavigationEventGenerator.triggerAfterNavigationItemLoaded(node, childNavigation.type, childNavigation, childNavigationElement);
                 if (childNavigationElement.selected) {
-                    parentNavigationElement.selected = true;
+                    parentNavigationElement.childSelected = true;
                 }
                 navigationElements.add(childNavigationElement);
             }

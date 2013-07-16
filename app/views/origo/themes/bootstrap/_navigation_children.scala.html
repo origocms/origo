@@ -1,0 +1,16 @@
+@(navigation:java.util.List[main.origo.core.ui.NavigationElement], submenu:Boolean=false)
+
+@navigation.map { item =>
+    @if(item.children.isEmpty) {
+        <li @if(item.selected){ class="active"}>
+            <a href="@item.link">@item.title</a>
+        </li>
+    } else {
+        <li class="dropdown">
+            <a href="@item.link" class="dropdown-toggle" data-toggle="dropdown">@item.title  @if(submenu){<i class="pull-right icon-chevron-right"></i>} else {<i class="icon-chevron-down icon-white"></i>}</a>
+            <ul class="dropdown-menu @if(submenu){sub-menu}">
+                @_navigation_children(item.children, true)
+            </ul>
+        </li>
+    }
+}

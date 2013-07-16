@@ -2,43 +2,29 @@
 
 @import views.html.origo.core.tags._
 
-@head = {
-<link rel='stylesheet' href='@routes.Assets.at("stylesheets/origo/core/default_three_columns.min.css")' xmlns="http://www.w3.org/1999/html">
-}
+@theme(context.node) {
 
-@scripts = {
-}
+<div class="header">
+    <h1>Origo CMS</h1><h2>@context.node.title</h2>
+</div>
 
-@theme(context.node, head, scripts) {
 
-    <div class="container">
+<div class="container">
 
-        <h1 class="muted">Origo CMS</h1>
-
-        @_navigation(context.node.navigation)
-
-        <div class="container">
-
-            <div class="masthead">
-                <h2>@context.node.title</h2>
-            </div>
-
-            <div class="row">
-                <div class="span3">
-                    @_region(context, "left")
-                </div>
-
-                <div class="span6">
-                    @_region(context, "main")
-                </div>
-
-                <div class="span3">
-                    @_region(context, "right")
-                </div>
-
-            </div>
-
+    <div class="row">
+        <div class="span2">
+            @_navigation(context.node.navigation)
         </div>
-
+        <div class="span2">
+            @_region(context, "left")
+        </div>
+        <div class="span6">
+            @_region(context, "main")
+        </div>
+        <div class="span2">
+            @_region(context, "right")
+        </div>
     </div>
+
+</div>
 }

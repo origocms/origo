@@ -17,6 +17,7 @@ public class NavigationElement implements Comparable<NavigationElement> {
     public String link;
     public int weight;
     public boolean selected;
+    public boolean childSelected;
 
     public List<NavigationElement> children = Lists.newArrayList();
 
