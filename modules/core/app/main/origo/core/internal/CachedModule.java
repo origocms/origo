@@ -36,7 +36,7 @@ public class CachedModule implements Comparable<CachedModule> {
     }
 
     public String version() {
-        return moduleVersion.major()+"."+moduleVersion.minor()+"."+moduleVersion.patch();
+        return moduleVersion != null ? moduleVersion.major()+"."+moduleVersion.minor()+"."+moduleVersion.patch() : "";
     }
 
 }

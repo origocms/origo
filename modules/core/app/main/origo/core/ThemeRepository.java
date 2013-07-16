@@ -37,9 +37,11 @@ public class ThemeRepository {
     private static Map<Class<? extends Element>, List<CachedDecorator>> genericDecorators = Maps.newHashMap();
 
     public static void addTheme(String themeId, Class declaringClass) {
-        if (themes.containsKey(themeId) && themes.get(themeId).getDeclaringClass().equals(declaringClass)) {
-            throw new InitializationException("Theme [" + themeId + "] declared in both " +
-                    declaringClass.getName() + " and " + themes.get(themeId).getDeclaringClass().getName());
+        if (themes.containsKey(themeId)) {
+            if (!themes.get(themeId).getDeclaringClass().equals(declaringClass)) {
+                throw new InitializationException("Theme [" + themeId + "] declared in both " +
+                        declaringClass.getName() + " and " + themes.get(themeId).getDeclaringClass().getName());
+            }
         }
         themes.put(themeId, new CachedTheme(themeId, declaringClass));
     }

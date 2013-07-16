@@ -1,6 +1,7 @@
 package main.origo;
 
 import main.origo.core.helpers.CoreSettingsHelper;
+import main.origo.themes.bootstrap.BootstrapTheme;
 import models.origo.core.*;
 import models.origo.core.navigation.BasicNavigation;
 import models.origo.core.navigation.ExternalLinkNavigation;
@@ -29,6 +30,8 @@ public class SampleDataCreator {
         settings.setValueIfMissing(CoreSettingsHelper.Keys.START_PAGE, "aa1755dd-18c4-4b78-956e-eef7e562c36c"); // Page 1
         settings.setValueIfMissing(CoreSettingsHelper.Keys.PAGE_NOT_FOUND_PAGE, "c9615819-0556-4e70-b6a9-a66c5b8d4c1a"); // Page 2
         settings.setValueIfMissing(CoreSettingsHelper.Keys.INTERNAL_SERVER_ERROR_PAGE, "1cf699a7-a0c4-4be0-855f-466042a36a8d"); // Page 3
+        settings.setValue(CoreSettingsHelper.Keys.THEME, BootstrapTheme.ID); // Override theme variant
+        settings.setValue(CoreSettingsHelper.Keys.THEME_VARIANT, "bootstrap-main_only"); // Override theme variant
         settings.save();
     }
 
@@ -172,7 +175,7 @@ public class SampleDataCreator {
 
         RootNode node = new RootNode("c9615819-0556-4e70-b6a9-a66c5b8d4c1a", 1);
         node.nodeType = BasicPage.TYPE;
-        node.themeVariant = "default-main_only";
+        node.themeVariant = "bootstrap-main_only";
         node.create();
 
         BasicPage page = new BasicPage();
@@ -201,7 +204,7 @@ public class SampleDataCreator {
 
         RootNode node = new RootNode("1cf699a7-a0c4-4be0-855f-466042a36a8d", 1);
         node.nodeType = BasicPage.TYPE;
-        node.themeVariant = "default-main_only";
+        node.themeVariant = "bootstrap-main_only";
         node.create();
 
         BasicPage page = new BasicPage();

@@ -7,6 +7,7 @@ import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.interceptors.forms.DefaultFormProvider;
 import main.origo.core.interceptors.forms.DefaultSubmitHandler;
 import main.origo.core.internal.AnnotationProcessor;
+import main.origo.core.themes.DefaultTheme;
 import models.origo.core.Settings;
 import play.mvc.Result;
 
@@ -21,7 +22,8 @@ public class CoreModule {
     @Module.Init
     public static void init() {
         Settings settings = Settings.load();
-        settings.setValueIfMissing(CoreSettingsHelper.Keys.THEME_VARIANT, "default-main_and_left_columns");
+        settings.setValueIfMissing(CoreSettingsHelper.Keys.THEME, DefaultTheme.ID);
+        settings.setValueIfMissing(CoreSettingsHelper.Keys.THEME_VARIANT, "default-main_only");
         settings.setValueIfMissing(CoreSettingsHelper.Keys.SUBMIT_HANDLER, DefaultSubmitHandler.class.getName());
         settings.setValueIfMissing(CoreSettingsHelper.Keys.DEFAULT_FORM_TYPE, DefaultFormProvider.TYPE);
         settings.save();
