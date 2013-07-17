@@ -3,6 +3,10 @@ package models.origo.core;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import main.origo.core.Node;
+import main.origo.core.NodeLoadException;
+import main.origo.core.annotations.Core;
+import main.origo.core.event.ProvidesEventGenerator;
+import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.helpers.ElementHelper;
 import main.origo.core.ui.Element;
 import play.data.validation.Constraints;
@@ -12,7 +16,7 @@ import javax.persistence.*;
 import java.util.*;
 
 @Entity
-@Table(name = "root", uniqueConstraints = @UniqueConstraint(name = "nodeVersion", columnNames = {"nodeId", "version"}))
+@Table(name = "node", uniqueConstraints = @UniqueConstraint(name = "nodeVersion", columnNames = {"nodeId", "version"}))
 public final class RootNode extends Model<RootNode> implements Node {
 
     @Id
@@ -231,7 +235,11 @@ public final class RootNode extends Model<RootNode> implements Node {
         }
     }
 
-    public static List<RootNode> findAllCurrentVersions(Date today) {
+    public static List<RootNode> findCurrentPublishedVersions() {
+        return findCurrentPublishedVersionsWithDate(new Date());
+    }
+
+    public static List<RootNode> findCurrentPublishedVersionsWithDate(Date today) {
         try {
             String queryString = "select n from "+RootNode.class.getName()+" n " +
                     "where n.version = (" +
@@ -267,7 +275,11 @@ public final class RootNode extends Model<RootNode> implements Node {
         }
     }
 
-    public static RootNode findLatestPublishedVersionWithNodeId(String nodeId, Date today) {
+    public static RootNode findLatestPublishedVersionWithNodeId(String nodeId) {
+        return findPublishedVersionWithNodeIdAndDate(nodeId, new Date());
+    }
+
+    public static RootNode findPublishedVersionWithNodeIdAndDate(String nodeId, Date today) {
         try {
             String queryString = "select distinct n from "+RootNode.class.getName()+" n " +
                     "where n.nodeId = :nodeId and " +

@@ -18,7 +18,7 @@ public class NodeHelper {
 
     public static Node load(String nodeId) throws NodeNotFoundException, NodeLoadException {
         //Load RootNode model
-        RootNode rootNode = RootNode.findLatestPublishedVersionWithNodeId(nodeId, new Date());
+        RootNode rootNode = RootNode.findLatestPublishedVersionWithNodeId(nodeId);
         if (rootNode == null) {
             throw new NodeNotFoundException(nodeId);
         }

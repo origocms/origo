@@ -3,6 +3,7 @@ package main.origo.core.interceptors;
 import com.google.common.collect.Lists;
 import main.origo.core.Navigation;
 import main.origo.core.Node;
+import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.Provides;
@@ -71,20 +72,24 @@ public class BasicNavigationProvider {
     public static NavigationElement createPageIdNavigation(Provides.Context context) {
         Navigation navigation = (Navigation) context.args.get("navigation");
         InternalPageIdNavigation navigationModel = InternalPageIdNavigation.findWithIdentifier(navigation.getReferenceId());
-        RootNode referencedRootNode = RootNode.findLatestPublishedVersionWithNodeId(navigationModel.pageId, new Date());
-        if (referencedRootNode != null) {
-            Node referencedNode = ProvidesEventGenerator.triggerInterceptor(referencedRootNode, Core.Type.NODE, referencedRootNode.nodeType);
-            boolean selected = context.node.getNodeId().equals(referencedRootNode.getNodeId());
-            NavigationElement ne = new NavigationElement();
-            ne.id = navigationModel.identifier;
-            ne.section = navigation.getSection();
-            ne.title = referencedNode.getTitle();
-            ne.link = navigationModel.getLink();
-            ne.weight = navigation.getWeight();
-            ne.selected = selected;
-            return ne;
-        } else {
-            throw new RuntimeException("Page not found [" + navigationModel.pageId + "]");
+        RootNode referencedRootNode = RootNode.findLatestPublishedVersionWithNodeId(navigationModel.pageId);
+        try {
+            if (referencedRootNode != null) {
+                Node referencedNode = ProvidesEventGenerator.triggerInterceptor(referencedRootNode, Core.Type.NODE, referencedRootNode.nodeType);
+                boolean selected = context.node.getNodeId().equals(referencedRootNode.getNodeId());
+                NavigationElement ne = new NavigationElement();
+                ne.id = navigationModel.identifier;
+                ne.section = navigation.getSection();
+                ne.title = referencedNode.getTitle();
+                ne.link = navigationModel.getLink();
+                ne.weight = navigation.getWeight();
+                ne.selected = selected;
+                return ne;
+            } else {
+                throw new RuntimeException("Navigation not found [" + navigationModel.pageId + "]");
+            }
+        } catch (NodeLoadException e) {
+            throw new RuntimeException(e);
         }
     }
 

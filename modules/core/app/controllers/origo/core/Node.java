@@ -16,7 +16,7 @@ public class Node extends Controller {
     public static Result node() {
 
         //Load NodeModel
-        List<RootNode> nodes = RootNode.findAllCurrentVersions(new Date());
+        List<RootNode> nodes = RootNode.findCurrentPublishedVersions();
         return ok(views.html.origo.core.node.list.render(nodes));
     }
 
@@ -25,7 +25,7 @@ public class Node extends Controller {
     public static Result nodeCurrent(String nodeId) {
 
         //Load NodeModel
-        RootNode node = RootNode.findLatestPublishedVersionWithNodeId(nodeId, new Date());
+        RootNode node = RootNode.findLatestPublishedVersionWithNodeId(nodeId);
         return ok(views.html.origo.core.node.show.render(node));
     }
 
