@@ -3,10 +3,7 @@ package main.origo.admin.helpers;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import main.origo.admin.annotations.Admin;
-import main.origo.core.InitializationException;
-import main.origo.core.InterceptorRepository;
-import main.origo.core.Node;
-import main.origo.core.NodeLoadException;
+import main.origo.core.*;
 import main.origo.core.annotations.Core;
 import main.origo.core.event.ProvidesEventGenerator;
 import main.origo.core.internal.CachedAnnotation;
@@ -23,14 +20,14 @@ public class NavigationHelper {
 
     private static Map<String, NavigationData> navigation;
 
-    public static List<NavigationElement> getNavigation(Node node) throws NodeLoadException {
+    public static List<NavigationElement> getNavigation(Node node) throws NodeLoadException, ModuleException {
         if (navigation == null) {
             navigation = initNavigationData();
         }
         return createNavigationStructure(navigation, node);
     }
 
-    private static List<NavigationElement> createNavigationStructure(Map<String, NavigationData> navigationDataMap, Node node) throws NodeLoadException {
+    private static List<NavigationElement> createNavigationStructure(Map<String, NavigationData> navigationDataMap, Node node) throws NodeLoadException, ModuleException {
         List<NavigationElement> result = Lists.newArrayList();
         for (NavigationData navigationData : navigationDataMap.values()) {
             result.addAll(createNavigationElements(navigationData, node));
@@ -39,7 +36,7 @@ public class NavigationHelper {
         return result;
     }
 
-    private static List<NavigationElement> createNavigationElements(NavigationData navigationData, Node node) throws NodeLoadException {
+    private static List<NavigationElement> createNavigationElements(NavigationData navigationData, Node node) throws NodeLoadException, ModuleException {
         List<NavigationElement> result = Lists.newArrayList();
         NavigationElement navigationElement = createNavigationElement(node, navigationData);
         for (String alias : navigationData.children.keySet()) {
@@ -52,7 +49,7 @@ public class NavigationHelper {
         return result;
     }
 
-    private static NavigationElement createNavigationElement(Node node, NavigationData navigationData) throws NodeLoadException {
+    private static NavigationElement createNavigationElement(Node node, NavigationData navigationData) throws NodeLoadException, ModuleException {
         AdminNavigation adminNavigation = new AdminNavigation(navigationData.key(), Messages.get(navigationData.key()), navigationData.getLink(), navigationData.weight());
         return ProvidesEventGenerator.triggerInterceptor(node, Core.Type.NAVIGATION_ITEM, "origo.admin.navigation", adminNavigation, Collections.<String, Object>emptyMap());
     }

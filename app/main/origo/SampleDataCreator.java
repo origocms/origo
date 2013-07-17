@@ -284,8 +284,12 @@ public class SampleDataCreator {
         Alias errorAlias = new Alias("error", "1cf699a7-a0c4-4be0-855f-466042a36a8d");
         errorAlias.create();
 
+        // /start -> page 1
+        Alias start = new Alias("start", "2c36c55dd-956e-4b78-18c4-eef7e56aa17");
+        start.create();
+
         // /fourth -> page 4
-        Alias fourth = new Alias("fourth", "2c36c55dd-956e-4b78-18c4-eef7e56aa17");
+        Alias fourth = new Alias("fourth", "aa1755dd-18c4-4b78-956e-eef7e562c36c");
         fourth.create();
 
     }

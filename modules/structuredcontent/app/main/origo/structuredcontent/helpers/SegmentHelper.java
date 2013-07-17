@@ -1,6 +1,8 @@
 package main.origo.structuredcontent.helpers;
 
+import main.origo.core.ModuleException;
 import main.origo.core.Node;
+import main.origo.core.NodeLoadException;
 import main.origo.core.event.OnLoadEventGenerator;
 import main.origo.core.event.ProvidesEventGenerator;
 import main.origo.core.ui.Element;
@@ -15,7 +17,7 @@ public class SegmentHelper {
     /*
      * Convenience methods for hooks with SEGMENT type
      */
-    public static Element triggerSegmentProvider(Node node, String withType, Segment segment) {
+    public static Element triggerSegmentProvider(Node node, String withType, Segment segment) throws ModuleException, NodeLoadException {
         return ProvidesEventGenerator.triggerInterceptor(node, TYPE_SEGMENT, withType, Collections.<String, Object>singletonMap("segment", segment));
     }
 

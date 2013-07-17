@@ -7,11 +7,10 @@ import main.origo.core.ThemeRepository;
 import main.origo.core.annotations.*;
 import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
-import org.reflections.scanners.*;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
-import org.reflections.util.FilterBuilder;
-import org.springframework.util.CollectionUtils;
 import play.Logger;
 import play.api.templates.Html;
 import play.db.jpa.JPA;
@@ -125,7 +124,7 @@ public class AnnotationProcessor {
                 }
 
                 for (Prototype prototype : annotationPrototypes) {
-                    scanEventHandlers(interceptors, prototype);
+                    scanEventHandlers(module, interceptors, prototype);
                 }
 
                 // Themes and Decorators
@@ -138,7 +137,7 @@ public class AnnotationProcessor {
         }
     }
 
-    public static void scanEventHandlers(Set<Class<?>> classes, Prototype prototype) {
+    public static void scanEventHandlers(CachedModule module, Set<Class<?>> classes, Prototype prototype) {
 
         Class<? extends Annotation> annotationClass = prototype.annotation;
         Class[] parameterTypes = prototype.expectedParameterTypes;
@@ -182,9 +181,9 @@ public class AnnotationProcessor {
 
                 Relationship relationship = m.getAnnotation(Relationship.class);
                 if (relationship != null) {
-                    InterceptorRepository.add(m.getAnnotation(annotationClass), m, relationship);
+                    InterceptorRepository.add(module, m.getAnnotation(annotationClass), m, relationship);
                 } else {
-                    InterceptorRepository.add(m.getAnnotation(annotationClass), m);
+                    InterceptorRepository.add(module, m.getAnnotation(annotationClass), m);
                 }
             }
         }

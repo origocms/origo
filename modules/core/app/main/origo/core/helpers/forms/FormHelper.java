@@ -1,7 +1,9 @@
 package main.origo.core.helpers.forms;
 
 import controllers.origo.core.routes;
+import main.origo.core.ModuleException;
 import main.origo.core.Node;
+import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Core;
 import main.origo.core.event.OnLoadEventGenerator;
 import main.origo.core.event.ProvidesEventGenerator;
@@ -16,11 +18,11 @@ public class FormHelper {
     private static final String NODE_ID = "_core_node_id";
     private static final String NODE_VERSION = "_core_node_version";
 
-    public static Element createFormElement(Node node, String withType) {
+    public static Element createFormElement(Node node, String withType) throws NodeLoadException, ModuleException {
         return createFormElement(CoreSettingsHelper.getDefaultFormType(), node, withType);
     }
 
-    public static Element createFormElement(String formType, Node node, String nodeType) {
+    public static Element createFormElement(String formType, Node node, String nodeType) throws ModuleException, NodeLoadException {
         OnLoadEventGenerator.triggerBeforeInterceptor(node, Core.Type.FORM, nodeType);
         Element formElement = ProvidesEventGenerator.triggerInterceptor(node, Core.Type.FORM, formType);
         addNodeIdAndVersion(formElement, node);

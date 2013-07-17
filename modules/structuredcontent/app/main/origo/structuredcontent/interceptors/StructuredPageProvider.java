@@ -1,6 +1,8 @@
 package main.origo.structuredcontent.interceptors;
 
+import main.origo.core.ModuleException;
 import main.origo.core.Node;
+import main.origo.core.NodeLoadException;
 import main.origo.core.NodeNotFoundException;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
@@ -29,7 +31,7 @@ public class StructuredPageProvider {
     }
 
     @OnLoad(type = Core.Type.NODE, with = StructuredPage.TYPE)
-    public static void loadContent(OnLoad.Context context) {
+    public static void loadContent(OnLoad.Context context) throws NodeLoadException, ModuleException {
 
         List<Segment> segmentModels = Segment.findWithNodeIdAndSpecificVersion(context.node.getNodeId(), context.node.getVersion());
         for (Segment segment : segmentModels) {

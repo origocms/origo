@@ -8,7 +8,9 @@ import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.DashboardHelper;
 import main.origo.admin.themes.AdminTheme;
 import main.origo.core.InterceptorRepository;
+import main.origo.core.ModuleException;
 import main.origo.core.Node;
+import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.*;
 import main.origo.core.annotations.forms.OnSubmit;
 import main.origo.core.annotations.forms.SubmitState;
@@ -20,6 +22,7 @@ import models.origo.admin.AdminPage;
 import models.origo.core.EventHandler;
 import models.origo.core.RootNode;
 import org.apache.commons.lang3.StringUtils;
+import play.Logger;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.origo.admin.dashboard_item;
@@ -157,11 +160,19 @@ public class ProvidesEventHandlerAdminProvider {
 
     private static void createFormElement(Node node, String selectedEventType, List<Element> fieldElements) {
         if (!fieldElements.isEmpty()) {
-            node.addElement(FormHelper.createFormElement(node, BASE_TYPE).
-                    addAttribute("class", "form-horizontal").
-                    addChild(new Element.InputHidden().addAttribute("name", "type").addAttribute("value", selectedEventType)).
-                    addChild(new Element.FieldSet().setId("handlers").addChildren(fieldElements)).
-                    addChild(createButtonPanel()));
+            try {
+                node.addElement(FormHelper.createFormElement(node, BASE_TYPE).
+                        addAttribute("class", "form-horizontal").
+                        addChild(new Element.InputHidden().addAttribute("name", "type").addAttribute("value", selectedEventType)).
+                        addChild(new Element.FieldSet().setId("handlers").addChildren(fieldElements)).
+                        addChild(createButtonPanel()));
+            } catch (NodeLoadException e) {
+                // TODO: recover somehow?
+                Logger.error("Unable to load node", e);
+            } catch (ModuleException e) {
+                // TODO: recover somehow?
+                Logger.error("Unable to load node", e);
+            }
         } else {
             node.addElement(new Element.Panel().
                     addAttribute("class", "well well-big").

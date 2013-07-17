@@ -1,5 +1,6 @@
 package models.origo.core.navigation;
 
+import main.origo.core.ModuleException;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Core;
@@ -36,7 +37,7 @@ public class InternalPageIdNavigation extends Model<InternalPageIdNavigation> {
         super(TYPE);
     }
 
-    public String getLink() throws NodeLoadException {
+    public String getLink() throws NodeLoadException, ModuleException {
         if (CoreSettingsHelper.getStartPage().equals(pageId)) {
             return CoreSettingsHelper.getBaseUrl();
         }
@@ -44,7 +45,7 @@ public class InternalPageIdNavigation extends Model<InternalPageIdNavigation> {
         return getAliasUrl(aliases);
     }
 
-    private String getAliasUrl(Collection<Alias> aliases) throws NodeLoadException {
+    private String getAliasUrl(Collection<Alias> aliases) throws NodeLoadException, ModuleException {
         if (aliases == null || aliases.isEmpty()) {
             RootNode rootNode = RootNode.findLatestVersionWithNodeId(pageId);
             if (rootNode == null) {

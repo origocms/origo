@@ -1,8 +1,10 @@
 package main.origo.core.event;
 
 import com.google.common.collect.Maps;
+import main.origo.core.ModuleException;
 import main.origo.core.Navigation;
 import main.origo.core.Node;
+import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Core;
 import main.origo.core.ui.NavigationElement;
 
@@ -15,7 +17,7 @@ public class NavigationEventGenerator {
     /*
      * Convenience methods for hooks with NAVIGATION type
      */
-    public static List<NavigationElement> triggerProvidesNavigationInterceptor(Node node, String withType, String section) {
+    public static List<NavigationElement> triggerProvidesNavigationInterceptor(Node node, String withType, String section) throws ModuleException, NodeLoadException {
         return ProvidesEventGenerator.triggerInterceptor(node, Core.Type.NAVIGATION, withType, Collections.<String, Object>singletonMap("section", section));
     }
 
@@ -35,11 +37,11 @@ public class NavigationEventGenerator {
     /*
      * Convenience methods for hooks with NAVIGATION_ITEM type
      */
-    public static NavigationElement triggerProvidesNavigationItemInterceptor(Node node, String withType, Navigation navigation) {
+    public static NavigationElement triggerProvidesNavigationItemInterceptor(Node node, String withType, Navigation navigation) throws ModuleException, NodeLoadException {
         return ProvidesEventGenerator.triggerInterceptor(node, Core.Type.NAVIGATION_ITEM, withType, navigation, Collections.<String, Object>emptyMap());
     }
 
-    public static NavigationElement triggerProvidesNavigationItemInterceptor(Node node, String withType, Navigation navigation, NavigationElement parentNavigationElement) {
+    public static NavigationElement triggerProvidesNavigationItemInterceptor(Node node, String withType, Navigation navigation, NavigationElement parentNavigationElement) throws ModuleException, NodeLoadException {
         Map<String, Object> args = Maps.newHashMap();
         args.put("parent", parentNavigationElement);
         return ProvidesEventGenerator.triggerInterceptor(node, Core.Type.NAVIGATION_ITEM, withType, navigation, args);

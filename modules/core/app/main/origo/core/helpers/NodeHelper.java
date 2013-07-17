@@ -1,6 +1,7 @@
 package main.origo.core.helpers;
 
 
+import main.origo.core.ModuleException;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
 import main.origo.core.NodeNotFoundException;
@@ -16,7 +17,7 @@ import java.util.Date;
 
 public class NodeHelper {
 
-    public static Node load(String nodeId) throws NodeNotFoundException, NodeLoadException {
+    public static Node load(String nodeId) throws NodeNotFoundException, NodeLoadException, ModuleException {
         //Load RootNode model
         RootNode rootNode = RootNode.findLatestPublishedVersionWithNodeId(nodeId);
         if (rootNode == null) {
@@ -26,7 +27,7 @@ public class NodeHelper {
         return load(rootNode);
     }
 
-    public static Node load(String nodeId, Integer version) throws NodeNotFoundException, NodeLoadException {
+    public static Node load(String nodeId, Integer version) throws NodeNotFoundException, NodeLoadException, ModuleException {
         //Load RootNode model
         RootNode rootNode = RootNode.findWithNodeIdAndSpecificVersion(nodeId, version);
         if (rootNode == null) {
@@ -36,7 +37,7 @@ public class NodeHelper {
         return load(rootNode);
     }
 
-    public static Node load(RootNode rootNode) throws NodeLoadException {
+    public static Node load(RootNode rootNode) throws NodeLoadException, ModuleException {
         // We'll set the root node for now, hopefully it will be overridden during load
         NodeContext.current().node = rootNode;
 

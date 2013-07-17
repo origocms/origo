@@ -2,6 +2,8 @@ package main.origo.admin.interceptors.content;
 
 import com.google.common.collect.Sets;
 import main.origo.admin.interceptors.content.basicpage.BasicPageAdminProvider;
+import main.origo.core.ModuleException;
+import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnInsertElement;
 import main.origo.core.annotations.forms.OnSubmit;
@@ -14,6 +16,7 @@ import models.origo.admin.AdminPage;
 import models.origo.core.navigation.BasicNavigation;
 import models.origo.core.navigation.InternalPageIdNavigation;
 import org.apache.commons.lang3.StringUtils;
+import play.Logger;
 import play.data.DynamicForm;
 
 import java.util.List;
@@ -44,43 +47,50 @@ public class BasicNavigationPageAdminProvider {
         AdminPage adminPage = (AdminPage) context.node;
         if (types.contains(adminPage.type) && context.element.getId().equals("content")) {
 
-            List<NavigationElement> navigationElements = NavigationHelper.getNavigation(adminPage.rootNode, NavigationElement.FRONT);
+            try {
+                List<NavigationElement> navigationElements = NavigationHelper.getNavigation(adminPage.rootNode, NavigationElement.FRONT);
 
-            NavigationElement selectedNavigationElement = getSelectedNavigationId(navigationElements);
-            BasicNavigation currentNavigation = null;
-            if (selectedNavigationElement != null) {
-                currentNavigation = BasicNavigation.findWithReferenceIdentifier(selectedNavigationElement.id);
+                NavigationElement selectedNavigationElement = getSelectedNavigationId(navigationElements);
+                BasicNavigation currentNavigation = null;
+                if (selectedNavigationElement != null) {
+                    currentNavigation = BasicNavigation.findWithReferenceIdentifier(selectedNavigationElement.id);
+                }
+
+                // Setup parent drop down element
+                Element.InputSelectOption noParentOption = new Element.InputSelectOption();
+                Element parentInputSelect = new Element.InputSelect().
+                        setId("text-" + PARENT_PARAM).
+                        addAttribute("name", PARENT_PARAM).
+                        addChild(noParentOption);
+                addNavigationElement(parentInputSelect, navigationElements, noParentOption, "");
+
+                // Setup the wrapper for the fieldset element
+                Element.InputCheckbox useNavigationCheckBox = new Element.InputCheckbox(Boolean.class).
+                        addAttribute("name", USE_NAVIGATION_PARAM).
+                        addAttribute("value", "true");
+                if (currentNavigation != null) {
+                    useNavigationCheckBox.addAttribute("checked", "checked");
+                }
+                context.parent.addChild(new Element.FieldSet().setWeight(200).
+                        addChild(new Element.Legend().setBody("Navigation")).
+                        addChild(new Element.Panel().
+                                addChild(new Element.Label().addAttribute("class", "checkbox").
+                                        addChild(useNavigationCheckBox).
+                                        setBody("Add Navigation"))).
+                        addChild(new Element.Panel().addAttribute("class", "row-fluid").
+                                addChild(new Element.Panel().addAttribute("class", "field span6").
+                                        addChild(new Element.Label().setBody("Parent").addAttribute("for", "text-" + PARENT_PARAM)).
+                                        addChild(parentInputSelect))
+                        )
+                );
+                context.parent.addChild(new Element.InputHidden().addAttribute("name", NAVIGATION_ID_PARAM).addAttribute("value", selectedNavigationElement != null ? selectedNavigationElement.id : ""));
+            } catch (NodeLoadException e) {
+                // TODO: recover somehow?
+                Logger.error("Unable to load node", e);
+            } catch (ModuleException e) {
+                // TODO: recover somehow?
+                Logger.error("Unable to load node", e);
             }
-
-            // Setup parent drop down element
-            Element.InputSelectOption noParentOption = new Element.InputSelectOption();
-            Element parentInputSelect = new Element.InputSelect().
-                    setId("text-" + PARENT_PARAM).
-                    addAttribute("name", PARENT_PARAM).
-                    addChild(noParentOption);
-            addNavigationElement(parentInputSelect, navigationElements, noParentOption, "");
-
-            // Setup the wrapper for the fieldset element
-            Element.InputCheckbox useNavigationCheckBox = new Element.InputCheckbox(Boolean.class).
-                    addAttribute("name", USE_NAVIGATION_PARAM).
-                    addAttribute("value", "true");
-            if (currentNavigation != null) {
-                useNavigationCheckBox.addAttribute("checked", "checked");
-            }
-            context.parent.addChild(new Element.FieldSet().setWeight(200).
-                    addChild(new Element.Legend().setBody("Navigation")).
-                    addChild(new Element.Panel().
-                            addChild(new Element.Label().addAttribute("class", "checkbox").
-                                    addChild(useNavigationCheckBox).
-                                    setBody("Add Navigation"))).
-                    addChild(new Element.Panel().addAttribute("class", "row-fluid").
-                            addChild(new Element.Panel().addAttribute("class", "field span6").
-                                    addChild(new Element.Label().setBody("Parent").addAttribute("for", "text-" + PARENT_PARAM)).
-                                    addChild(parentInputSelect))
-                    )
-            );
-            context.parent.addChild(new Element.InputHidden().addAttribute("name", NAVIGATION_ID_PARAM).addAttribute("value", selectedNavigationElement != null ? selectedNavigationElement.id : ""));
-
         }
     }
 

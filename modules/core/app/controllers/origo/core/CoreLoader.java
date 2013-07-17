@@ -1,5 +1,6 @@
 package controllers.origo.core;
 
+import main.origo.core.ModuleException;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
 import main.origo.core.NodeNotFoundException;
@@ -38,6 +39,8 @@ public class CoreLoader {
             return loadAndDecoratePage(identifier, 0);
         } catch (NodeNotFoundException e) {
             return loadPageNotFoundErrorPage();
+        } catch (ModuleException e) {
+            return loadPageNotFoundErrorPage();
         } catch (Exception e) {
             Logger.error("An exception occurred while loading the page [" + identifier + "]: " + e.getMessage(), e);
             return loadPageLoadErrorPage();
@@ -48,6 +51,8 @@ public class CoreLoader {
         try {
             return loadAndDecoratePage(identifier, version);
         } catch (NodeNotFoundException e) {
+            return loadPageNotFoundErrorPage();
+        } catch (ModuleException e) {
             return loadPageNotFoundErrorPage();
         } catch (Exception e) {
             Logger.error("An exception occurred while loading the page [" + identifier + "] with version [" + version + "]: " + e.getMessage(), e);
@@ -71,7 +76,6 @@ public class CoreLoader {
             }
         }
 
-        // TODO: Could this be done without using the request?
         if (url.equalsIgnoreCase(Http.Context.current().request().path())) {
             Logger.warn("Using fallback not-found handling, sending 404 with no content");
             return Controller.notFound();
@@ -95,7 +99,7 @@ public class CoreLoader {
                 url = "/error";
             }
         }
-        // TODO: Could this be done without using the request?
+
         if (url.equalsIgnoreCase(Http.Context.current().request().path())) {
             Logger.warn("Using fallback error handling, sending 500 with no content");
             return Controller.internalServerError();
@@ -104,7 +108,7 @@ public class CoreLoader {
         return Controller.redirect(url);
     }
 
-    private static Result loadAndDecoratePage(String identifier, int version) throws NodeNotFoundException, NodeLoadException {
+    private static Result loadAndDecoratePage(String identifier, int version) throws NodeNotFoundException, NodeLoadException, ModuleException {
         try {
             NodeContext.set();
             Node node = loadNode(identifier, version);
@@ -119,7 +123,7 @@ public class CoreLoader {
         }
     }
 
-    private static Node loadNode(String identifier, int version) throws NodeNotFoundException, NodeLoadException {
+    private static Node loadNode(String identifier, int version) throws NodeNotFoundException, NodeLoadException, ModuleException {
         Logger.trace("Trying to find alias for [" + identifier + "]");
 
         Alias alias = Alias.findWithPath(identifier);
@@ -132,7 +136,7 @@ public class CoreLoader {
         }
     }
 
-    private static Node loadByNodeIdAndVersion(String identifier, int version) throws NodeNotFoundException, NodeLoadException {
+    private static Node loadByNodeIdAndVersion(String identifier, int version) throws NodeNotFoundException, NodeLoadException, ModuleException {
         Node node;
         if (version != 0) {
             node = NodeHelper.load(identifier, version);
@@ -148,7 +152,7 @@ public class CoreLoader {
         return node;
     }
 
-    public static List<NavigationElement> getNavigation(Node rootNode) throws NodeNotFoundException, NodeLoadException {
+    public static List<NavigationElement> getNavigation(Node rootNode) throws NodeNotFoundException, NodeLoadException, ModuleException {
         List<NavigationElement> navigationLinks = NavigationHelper.getNavigation(rootNode, NavigationElement.FRONT);
         if (Logger.isDebugEnabled()) {
             Logger.debug("Navigation loaded " + navigationLinks);

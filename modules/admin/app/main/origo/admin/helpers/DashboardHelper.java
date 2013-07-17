@@ -5,6 +5,7 @@ import controllers.origo.admin.routes;
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.event.DashboardEventGenerator;
 import main.origo.core.InterceptorRepository;
+import main.origo.core.ModuleException;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Provides;
@@ -22,7 +23,7 @@ public class DashboardHelper {
 
     private static final String PREFIX = "breadcrumb.origo.admin.dashboard.";
 
-    public static Element createDashboard(Node node, String withType) throws NodeLoadException {
+    public static Element createDashboard(Node node, String withType) throws NodeLoadException, ModuleException {
         OnLoadEventGenerator.triggerBeforeInterceptor(node, Admin.Type.DASHBOARD, withType);
         Element element = ProvidesEventGenerator.triggerInterceptor(node, Admin.Type.DASHBOARD, withType);
         if (element == null) {
