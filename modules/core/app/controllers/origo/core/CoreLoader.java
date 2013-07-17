@@ -13,6 +13,7 @@ import main.origo.core.ui.NavigationElement;
 import main.origo.core.ui.RenderedNode;
 import models.origo.core.Alias;
 import play.Logger;
+import play.Play;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -27,10 +28,9 @@ public class CoreLoader {
         try {
             return loadAndDecoratePage(startPage, 0);
         } catch (NodeNotFoundException e) {
-            return loadPageNotFoundErrorPage();
+            return loadPageNotFoundPage();
         } catch (Exception e) {
-            Logger.error("An exception occurred while loading the start page: " + e.getMessage(), e);
-            return loadPageLoadErrorPage();
+            return handleException(e);
         }
     }
 
@@ -38,12 +38,11 @@ public class CoreLoader {
         try {
             return loadAndDecoratePage(identifier, 0);
         } catch (NodeNotFoundException e) {
-            return loadPageNotFoundErrorPage();
+            return loadPageNotFoundPage();
         } catch (ModuleException e) {
-            return loadPageNotFoundErrorPage();
+            return loadPageNotFoundPage();
         } catch (Exception e) {
-            Logger.error("An exception occurred while loading the page [" + identifier + "]: " + e.getMessage(), e);
-            return loadPageLoadErrorPage();
+            return handleException(e);
         }
     }
 
@@ -51,16 +50,23 @@ public class CoreLoader {
         try {
             return loadAndDecoratePage(identifier, version);
         } catch (NodeNotFoundException e) {
-            return loadPageNotFoundErrorPage();
+            return loadPageNotFoundPage();
         } catch (ModuleException e) {
-            return loadPageNotFoundErrorPage();
+            return loadPageNotFoundPage();
         } catch (Exception e) {
-            Logger.error("An exception occurred while loading the page [" + identifier + "] with version [" + version + "]: " + e.getMessage(), e);
-            return loadPageLoadErrorPage();
+            return handleException(e);
         }
     }
 
-    public static Result loadPageNotFoundErrorPage() {
+    private static Result handleException(Exception e) {
+        if (Play.isDev()) {
+            throw new RuntimeException(e);
+        }
+        Logger.error("An exception occurred while loading the start page: " + e.getMessage(), e);
+        return loadPageLoadErrorPage();
+    }
+
+    public static Result loadPageNotFoundPage() {
         String pageNotFoundPage = CoreSettingsHelper.getPageNotFoundPage();
         Collection<Alias> aliases = Alias.findWithPageId(pageNotFoundPage);
         String url;

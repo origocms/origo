@@ -1,5 +1,6 @@
 package controllers.origo.admin;
 
+import controllers.origo.core.CoreLoader;
 import main.origo.admin.helpers.AdminSettingsHelper;
 import main.origo.admin.helpers.NavigationHelper;
 import main.origo.core.ModuleException;
@@ -12,26 +13,59 @@ import main.origo.core.ui.NavigationElement;
 import main.origo.core.ui.RenderedNode;
 import models.origo.core.RootNode;
 import play.Logger;
+import play.Play;
 import play.mvc.Result;
 
 import java.util.List;
 
 public class AdminLoader {
 
-    public static Result getFrontDashboard() throws NodeLoadException, ModuleException {
-        return loadAndDecoratePage(AdminSettingsHelper.getHomeDashboard());
+    public static Result getFrontDashboard() {
+        try {
+            return loadAndDecoratePage(AdminSettingsHelper.getHomeDashboard());
+        } catch (Exception e) {
+            return handleException(e);
+        }
     }
 
-    public static Result getDashboard(String withType) throws NodeLoadException, ModuleException {
-        return loadAndDecoratePage(withType);
+    public static Result getDashboard(String withType) {
+        try {
+            return loadAndDecoratePage(withType);
+        } catch (Exception e) {
+            return handleException(e);
+        }
     }
 
-    public static Result getPage(String withType) throws NodeLoadException, ModuleException {
-        return loadAndDecoratePage(withType);
+    public static Result getPage(String withType) {
+        try {
+            return loadAndDecoratePage(withType);
+        } catch (Exception e) {
+            return handleException(e);
+        }
     }
 
-    public static Result getPage(String withType, String identifier) throws NodeLoadException, ModuleException {
-        return loadAndDecoratePage(withType, identifier);
+    public static Result getPage(String withType, String identifier) {
+        try {
+            return loadAndDecoratePage(withType, identifier);
+        } catch (Exception e) {
+            return handleException(e);
+        }
+    }
+
+    private static Result handleException(Exception e) {
+        if (Play.isDev()) {
+            if (e instanceof RuntimeException) {
+                Throwable thrown = e;
+                while(thrown.getCause() instanceof RuntimeException) {
+                    thrown = e.getCause();
+                }
+                throw (RuntimeException)thrown;
+            } else {
+                throw new RuntimeException(e);
+            }
+        }
+        Logger.error("", e);
+        return CoreLoader.loadPageLoadErrorPage();
     }
 
     private static Result loadAndDecoratePage(String withType) throws NodeLoadException, ModuleException {
@@ -66,15 +100,11 @@ public class AdminLoader {
 
     private static Node loadByType(String withType) throws NodeLoadException, ModuleException {
         RootNode rootNode = loadRootNode(withType);
-        // We'll set the root node for now, hopefully it will be overridden during load
-        //NodeContext.current().node = rootNode;
         return NodeHelper.load(rootNode);
     }
 
     private static Node loadByType(String withType, String identifier) throws NodeLoadException, ModuleException {
         RootNode rootNode = loadRootNode(withType, identifier);
-        // We'll set the root node for now, hopefully it will be overridden during load
-        //NodeContext.current().node = rootNode;
         return NodeHelper.load(rootNode);
     }
 
