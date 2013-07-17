@@ -83,13 +83,13 @@ public class SampleDataCreator {
 
         RootNode node = new RootNode("c9615819-0556-4e70-b6a9-a66c5b8d4c1a", 1);
         node.nodeType = BasicPage.TYPE;
-        node.themeVariant = "bootstrap-main_only";
         node.create();
 
         BasicPage page = new BasicPage();
         page.nodeId = node.nodeId;
         page.version = node.version;
         page.title = "Page Not Found";
+        page.themeVariant = "bootstrap-main_only";
         page.leadReferenceId = lead.identifier;
         page.bodyReferenceId = body.identifier;
         page.create();
@@ -112,13 +112,13 @@ public class SampleDataCreator {
 
         RootNode node = new RootNode("1cf699a7-a0c4-4be0-855f-466042a36a8d", 1);
         node.nodeType = BasicPage.TYPE;
-        node.themeVariant = "bootstrap-main_only";
         node.create();
 
         BasicPage page = new BasicPage();
         page.nodeId = node.nodeId;
         page.version = node.version;
         page.title = "Internal Server Error";
+        page.themeVariant = "bootstrap-main_only";
         page.leadReferenceId = lead.identifier;
         page.bodyReferenceId = body.identifier;
         page.create();

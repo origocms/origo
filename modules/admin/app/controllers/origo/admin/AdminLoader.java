@@ -54,15 +54,11 @@ public class AdminLoader {
 
     private static Result handleException(Exception e) {
         if (Play.isDev()) {
-            if (e instanceof RuntimeException) {
-                Throwable thrown = e;
-                while(thrown.getCause() instanceof RuntimeException) {
-                    thrown = e.getCause();
-                }
-                throw (RuntimeException)thrown;
-            } else {
-                throw new RuntimeException(e);
+            Throwable thrown = e;
+            while(thrown instanceof RuntimeException) {
+                thrown = e.getCause();
             }
+            throw new RuntimeException(thrown);
         }
         Logger.error("", e);
         return CoreLoader.loadPageLoadErrorPage();

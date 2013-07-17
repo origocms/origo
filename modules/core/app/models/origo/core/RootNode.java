@@ -38,8 +38,6 @@ public final class RootNode extends Model<RootNode> implements Node {
     @Column(name = "type")
     public String nodeType;
 
-    public String themeVariant;
-
     /**
      * Only kept to make sure all elements added to the HEAD region are unique (we don't want duplicate javascript or css resources).
      */
@@ -97,7 +95,7 @@ public final class RootNode extends Model<RootNode> implements Node {
 
     @Override
     public String getThemeVariant() {
-        return themeVariant;
+        return null;
     }
 
     @Override
@@ -344,7 +342,6 @@ public final class RootNode extends Model<RootNode> implements Node {
         copy.publish = publish;
         copy.unPublish = unPublish;
         copy.nodeType = nodeType;
-        copy.themeVariant = themeVariant;
         return copy;
     }
 

@@ -49,6 +49,8 @@ public class BasicPage extends Model<BasicPage> implements Node {
     @Constraints.Required
     public String bodyReferenceId;
 
+    public String themeVariant;
+
     public BasicPage() {
         super(TYPE);
     }
@@ -75,12 +77,12 @@ public class BasicPage extends Model<BasicPage> implements Node {
 
     @Override
     public String getTitle() {
-        return title;
+        return this.title;
     }
 
     @Override
     public String getThemeVariant() {
-        return rootNode.themeVariant;
+        return this.themeVariant;
     }
 
     @Override

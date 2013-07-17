@@ -17,6 +17,7 @@ import play.Logger;
 import play.api.templates.Html;
 import play.mvc.Result;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
@@ -135,11 +136,13 @@ public class ThemeHelper {
     }
 
     public static Result render(RenderedNode renderedNode) {
-        CachedThemeVariant cachedThemeVariant = renderedNode.template();
+        CachedThemeVariant cachedThemeVariant = renderedNode.themeVariant();
         try {
             return (Result) cachedThemeVariant.templateMethod.invoke(null, new ThemeVariant.Context(renderedNode));
-        } catch (Throwable e) {
-            throw new RuntimeException("", e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e.getCause());
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
     }
 

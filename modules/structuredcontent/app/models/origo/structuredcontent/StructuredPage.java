@@ -40,6 +40,8 @@ public class StructuredPage implements Node {
     @Constraints.Required
     public String title;
 
+    public String themeVariant;
+
     @Override
     public String getNodeId() {
         return this.nodeId;
@@ -67,7 +69,7 @@ public class StructuredPage implements Node {
 
     @Override
     public String getThemeVariant() {
-        return rootNode.themeVariant;
+        return this.themeVariant;
     }
 
     @Override
