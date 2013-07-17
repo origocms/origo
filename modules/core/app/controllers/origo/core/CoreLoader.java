@@ -60,7 +60,15 @@ public class CoreLoader {
 
     private static Result handleException(Exception e) {
         if (Play.isDev()) {
-            throw new RuntimeException(e);
+            if (e instanceof RuntimeException) {
+                Throwable thrown = e;
+                while(thrown.getCause() instanceof RuntimeException) {
+                    thrown = e.getCause();
+                }
+                throw (RuntimeException)thrown;
+            } else {
+                throw new RuntimeException(e);
+            }
         }
         Logger.error("An exception occurred while loading the start page: " + e.getMessage(), e);
         return loadPageLoadErrorPage();
