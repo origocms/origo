@@ -41,6 +41,9 @@ public class BasicPage extends Model<BasicPage> implements Node {
     public RootNode rootNode;
 
     @Constraints.Required
+    public String title;
+
+    @Constraints.Required
     public String leadReferenceId;
 
     @Constraints.Required
@@ -72,7 +75,7 @@ public class BasicPage extends Model<BasicPage> implements Node {
 
     @Override
     public String getTitle() {
-        return rootNode.title;
+        return title;
     }
 
     @Override
@@ -155,6 +158,7 @@ public class BasicPage extends Model<BasicPage> implements Node {
         RootNode rootNodeCopy = rootNode.copy(true);
         newPage.rootNode = rootNodeCopy;
         newPage.nodeId = nodeId;
+        newPage.title = title;
         newPage.version = rootNodeCopy.version;
         newPage.leadReferenceId = leadReferenceId;
         newPage.bodyReferenceId = bodyReferenceId;
