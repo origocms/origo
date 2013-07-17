@@ -1,5 +1,6 @@
 package main.origo.structuredcontent;
 
+import main.origo.core.CoreModule;
 import main.origo.core.annotations.Module;
 import main.origo.core.internal.AnnotationProcessor;
 
@@ -12,7 +13,7 @@ public class StructuredContentModule {
 
     @Module.Dependencies
     public static List<AnnotationProcessor.Dependency> dependencies() {
-        return Collections.singletonList(new AnnotationProcessor.Dependency("origo.core", 0, 1));
+        return Collections.singletonList(new AnnotationProcessor.Dependency(CoreModule.NAME, 0, 1));
     }
 
 }
