@@ -35,6 +35,9 @@ public final class RootNode extends Model<RootNode> implements Node {
     @Temporal(value = TemporalType.TIMESTAMP)
     public Date unPublish;
 
+    @Constraints.Required
+    public String title;
+
     @Column(name = "type")
     public String nodeType;
 
@@ -72,7 +75,7 @@ public final class RootNode extends Model<RootNode> implements Node {
 
     @Override
     public String getTitle() {
-        return toString();
+        return title;
     }
 
     @Override
@@ -344,6 +347,7 @@ public final class RootNode extends Model<RootNode> implements Node {
         copy.publish = publish;
         copy.unPublish = unPublish;
         copy.nodeType = nodeType;
+        copy.title = title;
         copy.themeVariant = themeVariant;
         return copy;
     }

@@ -41,9 +41,6 @@ public class BasicPage extends Model<BasicPage> implements Node {
     public RootNode rootNode;
 
     @Constraints.Required
-    public String title;
-
-    @Constraints.Required
     public String leadReferenceId;
 
     @Constraints.Required
@@ -51,7 +48,6 @@ public class BasicPage extends Model<BasicPage> implements Node {
 
     public BasicPage() {
         super(TYPE);
-        this.title = "";
     }
 
     @Override
@@ -76,7 +72,7 @@ public class BasicPage extends Model<BasicPage> implements Node {
 
     @Override
     public String getTitle() {
-        return title;
+        return rootNode.title;
     }
 
     @Override
@@ -160,7 +156,6 @@ public class BasicPage extends Model<BasicPage> implements Node {
         newPage.rootNode = rootNodeCopy;
         newPage.nodeId = nodeId;
         newPage.version = rootNodeCopy.version;
-        newPage.title = title;
         newPage.leadReferenceId = leadReferenceId;
         newPage.bodyReferenceId = bodyReferenceId;
         return newPage;
@@ -173,7 +168,6 @@ public class BasicPage extends Model<BasicPage> implements Node {
                 append("nodeId='").append(nodeId).append("\', ").
                 append("version=").append(version).append(", ").
                 append("rootNode=").append(rootNode).append(", ").
-                append("title='").append(title).append("\', ").
                 append("leadReferenceId='").append(leadReferenceId).append("\', ").
                 append("bodyReferenceId='").append(bodyReferenceId).append("\', ").
                 append('}').toString();

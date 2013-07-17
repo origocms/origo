@@ -37,9 +37,6 @@ public class StructuredPage implements Node {
     @Transient
     public RootNode rootNode;
 
-    @Constraints.Required
-    public String title;
-
     @Override
     public String getNodeId() {
         return this.nodeId;
@@ -62,7 +59,7 @@ public class StructuredPage implements Node {
 
     @Override
     public String getTitle() {
-        return title;
+        return this.rootNode.title;
     }
 
     @Override
@@ -147,7 +144,6 @@ public class StructuredPage implements Node {
                 append("nodeId='").append(nodeId).append("\', ").
                 append("version=").append(version).append(", ").
                 append("rootNode=").append(rootNode).append(", ").
-                append("title='").append(title).append("\'").
                 append("}").toString();
     }
 

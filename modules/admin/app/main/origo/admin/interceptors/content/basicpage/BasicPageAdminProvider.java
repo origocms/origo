@@ -259,7 +259,7 @@ public class BasicPageAdminProvider {
 
         boolean newVersion = false;
 
-        if (!latestVersion.title.equals(data.get(TITLE_PARAM))) {
+        if (!latestVersion.getTitle().equals(data.get(TITLE_PARAM))) {
             newVersion = true;
         }
 
@@ -282,7 +282,7 @@ public class BasicPageAdminProvider {
             BasicPage newPageVersion = latestVersion.copy();
 
             // Properties
-            newPageVersion.title = data.get(TITLE_PARAM);
+            newPageVersion.rootNode.title = data.get(TITLE_PARAM);
             newPageVersion.rootNode.themeVariant = data.get(THEME_VARIANT_PARAM);
             newPageVersion.rootNode.publish = parseDate(data.get(PUBLISH_DATE_PARAM), data.get(PUBLISH_TIME_PARAM));
             newPageVersion.rootNode.unPublish = parseDate(data.get(UNPUBLISH_DATE_PARAM), data.get(UNPUBLISH_TIME_PARAM));

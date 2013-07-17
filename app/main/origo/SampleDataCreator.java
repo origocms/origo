@@ -52,13 +52,13 @@ public class SampleDataCreator {
         body.create();
 
         RootNode node = new RootNode("2c36c55dd-956e-4b78-18c4-eef7e56aa17", 1);
+        node.title = "Start Page";
         node.nodeType = BasicPage.TYPE;
         node.create();
 
         BasicPage page = new BasicPage();
         page.nodeId = node.nodeId;
         page.version = node.version;
-        page.title = "Start Page";
         page.leadReferenceId = lead.identifier;
         page.bodyReferenceId = body.identifier;
         page.create();
@@ -82,6 +82,7 @@ public class SampleDataCreator {
         body.create();
 
         RootNode node = new RootNode("c9615819-0556-4e70-b6a9-a66c5b8d4c1a", 1);
+        node.title = "Page Not Found";
         node.nodeType = BasicPage.TYPE;
         node.themeVariant = "bootstrap-main_only";
         node.create();
@@ -89,7 +90,6 @@ public class SampleDataCreator {
         BasicPage page = new BasicPage();
         page.nodeId = node.nodeId;
         page.version = node.version;
-        page.title = "Page Not Found";
         page.leadReferenceId = lead.identifier;
         page.bodyReferenceId = body.identifier;
         page.create();
@@ -111,6 +111,7 @@ public class SampleDataCreator {
         body.create();
 
         RootNode node = new RootNode("1cf699a7-a0c4-4be0-855f-466042a36a8d", 1);
+        node.title = "Internal Server Error";
         node.nodeType = BasicPage.TYPE;
         node.themeVariant = "bootstrap-main_only";
         node.create();
@@ -118,7 +119,6 @@ public class SampleDataCreator {
         BasicPage page = new BasicPage();
         page.nodeId = node.nodeId;
         page.version = node.version;
-        page.title = "Internal Server Error";
         page.leadReferenceId = lead.identifier;
         page.bodyReferenceId = body.identifier;
         page.create();
@@ -150,22 +150,22 @@ public class SampleDataCreator {
 
         RootNode node1 = new RootNode("aa1755dd-18c4-4b78-956e-eef7e562c36c", 1);
         node1.nodeType = StructuredPage.TYPE;
+        node1.title = "Fourth Page";
         node1.create();
 
         RootNode node2 = new RootNode("aa1755dd-18c4-4b78-956e-eef7e562c36c", 2);
         node2.nodeType = StructuredPage.TYPE;
+        node2.title = "Fourth Page";
         node2.create();
 
         StructuredPage page1 = new StructuredPage(); // Page 1 version 1
         page1.nodeId = node1.getNodeId();
         page1.version = node1.getVersion();
-        page1.title = "Fourth Page";
         page1.create();
 
         StructuredPage page2 = new StructuredPage(); // Page 1 version 2
         page2.nodeId = node2.getNodeId();
         page2.version = node2.getVersion();
-        page2.title = "Fourth Page";
         page2.create();
 
         // Page 1 -> Segment
@@ -261,12 +261,12 @@ public class SampleDataCreator {
 
         RootNode node = new RootNode("699eb321-7545-4b27-8a7f-94a4442d2046", 1);
         node.nodeType = BasicPage.TYPE;
+        node.title = "Fifth Page";
         node.create();
 
         BasicPage page = new BasicPage();
         page.nodeId = node.nodeId;
         page.version = node.version;
-        page.title = "Fifth Page";
         page.leadReferenceId = lead.identifier;
         page.bodyReferenceId = body.identifier;
         page.create();

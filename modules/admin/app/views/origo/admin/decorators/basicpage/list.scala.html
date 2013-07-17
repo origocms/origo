@@ -14,9 +14,9 @@
         </thead>
         @pages.map { page =>
             <tr>
-                <td>@page.title</td>
-                <td>@page.nodeId</td>
-                <td>@page.version</td>
+                <td>@page.rootNode.title</td>
+                <td>@page.rootNode.nodeId</td>
+                <td>@page.rootNode.version</td>
                 <td>
                     <a class="btn btn-small" href="@controllers.origo.admin.routes.Dashboard.pageWithTypeAndIdentifier("content", BasicPageAdminProvider.EDIT_TYPE, page.nodeId)">Edit</a>
                 </td>

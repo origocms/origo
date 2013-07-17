@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
+import views.html.origo.core.node.list;
+import views.html.origo.core.node.show;
 
 import java.util.Date;
 import java.util.List;
@@ -17,7 +19,7 @@ public class Node extends Controller {
 
         //Load NodeModel
         List<RootNode> nodes = RootNode.findCurrentPublishedVersions();
-        return ok(views.html.origo.core.node.list.render(nodes));
+        return ok(list.render(nodes));
     }
 
     //@Get("/node/{nodeId}")
@@ -26,7 +28,7 @@ public class Node extends Controller {
 
         //Load NodeModel
         RootNode node = RootNode.findLatestPublishedVersionWithNodeId(nodeId);
-        return ok(views.html.origo.core.node.show.render(node));
+        return ok(show.render(node));
     }
 
     //@Get("/node/{nodeId}/all")
@@ -35,7 +37,7 @@ public class Node extends Controller {
 
         List<RootNode> nodes = RootNode.findAllVersionsWithNodeId(nodeId);
 
-        return ok(views.html.origo.core.node.list.render(nodes));
+        return ok(list.render(nodes));
     }
 
     //@Get("/node/{nodeId}/{<[0-9]+>version}")
@@ -44,7 +46,7 @@ public class Node extends Controller {
 
         RootNode node = RootNode.findWithNodeIdAndSpecificVersion(nodeId, version);
 
-        return ok(views.html.origo.core.node.show.render(node));
+        return ok(show.render(node));
     }
 
 }
