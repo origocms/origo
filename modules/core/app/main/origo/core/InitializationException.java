@@ -9,7 +9,7 @@ public class InitializationException extends RuntimeException {
         super(message);
     }
 
-    public InitializationException(String s, Exception e) {
+    public InitializationException(String s, Throwable e) {
         super(s, e);
     }
 }

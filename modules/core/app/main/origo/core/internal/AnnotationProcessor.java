@@ -13,8 +13,6 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import play.Logger;
 import play.api.templates.Html;
-import play.db.jpa.JPA;
-import play.libs.F;
 import play.mvc.Result;
 
 import java.lang.annotation.Annotation;
@@ -65,41 +63,37 @@ public class AnnotationProcessor {
 
         final List<Class<?>> modulesClasses = getSortedModuleClasses();
 
-        JPA.withTransaction(new F.Callback0() {
-            @Override
-            public void invoke() throws Throwable {
-
-                // First pass: Add all modules
-                for (Class c : modulesClasses) {
-                    //noinspection unchecked
-                    ModuleRepository.add((Module) c.getAnnotation(Module.class), c);
-                }
-                // Second pass: Verify dependencies
-                for (Class c : modulesClasses) {
-                    Module moduleAnnotation = (Module) c.getAnnotation(Module.class);
-                    assertModuleDependencies(ModuleRepository.getModule(moduleAnnotation.name()));
-                }
-            }
-        });
-
+        // First pass: Add all modules
+        for (Class c : modulesClasses) {
+            //noinspection unchecked
+            ModuleRepository.add((Module) c.getAnnotation(Module.class), c);
+        }
+        // Second pass: Verify dependencies
+        for (Class c : modulesClasses) {
+            Module moduleAnnotation = (Module) c.getAnnotation(Module.class);
+            assertModuleDependencies(ModuleRepository.getModule(moduleAnnotation.name()));
+        }
     }
 
     private static void initModules() {
-        JPA.withTransaction(new F.Callback0() {
-            @Override
-            public void invoke() throws Throwable {
-                // Third pass: Init all modules
-                for (CachedModule cachedModule : ModuleRepository.getAll()) {
-                    try {
-                        if (cachedModule.initMethod != null) {
-                            cachedModule.initMethod.invoke(CachedModule.class);
-                        }
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        throw new InitializationException("Unable to init module", e);
-                    }
+        // Third pass: Init all modules
+        for (CachedModule cachedModule : ModuleRepository.getAll()) {
+            try {
+                if (cachedModule.initMethod != null) {
+                    cachedModule.initMethod.invoke(CachedModule.class);
                 }
+            } catch (InvocationTargetException e) {
+                if (e.getCause() != null) {
+                    if (e.getCause() instanceof InitializationException) {
+                        throw (InitializationException) e.getCause();
+                    }
+                    throw new InitializationException("Unable to init module", e.getCause());
+                }
+                throw new InitializationException("Unable to init module", e);
+            } catch (IllegalAccessException e) {
+                throw new InitializationException("Unable to init module", e);
             }
-        });
+        }
     }
 
     private static void scanModuleSuppliedAnnotations() {
@@ -109,7 +103,7 @@ public class AnnotationProcessor {
         for (CachedModule module : ModuleRepository.getAll()) {
 
             Logger.trace("------------------------------------------------");
-            Logger.trace("- Processing module '"+module.name+"' ("+Arrays.toString(module.annotation.packages())+")");
+            Logger.trace("- Processing module '" + module.name + "' (" + Arrays.toString(module.annotation.packages()) + ")");
             Logger.trace("------------------------------------------------");
 
             for (String packageToScan : module.annotation.packages()) {
