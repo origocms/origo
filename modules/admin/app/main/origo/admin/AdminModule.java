@@ -2,6 +2,7 @@ package main.origo.admin;
 
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.AdminSettingsHelper;
+import main.origo.admin.helpers.NavigationHelper;
 import main.origo.admin.themes.AdminTheme;
 import main.origo.core.CoreModule;
 import main.origo.core.annotations.Module;
@@ -23,6 +24,7 @@ public class AdminModule {
         settings.setValueIfMissing(AdminSettingsHelper.Keys.HOME_DASHBOARD_TYPE, Admin.With.FRONT_PAGE);
         settings.setValueIfMissing(AdminSettingsHelper.Keys.THEME_VARIANT, AdminTheme.DEFAULT_VARIANT_NAME);
         settings.save();
+        NavigationHelper.loadNavigationStructure();
     }
 
     @Module.Annotations

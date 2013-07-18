@@ -21,9 +21,6 @@ public class NavigationHelper {
     private static Map<String, NavigationData> navigation;
 
     public static List<NavigationElement> getNavigation(Node node) throws NodeLoadException, ModuleException {
-        if (navigation == null) {
-            navigation = initNavigationData();
-        }
         return createNavigationStructure(navigation, node);
     }
 
@@ -54,7 +51,7 @@ public class NavigationHelper {
         return ProvidesEventGenerator.triggerInterceptor(node, Core.Type.NAVIGATION_ITEM, "origo.admin.navigation", adminNavigation, Collections.<String, Object>emptyMap());
     }
 
-    private static Map<String, NavigationData> initNavigationData() {
+    public static void loadNavigationStructure() {
         List<NavigationData> navigationDataList = readAllNavigationAnnotations();
 
         Map<String, NavigationData> result = Maps.newHashMap();
@@ -62,7 +59,7 @@ public class NavigationHelper {
             String[] aliasSplit = StringUtils.split(navigationData.alias(), "/");
             addNavigationData(aliasSplit, result, navigationData);
         }
-        return result;
+        navigation = result;
     }
 
     private static void addNavigationData(String[] aliasSplit, Map<String, NavigationData> parent, NavigationData navigationData) {

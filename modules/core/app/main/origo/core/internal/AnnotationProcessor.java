@@ -29,8 +29,9 @@ public class AnnotationProcessor {
         InterceptorRepository.invalidate();
         ThemeRepository.invalidate();
         ModuleRepository.invalidate();
-        scanAndInitModules();
+        scanModules();
         scanModuleSuppliedAnnotations();
+        initModules();
         if (Logger.isDebugEnabled()) {
 
             StringBuilder sb = new StringBuilder();
@@ -60,7 +61,7 @@ public class AnnotationProcessor {
         }
     }
 
-    private static void scanAndInitModules() {
+    private static void scanModules() {
 
         final List<Class<?>> modulesClasses = getSortedModuleClasses();
 
@@ -78,11 +79,18 @@ public class AnnotationProcessor {
                     Module moduleAnnotation = (Module) c.getAnnotation(Module.class);
                     assertModuleDependencies(ModuleRepository.getModule(moduleAnnotation.name()));
                 }
+            }
+        });
+
+    }
+
+    private static void initModules() {
+        JPA.withTransaction(new F.Callback0() {
+            @Override
+            public void invoke() throws Throwable {
                 // Third pass: Init all modules
-                for (Class c : modulesClasses) {
+                for (CachedModule cachedModule : ModuleRepository.getAll()) {
                     try {
-                        Module moduleAnnotation = (Module) c.getAnnotation(Module.class);
-                        CachedModule cachedModule = ModuleRepository.getModule(moduleAnnotation.name());
                         if (cachedModule.initMethod != null) {
                             cachedModule.initMethod.invoke(CachedModule.class);
                         }
@@ -92,7 +100,6 @@ public class AnnotationProcessor {
                 }
             }
         });
-
     }
 
     private static void scanModuleSuppliedAnnotations() {
