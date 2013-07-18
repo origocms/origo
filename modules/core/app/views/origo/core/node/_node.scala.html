@@ -3,6 +3,6 @@
     <h3>Node @node.nodeId</h3>
 
     Version @node.version<br/>
-    Type @if(node.nodeType != null){@node.nodeType}else{&lt;not set&gt;}<br/>
-    Publish @if(node.publish != null){@node.publish}else{&lt;not set&gt;}<br/>
-    UnPublish @if(node.unPublish != null){node.unPublish}else{&lt;not set&gt;}<br/>
+    Type @if(node.nodeType() != null){@node.nodeType()}else{&lt;not set&gt;}<br/>
+    Publish @if(node.published() != null){@node.published()}else{&lt;not set&gt;}<br/>
+    UnPublish @if(node.unpublished() != null){node.unpublished()}else{&lt;not set&gt;}<br/>

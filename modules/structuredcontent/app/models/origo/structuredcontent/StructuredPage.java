@@ -43,43 +43,43 @@ public class StructuredPage implements Node {
     public String themeVariant;
 
     @Override
-    public String getNodeId() {
+    public String nodeId() {
         return this.nodeId;
     }
 
     @Override
-    public Integer getVersion() {
+    public Integer version() {
         return this.version;
     }
 
     @Override
-    public Date getDatePublished() {
-        return this.rootNode.publish;
+    public Date published() {
+        return this.rootNode.published();
     }
 
     @Override
-    public Date getDateUnpublished() {
-        return this.rootNode.unPublish;
+    public Date unpublished() {
+        return this.rootNode.unpublished();
     }
 
     @Override
-    public String getTitle() {
+    public String title() {
         return this.title;
     }
 
     @Override
-    public String getThemeVariant() {
+    public String themeVariant() {
         return this.themeVariant;
     }
 
     @Override
-    public Set<String> getRegions() {
-        return rootNode.getRegions();
+    public Set<String> regions() {
+        return rootNode.regions();
     }
 
     @Override
-    public List<Element> getElements(String region) {
-        return rootNode.getElements(region);
+    public List<Element> elements(String region) {
+        return rootNode.elements(region);
     }
 
     @Override

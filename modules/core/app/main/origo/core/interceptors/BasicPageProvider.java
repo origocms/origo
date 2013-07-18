@@ -23,9 +23,9 @@ public class BasicPageProvider {
     @Provides(type = Core.Type.NODE, with = TYPE)
     public static BasicPage loadPage(Provides.Context context) throws NodeNotFoundException {
 
-        BasicPage page = BasicPage.findWithNodeIdAndSpecificVersion(context.node.getNodeId(), context.node.getVersion());
+        BasicPage page = BasicPage.findWithNodeIdAndSpecificVersion(context.node.nodeId(), context.node.version());
         if (page == null) {
-            throw new NodeNotFoundException(context.node.getNodeId());
+            throw new NodeNotFoundException(context.node.nodeId());
         }
         page.rootNode = (RootNode) context.node;
 

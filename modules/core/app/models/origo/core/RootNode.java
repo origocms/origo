@@ -3,10 +3,6 @@ package models.origo.core;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import main.origo.core.Node;
-import main.origo.core.NodeLoadException;
-import main.origo.core.annotations.Core;
-import main.origo.core.event.ProvidesEventGenerator;
-import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.helpers.ElementHelper;
 import main.origo.core.ui.Element;
 import play.data.validation.Constraints;
@@ -21,22 +17,22 @@ public final class RootNode extends Model<RootNode> implements Node {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long id;
+    private Long id;
 
     @Constraints.Required
-    public String nodeId;
+    private String nodeId;
 
     @Constraints.Required
-    public Integer version;
+    private Integer version;
 
     @Temporal(value = TemporalType.TIMESTAMP)
-    public Date publish;
+    private Date publish;
 
     @Temporal(value = TemporalType.TIMESTAMP)
-    public Date unPublish;
+    private Date unPublish;
 
     @Column(name = "type")
-    public String nodeType;
+    private String nodeType;
 
     /**
      * Only kept to make sure all elements added to the HEAD region are unique (we don't want duplicate javascript or css resources).
@@ -69,43 +65,67 @@ public final class RootNode extends Model<RootNode> implements Node {
     }
 
     @Override
-    public String getTitle() {
+    public String title() {
         return toString();
     }
 
     @Override
-    public String getNodeId() {
+    public String nodeId() {
         return nodeId;
     }
 
+    public void nodeId(String nodeId) {
+        this.nodeId = nodeId;
+    }
+
     @Override
-    public Integer getVersion() {
+    public Integer version() {
         return version;
     }
 
+    public void version(Integer version) {
+        this.version = version;
+    }
+
     @Override
-    public Date getDatePublished() {
+    public Date published() {
         return publish;
     }
 
+    public void published(Date date) {
+        this.publish = date;
+    }
+
     @Override
-    public Date getDateUnpublished() {
+    public Date unpublished() {
         return unPublish;
     }
 
-    @Override
-    public String getThemeVariant() {
-        return null;
+    public void unpublished(Date date) {
+        this.unPublish = date;
     }
 
     @Override
-    public Set<String> getRegions() {
+    public String themeVariant() {
+        return null;
+    }
+
+    public String nodeType() {
+        return nodeType;
+    }
+
+    public void nodeType(String nodeType) {
+        this.nodeType = nodeType;
+    }
+
+    @Override
+    public Set<String> regions() {
         return this.elements.keySet();
     }
 
     /* Interface methods */
     @Override
-    public List<Element> getElements(String region) {
+    public List<Element> elements(String region) {
         return this.elements.get(region.toLowerCase());
     }
 
@@ -207,8 +227,8 @@ public final class RootNode extends Model<RootNode> implements Node {
 
     @Override
     public boolean hasElements() {
-        for (String region : getRegions()) {
-            if (getElements(region).size()>1) {
+        for (String region : regions()) {
+            if (elements(region).size()>1) {
                 return true;
             }
         }

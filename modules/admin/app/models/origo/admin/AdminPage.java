@@ -25,27 +25,27 @@ public class AdminPage implements Node {
     }
 
     @Override
-    public String getNodeId() {
-        return this.rootNode.getNodeId();
+    public String nodeId() {
+        return this.rootNode.nodeId();
     }
 
     @Override
-    public Integer getVersion() {
-        return rootNode.getVersion();
+    public Integer version() {
+        return rootNode.version();
     }
 
     @Override
-    public Date getDatePublished() {
-        return rootNode.getDatePublished();
+    public Date published() {
+        return rootNode.published();
     }
 
     @Override
-    public Date getDateUnpublished() {
-        return rootNode.getDateUnpublished();
+    public Date unpublished() {
+        return rootNode.unpublished();
     }
 
     @Override
-    public String getTitle() {
+    public String title() {
         return title;
     }
 
@@ -54,8 +54,8 @@ public class AdminPage implements Node {
     }
 
     @Override
-    public String getThemeVariant() {
-        return rootNode.getThemeVariant();
+    public String themeVariant() {
+        return rootNode.themeVariant();
     }
 
     public void setThemeVariant(String themeVariant) {
@@ -63,14 +63,14 @@ public class AdminPage implements Node {
     }
 
     @Override
-    public Set<String> getRegions() {
-        return rootNode.getRegions();
+    public Set<String> regions() {
+        return rootNode.regions();
     }
 
     /* Interface methods */
     @Override
-    public List<Element> getElements(String region) {
-        return rootNode.getElements(region);
+    public List<Element> elements(String region) {
+        return rootNode.elements(region);
     }
 
     @Override
@@ -138,7 +138,7 @@ public class AdminPage implements Node {
         return new StringBuilder().append("AdminPage {").
                 append("type='").append(type).append("\', ").
                 append("title='").append(title).append("\', ").
-                append("themeVariant='").append(getThemeVariant()).append("\', ").
+                append("themeVariant='").append(themeVariant()).append("\', ").
                 toString();
     }
 }

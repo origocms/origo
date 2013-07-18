@@ -78,13 +78,13 @@ public class BasicNavigationProvider {
         RootNode referencedRootNode = RootNode.findLatestPublishedVersionWithNodeId(navigationModel.pageId);
         try {
             if (referencedRootNode != null) {
-                Node referencedNode = ProvidesEventGenerator.triggerInterceptor(referencedRootNode, Core.Type.NODE, referencedRootNode.nodeType);
+                Node referencedNode = ProvidesEventGenerator.triggerInterceptor(referencedRootNode, Core.Type.NODE, referencedRootNode.nodeType());
                 if (referencedNode != null) {
-                    boolean selected = context.node.getNodeId().equals(referencedRootNode.getNodeId());
+                    boolean selected = context.node.nodeId().equals(referencedRootNode.nodeId());
                     NavigationElement ne = new NavigationElement();
                     ne.id = navigationModel.identifier;
                     ne.section = navigation.getSection();
-                    ne.title = referencedNode.getTitle();
+                    ne.title = referencedNode.title();
                     ne.link = navigationModel.getLink();
                     ne.weight = navigation.getWeight();
                     ne.selected = selected;

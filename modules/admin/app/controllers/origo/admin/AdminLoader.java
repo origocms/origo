@@ -100,19 +100,14 @@ public class AdminLoader {
     }
 
     private static Node loadByType(String withType, String identifier) throws NodeLoadException, ModuleException {
-        RootNode rootNode = loadRootNode(withType, identifier);
+        RootNode rootNode = new RootNode(identifier, 0);
+        rootNode.nodeType(withType);
         return NodeHelper.load(rootNode);
     }
 
     private static RootNode loadRootNode(String withType) {
         RootNode rootNode = new RootNode(0);
-        rootNode.nodeType = withType;
-        return rootNode;
-    }
-
-    private static RootNode loadRootNode(String withType, String identifier) {
-        RootNode rootNode = loadRootNode(withType);
-        rootNode.nodeId = identifier;
+        rootNode.nodeType(withType);
         return rootNode;
     }
 

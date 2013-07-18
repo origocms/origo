@@ -41,14 +41,14 @@ public class NodeHelper {
         // We'll set the root node for now, hopefully it will be overridden during load
         NodeContext.current().node = rootNode;
 
-        boolean hasType = !StringUtils.isBlank(rootNode.nodeType) && !rootNode.nodeType.equals(RootNode.class.getName());
+        boolean hasType = !StringUtils.isBlank(rootNode.nodeType()) && !rootNode.nodeType().equals(RootNode.class.getName());
         if (hasType) {
-            OnLoadEventGenerator.triggerBeforeInterceptor(rootNode, Core.Type.NODE, rootNode.nodeType, Collections.<String, Object>emptyMap());
+            OnLoadEventGenerator.triggerBeforeInterceptor(rootNode, Core.Type.NODE, rootNode.nodeType(), Collections.<String, Object>emptyMap());
         }
 
         Node node = rootNode;
         if (hasType) {
-            node = ProvidesEventGenerator.triggerInterceptor(node, Core.Type.NODE, rootNode.nodeType);
+            node = ProvidesEventGenerator.triggerInterceptor(node, Core.Type.NODE, rootNode.nodeType());
             if (node != null) {
                 // We found a new type to override the root node with
                 NodeContext.current().node = node;
@@ -56,7 +56,7 @@ public class NodeHelper {
         }
 
         if (hasType) {
-            OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.NODE, rootNode.nodeType, Collections.<String, Object>emptyMap());
+            OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.NODE, rootNode.nodeType(), Collections.<String, Object>emptyMap());
         }
 
         return node;

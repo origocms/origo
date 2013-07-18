@@ -7,7 +7,6 @@ import main.origo.core.annotations.Core;
 import main.origo.core.event.ProvidesEventGenerator;
 import main.origo.core.helpers.CoreSettingsHelper;
 import models.origo.core.Alias;
-import models.origo.core.BasicPage;
 import models.origo.core.Model;
 import models.origo.core.RootNode;
 import play.data.validation.Constraints;
@@ -51,11 +50,11 @@ public class InternalPageIdNavigation extends Model<InternalPageIdNavigation> {
             if (rootNode == null) {
                 throw new NodeLoadException(identifier, "The navigation with id='"+identifier+"' references pageId='"+pageId+"' which doesn't exist");
             }
-            Node node = ProvidesEventGenerator.triggerInterceptor(rootNode, Core.Type.NODE, rootNode.nodeType);
+            Node node = ProvidesEventGenerator.triggerInterceptor(rootNode, Core.Type.NODE, rootNode.nodeType());
             if (node == null) {
-                throw new NodeLoadException(identifier, "The node with id='"+rootNode.nodeId+"' is not associated with an instance of type '"+rootNode.nodeType+"'");
+                throw new NodeLoadException(identifier, "The node with id='"+rootNode.nodeId()+"' is not associated with an instance of type '"+rootNode.nodeType()+"'");
             }
-            return CoreSettingsHelper.getBaseUrl() + node.getNodeId();
+            return CoreSettingsHelper.getBaseUrl() + node.nodeId();
         } else {
             Alias alias = aliases.iterator().next();
             return CoreSettingsHelper.getBaseUrl() + alias.path;
