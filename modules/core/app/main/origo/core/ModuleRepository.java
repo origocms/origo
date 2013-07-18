@@ -4,8 +4,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import main.origo.core.annotations.Module;
 import main.origo.core.internal.CachedModule;
+import models.origo.core.Settings;
 import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
+import play.Logger;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -56,5 +58,25 @@ public class ModuleRepository {
         ArrayList<CachedModule> moduleList = Lists.newArrayList(modules.values());
         Collections.sort(moduleList);
         return moduleList;
+    }
+
+    public static boolean isEnabled(CachedModule module) {
+        Settings settings = Settings.load();
+        return settings.getValueAsBoolean("module." + module.name + ".enabled", true);
+    }
+
+    public static void enable(CachedModule module) {
+        Settings settings = Settings.load();
+        settings.setValue("module."+ module.name+ ".enabled", Boolean.toString(true));
+        settings.save();
+    }
+
+    public static void enable(String moduleName) throws ModuleException {
+        if (!modules.containsKey(moduleName)) {
+            Logger.error("Unknown module '"+moduleName+"'");
+            throw new ModuleException(moduleName, ModuleException.Cause.NOT_INSTALLED, "Unknown module '"+moduleName+"'");
+        }
+
+        enable(modules.get(moduleName));
     }
 }

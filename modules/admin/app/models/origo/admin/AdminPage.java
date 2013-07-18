@@ -17,6 +17,8 @@ public class AdminPage implements Node {
 
     public String title;
 
+    public String themeVariant;
+
     public AdminPage(String type, RootNode node) {
         this.type = type;
         this.rootNode = node;
@@ -57,7 +59,7 @@ public class AdminPage implements Node {
     }
 
     public void setThemeVariant(String themeVariant) {
-        rootNode.themeVariant = themeVariant;
+        this.themeVariant = themeVariant;
     }
 
     @Override

@@ -13,48 +13,28 @@ public class Dashboard extends Controller {
     public static Result index() {
         //TODO: Check if config !exists and redirect to wizard
 
-        try {
-            return AdminLoader.getFrontDashboard();
-        } catch (Exception e) {
-            Logger.error("Error: " + e.getMessage(), e);
-            return CoreLoader.loadPageLoadErrorPage();
-        }
+        return AdminLoader.getFrontDashboard();
     }
 
     @Transactional
     public static Result dashboard(String dashboard) {
         //TODO: Check if config !exists and redirect to wizard
 
-        try {
-            return AdminLoader.getDashboard(dashboard);
-        } catch (Exception e) {
-            Logger.error("Error: " + e.getMessage(), e);
-            return CoreLoader.loadPageLoadErrorPage();
-        }
+        return AdminLoader.getDashboard(dashboard);
     }
 
     @Transactional
     public static Result pageWithType(String dashboard, String withType) {
         //TODO: Check if config !exists and redirect to wizard
 
-        try {
-            return AdminLoader.getPage(withType);
-        } catch (Exception e) {
-            Logger.error("Error: " + e.getMessage(), e);
-            return CoreLoader.loadPageLoadErrorPage();
-        }
+        return AdminLoader.getPage(withType);
     }
 
     @Transactional
     public static Result pageWithTypeAndIdentifier(String dashboard, String type, String identifier) {
         //TODO: Check if config !exists and redirect to wizard
 
-        try {
-            return AdminLoader.getPage(type, identifier);
-        } catch (Exception e) {
-            Logger.error("Error: " + e.getMessage(), e);
-            return CoreLoader.loadPageLoadErrorPage();
-        }
+        return AdminLoader.getPage(type, identifier);
     }
 
 }

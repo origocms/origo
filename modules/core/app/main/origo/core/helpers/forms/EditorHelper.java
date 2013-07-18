@@ -1,6 +1,8 @@
 package main.origo.core.helpers.forms;
 
+import main.origo.core.ModuleException;
 import main.origo.core.Node;
+import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Core;
 import main.origo.core.event.OnLoadEventGenerator;
 import main.origo.core.event.ProvidesEventGenerator;
@@ -11,7 +13,7 @@ import java.util.Collections;
 
 public class EditorHelper {
 
-    public static Element createRichTextEditor(Node node, Content content) {
+    public static Element createRichTextEditor(Node node, Content content) throws NodeLoadException, ModuleException {
         EditorHelper.triggerBeforeRichTextEditorLoaded(node, Core.With.EDITOR, content);
         Element richTextEditor = EditorHelper.triggerProvidesRichTextEditorInterceptor(node, Core.With.EDITOR, content);
         EditorHelper.triggerAfterRichTextEditorLoaded(node, Core.With.EDITOR, richTextEditor, content);
@@ -21,7 +23,7 @@ public class EditorHelper {
     /*
     * Convenience methods for hooks with RICHTEXT_EDITOR type
     */
-    public static Element triggerProvidesRichTextEditorInterceptor(Node node, String withType, Content content) {
+    public static Element triggerProvidesRichTextEditorInterceptor(Node node, String withType, Content content) throws ModuleException, NodeLoadException {
         return ProvidesEventGenerator.triggerInterceptor(node, Core.Type.NODE, withType, Collections.<String, Object>singletonMap("content", content));
     }
 

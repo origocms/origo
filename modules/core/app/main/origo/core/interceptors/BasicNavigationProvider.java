@@ -1,8 +1,10 @@
 package main.origo.core.interceptors;
 
 import com.google.common.collect.Lists;
+import main.origo.core.ModuleException;
 import main.origo.core.Navigation;
 import main.origo.core.Node;
+import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.Provides;
@@ -13,9 +15,9 @@ import models.origo.core.RootNode;
 import models.origo.core.navigation.BasicNavigation;
 import models.origo.core.navigation.ExternalLinkNavigation;
 import models.origo.core.navigation.InternalPageIdNavigation;
+import play.Logger;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,7 +33,7 @@ import java.util.List;
 public class BasicNavigationProvider {
 
     @Provides(type = Core.Type.NAVIGATION, with = BasicNavigation.TYPE)
-    public static List<NavigationElement> createNavigation(Provides.Context context) {
+    public static List<NavigationElement> createNavigation(Provides.Context context) throws NodeLoadException, ModuleException {
         List<NavigationElement> navigationElements = Lists.newArrayList();
         String section = (String) context.args.get("section");
         NavigationEventGenerator.triggerBeforeNavigationLoaded(context.node, BasicNavigation.class.getName(), section);
@@ -39,17 +41,19 @@ public class BasicNavigationProvider {
         for (BasicNavigation navigationModel : navigationModels) {
             NavigationEventGenerator.triggerBeforeNavigationItemLoaded(context.node, navigationModel.type, navigationModel);
             NavigationElement navigationElement = NavigationEventGenerator.triggerProvidesNavigationItemInterceptor(context.node, navigationModel.type, navigationModel);
-            NavigationEventGenerator.triggerAfterNavigationItemLoaded(context.node, navigationModel.type, navigationModel, navigationElement);
-            List<NavigationElement> children = createNavigationChildren(context.node, section, navigationModel, navigationElement);
-            Collections.sort(children);
-            navigationElement.children.addAll(children);
-            navigationElements.add(navigationElement);
+            if (navigationElement != null) {
+                NavigationEventGenerator.triggerAfterNavigationItemLoaded(context.node, navigationModel.type, navigationModel, navigationElement);
+                List<NavigationElement> children = createNavigationChildren(context.node, section, navigationModel, navigationElement);
+                Collections.sort(children);
+                navigationElement.children.addAll(children);
+                navigationElements.add(navigationElement);
+            }
         }
         NavigationEventGenerator.triggerAfterNavigationLoaded(context.node, BasicNavigation.class.getName(), (Navigation) context.args.get("navigation"), navigationElements, section);
         return navigationElements;
     }
 
-    private static List<NavigationElement> createNavigationChildren(Node node, String section, BasicNavigation navigationModel, NavigationElement parentNavigationElement) {
+    private static List<NavigationElement> createNavigationChildren(Node node, String section, BasicNavigation navigationModel, NavigationElement parentNavigationElement) throws NodeLoadException, ModuleException {
         List<NavigationElement> navigationElements = Lists.newArrayList();
         List<BasicNavigation> navigationModels = BasicNavigation.findWithSection(section, navigationModel);
         for (BasicNavigation childNavigation : navigationModels) {
@@ -68,23 +72,36 @@ public class BasicNavigationProvider {
     }
 
     @Provides(type = Core.Type.NAVIGATION_ITEM, with = InternalPageIdNavigation.TYPE)
-    public static NavigationElement createPageIdNavigation(Provides.Context context) {
+    public static NavigationElement createPageIdNavigation(Provides.Context context) throws ModuleException, NodeLoadException {
         Navigation navigation = (Navigation) context.args.get("navigation");
         InternalPageIdNavigation navigationModel = InternalPageIdNavigation.findWithIdentifier(navigation.getReferenceId());
-        RootNode referencedRootNode = RootNode.findLatestPublishedVersionWithNodeId(navigationModel.pageId, new Date());
-        if (referencedRootNode != null) {
-            Node referencedNode = ProvidesEventGenerator.triggerInterceptor(referencedRootNode, Core.Type.NODE, referencedRootNode.nodeType);
-            boolean selected = context.node.getNodeId().equals(referencedRootNode.getNodeId());
-            NavigationElement ne = new NavigationElement();
-            ne.id = navigationModel.identifier;
-            ne.section = navigation.getSection();
-            ne.title = referencedNode.getTitle();
-            ne.link = navigationModel.getLink();
-            ne.weight = navigation.getWeight();
-            ne.selected = selected;
-            return ne;
-        } else {
-            throw new RuntimeException("Page not found [" + navigationModel.pageId + "]");
+        RootNode referencedRootNode = RootNode.findLatestPublishedVersionWithNodeId(navigationModel.pageId);
+        try {
+            if (referencedRootNode != null) {
+                Node referencedNode = ProvidesEventGenerator.triggerInterceptor(referencedRootNode, Core.Type.NODE, referencedRootNode.nodeType);
+                if (referencedNode != null) {
+                    boolean selected = context.node.getNodeId().equals(referencedRootNode.getNodeId());
+                    NavigationElement ne = new NavigationElement();
+                    ne.id = navigationModel.identifier;
+                    ne.section = navigation.getSection();
+                    ne.title = referencedNode.getTitle();
+                    ne.link = navigationModel.getLink();
+                    ne.weight = navigation.getWeight();
+                    ne.selected = selected;
+                    return ne;
+                } else {
+                    throw new RuntimeException("Page referenced in navigation not found [" + navigationModel.pageId + "]");
+                }
+            } else {
+                throw new RuntimeException("Navigation not found [" + navigationModel.pageId + "]");
+            }
+        } catch (ModuleException e) {
+            if (e.cause == ModuleException.Cause.NOT_ENABLED) {
+                Logger.info("Navigation with referenceId='"+navigation.getReferenceId()+"' refers to a module that is disabled. Ignoring.");
+                return null;
+            } else {
+                throw e;
+            }
         }
     }
 

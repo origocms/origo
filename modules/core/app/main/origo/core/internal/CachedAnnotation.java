@@ -7,17 +7,20 @@ import java.lang.reflect.Method;
 
 public class CachedAnnotation implements Comparable<CachedAnnotation> {
 
+    public final CachedModule module;
     public final Annotation annotation;
     public final Method method;
     public final Relationship relationship;
 
-    public CachedAnnotation(Annotation annotation, Method method) {
+    public CachedAnnotation(CachedModule module, Annotation annotation, Method method) {
+        this.module = module;
         this.annotation = annotation;
         this.method = method;
         this.relationship = null;
     }
 
-    public CachedAnnotation(Annotation annotation, Method method, Relationship relationship) {
+    public CachedAnnotation(CachedModule module, Annotation annotation, Method method, Relationship relationship) {
+        this.module = module;
         this.annotation = annotation;
         this.method = method;
         this.relationship = relationship;

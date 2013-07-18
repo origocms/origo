@@ -17,7 +17,7 @@ public class RenderedNode {
     private List<Html> _head = Lists.newArrayList();
     private List<Html> _tail = Lists.newArrayList();
 
-    private CachedThemeVariant _template;
+    private CachedThemeVariant _themeVariant;
     private Map<String, List<Html>> regions = Maps.newHashMap();
 
     private List<NavigationElement> _navigation = Lists.newArrayList();
@@ -58,12 +58,12 @@ public class RenderedNode {
         this._tail = tail;
     }
 
-    public CachedThemeVariant template() {
-        return _template;
+    public CachedThemeVariant themeVariant() {
+        return _themeVariant;
     }
 
-    public void template(CachedThemeVariant template) {
-        this._template = template;
+    public void template(CachedThemeVariant themeVariant) {
+        this._themeVariant = themeVariant;
     }
 
     public Map<String, List<Html>> regions() {

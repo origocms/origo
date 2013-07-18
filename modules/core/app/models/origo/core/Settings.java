@@ -50,46 +50,65 @@ public class Settings {
      * Getting general settings based on name
      */
 
-    public Integer getValueAsInteger(final String name) {
+    public Integer getValueAsInteger(String name) {
+        return getValueAsInteger(name, null);
+    }
+
+    public Integer getValueAsInteger(String name, Integer defaultValue) {
         final String value = getValues().get(name);
         if (value != null) {
             return Integer.parseInt(value);
         }
-        return null;
+        return defaultValue;
     }
 
-    public Long getValueAsLong(final String name) {
+    public Long getValueAsLong(String name) {
+        return getValueAsLong(name, null);
+    }
+
+    public Long getValueAsLong(String name, Long defaultValue) {
         final String value = getValues().get(name);
         if (value != null) {
             return Long.parseLong(value);
         }
-        return null;
+        return defaultValue;
     }
 
     public Boolean getValueAsBoolean(String name) {
+        return getValueAsBoolean(name, null);
+    }
+
+    public Boolean getValueAsBoolean(String name, Boolean defaultValue) {
         final String value = getValues().get(name);
         if (value != null) {
             return Boolean.parseBoolean(value);
         }
-        return null;
+        return defaultValue;
     }
 
-    public Double getValueAsDouble(final String name) {
+    public Double getValueAsDouble(String name) {
+        return getValueAsDouble(name, null);
+    }
+
+    public Double getValueAsDouble(String name, Double defaultValue) {
         final String value = getValues().get(name);
         if (value != null) {
             return Double.parseDouble(value);
         }
-        return null;
+        return defaultValue;
     }
 
-    public Float getValueAsFloat(final String name) {
+    public Float getValueAsFloat(String name) {
+        return getValueAsFloat(name, null);
+    }
+
+    public Float getValueAsFloat(String name, Float defaultValue) {
         final String value = getValues().get(name);
         if (value != null) {
             return Float.parseFloat(value);
         }
-        return null;
+        return defaultValue;
     }
-
 
     public void setValueIfMissing(String settingKey, String newValue) {
         if (StringUtils.isBlank(getValue(settingKey))) {

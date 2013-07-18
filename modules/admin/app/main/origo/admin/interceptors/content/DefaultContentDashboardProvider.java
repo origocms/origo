@@ -4,6 +4,7 @@ import controllers.origo.admin.routes;
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.DashboardHelper;
 import main.origo.admin.themes.AdminTheme;
+import main.origo.core.ModuleException;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Core;
@@ -13,6 +14,7 @@ import main.origo.core.annotations.Relationship;
 import main.origo.core.ui.Element;
 import models.origo.admin.AdminPage;
 import models.origo.core.RootNode;
+import play.Logger;
 
 @Interceptor
 public class DefaultContentDashboardProvider {
@@ -49,7 +51,12 @@ public class DefaultContentDashboardProvider {
         page.setTitle("Content - Dashboard");
 
         context.node.addElement(DashboardHelper.createBreadcrumb(Core.With.CONTENT_PAGE), AdminTheme.topMeta());
-        context.node.addElement(DashboardHelper.createDashboard(context.node, Core.With.CONTENT_PAGE));
+        try {
+            context.node.addElement(DashboardHelper.createDashboard(context.node, Core.With.CONTENT_PAGE));
+        } catch (ModuleException e) {
+            // TODO: recover somehow?
+            Logger.error("Unable to load dashboard", e);
+        }
 
         return page;
     }

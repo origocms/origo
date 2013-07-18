@@ -49,9 +49,10 @@ public class BasicPage extends Model<BasicPage> implements Node {
     @Constraints.Required
     public String bodyReferenceId;
 
+    public String themeVariant;
+
     public BasicPage() {
         super(TYPE);
-        this.title = "";
     }
 
     @Override
@@ -76,12 +77,12 @@ public class BasicPage extends Model<BasicPage> implements Node {
 
     @Override
     public String getTitle() {
-        return title;
+        return this.title;
     }
 
     @Override
     public String getThemeVariant() {
-        return rootNode.themeVariant;
+        return this.themeVariant;
     }
 
     @Override
@@ -159,8 +160,8 @@ public class BasicPage extends Model<BasicPage> implements Node {
         RootNode rootNodeCopy = rootNode.copy(true);
         newPage.rootNode = rootNodeCopy;
         newPage.nodeId = nodeId;
-        newPage.version = rootNodeCopy.version;
         newPage.title = title;
+        newPage.version = rootNodeCopy.version;
         newPage.leadReferenceId = leadReferenceId;
         newPage.bodyReferenceId = bodyReferenceId;
         return newPage;
@@ -173,7 +174,6 @@ public class BasicPage extends Model<BasicPage> implements Node {
                 append("nodeId='").append(nodeId).append("\', ").
                 append("version=").append(version).append(", ").
                 append("rootNode=").append(rootNode).append(", ").
-                append("title='").append(title).append("\', ").
                 append("leadReferenceId='").append(leadReferenceId).append("\', ").
                 append("bodyReferenceId='").append(bodyReferenceId).append("\', ").
                 append('}').toString();
@@ -181,7 +181,7 @@ public class BasicPage extends Model<BasicPage> implements Node {
 
     public static List<BasicPage> findAllCurrentVersions(Date asOfDate) {
         try {
-            String queryString = "select p from "+BasicPage.class.getName()+" p " +
+            String queryString = "select p from " + BasicPage.class.getName() + " p " +
                     "where p.id in (" +
                     "select n.id from models.origo.core.RootNode n where n.version = (" +
                     "select max(n2.version) from models.origo.core.RootNode n2 " +
@@ -197,28 +197,30 @@ public class BasicPage extends Model<BasicPage> implements Node {
         }
     }
 
-    public static BasicPage findCurrentVersion(String nodeId, Date asOfDate) {
+    public static BasicPage findPublishedVersion(String nodeId, Date asOfDate) {
         try {
-            String queryString = "select p from "+BasicPage.class.getName()+" p " +
-                    "where p.nodeId = :nodeId and p.id in (" +
-                    "select n.id from models.origo.core.RootNode n where n.version = (" +
-                    "select max(n2.version) from models.origo.core.RootNode n2 " +
-                    "where n2.nodeId = n.nodeId and " +
-                    "(n2.publish = null or n2.publish < :today) and" +
-                    "(n2.unPublish = null or n2.unPublish >= :today)" +
-                    "))";
-            final Query query = JPA.em().createQuery(queryString);
-            query.setParameter("nodeId", nodeId);
-            query.setParameter("today", asOfDate);
-            return (BasicPage) query.getSingleResult();
+            return (BasicPage) JPA.em().createQuery(
+                    "select p from " + BasicPage.class.getName() + " p " +
+                            "where p.nodeId = :nodeId and p.id in (" +
+                            "select n.id from models.origo.core.RootNode n where n.version = (" +
+                            "select max(n2.version) from models.origo.core.RootNode n2 " +
+                            "where n2.nodeId = n.nodeId and " +
+                            "(n2.publish = null or n2.publish < :today) and" +
+                            "(n2.unPublish = null or n2.unPublish >= :today)" +
+                            "))"
+            ).setParameter("nodeId", nodeId).setParameter("today", asOfDate).getSingleResult();
         } catch (NoResultException e) {
             return null;
         }
     }
 
+    public static BasicPage findLatestPublishedVersion(String nodeId) {
+        return findPublishedVersion(nodeId, new Date());
+    }
+
     public static BasicPage findLatestVersion(String nodeId) {
         try {
-            String queryString = "select p from "+BasicPage.class.getName()+" p " +
+            String queryString = "select p from " + BasicPage.class.getName() + " p " +
                     "where p.nodeId = :nodeId and p.version = (" +
                     "select max(n.version) from models.origo.core.RootNode n " +
                     "where n.nodeId = p.nodeId" +
@@ -233,7 +235,7 @@ public class BasicPage extends Model<BasicPage> implements Node {
 
     public static BasicPage findWithNodeIdAndSpecificVersion(String nodeId, Integer version) {
         try {
-            String queryString = "select p from "+BasicPage.class.getName()+" p " +
+            String queryString = "select p from " + BasicPage.class.getName() + " p " +
                     "where p.nodeId = :nodeId and p.version = :version";
             final Query query = JPA.em().createQuery(queryString);
             query.setParameter("nodeId", nodeId);
@@ -246,7 +248,7 @@ public class BasicPage extends Model<BasicPage> implements Node {
 
     public static List<BasicPage> findAllLatestVersions() {
         try {
-            String queryString = "select p from "+BasicPage.class.getName()+" p " +
+            String queryString = "select p from " + BasicPage.class.getName() + " p " +
                     "where p.version = (" +
                     "select max(n.version) from models.origo.core.RootNode n " +
                     "where n.nodeId = p.nodeId" +
