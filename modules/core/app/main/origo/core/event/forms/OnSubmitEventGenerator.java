@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import play.Logger;
 import play.data.DynamicForm;
 
+import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -14,12 +15,19 @@ import java.util.Map;
 
 public class OnSubmitEventGenerator {
 
-    public static void triggerInterceptors(String withType, DynamicForm form) {
-        triggerInterceptors(withType, form, Collections.<String, Object>emptyMap());
+    public static void triggerInterceptors(String withType) {
+        triggerInterceptors(withType, Collections.<String, Object>emptyMap());
     }
 
-    public static void triggerInterceptors(String withType, DynamicForm form, Map<String, Object> args) {
+    public static void triggerInterceptors(String withType, Map<String, Object> args) {
         List<CachedAnnotation> cachedAnnotations = findOnPostInterceptorsWithType(withType);
+        if (Logger.isDebugEnabled()) {
+            StringBuffer sb = new StringBuffer();
+            for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
+                sb.append(" - ").append(cachedAnnotation.method.getClass()).append("\n");
+            }
+            Logger.debug("OnSubmitHandler about to be triggered(in order):\n" + sb.toString());
+        }
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
             try {
                 //noinspection unchecked

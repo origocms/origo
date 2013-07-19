@@ -53,7 +53,7 @@ public class ProvidesEventHandlerAdminProvider {
 
     @Admin.Navigation(alias = "/settings/provides", key = "breadcrumb.origo.admin.dashboard.settings.event.provides")
     public static String getProviderUrl() {
-        return routes.Dashboard.pageWithType(Core.With.CONTENT_PAGE, EDIT_TYPE).url();
+        return routes.Application.pageWithType(EDIT_TYPE).url();
     }
 
     /**

@@ -3,10 +3,12 @@
 # ~~~~
 
 # Home page
-GET     /dashboard/:dashboard/:withType/:identifier     controllers.origo.admin.Dashboard.pageWithTypeAndIdentifier(dashboard:String, withType:String, identifier:String)
-GET     /dashboard/:dashboard/:withType                 controllers.origo.admin.Dashboard.pageWithType(dashboard:String, withType:String)
 GET     /dashboard/:dashboard                           controllers.origo.admin.Dashboard.dashboard(dashboard:String)
 GET     /                                               controllers.origo.admin.Dashboard.index()
+
+GET     /:withType                                      controllers.origo.admin.Application.pageWithType(withType:String)
+GET     /:withType/:identifier                          controllers.origo.admin.Application.pageWithTypeAndIdentifier(withType:String, identifier:String)
+GET     /edit/:withType/:identifier                     controllers.origo.admin.Application.pageWithTypeAndIdentifier(withType:String, identifier:String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                                   controllers.Assets.at(path="/public", file)

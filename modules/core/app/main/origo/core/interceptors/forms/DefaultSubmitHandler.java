@@ -34,7 +34,7 @@ public class DefaultSubmitHandler {
 
         // TODO: insert validation here
 
-        OnSubmitEventGenerator.triggerInterceptors(withType, form);
+        OnSubmitEventGenerator.triggerInterceptors(withType);
 
         return SubmitStateEventGenerator.triggerInterceptor(SubmitState.SUCCESS, withType, form);
     }

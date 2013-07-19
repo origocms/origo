@@ -53,11 +53,17 @@ public class BasicPage extends Model<BasicPage> implements Node {
 
     public BasicPage() {
         super(TYPE);
+        rootNode = new RootNode(0);
     }
 
     @Override
     public String nodeId() {
         return this.nodeId;
+    }
+
+    @Override
+    public String nodeType() {
+        return TYPE;
     }
 
     @Override

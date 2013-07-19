@@ -7,6 +7,7 @@ import main.origo.core.event.forms.OnDeleteEventGenerator;
 import main.origo.core.event.forms.OnUpdateEventGenerator;
 import main.origo.core.ui.Element;
 import models.origo.core.Meta;
+import models.origo.core.Model;
 import models.origo.core.RootNode;
 import play.data.validation.Constraints;
 import play.db.jpa.JPA;
@@ -18,7 +19,7 @@ import java.util.Set;
 
 @Entity
 @Table(name="page_structured", uniqueConstraints = @UniqueConstraint(name = "pageVersion", columnNames = {"parentNodeId", "parentVersion"}))
-public class StructuredPage implements Node {
+public class StructuredPage extends Model<StructuredPage> implements Node {
 
     public static final String TYPE = Core.With.CONTENT_PAGE + ".structuredpage";
 
@@ -42,9 +43,19 @@ public class StructuredPage implements Node {
 
     public String themeVariant;
 
+    public StructuredPage() {
+        super(TYPE);
+        rootNode = new RootNode(0);
+    }
+
     @Override
     public String nodeId() {
         return this.nodeId;
+    }
+
+    @Override
+    public String nodeType() {
+        return TYPE;
     }
 
     @Override
@@ -198,23 +209,4 @@ public class StructuredPage implements Node {
                 getSingleResult();
     }
 
-    public StructuredPage create() {
-        OnCreateEventGenerator.triggerBeforeInterceptors(Core.With.CONTENT_PAGE+".structured", this);
-        JPA.em().persist(this);
-        OnCreateEventGenerator.triggerAfterInterceptors(Core.With.CONTENT_PAGE+".structured", this);
-        return this;
-    }
-
-    public StructuredPage update() {
-        OnUpdateEventGenerator.triggerBeforeInterceptors(Core.With.CONTENT_PAGE+".structured", this);
-        JPA.em().merge(this);
-        OnUpdateEventGenerator.triggerAfterInterceptors(Core.With.CONTENT_PAGE+".structured", this);
-        return this;
-    }
-
-    public void delete() {
-        OnDeleteEventGenerator.triggerBeforeInterceptors(Core.With.CONTENT_PAGE+".structured", this);
-        JPA.em().remove(this);
-        OnDeleteEventGenerator.triggerAfterInterceptors(Core.With.CONTENT_PAGE+".structured", this);
-    }
 }

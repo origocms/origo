@@ -23,18 +23,4 @@ public class Dashboard extends Controller {
         return AdminLoader.getDashboard(dashboard);
     }
 
-    @Transactional
-    public static Result pageWithType(String dashboard, String withType) {
-        //TODO: Check if config !exists and redirect to wizard
-
-        return AdminLoader.getPage(withType);
-    }
-
-    @Transactional
-    public static Result pageWithTypeAndIdentifier(String dashboard, String type, String identifier) {
-        //TODO: Check if config !exists and redirect to wizard
-
-        return AdminLoader.getPage(type, identifier);
-    }
-
 }

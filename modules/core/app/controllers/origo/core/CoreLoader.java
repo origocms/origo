@@ -1,9 +1,6 @@
 package controllers.origo.core;
 
-import main.origo.core.ModuleException;
-import main.origo.core.Node;
-import main.origo.core.NodeLoadException;
-import main.origo.core.NodeNotFoundException;
+import main.origo.core.*;
 import main.origo.core.event.NodeContext;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.helpers.NavigationHelper;
@@ -58,15 +55,16 @@ public class CoreLoader {
         }
     }
 
-    private static Result handleException(Exception e) {
+    public static Result handleException(Exception e) {
         if (Play.isDev()) {
             Throwable thrown = e;
-            while(thrown instanceof RuntimeException) {
+            while(e.getCause() != null &&
+                    (thrown instanceof InitializationException || thrown instanceof RuntimeException)) {
                 thrown = e.getCause();
             }
             throw new RuntimeException(thrown);
         }
-        Logger.error("An exception occurred while loading the start page: " + e.getMessage(), e);
+        Logger.error("An exception occurred while loading the page: " + e.getMessage(), e);
         return loadPageLoadErrorPage();
     }
 

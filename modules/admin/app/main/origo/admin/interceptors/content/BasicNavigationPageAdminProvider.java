@@ -1,7 +1,6 @@
 package main.origo.admin.interceptors.content;
 
 import com.google.common.collect.Sets;
-import main.origo.admin.interceptors.content.basicpage.BasicPageAdminProvider;
 import main.origo.core.ModuleException;
 import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Interceptor;

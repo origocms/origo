@@ -24,7 +24,7 @@ public class AdminLoader {
         try {
             return loadAndDecoratePage(AdminSettingsHelper.getHomeDashboard());
         } catch (Exception e) {
-            return handleException(e);
+            return CoreLoader.handleException(e);
         }
     }
 
@@ -32,7 +32,7 @@ public class AdminLoader {
         try {
             return loadAndDecoratePage(withType);
         } catch (Exception e) {
-            return handleException(e);
+            return CoreLoader.handleException(e);
         }
     }
 
@@ -40,7 +40,7 @@ public class AdminLoader {
         try {
             return loadAndDecoratePage(withType);
         } catch (Exception e) {
-            return handleException(e);
+            return CoreLoader.handleException(e);
         }
     }
 
@@ -48,20 +48,8 @@ public class AdminLoader {
         try {
             return loadAndDecoratePage(withType, identifier);
         } catch (Exception e) {
-            return handleException(e);
+            return CoreLoader.handleException(e);
         }
-    }
-
-    private static Result handleException(Exception e) {
-        if (Play.isDev()) {
-            Throwable thrown = e;
-            while(thrown instanceof RuntimeException) {
-                thrown = e.getCause();
-            }
-            throw new RuntimeException(thrown);
-        }
-        Logger.error("", e);
-        return CoreLoader.loadPageLoadErrorPage();
     }
 
     private static Result loadAndDecoratePage(String withType) throws NodeLoadException, ModuleException {

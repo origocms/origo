@@ -22,8 +22,8 @@ public class DefaultContentDashboardProvider {
     /*
      * Dashboard Item for front page.
      */
-    @Provides(type = Admin.Type.DASHBOARD_ITEM, with = Core.With.CONTENT_PAGE)
-    @Relationship(parent = Admin.With.FRONT_PAGE)
+    //@Provides(type = Admin.Type.DASHBOARD_ITEM, with = Core.With.CONTENT_PAGE)
+    //@Relationship(parent = Admin.With.FRONT_PAGE)
     public static Element addContentDashboardItemToFrontPage(Provides.Context context) {
         return DashboardHelper.createBasicDashboardItem().
                 setId("item.link." + Core.With.CONTENT_PAGE).
@@ -32,12 +32,12 @@ public class DefaultContentDashboardProvider {
                         addChild(new Element.Anchor().setWeight(10).setBody("View").addAttribute("href", getDashboardUrl())));
     }
 
-    @Admin.Navigation(alias="/content", key="breadcrumb.origo.admin.dashboard.content")
+    //@Admin.Navigation(alias="/content", key="breadcrumb.origo.admin.dashboard.content")
     public static String getDashboardUrl() {
         return routes.Dashboard.dashboard(Core.With.CONTENT_PAGE).url();
     }
 
-    @Admin.Navigation(alias="/content/pages", key="breadcrumb.origo.admin.dashboard.content.pages")
+    //@Admin.Navigation(alias="/content/pages", key="breadcrumb.origo.admin.dashboard.content.pages")
     public static String getDashboardPagesUrl() {
         return routes.Dashboard.dashboard(Core.With.CONTENT_PAGE).url();
     }
@@ -45,7 +45,7 @@ public class DefaultContentDashboardProvider {
     /*
      * Creating the Node for the Content page.
      */
-    @Provides(type = Core.Type.NODE, with = Core.With.CONTENT_PAGE)
+    //@Provides(type = Core.Type.NODE, with = Core.With.CONTENT_PAGE)
     public static Node addContentDashboard(Provides.Context context) throws NodeLoadException {
         AdminPage page = new AdminPage(Core.With.CONTENT_PAGE, (RootNode) context.node);
         page.setTitle("Content - Dashboard");
@@ -64,8 +64,8 @@ public class DefaultContentDashboardProvider {
     /*
      * Creating the Dashboard for the Node created above.
      */
-    @Provides(type = Admin.Type.DASHBOARD, with = Core.With.CONTENT_PAGE)
-    @Relationship(parent = Admin.With.FRONT_PAGE)
+    //@Provides(type = Admin.Type.DASHBOARD, with = Core.With.CONTENT_PAGE)
+    //@Relationship(parent = Admin.With.FRONT_PAGE)
     public static Element addContentDashboardContent(Provides.Context context) {
         return DashboardHelper.createBasicDashboard().
                 setId("dashboard." + Core.With.CONTENT_PAGE).
