@@ -15,7 +15,7 @@ public class DefaultAdminNavigationProvider {
         AdminNavigation navigation = (AdminNavigation) context.args.get("navigation");
 
         // TODO: Set this selected somehow
-        //boolean selected = context.node.getNodeId().equals(alias.pageId);
+        //boolean selected = context.node.nodeId().equals(alias.pageId);
 
         NavigationElement ne = new NavigationElement();
         ne.section = "admin";

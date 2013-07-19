@@ -117,7 +117,7 @@ public class BasicPageAdminProvider {
             basicFieldSet.addChild(new Element.Panel().addAttribute("class", "row-fluid").
                     addChild(new Element.Panel().setWeight(10).addAttribute("class", "field span3").
                             addChild(new Element.Label().setWeight(10).setBody("Title").addAttribute("for", TITLE_PARAM)).
-                            addChild(new Element.InputText().setWeight(20).addAttribute("name", TITLE_PARAM).addAttribute("value", basicPage.getTitle()))).
+                            addChild(new Element.InputText().setWeight(20).addAttribute("name", TITLE_PARAM).addAttribute("value", basicPage.title()))).
                     addChild(new Element.Panel().setWeight(20).addAttribute("class", "field").
                             addChild(new Element.Label().setWeight(10).setBody("Theme Variant").addAttribute("for", THEME_VARIANT_PARAM)).
                             addChild(themeInputSelectElement.setWeight(25).addAttribute("class", "themeSelector").
@@ -170,7 +170,7 @@ public class BasicPageAdminProvider {
                             ).
                             addChild(new Element.InputText(Date.class).setId("date-" + PUBLISH_DATE_PARAM).
                                     addAttribute("name", PUBLISH_DATE_PARAM).
-                                    addAttribute("value", formattedIfNotNull(dateFormat, basicPage.getDatePublished())).
+                                    addAttribute("value", formattedIfNotNull(dateFormat, basicPage.published())).
                                     addAttribute("placeholder", datePattern.toLowerCase())
                             )
                     ).
@@ -180,7 +180,7 @@ public class BasicPageAdminProvider {
                             ).
                             addChild(new Element.InputText(Date.class).setId("date-" + UNPUBLISH_DATE_PARAM).
                                     addAttribute("name", UNPUBLISH_DATE_PARAM).
-                                    addAttribute("value", formattedIfNotNull(dateFormat, basicPage.getDateUnpublished())).
+                                    addAttribute("value", formattedIfNotNull(dateFormat, basicPage.unpublished())).
                                     addAttribute("placeholder", datePattern.toLowerCase()))
                     );
             publishingFieldSet.addChild(publishElement);
@@ -194,7 +194,7 @@ public class BasicPageAdminProvider {
                             ).
                             addChild(new Element.InputText().setId("date-" + PUBLISH_TIME_PARAM).
                                     addAttribute("name", PUBLISH_TIME_PARAM).
-                                    addAttribute("value", formattedIfNotNull(timeFormat, basicPage.getDatePublished())).
+                                    addAttribute("value", formattedIfNotNull(timeFormat, basicPage.published())).
                                     addAttribute("placeholder", timePattern.toLowerCase()))
                     ).
                     addChild(new Element.Panel().addAttribute("class", "panel split-right").
@@ -203,7 +203,7 @@ public class BasicPageAdminProvider {
                             ).
                             addChild(new Element.InputText().setId("date-" + UNPUBLISH_TIME_PARAM).
                                     addAttribute("name", UNPUBLISH_TIME_PARAM).
-                                    addAttribute("value", formattedIfNotNull(timeFormat, basicPage.getDateUnpublished())).
+                                    addAttribute("value", formattedIfNotNull(timeFormat, basicPage.unpublished())).
                                     addAttribute("placeholder", timePattern.toLowerCase()))
                     );
             publishingFieldSet.addChild(publishTimeElement);
@@ -251,7 +251,7 @@ public class BasicPageAdminProvider {
         BasicPage latestVersion = BasicPage.findLatestVersion(nodeId);
         if (latestVersion == null) {
             latestVersion = new BasicPage();
-            latestVersion.nodeId = oldRootNode.getNodeId();
+            latestVersion.nodeId = oldRootNode.nodeId();
         }
         latestVersion.rootNode = oldRootNode;
 
@@ -284,9 +284,9 @@ public class BasicPageAdminProvider {
             // Properties
             newPageVersion.title = data.get(TITLE_PARAM);
             newPageVersion.themeVariant = data.get(THEME_VARIANT_PARAM);
-            newPageVersion.rootNode.publish = parseDate(data.get(PUBLISH_DATE_PARAM), data.get(PUBLISH_TIME_PARAM));
-            newPageVersion.rootNode.unPublish = parseDate(data.get(UNPUBLISH_DATE_PARAM), data.get(UNPUBLISH_TIME_PARAM));
-            newPageVersion.rootNode.nodeType = BasicPage.TYPE;
+            newPageVersion.rootNode.published(parseDate(data.get(PUBLISH_DATE_PARAM), data.get(PUBLISH_TIME_PARAM)));
+            newPageVersion.rootNode.unpublished(parseDate(data.get(UNPUBLISH_DATE_PARAM), data.get(UNPUBLISH_TIME_PARAM)));
+            newPageVersion.rootNode.nodeType(BasicPage.TYPE);
 
             // Lead Content
             Content newLeadContent = new Content();
@@ -300,7 +300,7 @@ public class BasicPageAdminProvider {
             newPageVersion.bodyReferenceId = newBodyContent.identifier;
             newBodyContent.create();
 
-            if (oldRootNode.version == 0) {
+            if (oldRootNode.version() == 0) {
                 newPageVersion.rootNode.create();
                 newPageVersion.create();
             } else {
@@ -308,7 +308,7 @@ public class BasicPageAdminProvider {
                 newPageVersion.update();
             }
 
-            if (oldRootNode.version == 0) {
+            if (oldRootNode.version() == 0) {
                 OnCreateEventGenerator.triggerAfterInterceptors(BasicPage.TYPE, newPageVersion);
             } else {
                 OnUpdateEventGenerator.triggerAfterInterceptors(BasicPage.TYPE, newPageVersion);
@@ -319,8 +319,8 @@ public class BasicPageAdminProvider {
             OnUpdateEventGenerator.triggerBeforeInterceptors(BasicPage.TYPE, latestVersion);
 
             // Properties
-            latestVersion.rootNode.publish = parseDate(data.get(PUBLISH_DATE_PARAM), data.get(PUBLISH_TIME_PARAM));
-            latestVersion.rootNode.unPublish = parseDate(data.get(UNPUBLISH_DATE_PARAM), data.get(UNPUBLISH_TIME_PARAM));
+            latestVersion.rootNode.published(parseDate(data.get(PUBLISH_DATE_PARAM), data.get(PUBLISH_TIME_PARAM)));
+            latestVersion.rootNode.unpublished(parseDate(data.get(UNPUBLISH_DATE_PARAM), data.get(UNPUBLISH_TIME_PARAM)));
 
             latestVersion.rootNode.update();
             latestVersion.update();

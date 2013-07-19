@@ -60,8 +60,8 @@ public class BasicPageAdminCreateProvider {
     public static Node createEditPage(Provides.Context context) {
         AdminPage page;
 
-        if (context.node.getVersion() == null || context.node.getVersion() == 0) {
-            page = new AdminPage(BasicPageAdminProvider.EDIT_TYPE, RootNode.findLatestVersionWithNodeId(context.node.getNodeId()).copy());
+        if (context.node.version() == null || context.node.version() == 0) {
+            page = new AdminPage(BasicPageAdminProvider.EDIT_TYPE, RootNode.findLatestVersionWithNodeId(context.node.nodeId()).copy());
         } else {
             page = new AdminPage(BasicPageAdminProvider.EDIT_TYPE, (RootNode) context.node);
         }
@@ -76,12 +76,12 @@ public class BasicPageAdminCreateProvider {
     @OnLoad(type = Core.Type.NODE, with = BasicPageAdminProvider.EDIT_TYPE)
     public static void loadEditPage(OnLoad.Context context) {
         try {
-            BasicPage basicPage = BasicPage.findLatestVersion(context.node.getNodeId());
+            BasicPage basicPage = BasicPage.findLatestVersion(context.node.nodeId());
             if (basicPage == null) {
-                context.node.addElement(new Element.Paragraph().setWeight(10).setBody("Page '" + context.node.getNodeId() + "' does not exist."));
+                context.node.addElement(new Element.Paragraph().setWeight(10).setBody("Page '" + context.node.nodeId() + "' does not exist."));
                 return;
             }
-            basicPage.rootNode = RootNode.findWithNodeIdAndSpecificVersion(context.node.getNodeId(), context.node.getVersion());
+            basicPage.rootNode = RootNode.findWithNodeIdAndSpecificVersion(context.node.nodeId(), context.node.version());
 
             Content leadContent = Content.findWithIdentifier(basicPage.leadReferenceId);
             Content bodyContent = Content.findWithIdentifier(basicPage.bodyReferenceId);

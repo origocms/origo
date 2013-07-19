@@ -52,12 +52,12 @@ public class SampleDataCreator {
         body.create();
 
         RootNode node = new RootNode("2c36c55dd-956e-4b78-18c4-eef7e56aa17", 1);
-        node.nodeType = BasicPage.TYPE;
+        node.nodeType(BasicPage.TYPE);
         node.create();
 
         BasicPage page = new BasicPage();
-        page.nodeId = node.nodeId;
-        page.version = node.version;
+        page.nodeId = node.nodeId();
+        page.version = node.version();
         page.title = "Start Page";
         page.leadReferenceId = lead.identifier;
         page.bodyReferenceId = body.identifier;
@@ -82,12 +82,12 @@ public class SampleDataCreator {
         body.create();
 
         RootNode node = new RootNode("c9615819-0556-4e70-b6a9-a66c5b8d4c1a", 1);
-        node.nodeType = BasicPage.TYPE;
+        node.nodeType(BasicPage.TYPE);
         node.create();
 
         BasicPage page = new BasicPage();
-        page.nodeId = node.nodeId;
-        page.version = node.version;
+        page.nodeId = node.nodeId();
+        page.version = node.version();
         page.title = "Page Not Found";
         page.themeVariant = "bootstrap-main_only";
         page.leadReferenceId = lead.identifier;
@@ -111,12 +111,12 @@ public class SampleDataCreator {
         body.create();
 
         RootNode node = new RootNode("1cf699a7-a0c4-4be0-855f-466042a36a8d", 1);
-        node.nodeType = BasicPage.TYPE;
+        node.nodeType(BasicPage.TYPE);
         node.create();
 
         BasicPage page = new BasicPage();
-        page.nodeId = node.nodeId;
-        page.version = node.version;
+        page.nodeId = node.nodeId();
+        page.version = node.version();
         page.title = "Internal Server Error";
         page.themeVariant = "bootstrap-main_only";
         page.leadReferenceId = lead.identifier;
@@ -149,57 +149,57 @@ public class SampleDataCreator {
         content_side_3.create();
 
         RootNode node1 = new RootNode("aa1755dd-18c4-4b78-956e-eef7e562c36c", 1);
-        node1.nodeType = StructuredPage.TYPE;
+        node1.nodeType(StructuredPage.TYPE);
         node1.create();
 
         RootNode node2 = new RootNode("aa1755dd-18c4-4b78-956e-eef7e562c36c", 2);
-        node2.nodeType = StructuredPage.TYPE;
+        node2.nodeType(StructuredPage.TYPE);
         node2.create();
 
         StructuredPage page1 = new StructuredPage(); // Page 1 version 1
-        page1.nodeId = node1.getNodeId();
-        page1.version = node1.getVersion();
+        page1.nodeId = node1.nodeId();
+        page1.version = node1.version();
         page1.title = "Fourth Page";
         page1.create();
 
         StructuredPage page2 = new StructuredPage(); // Page 1 version 2
-        page2.nodeId = node2.getNodeId();
-        page2.version = node2.getVersion();
+        page2.nodeId = node2.nodeId();
+        page2.version = node2.version();
         page2.title = "Fourth Page";
         page2.create();
 
         // Page 1 -> Segment
         Segment segment_1_1 = new Segment(); // Page 1 version 1, Segment 1
-        segment_1_1.nodeId = node1.getNodeId();
-        segment_1_1.version = node1.getVersion();
+        segment_1_1.nodeId = node1.nodeId();
+        segment_1_1.version = node1.version();
         segment_1_1.type = Content.TYPE;
         segment_1_1.referenceId = content_side_2.identifier;
         segment_1_1.create();
 
         Segment segment_1_2 = new Segment(); // Page 1 version 1, Segment 2
-        segment_1_2.nodeId = node1.getNodeId();
-        segment_1_2.version = node1.getVersion();
+        segment_1_2.nodeId = node1.nodeId();
+        segment_1_2.version = node1.version();
         segment_1_2.type = Content.TYPE;
         segment_1_2.referenceId = content_main_1.identifier;
         segment_1_2.create();
 
         Segment segment_1_3 = new Segment(); // Page 1 version 1, Segment 3
-        segment_1_3.nodeId = node1.getNodeId();
-        segment_1_3.version = node1.getVersion();
+        segment_1_3.nodeId = node1.nodeId();
+        segment_1_3.version = node1.version();
         segment_1_3.type = Content.TYPE;
         segment_1_3.referenceId = content_side_2.identifier;
         segment_1_3.create();
 
         Segment segment_2_1 = new Segment(); // Page 1 version 2, Segment 1
-        segment_2_1.nodeId = node2.getNodeId();
-        segment_2_1.version = node2.getVersion();
+        segment_2_1.nodeId = node2.nodeId();
+        segment_2_1.version = node2.version();
         segment_2_1.type = Content.TYPE;
         segment_2_1.referenceId = content_side_3.identifier;
         segment_2_1.create();
 
         Segment segment_2_2 = new Segment(); // Page 1 version 2, Segment 2
-        segment_2_2.nodeId = node2.getNodeId();
-        segment_2_2.version = node2.getVersion();
+        segment_2_2.nodeId = node2.nodeId();
+        segment_2_2.version = node2.version();
         segment_2_2.type = Content.TYPE;
         segment_2_2.referenceId = content_main_1.identifier;
         segment_2_2.create();
@@ -214,32 +214,32 @@ public class SampleDataCreator {
         meta_1_1.create();
 
         Meta meta_1_2 = new Meta(); // Page 1 Version 1 Segment 2 Meta
-        meta_1_2.nodeId = node1.getNodeId();
-        meta_1_2.version = node1.getVersion();
+        meta_1_2.nodeId = node1.nodeId();
+        meta_1_2.version = node1.version();
         meta_1_2.weight = 100;
         meta_1_2.region = "main";
         meta_1_2.referenceId = content_main_1.identifier;
         meta_1_2.create();
 
         Meta meta_2_1 = new Meta(); // Page 1 Version 2 Segment 1 Meta
-        meta_2_1.nodeId = page2.getNodeId();
-        meta_2_1.version = page2.getVersion();
+        meta_2_1.nodeId = page2.nodeId();
+        meta_2_1.version = page2.version();
         meta_2_1.weight = 50;
         meta_2_1.region = "left";
         meta_2_1.referenceId = content_side_2.identifier;
         meta_2_1.create();
 
         Meta meta_2_2 = new Meta(); // Page 1 Version 2 Segment 2 Meta
-        meta_2_2.nodeId = page2.getNodeId();
-        meta_2_2.version = page2.getVersion();
+        meta_2_2.nodeId = page2.nodeId();
+        meta_2_2.version = page2.version();
         meta_2_2.weight = 100;
         meta_2_2.region = "left";
         meta_2_2.referenceId = content_side_3.identifier;
         meta_2_2.create();
 
         Meta meta_2_3 = new Meta(); // Page 1 Version 2 Segment 3 Meta
-        meta_2_3.nodeId = page2.getNodeId();
-        meta_2_3.version = page2.getVersion();
+        meta_2_3.nodeId = page2.nodeId();
+        meta_2_3.version = page2.version();
         meta_2_3.weight = 100;
         meta_2_3.region = "main";
         meta_2_3.referenceId = content_main_1.identifier;
@@ -260,12 +260,12 @@ public class SampleDataCreator {
         body.create();
 
         RootNode node = new RootNode("699eb321-7545-4b27-8a7f-94a4442d2046", 1);
-        node.nodeType = BasicPage.TYPE;
+        node.nodeType(BasicPage.TYPE);
         node.create();
 
         BasicPage page = new BasicPage();
-        page.nodeId = node.nodeId;
-        page.version = node.version;
+        page.nodeId = node.nodeId();
+        page.version = node.version();
         page.title = "Fifth Page";
         page.leadReferenceId = lead.identifier;
         page.bodyReferenceId = body.identifier;

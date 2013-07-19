@@ -26,35 +26,35 @@ public interface Node {
      *
      * @return a unique key for this node
      */
-    String getNodeId();
+    String nodeId();
 
     /**
      * The version of this node
      *
      * @return a version number
      */
-    Integer getVersion();
+    Integer version();
 
     /**
      * A title for this node
      *
      * @return a title
      */
-    String getTitle();
+    String title();
 
     /**
      * The date this version should be available for public viewing
      *
      * @return a date
      */
-    Date getDatePublished();
+    Date published();
 
     /**
      * The date this version should be removed from public viewing
      *
      * @return a date
      */
-    Date getDateUnpublished();
+    Date unpublished();
 
     /**
      * The unique name of the theme variant used for this page
@@ -62,7 +62,7 @@ public interface Node {
      * @return theme variant name
      * @see main.origo.core.annotations.ThemeVariant
      */
-    String getThemeVariant();
+    String themeVariant();
 
     /**
      * All the available regions stored on this node.
@@ -70,7 +70,7 @@ public interface Node {
      * @return a set of region names that can be used for showing content
      * @see main.origo.core.annotations.ThemeVariant
      */
-    Set<String> getRegions();
+    Set<String> regions();
 
     /**
      * A collection of UIElements that should be rendered on the screen. Regions are determined by the theme variant used.
@@ -78,7 +78,7 @@ public interface Node {
      * @param region the area of the screen where this element should be rendered
      * @return all uiElements for the region
      */
-    List<Element>getElements(String region);
+    List<Element> elements(String region);
 
     /**
      * Add an element that should be rendered in the head region of the page. The head region always exists.

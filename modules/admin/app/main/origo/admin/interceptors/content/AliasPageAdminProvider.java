@@ -32,7 +32,7 @@ public class AliasPageAdminProvider {
         AdminPage adminPage = (AdminPage) context.node;
         if (types.contains(adminPage.type) && context.element.getId().equals("content")) {
 
-            Alias alias = Alias.findFirstAliasForPageId(context.node.getNodeId());
+            Alias alias = Alias.findFirstAliasForPageId(context.node.nodeId());
 
             Element.InputCheckbox useAliasCheckbox = new Element.InputCheckbox(Boolean.class).
                     addAttribute("name", USE_ALIAS_PARAM).

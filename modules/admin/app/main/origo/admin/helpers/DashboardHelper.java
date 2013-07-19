@@ -27,7 +27,7 @@ public class DashboardHelper {
         OnLoadEventGenerator.triggerBeforeInterceptor(node, Admin.Type.DASHBOARD, withType);
         Element element = ProvidesEventGenerator.triggerInterceptor(node, Admin.Type.DASHBOARD, withType);
         if (element == null) {
-            throw new NodeLoadException(node.getNodeId(), "The provider for type [" + withType + "] did not return a Element");
+            throw new NodeLoadException(node.nodeId(), "The provider for type [" + withType + "] did not return a Element");
         }
 
         OnLoadEventGenerator.triggerAfterInterceptor(node, Admin.Type.DASHBOARD, withType);

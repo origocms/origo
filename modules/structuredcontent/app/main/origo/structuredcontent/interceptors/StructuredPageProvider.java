@@ -21,9 +21,9 @@ public class StructuredPageProvider {
 
     @Provides(type = Core.Type.NODE, with = StructuredPage.TYPE)
     public static Node loadPage(Provides.Context context) throws NodeNotFoundException {
-        StructuredPage page = StructuredPage.findWithNodeIdAndSpecificVersion(context.node.getNodeId(), context.node.getVersion());
+        StructuredPage page = StructuredPage.findWithNodeIdAndSpecificVersion(context.node.nodeId(), context.node.version());
         if (page == null) {
-            throw new NodeNotFoundException(context.node.getNodeId());
+            throw new NodeNotFoundException(context.node.nodeId());
         }
         page.rootNode = (RootNode) context.node;
 
@@ -33,7 +33,7 @@ public class StructuredPageProvider {
     @OnLoad(type = Core.Type.NODE, with = StructuredPage.TYPE)
     public static void loadContent(OnLoad.Context context) throws NodeLoadException, ModuleException {
 
-        List<Segment> segmentModels = Segment.findWithNodeIdAndSpecificVersion(context.node.getNodeId(), context.node.getVersion());
+        List<Segment> segmentModels = Segment.findWithNodeIdAndSpecificVersion(context.node.nodeId(), context.node.version());
         for (Segment segment : segmentModels) {
             SegmentHelper.triggerBeforeSegmentLoaded(context.node, segment.type, segment);
             Element element = SegmentHelper.triggerSegmentProvider(context.node, segment.type, segment);

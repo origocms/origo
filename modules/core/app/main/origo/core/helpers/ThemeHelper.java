@@ -24,13 +24,13 @@ import java.util.Map;
 public class ThemeHelper {
 
     public static RenderedNode decorate(Node node, CachedThemeVariant themeVariant) {
-        RenderedNode renderedNode = new RenderedNode(node.getNodeId());
+        RenderedNode renderedNode = new RenderedNode(node.nodeId());
         setupRegions(themeVariant, renderedNode);
-        renderedNode.template(themeVariant);
-        renderedNode.title(node.getTitle());
+        renderedNode.themeVariant(themeVariant);
+        renderedNode.title(node.title());
         RenderingContext renderingContext = new RenderingContext(themeVariant, node, renderedNode);
-        for (String pageRegion : node.getRegions()) {
-            for (Element element : node.getElements(pageRegion)) {
+        for (String pageRegion : node.regions()) {
+            for (Element element : node.elements(pageRegion)) {
                 Html decoratedContent = decorate(element, renderingContext);
 
                 switch(pageRegion) {
@@ -120,7 +120,7 @@ public class ThemeHelper {
     }
 
     public static CachedThemeVariant loadTheme(Node node, String fallbackTheme) {
-        CachedThemeVariant themeVariant = ThemeRepository.getThemeVariant(node.getThemeVariant());
+        CachedThemeVariant themeVariant = ThemeRepository.getThemeVariant(node.themeVariant());
         if (themeVariant == null) {
             if (StringUtils.isEmpty(fallbackTheme)) {
                 throw new RuntimeException("No theme set for node and no default theme variant set");

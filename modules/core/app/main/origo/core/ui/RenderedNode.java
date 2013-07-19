@@ -62,7 +62,7 @@ public class RenderedNode {
         return _themeVariant;
     }
 
-    public void template(CachedThemeVariant themeVariant) {
+    public void themeVariant(CachedThemeVariant themeVariant) {
         this._themeVariant = themeVariant;
     }
 
