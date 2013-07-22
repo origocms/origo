@@ -19,6 +19,7 @@
         <class>models.origo.core.navigation.BasicNavigation</class>
         <class>models.origo.core.navigation.InternalPageIdNavigation</class>
         <class>models.origo.core.navigation.ExternalLinkNavigation</class>
+        <class>models.origo.core.navigation.GroupHolderNavigation</class>
 
         <!-- StructuredContent Module -->
 

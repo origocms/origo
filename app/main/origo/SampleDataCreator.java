@@ -5,6 +5,7 @@ import main.origo.themes.bootstrap.BootstrapTheme;
 import models.origo.core.*;
 import models.origo.core.navigation.BasicNavigation;
 import models.origo.core.navigation.ExternalLinkNavigation;
+import models.origo.core.navigation.GroupHolderNavigation;
 import models.origo.core.navigation.InternalPageIdNavigation;
 import models.origo.structuredcontent.Segment;
 import models.origo.structuredcontent.StructuredPage;
@@ -320,31 +321,57 @@ public class SampleDataCreator {
         fourthPageNavigation.pageId = "aa1755dd-18c4-4b78-956e-eef7e562c36c";
         fourthPageNavigation.create();
 
+        // Fifth
+        BasicNavigation fifthNavigation = new BasicNavigation();
+        fifthNavigation.type = InternalPageIdNavigation.TYPE;
+        fifthNavigation.section = "front";
+        fifthNavigation.referenceId = "9c0cbb5a-e90a-43bf-a647-119c27e30e9d";
+        fifthNavigation.weight = 5;
+        fifthNavigation.create();
+        InternalPageIdNavigation fiftPageNavigation = new InternalPageIdNavigation();
+        fiftPageNavigation.identifier = fifthNavigation.getReferenceId();
+        fiftPageNavigation.pageId = "699eb321-7545-4b27-8a7f-94a4442d2046";
+        fiftPageNavigation.create();
+
         // External
         BasicNavigation groupNavigation = new BasicNavigation();
-        groupNavigation.type = InternalPageIdNavigation.TYPE;
+        groupNavigation.type = GroupHolderNavigation.TYPE;
         groupNavigation.section = "front";
         groupNavigation.referenceId = "6dd82bcb-3f42-4f5d-8c13-4e2ed1d4ef21";
         groupNavigation.weight = 3;
         groupNavigation.create();
-        InternalPageIdNavigation externalNavigationHolder = new InternalPageIdNavigation();
+        GroupHolderNavigation externalNavigationHolder = new GroupHolderNavigation();
         externalNavigationHolder.identifier = groupNavigation.getReferenceId();
-        externalNavigationHolder.pageId = "699eb321-7545-4b27-8a7f-94a4442d2046";
+        externalNavigationHolder.title = "External";
         externalNavigationHolder.create();
 
         // External - Google
-        BasicNavigation externalNavigation = new BasicNavigation();
-        externalNavigation.type = ExternalLinkNavigation.TYPE;
-        externalNavigation.section = "front";
-        externalNavigation.referenceId = "58e15bfa-da4f-4f6b-a15a-51ab6c82e670";
-        externalNavigation.parent = groupNavigation;
-        externalNavigation.weight = 2;
-        externalNavigation.create();
-        ExternalLinkNavigation external = new ExternalLinkNavigation();
-        external.identifier = externalNavigation.getReferenceId();
-        external.title = "Google";
-        external.link = "http://www.google.com";
-        external.create();
+        BasicNavigation googleNavigation = new BasicNavigation();
+        googleNavigation.type = ExternalLinkNavigation.TYPE;
+        googleNavigation.section = "front";
+        googleNavigation.referenceId = "58e15bfa-da4f-4f6b-a15a-51ab6c82e670";
+        googleNavigation.parent = groupNavigation;
+        googleNavigation.weight = 2;
+        googleNavigation.create();
+        ExternalLinkNavigation googleLink = new ExternalLinkNavigation();
+        googleLink.identifier = googleNavigation.getReferenceId();
+        googleLink.title = "Google";
+        googleLink.link = "http://www.google.com";
+        googleLink.create();
+
+        // External - Yahoo
+        BasicNavigation yahooNavigation = new BasicNavigation();
+        yahooNavigation.type = ExternalLinkNavigation.TYPE;
+        yahooNavigation.section = "front";
+        yahooNavigation.referenceId = "c6f03b11-dbb6-4aec-a325-525e61370d8d";
+        yahooNavigation.parent = groupNavigation;
+        yahooNavigation.weight = 3;
+        yahooNavigation.create();
+        ExternalLinkNavigation yahooLink = new ExternalLinkNavigation();
+        yahooLink.identifier = yahooNavigation.getReferenceId();
+        yahooLink.title = "Yahoo";
+        yahooLink.link = "http://www.yahoo.com";
+        yahooLink.create();
 
     }
 

@@ -14,6 +14,7 @@ import main.origo.core.ui.NavigationElement;
 import models.origo.core.RootNode;
 import models.origo.core.navigation.BasicNavigation;
 import models.origo.core.navigation.ExternalLinkNavigation;
+import models.origo.core.navigation.GroupHolderNavigation;
 import models.origo.core.navigation.InternalPageIdNavigation;
 import play.Logger;
 
@@ -115,6 +116,21 @@ public class BasicNavigationProvider {
             ne.section = navigation.getSection();
             ne.title = navigationModel.title;
             ne.link = navigationModel.getLink();
+            ne.weight = navigation.getWeight();
+            return ne;
+        }
+        return null;
+    }
+
+    @Provides(type = Core.Type.NAVIGATION_ITEM, with = GroupHolderNavigation.TYPE)
+    public static NavigationElement createGroupHolderNavigation(Provides.Context context) {
+        Navigation navigation = (Navigation) context.args.get("navigation");
+        GroupHolderNavigation navigationModel = GroupHolderNavigation.findWithIdentifier(navigation.getReferenceId());
+        if (navigationModel != null) {
+            NavigationElement ne = new NavigationElement();
+            ne.id = navigationModel.identifier;
+            ne.section = navigation.getSection();
+            ne.title = navigationModel.title;
             ne.weight = navigation.getWeight();
             return ne;
         }
