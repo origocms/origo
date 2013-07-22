@@ -11,10 +11,13 @@ import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.Provides;
+import main.origo.core.annotations.Relationship;
 import main.origo.core.event.ProvidesEventGenerator;
 import main.origo.core.ui.Element;
 import models.origo.admin.AdminPage;
 import models.origo.core.RootNode;
+import play.Logger;
+import views.html.origo.admin.dashboard_item;
 import views.html.origo.admin.decorators.content;
 
 import java.util.List;
@@ -22,17 +25,30 @@ import java.util.List;
 @Interceptor
 public class ContentAdminProvider {
 
-    @Admin.Navigation(alias = "/content", key = "breadcrumb.origo.admin.dashboard.content.pages")
-    public static String getDashboardUrl() {
-        return routes.Application.pageWithType(Core.With.CONTENT_PAGE).url();
+    /*
+     * Dashboard Item for front page.
+    */
+    @Provides(type = Admin.Type.DASHBOARD_ITEM, with = Core.With.CONTENT_PAGE)
+    @Relationship(parent = Admin.With.FRONT_PAGE)
+    public static Element addContentDashboardItemToFrontPage(Provides.Context context) {
+        return DashboardHelper.createBasicDashboardItem().
+                addChild(new Element.Raw().setBody(dashboard_item.render("Content", "", getDashboardUrl(), "View")));
     }
 
+    @Admin.Navigation(alias = "/content", key = "breadcrumb.origo.admin.dashboard.content.content")
+    public static String getDashboardUrl() {
+        return routes.Dashboard.dashboard(Core.With.CONTENT_PAGE).url();
+    }
+
+    /*
+     * Creating the Content listing page.
+     */
     @Provides(type = Core.Type.NODE, with = Core.With.CONTENT_PAGE)
-    public static Node addContentDashboard(Provides.Context context) throws NodeLoadException, ModuleException {
+    public static Node createContentList(Provides.Context context) throws NodeLoadException, ModuleException {
         AdminPage page = new AdminPage(Core.With.CONTENT_PAGE, (RootNode) context.node);
         page.setTitle("Content");
 
-        context.node.addElement(DashboardHelper.createBreadcrumb(Core.With.CONTENT_PAGE), AdminTheme.topMeta());
+        page.addElement(DashboardHelper.createBreadcrumb(Core.With.CONTENT_PAGE), AdminTheme.topMeta());
 
         List<RootNode> rootNodes = RootNode.findCurrentVersions();
 

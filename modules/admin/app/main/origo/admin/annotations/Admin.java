@@ -22,6 +22,12 @@ public class Admin {
         public static final String SETTINGS_PAGE = "settings";
     }
 
+    public static class Action {
+        public static final String EDIT = ".edit";
+        public static final String CREATE = ".create";
+        public static final String DELETE = ".delete";
+    }
+
     public static class Dashboard extends Element {
 
         public Dashboard() {

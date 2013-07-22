@@ -11,6 +11,7 @@ import play.Logger;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class DashboardEventGenerator {
 
@@ -19,7 +20,7 @@ public class DashboardEventGenerator {
     */
 
     public static List<Element> triggerProvidesDashboardItemInterceptor(Node node, String withType) {
-        List<CachedAnnotation> cachedAnnotations = findProvidersWithParent(Admin.Type.DASHBOARD_ITEM, withType);
+        Set<CachedAnnotation> cachedAnnotations = findProvidersWithParent(Admin.Type.DASHBOARD_ITEM, withType);
         List<Element> items = Lists.newArrayList();
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
             try {
@@ -33,8 +34,8 @@ public class DashboardEventGenerator {
         return items;
     }
 
-    private static List<CachedAnnotation> findProvidersWithParent(final String type, final String parent) {
-        List<CachedAnnotation> providers = InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
+    private static Set<CachedAnnotation> findProvidersWithParent(final String type, final String parent) {
+        Set<CachedAnnotation> providers = InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation cachedAnnotation) {
                 Provides annotation = (Provides) cachedAnnotation.annotation;

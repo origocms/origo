@@ -12,7 +12,7 @@ import views.html.origo.application.not_found;
 public class Application extends Controller {
 
     @Transactional
-    public static Result index() {
+    public static Result index() throws Throwable {
         if (shouldRedirectToSetupPage()) {
             return redirect(routes.Setup.index());
         }

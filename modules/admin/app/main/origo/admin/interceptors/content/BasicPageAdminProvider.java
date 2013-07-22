@@ -1,6 +1,7 @@
 package main.origo.admin.interceptors.content;
 
 import controllers.origo.admin.routes;
+import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.DashboardHelper;
 import main.origo.admin.themes.AdminTheme;
 import main.origo.admin.utils.DateUtil;
@@ -45,8 +46,8 @@ import java.util.Map;
 public class BasicPageAdminProvider {
 
     public static final String BASE_TYPE = Core.With.CONTENT_PAGE + ".basicpage";
-    public static final String EDIT_TYPE = BASE_TYPE + ".edit";
-    public static final String NEW_TYPE = BASE_TYPE + ".new";
+    public static final String EDIT_TYPE = BASE_TYPE + Admin.Action.EDIT;
+    public static final String NEW_TYPE = BASE_TYPE + Admin.Action.CREATE;
 
     private static final String TITLE_PARAM = "origo-basicpageform-title";
     private static final String PUBLISH_DATE_PARAM = "origo-basicpageform-publish-date";
@@ -235,7 +236,6 @@ public class BasicPageAdminProvider {
         publishingFieldSet.addChild(new Element.Legend().setBody("Publish"));
 
         String datePattern = Messages.get("date.format");
-        DateFormat dateFormat = new SimpleDateFormat(datePattern);
         Element publishElement = new Element.Panel().setWeight(15).addAttribute("class", "field").
                 addChild(new Element.Panel().addAttribute("class", "panel split-left").
                         addChild(new Element.Label().setWeight(10).setBody("From Date").
@@ -259,7 +259,6 @@ public class BasicPageAdminProvider {
         publishingFieldSet.addChild(publishElement);
 
         String timePattern = Messages.get("time.format");
-        DateFormat timeFormat = new SimpleDateFormat(timePattern);
         Element publishTimeElement = new Element.Panel().setWeight(15).addAttribute("class", "field").
                 addChild(new Element.Panel().addAttribute("class", "panel split-left").
                         addChild(new Element.Label().setWeight(10).setBody("From Time").
@@ -397,7 +396,7 @@ public class BasicPageAdminProvider {
     }
 
     public static String getProviderUrl() {
-        return routes.Application.pageWithType(Core.With.CONTENT_PAGE).absoluteURL(Http.Context.current().request());
+        return routes.Dashboard.dashboard(Core.With.CONTENT_PAGE).absoluteURL(Http.Context.current().request());
     }
 
     /**
@@ -405,7 +404,7 @@ public class BasicPageAdminProvider {
      */
     @SubmitState(with = BASE_TYPE)
     public static Result handleSuccess(SubmitState.Context context) {
-        return Controller.redirect(routes.Application.pageWithType(Core.With.CONTENT_PAGE));
+        return Controller.redirect(routes.Dashboard.dashboard(Core.With.CONTENT_PAGE));
     }
 
 }

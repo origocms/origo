@@ -18,6 +18,7 @@ import play.i18n.Messages;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class DashboardHelper {
 
@@ -123,7 +124,7 @@ public class DashboardHelper {
     }
 
     private static String findParentForProvider(final String type, final String withType) {
-        List<CachedAnnotation> providers = InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
+        Set<CachedAnnotation> providers = InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation cachedAnnotation) {
                 Provides annotation = (Provides) cachedAnnotation.annotation;

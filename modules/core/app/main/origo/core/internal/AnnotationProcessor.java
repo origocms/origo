@@ -40,9 +40,9 @@ public class AnnotationProcessor {
 
             sb = new StringBuilder();
             int count = 0;
-            Map<Class<? extends Annotation>, List<CachedAnnotation>> interceptorMap = InterceptorRepository.getInterceptorMap();
+            Map<Class<? extends Annotation>, Set<CachedAnnotation>> interceptorMap = InterceptorRepository.getInterceptorMap();
             for (Class<? extends Annotation> a : interceptorMap.keySet()) {
-                List<CachedAnnotation> interceptors = interceptorMap.get(a);
+                Set<CachedAnnotation> interceptors = interceptorMap.get(a);
                 sb.append(" - ").append(a.getName()).append(" ").append(interceptors.size()).append("\n");
                 count += interceptors.size();
             }

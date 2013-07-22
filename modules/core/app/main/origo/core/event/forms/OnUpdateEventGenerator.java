@@ -1,5 +1,6 @@
 package main.origo.core.event.forms;
 
+import com.google.common.collect.Lists;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.Navigation;
 import main.origo.core.Node;
@@ -103,13 +104,13 @@ public class OnUpdateEventGenerator {
     }
 
     private static List<CachedAnnotation> findOnPostInterceptorsWithType(final String withType, final boolean after) {
-        List<CachedAnnotation> onPostInterceptors = InterceptorRepository.getInterceptors(OnUpdate.class, new CachedAnnotation.InterceptorSelector() {
+        List<CachedAnnotation> onPostInterceptors = Lists.newArrayList(InterceptorRepository.getInterceptors(OnUpdate.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation interceptor) {
                 OnUpdate annotation = (OnUpdate) interceptor.annotation;
                 return (StringUtils.isEmpty(annotation.with()) || annotation.with().equals(withType)) && annotation.after() == after;
             }
-        });
+        }));
         if (onPostInterceptors.isEmpty()) {
             Logger.trace("No @OnUpdate interceptor for with=" + withType + "' and after='"+after+"'");
         }

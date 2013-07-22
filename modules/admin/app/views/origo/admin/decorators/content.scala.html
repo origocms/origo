@@ -18,7 +18,7 @@
             <td>@node.nodeType</td>
             <td>@node.version</td>
             <td>
-                @*<a class="btn btn-small" href="@controllers.origo.admin.routes.Application.pageWithTypeAndIdentifier(BasicPageAdminProvider.EDIT_TYPE, page.nodeId)">Edit</a>*@
+                <a class="btn btn-small" href="@controllers.origo.admin.routes.Application.editWithTypeAndIdentifier(node.nodeType, node.nodeId)">Edit</a>
             </td>
         </tr>
         }

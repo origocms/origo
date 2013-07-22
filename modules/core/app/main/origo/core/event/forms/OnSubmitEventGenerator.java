@@ -1,5 +1,6 @@
 package main.origo.core.event.forms;
 
+import com.google.common.collect.Lists;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.annotations.forms.OnSubmit;
 import main.origo.core.internal.CachedAnnotation;
@@ -40,13 +41,13 @@ public class OnSubmitEventGenerator {
     }
 
     private static List<CachedAnnotation> findOnPostInterceptorsWithType(final String withType) {
-        List<CachedAnnotation> onPostInterceptors = InterceptorRepository.getInterceptors(OnSubmit.class, new CachedAnnotation.InterceptorSelector() {
+        List<CachedAnnotation> onPostInterceptors = Lists.newArrayList(InterceptorRepository.getInterceptors(OnSubmit.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation interceptor) {
                 OnSubmit annotation = (OnSubmit) interceptor.annotation;
                 return StringUtils.isEmpty(annotation.with()) || annotation.with().equals(withType);
             }
-        });
+        }));
         if (onPostInterceptors.isEmpty()) {
             Logger.warn("No @OnSubmit interceptor for with=" + withType + "'");
         }

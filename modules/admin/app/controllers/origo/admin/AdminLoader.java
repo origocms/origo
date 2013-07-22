@@ -1,6 +1,7 @@
 package controllers.origo.admin;
 
 import controllers.origo.core.CoreLoader;
+import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.AdminSettingsHelper;
 import main.origo.admin.helpers.NavigationHelper;
 import main.origo.core.ModuleException;
@@ -14,6 +15,7 @@ import main.origo.core.ui.RenderedNode;
 import models.origo.core.RootNode;
 import play.Logger;
 import play.Play;
+import play.mvc.Controller;
 import play.mvc.Result;
 
 import java.util.List;
@@ -36,7 +38,7 @@ public class AdminLoader {
         }
     }
 
-    public static Result getPage(String withType) {
+    public static Result view(String withType) {
         try {
             return loadAndDecoratePage(withType);
         } catch (Exception e) {
@@ -44,9 +46,33 @@ public class AdminLoader {
         }
     }
 
-    public static Result getPage(String withType, String identifier) {
+    public static Result view(String withType, String identifier) {
         try {
             return loadAndDecoratePage(withType, identifier);
+        } catch (Exception e) {
+            return CoreLoader.handleException(e);
+        }
+    }
+
+    public static Result create(String withType) {
+        try {
+            return loadAndDecoratePage(withType + Admin.Action.CREATE);
+        } catch (Exception e) {
+            return CoreLoader.handleException(e);
+        }
+    }
+
+    public static Result edit(String withType, String identifier) {
+        try {
+            return loadAndDecoratePage(withType + Admin.Action.EDIT, identifier);
+        } catch (Exception e) {
+            return CoreLoader.handleException(e);
+        }
+    }
+
+    public static Result delete(String withType, String identifier) {
+        try {
+            return loadAndDecoratePage(withType + Admin.Action.DELETE, identifier);
         } catch (Exception e) {
             return CoreLoader.handleException(e);
         }
@@ -74,29 +100,16 @@ public class AdminLoader {
 
     private static Node loadNode(String withType) throws NodeLoadException, ModuleException {
         Logger.debug("Loading [" + withType + "] as type");
-        return loadByType(withType);
+        RootNode rootNode = new RootNode(0);
+        rootNode.nodeType(withType);
+        return NodeHelper.load(rootNode);
     }
 
     private static Node loadNode(String withType, String identifier) throws NodeLoadException, ModuleException {
         Logger.debug("Loading [" + withType + "] as type and identifier [" + identifier + "]");
-        return loadByType(withType, identifier);
-    }
-
-    private static Node loadByType(String withType) throws NodeLoadException, ModuleException {
-        RootNode rootNode = loadRootNode(withType);
-        return NodeHelper.load(rootNode);
-    }
-
-    private static Node loadByType(String withType, String identifier) throws NodeLoadException, ModuleException {
         RootNode rootNode = new RootNode(identifier, 0);
         rootNode.nodeType(withType);
         return NodeHelper.load(rootNode);
-    }
-
-    private static RootNode loadRootNode(String withType) {
-        RootNode rootNode = new RootNode(0);
-        rootNode.nodeType(withType);
-        return rootNode;
     }
 
     private static Result decorateNode(Node node) throws NodeLoadException, ModuleException {

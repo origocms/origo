@@ -26,7 +26,7 @@ public class BasicUserAdminProvider {
 
     @Admin.Navigation(alias="/user/basic", key="breadcrumb.origo.admin.dashboard.user.basic")
     public static String getProviderUrl() {
-        return routes.Application.pageWithType(EDIT_TYPE).url();
+        return routes.Dashboard.dashboard(EDIT_TYPE).url();
     }
 
 }

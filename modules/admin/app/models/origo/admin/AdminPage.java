@@ -60,7 +60,7 @@ public class AdminPage implements Node {
 
     @Override
     public String themeVariant() {
-        return rootNode.themeVariant();
+        return themeVariant;
     }
 
     public void setThemeVariant(String themeVariant) {

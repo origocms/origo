@@ -120,7 +120,7 @@ public class BasicNavigationPageAdminProvider {
     }
 
     /**
-     * Hooks in to the submit process and stores a an alias for a page when the page is submitted.
+     * Hooks in to the submit process and stores an alias for a page when the page is submitted.
      */
     @OnSubmit(weight = 1100)
     public static void storeNavigation(OnSubmit.Context context) {
