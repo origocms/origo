@@ -73,7 +73,7 @@ public class BasicPageAdminProvider {
         // TODO: Look up themevariant (and also meta) from DB instead of resetting here.
         page.themeVariant = null;
         page.setTitle("New Basic Page");
-        page.addElement(DashboardHelper.createBreadcrumb(Core.With.CONTENT_PAGE, BASE_TYPE), AdminTheme.topMeta());
+        page.addElement(DashboardHelper.createBreadcrumb(Admin.With.CONTENT_PAGE, BASE_TYPE), AdminTheme.topMeta());
         return page;
     }
 
@@ -119,7 +119,7 @@ public class BasicPageAdminProvider {
         // TODO: Look up themevariant (and also meta) from DB instead of resetting here.
         page.themeVariant = null;
         page.setTitle("Edit Basic Page");
-        page.addElement(DashboardHelper.createBreadcrumb(Core.With.CONTENT_PAGE, BASE_TYPE), AdminTheme.topMeta());
+        page.addElement(DashboardHelper.createBreadcrumb(Admin.With.CONTENT_PAGE, BASE_TYPE), AdminTheme.topMeta());
         return page;
     }
 
@@ -397,7 +397,7 @@ public class BasicPageAdminProvider {
     }
 
     public static String getProviderUrl() {
-        return routes.Dashboard.dashboard(Core.With.CONTENT_PAGE).absoluteURL(Http.Context.current().request());
+        return routes.Dashboard.dashboard(Admin.With.CONTENT_PAGE).absoluteURL(Http.Context.current().request());
     }
 
     /**
@@ -405,7 +405,7 @@ public class BasicPageAdminProvider {
      */
     @SubmitState(with = BASE_TYPE)
     public static Result handleSuccess(SubmitState.Context context) {
-        return Controller.redirect(routes.Dashboard.dashboard(Core.With.CONTENT_PAGE));
+        return Controller.redirect(routes.Dashboard.dashboard(Admin.With.CONTENT_PAGE));
     }
 
 

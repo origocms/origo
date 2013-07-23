@@ -1,8 +1,5 @@
 package controllers.origo.admin;
 
-import controllers.origo.core.CoreLoader;
-import org.springframework.stereotype.Component;
-import play.Logger;
 import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;

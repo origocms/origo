@@ -28,7 +28,7 @@ public class ContentAdminProvider {
     /*
      * Dashboard Item for front page.
     */
-    @Provides(type = Admin.Type.DASHBOARD_ITEM, with = Core.With.CONTENT_PAGE)
+    @Provides(type = Admin.Type.DASHBOARD_ITEM, with = Admin.With.CONTENT_PAGE)
     @Relationship(parent = Admin.With.FRONT_PAGE)
     public static Element addContentDashboardItemToFrontPage(Provides.Context context) {
         return DashboardHelper.createBasicDashboardItem().
@@ -37,18 +37,18 @@ public class ContentAdminProvider {
 
     @Admin.Navigation(alias = "/content", key = "breadcrumb.origo.admin.dashboard.content.content")
     public static String getDashboardUrl() {
-        return routes.Dashboard.dashboard(Core.With.CONTENT_PAGE).url();
+        return routes.Dashboard.dashboard(Admin.With.CONTENT_PAGE).url();
     }
 
     /*
      * Creating the Content listing page.
      */
-    @Provides(type = Core.Type.NODE, with = Core.With.CONTENT_PAGE)
+    @Provides(type = Core.Type.NODE, with = Admin.With.CONTENT_PAGE)
     public static Node createContentList(Provides.Context context) throws NodeLoadException, ModuleException {
-        AdminPage page = new AdminPage(Core.With.CONTENT_PAGE, (RootNode) context.node);
+        AdminPage page = new AdminPage(Admin.With.CONTENT_PAGE, (RootNode) context.node);
         page.setTitle("Content");
 
-        page.addElement(DashboardHelper.createBreadcrumb(Core.With.CONTENT_PAGE), AdminTheme.topMeta());
+        page.addElement(DashboardHelper.createBreadcrumb(Admin.With.CONTENT_PAGE), AdminTheme.topMeta());
 
         List<RootNode> rootNodes = RootNode.findCurrentVersions();
 

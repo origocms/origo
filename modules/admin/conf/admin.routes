@@ -3,6 +3,7 @@
 # ~~~~
 
 # Home page
+GET     /dashboard                                      controllers.origo.admin.Dashboard.index()
 GET     /dashboard/:dashboard                           controllers.origo.admin.Dashboard.dashboard(dashboard:String)
 GET     /                                               controllers.origo.admin.Dashboard.index()
 

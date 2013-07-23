@@ -18,6 +18,7 @@ public class Admin {
 
     public static class With {
         public static final String FRONT_PAGE = "frontpage";
+        public static final String CONTENT_PAGE = "content";
         public static final String USER_PAGE = "user";
         public static final String SETTINGS_PAGE = "settings";
     }
