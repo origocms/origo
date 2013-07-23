@@ -6,10 +6,11 @@
 GET     /dashboard/:dashboard                           controllers.origo.admin.Dashboard.dashboard(dashboard:String)
 GET     /                                               controllers.origo.admin.Dashboard.index()
 
-GET     /:withType/new                                  controllers.origo.admin.Application.createWithType(withType:String)
-GET     /:withType/:identifier                          controllers.origo.admin.Application.viewWithTypeAndIdentifier(withType:String, identifier:String)
-GET     /:withType/:identifier/edit                     controllers.origo.admin.Application.editWithTypeAndIdentifier(withType:String, identifier:String)
-GET     /:withType/:identifier/delete                   controllers.origo.admin.Application.deleteWithTypeAndIdentifier(withType:String, identifier:String)
+GET     /new                                            controllers.origo.admin.Application.create()
+GET     /new/:withType                                  controllers.origo.admin.Application.createWithType(withType:String)
+GET     /edit/:identifier                               controllers.origo.admin.Application.edit(identifier:String)
+GET     /delete/:identifier                             controllers.origo.admin.Application.delete(identifier:String)
+GET     /:identifier                                    controllers.origo.admin.Application.view(identifier:String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                                   controllers.Assets.at(path="/public", file)

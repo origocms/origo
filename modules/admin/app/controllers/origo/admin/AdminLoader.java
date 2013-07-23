@@ -14,8 +14,6 @@ import main.origo.core.ui.NavigationElement;
 import main.origo.core.ui.RenderedNode;
 import models.origo.core.RootNode;
 import play.Logger;
-import play.Play;
-import play.mvc.Controller;
 import play.mvc.Result;
 
 import java.util.List;
@@ -38,17 +36,9 @@ public class AdminLoader {
         }
     }
 
-    public static Result view(String withType) {
+    public static Result view(String identifier) {
         try {
-            return loadAndDecoratePage(withType);
-        } catch (Exception e) {
-            return CoreLoader.handleException(e);
-        }
-    }
-
-    public static Result view(String withType, String identifier) {
-        try {
-            return loadAndDecoratePage(withType, identifier);
+            return loadAndDecoratePage(getType(identifier), identifier);
         } catch (Exception e) {
             return CoreLoader.handleException(e);
         }
@@ -62,20 +52,31 @@ public class AdminLoader {
         }
     }
 
-    public static Result edit(String withType, String identifier) {
+    public static Result edit(String identifier) {
         try {
-            return loadAndDecoratePage(withType + Admin.Action.EDIT, identifier);
+            return loadAndDecoratePage(getType(identifier) + Admin.Action.EDIT, identifier);
         } catch (Exception e) {
             return CoreLoader.handleException(e);
         }
     }
 
-    public static Result delete(String withType, String identifier) {
+    public static Result delete(String identifier) {
         try {
-            return loadAndDecoratePage(withType + Admin.Action.DELETE, identifier);
+            return loadAndDecoratePage(getType(identifier) + Admin.Action.DELETE, identifier);
         } catch (Exception e) {
             return CoreLoader.handleException(e);
         }
+    }
+
+    private static String getType(String identifier) throws NodeLoadException {
+        try {
+            RootNode node = RootNode.findLatestVersionWithNodeId(identifier);
+            if (node != null) {
+                return node.nodeType();
+            }
+        } catch (Exception ignored) {
+        }
+        throw new NodeLoadException(identifier, "No Node with id '"+identifier+"'");
     }
 
     private static Result loadAndDecoratePage(String withType) throws NodeLoadException, ModuleException {

@@ -7,17 +7,18 @@ import play.mvc.Result;
 public class Application extends Controller {
 
     @Transactional
-    public static Result viewWithType(String withType) {
+    public static Result view(String identifier) {
         //TODO: Check if config !exists and redirect to wizard
 
-        return AdminLoader.view(withType);
+        return AdminLoader.view(identifier);
     }
 
     @Transactional
-    public static Result viewWithTypeAndIdentifier(String type, String identifier) {
+    public static Result create() {
         //TODO: Check if config !exists and redirect to wizard
 
-        return AdminLoader.view(type, identifier);
+        //return AdminLoader.create(type);
+        return TODO;
     }
 
     @Transactional
@@ -28,17 +29,17 @@ public class Application extends Controller {
     }
 
     @Transactional
-    public static Result editWithTypeAndIdentifier(String type, String identifier) {
+    public static Result edit(String identifier) {
         //TODO: Check if config !exists and redirect to wizard
 
-        return AdminLoader.edit(type, identifier);
+        return AdminLoader.edit(identifier);
     }
 
     @Transactional
-    public static Result deleteWithTypeAndIdentifier(String type, String identifier) {
+    public static Result delete(String identifier) {
         //TODO: Check if config !exists and redirect to wizard
 
-        return AdminLoader.delete(type, identifier);
+        return AdminLoader.delete(identifier);
     }
 
 }

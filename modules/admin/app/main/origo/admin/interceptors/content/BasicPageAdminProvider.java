@@ -9,7 +9,10 @@ import main.origo.core.ModuleException;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
 import main.origo.core.ThemeRepository;
-import main.origo.core.annotations.*;
+import main.origo.core.annotations.Core;
+import main.origo.core.annotations.Interceptor;
+import main.origo.core.annotations.OnLoad;
+import main.origo.core.annotations.Provides;
 import main.origo.core.annotations.forms.OnSubmit;
 import main.origo.core.annotations.forms.SubmitState;
 import main.origo.core.event.forms.OnCreateEventGenerator;
@@ -32,8 +35,6 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
@@ -406,5 +407,7 @@ public class BasicPageAdminProvider {
     public static Result handleSuccess(SubmitState.Context context) {
         return Controller.redirect(routes.Dashboard.dashboard(Core.With.CONTENT_PAGE));
     }
+
+
 
 }
