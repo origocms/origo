@@ -15,4 +15,17 @@ public class NavigationHelper {
         return NavigationEventGenerator.triggerProvidesNavigationInterceptor(node, navigationType, section);
     }
 
+    public static NavigationElement getSelectedNavigation(List<NavigationElement> navigationElements) {
+        for (NavigationElement navigationElement : navigationElements) {
+            if (navigationElement.selected) {
+                return navigationElement;
+            }
+            NavigationElement element = getSelectedNavigation(navigationElement.children);
+            if (element != null) {
+                return element;
+            }
+        }
+        return null;
+    }
+
 }
