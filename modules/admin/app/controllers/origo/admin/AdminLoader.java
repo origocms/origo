@@ -80,23 +80,14 @@ public class AdminLoader {
     }
 
     private static Result loadAndDecoratePage(String withType) throws NodeLoadException, ModuleException {
-        try {
-            NodeContext.set();
-            Node node = loadNode(withType);
-            return decorateNode(node);
-        } finally {
-            NodeContext.clear();
-        }
+        Node node = loadNode(withType);
+        return decorateNode(node);
     }
 
     private static Result loadAndDecoratePage(String withType, String identifier) throws NodeLoadException, ModuleException {
-        try {
-            NodeContext.set();
-            Node node = loadNode(withType, identifier);
-            return decorateNode(node);
-        } finally {
-            NodeContext.clear();
-        }
+        NodeContext.set();
+        Node node = loadNode(withType, identifier);
+        return decorateNode(node);
     }
 
     private static Node loadNode(String withType) throws NodeLoadException, ModuleException {

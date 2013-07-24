@@ -12,5 +12,7 @@ GET     /edit/:identifier                               controllers.origo.admin.
 GET     /delete/:identifier                             controllers.origo.admin.Application.delete(identifier:String)
 GET     /:identifier                                    controllers.origo.admin.Application.view(identifier:String)
 
+GET     /assets/internal/pages                          controllers.origo.admin.InternalAssets.listPages()
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                                   controllers.Assets.at(path="/public", file)

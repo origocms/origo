@@ -1,8 +1,8 @@
 package controllers.origo;
 
 import controllers.origo.core.CoreLoader;
+import main.origo.core.actions.ContextAware;
 import models.origo.core.Settings;
-import org.springframework.stereotype.Component;
 import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -12,6 +12,7 @@ import views.html.origo.application.not_found;
 public class Application extends Controller {
 
     @Transactional
+    @ContextAware
     public static Result index() throws Throwable {
         if (shouldRedirectToSetupPage()) {
             return redirect(routes.Setup.index());
@@ -20,6 +21,7 @@ public class Application extends Controller {
     }
 
     @Transactional
+    @ContextAware
     public static Result page(String identifier) {
         if (shouldRedirectToSetupPage()) {
             return redirect(routes.Setup.index());
@@ -29,6 +31,7 @@ public class Application extends Controller {
     }
 
     @Transactional
+    @ContextAware
     public static Result pageVersion(String identifier, int version) {
         if (shouldRedirectToSetupPage()) {
             return redirect(routes.Setup.index());
