@@ -49,7 +49,7 @@ public class BasicNavigationPageAdminProvider {
             try {
                 List<NavigationElement> navigationElements = NavigationHelper.getNavigation(adminPage.rootNode, NavigationElement.FRONT);
 
-                NavigationElement selectedNavigationElement = getSelectedNavigationId(navigationElements);
+                NavigationElement selectedNavigationElement = NavigationHelper.getSelectedNavigation(navigationElements);
                 BasicNavigation currentNavigation = null;
                 if (selectedNavigationElement != null) {
                     currentNavigation = BasicNavigation.findWithReferenceIdentifier(selectedNavigationElement.id);
@@ -91,19 +91,6 @@ public class BasicNavigationPageAdminProvider {
                 Logger.error("Unable to load node", e);
             }
         }
-    }
-
-    private static NavigationElement getSelectedNavigationId(List<NavigationElement> navigationElements) {
-        for (NavigationElement navigationElement : navigationElements) {
-            if (navigationElement.selected) {
-                return navigationElement;
-            }
-            NavigationElement element = getSelectedNavigationId(navigationElement.children);
-            if (element != null) {
-                return element;
-            }
-        }
-        return null;
     }
 
     private static void addNavigationElement(Element element, List<NavigationElement> navigationElements, Element.InputSelectOption parent, String prepend) {
