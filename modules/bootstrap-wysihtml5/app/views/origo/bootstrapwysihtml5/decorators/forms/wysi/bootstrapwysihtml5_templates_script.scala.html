@@ -1,23 +1,105 @@
 @(id:String)
 <script type="text/javascript">
-    var customTemplates = {
-        "lists": function(locale, options) {
-            var size = (options && options.size) ? ' btn-'+options.size : '';
-            return "<li>" +
-                "<div class='btn-group'>" +
-                    "<a class='btn" + size + "' data-wysihtml5-command='insertUnorderedList' title='" + locale.lists.unordered + "'><i class='icon-list'></i></a>" +
-                    "<a class='btn" + size + "' data-wysihtml5-command='insertOrderedList' title='" + locale.lists.ordered + "'><i class='icon-th-list'></i></a>" +
-                    "</div>" +
-                "</li>";
+    var customOptions = {
+        "font-styles": true,
+        "color": false,
+        "emphasis": true,
+        "lists": true,
+        "html": false,
+        "link": true,
+        "image": true,
+        events: {},
+        parserRules: {
+            classes: {
+                // (path_to_project/lib/css/wysiwyg-color.css)
+                "wysiwyg-color-silver" : 1,
+                "wysiwyg-color-gray" : 1,
+                "wysiwyg-color-white" : 1,
+                "wysiwyg-color-maroon" : 1,
+                "wysiwyg-color-red" : 1,
+                "wysiwyg-color-purple" : 1,
+                "wysiwyg-color-fuchsia" : 1,
+                "wysiwyg-color-green" : 1,
+                "wysiwyg-color-lime" : 1,
+                "wysiwyg-color-olive" : 1,
+                "wysiwyg-color-yellow" : 1,
+                "wysiwyg-color-navy" : 1,
+                "wysiwyg-color-blue" : 1,
+                "wysiwyg-color-teal" : 1,
+                "wysiwyg-color-aqua" : 1,
+                "wysiwyg-color-orange" : 1,
+            },
+            tags: {
+                "b":  {},
+                "i":  {},
+                "br": {},
+                "ol": {},
+                "ul": {},
+                "li": {},
+                "h1": {},
+                "h2": {},
+                "h3": {},
+                "blockquote": {},
+                "u": 1,
+                "img": {
+                    "check_attributes": {
+                        "width": "numbers",
+                        "alt": "alt",
+                        "src": "url",
+                        "height": "numbers"
+                    }
+                },
+                "a":  {
+                    set_attributes: {
+                        target: "_blank",
+                        rel:    "nofollow"
+                    },
+                    check_attributes: {
+                        href:   "url" // important to avoid XSS
+                    }
+                },
+                "span": 1,
+                "div": 1
+            }
         },
-        "lists": function(locale, options) {
-            var size = (options && options.size) ? ' btn-'+options.size : '';
-            return "<li>" +
-                "<div class='btn-group'>" +
-                    "<a class='btn" + size + "' data-wysihtml5-command='insertUnorderedList' title='" + locale.lists.unordered + "'><i class='icon-list'></i></a>" +
-                    "<a class='btn" + size + "' data-wysihtml5-command='insertOrderedList' title='" + locale.lists.ordered + "'><i class='icon-th-list'></i></a>" +
-                    "</div>" +
-                "</li>";
+        stylesheets: ["@routes.Assets.at("stylesheets/origo/bootstrapwysihtml5/wysiwyg-color.css")"], // (path_to_project/lib/css/wysiwyg-color.css)
+        locale: "en",
+        customTemplates: {
+            "lists": function (locale, options) {
+                var size = (options && options.size) ? ' btn-' + options.size : '';
+                return "<li>" +
+                        "<div class='btn-group'>" +
+                        "<a class='btn" + size + "' data-wysihtml5-command='insertUnorderedList' title='" + locale.lists.unordered + "'><i class='icon-list'></i></a>" +
+                        "<a class='btn" + size + "' data-wysihtml5-command='insertOrderedList' title='" + locale.lists.ordered + "'><i class='icon-th-list'></i></a>" +
+                        "</div>" +
+                        "</li>";
+            },
+            "link": function (locale, options) {
+                var size = (options && options.size) ? ' btn-' + options.size : '';
+                return "<li>" +
+                        "<div class='bootstrap-wysihtml5-insert-link-modal modal hide fade'>" +
+                        "<div class='modal-header'>" +
+                        "<a class='close' data-dismiss='modal'>&times;</a>" +
+                        "<h3>" + locale.link.insert + "</h3>" +
+                        "</div>" +
+                        "<div class='modal-body'>" +
+                        "<label id='@id-external-label' for='@id-external'>External</label>" +
+                        "<input name='@id-external' value='http://' class='bootstrap-wysihtml5-insert-link-url input-xlarge'>" +
+                        "<hr>" +
+                        "<label id='@id-internal-label' for='@id-internal'>Internal</label>" +
+                        "<input name='@id-internal' type='text' data-provide='typeahead' data-source='[\"Test 1\", \"Test 2\"]'>" +
+                        "</div>" +
+                        "<div class='modal-footer'>" +
+                        "<a href='#' class='btn' data-dismiss='modal'>" + locale.link.cancel + "</a>" +
+                        "<a href='#' class='btn btn-primary' data-dismiss='modal'>" + locale.link.insert + "</a>" +
+                        "</div>" +
+                        "</div>" +
+                        "<a class='btn" + size + "' data-wysihtml5-command='createLink' title='" + locale.link.insert + "'><i class='icon-share'></i></a>" +
+                        "</li>";
+            }
+
         }
+
     }
+
 </script>
