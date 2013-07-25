@@ -260,7 +260,10 @@ public final class RootNode extends Model<RootNode> implements Node {
     public static List<RootNode> findCurrentVersions() {
         try {
             String queryString = "select distinct n from "+RootNode.class.getName()+" n " +
-                    "order by n.version desc";
+                    "where n.version = (" +
+                    "select max(n2.version) from "+RootNode.class.getName()+" n2 " +
+                    "where n2.nodeId = n.nodeId" +
+                    ")";
             final Query query = JPA.em().createQuery(queryString);
             List<RootNode> nodes = query.getResultList();
             initializeNodes(nodes);
