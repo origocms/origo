@@ -15,7 +15,7 @@ import models.origo.core.EventHandler;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
 import play.api.templates.Html;
-import play.mvc.Result;
+import play.mvc.Content;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -135,10 +135,10 @@ public class ThemeHelper {
         return themeVariant;
     }
 
-    public static Result render(RenderedNode renderedNode) {
+    public static Content render(RenderedNode renderedNode) {
         CachedThemeVariant cachedThemeVariant = renderedNode.themeVariant();
         try {
-            return (Result) cachedThemeVariant.templateMethod.invoke(null, new ThemeVariant.Context(renderedNode));
+            return (Content) cachedThemeVariant.templateMethod.invoke(null, new ThemeVariant.Context(renderedNode));
         } catch (InvocationTargetException e) {
             throw new RuntimeException(e.getCause());
         } catch (IllegalAccessException e) {

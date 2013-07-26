@@ -13,6 +13,7 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import play.Logger;
 import play.api.templates.Html;
+import play.mvc.Content;
 import play.mvc.Result;
 
 import java.lang.annotation.Annotation;
@@ -202,7 +203,7 @@ public class AnnotationProcessor {
 
             for (Method m : methods) {
 
-                assertCorrectSignature(m, Result.class, ThemeVariant.class, ThemeVariant.Context.class);
+                assertCorrectSignature(m, Content.class, ThemeVariant.class, ThemeVariant.Context.class);
 
                 ThemeVariant themeVariant = m.getAnnotation(ThemeVariant.class);
                 ThemeRepository.addThemeVariant(themeAnnotation.id(), themeVariant.id(), themeVariant.regions(), m);

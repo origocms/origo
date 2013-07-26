@@ -14,6 +14,7 @@ import main.origo.core.ui.RenderedNode;
 import models.origo.core.Alias;
 import play.Logger;
 import play.Play;
+import play.mvc.Content;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -26,7 +27,7 @@ public class CoreLoader {
     public static Result getStartPage() {
         String startPage = CoreSettingsHelper.getStartPage();
         try {
-            return loadAndDecoratePage(startPage, 0);
+            return Controller.ok(loadAndDecoratePage(startPage, 0));
         } catch (NodeNotFoundException e) {
             return loadPageNotFoundPage();
         } catch (Exception e) {
@@ -36,7 +37,7 @@ public class CoreLoader {
 
     public static Result getPage(String identifier) {
         try {
-            return loadAndDecoratePage(identifier, 0);
+            return Controller.ok(loadAndDecoratePage(identifier, 0));
         } catch (NodeNotFoundException e) {
             return loadPageNotFoundPage();
         } catch (ModuleException e) {
@@ -48,7 +49,7 @@ public class CoreLoader {
 
     public static Result getPage(String identifier, int version) {
         try {
-            return loadAndDecoratePage(identifier, version);
+            return Controller.ok(loadAndDecoratePage(identifier, version));
         } catch (NodeNotFoundException e) {
             return loadPageNotFoundPage();
         } catch (ModuleException e) {
@@ -118,7 +119,7 @@ public class CoreLoader {
         return Controller.redirect(url);
     }
 
-    private static Result loadAndDecoratePage(String identifier, int version) throws NodeNotFoundException, NodeLoadException, ModuleException {
+    private static Content loadAndDecoratePage(String identifier, int version) throws NodeNotFoundException, NodeLoadException, ModuleException {
         try {
             NodeContext.set();
             Node node = loadNode(identifier, version);
