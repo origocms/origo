@@ -13,6 +13,7 @@ public class CoreSettingsHelper {
         public static final String START_PAGE = "start_page";
         public static final String PAGE_NOT_FOUND_PAGE = "page_not_found_page";
         public static final String INTERNAL_SERVER_ERROR_PAGE = "internal_server_error_page";
+        public static final String UNAUTHORIZED_PAGE = "unauthorized_page";
 
         public static final String THEME = "theme";
         public static final String THEME_VARIANT = "theme_variant";
@@ -20,6 +21,8 @@ public class CoreSettingsHelper {
 
         public static final String DEFAULT_FORM_TYPE = "event.default_form_type";
         public static final String SUBMIT_HANDLER = "event.submit_handler";
+
+        public static final String USER_TYPE = "origo.authentication.user_type";
     }
 
     public static String getBaseUrl() {
@@ -56,6 +59,10 @@ public class CoreSettingsHelper {
 
     public static String getSubmitHandler() {
         return getClassTypeIfExists(Keys.SUBMIT_HANDLER, DefaultSubmitHandler.class.getName());
+    }
+
+    public static String getUserType() {
+        return Keys.USER_TYPE;
     }
 
     protected static String getClassTypeIfExists(String propertyName, String fallback) {

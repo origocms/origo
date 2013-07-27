@@ -11,9 +11,9 @@ import main.origo.core.helpers.NodeHelper;
 import main.origo.core.helpers.ThemeHelper;
 import main.origo.core.ui.NavigationElement;
 import main.origo.core.ui.RenderedNode;
+import main.origo.core.utils.ExceptionUtil;
 import models.origo.core.RootNode;
 import play.Logger;
-import play.Play;
 import play.mvc.Content;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -55,14 +55,7 @@ public class AdminLoader {
     }
 
     private static Result handleException(Exception e) {
-        if (Play.isDev()) {
-            Throwable thrown = e;
-            while(thrown instanceof RuntimeException) {
-                thrown = e.getCause();
-            }
-            throw new RuntimeException(thrown);
-        }
-        Logger.error("", e);
+        ExceptionUtil.assertExceptionHandling(e);
         return CoreLoader.loadPageLoadErrorPage();
     }
 

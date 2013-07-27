@@ -1,0 +1,72 @@
+package main.origo.authentication.interceptors;
+
+import be.objectify.deadbolt.core.models.Subject;
+import controllers.origo.core.CoreLoader;
+import main.origo.core.ModuleException;
+import main.origo.core.NodeLoadException;
+import main.origo.core.NodeNotFoundException;
+import main.origo.core.annotations.Core;
+import main.origo.core.annotations.Interceptor;
+import main.origo.core.annotations.Provides;
+import main.origo.core.helpers.CoreSettingsHelper;
+import main.origo.core.security.AuthorizationEventGenerator;
+import main.origo.core.utils.ExceptionUtil;
+import models.origo.authentication.BasicUser;
+import models.origo.core.Settings;
+import org.apache.commons.lang3.StringUtils;
+import play.Logger;
+import play.mvc.Content;
+import play.mvc.Controller;
+import play.mvc.Result;
+
+@Interceptor
+public class BasicUserProvider {
+
+    @Provides(type=Core.Type.USER, with = BasicUser.TYPE)
+    public static Subject getUser(Provides.Context context) {
+        String username = (String) context.args.get("username");
+        AuthorizationEventGenerator.triggerBeforeUserLoaded();
+        BasicUser user = BasicUser.findWithEmail(username);
+        AuthorizationEventGenerator.triggerAfterUserLoaded();
+        return user;
+    }
+
+    @Provides(type = Core.Type.USER, with = Core.With.AUTH_SUBJECT)
+    public static Subject getCurrentUser() {
+        return AuthenticationProvider.getCurrent();
+    }
+
+    @Provides(type = Core.Type.USER, with = Core.With.AUTH_FAILURE)
+    public static Result handleAuthFailure() {
+
+        Subject subject = AuthenticationProvider.getCurrent();
+        AuthorizationEventGenerator.triggerBeforeAuthFailure();
+
+        try {
+            String unauthorizedPage = Settings.load().getValue(CoreSettingsHelper.Keys.UNAUTHORIZED_PAGE);
+            try {
+                if (StringUtils.isNotBlank(unauthorizedPage)) {
+                    Content content = CoreLoader.loadAndDecoratePage(unauthorizedPage, 0);
+                    if (subject != null) {
+                        return Controller.forbidden(content);
+                    } else {
+                        return Controller.unauthorized(content);
+                    }
+                }
+            } catch (NodeNotFoundException | NodeLoadException | ModuleException e) {
+                ExceptionUtil.assertExceptionHandling(e);
+                return CoreLoader.loadPageLoadErrorPage();
+            }
+
+            if (subject != null) {
+                Logger.warn("Using fallback forbidden handling, sending 403 with no content");
+                return Controller.forbidden();
+            } else {
+                Logger.warn("Using fallback unauthorized handling, sending 401 with no content");
+                return Controller.unauthorized();
+            }
+        } finally {
+            AuthorizationEventGenerator.triggerAfterAuthFailure();
+        }
+    }
+}

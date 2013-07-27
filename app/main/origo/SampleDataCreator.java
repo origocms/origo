@@ -2,6 +2,7 @@ package main.origo;
 
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.themes.bootstrap.BootstrapTheme;
+import models.origo.authentication.BasicUser;
 import models.origo.core.*;
 import models.origo.core.navigation.BasicNavigation;
 import models.origo.core.navigation.ExternalLinkNavigation;
@@ -20,6 +21,7 @@ public class SampleDataCreator {
             createPage3();
             createPage4();
             createPage5();
+            createPage6();
             createAliases();
             createNavigation();
         }
@@ -31,8 +33,12 @@ public class SampleDataCreator {
         settings.setValueIfMissing(CoreSettingsHelper.Keys.START_PAGE, "2c36c55dd-956e-4b78-18c4-eef7e56aa17"); // Page 1
         settings.setValueIfMissing(CoreSettingsHelper.Keys.PAGE_NOT_FOUND_PAGE, "c9615819-0556-4e70-b6a9-a66c5b8d4c1a"); // Page 2
         settings.setValueIfMissing(CoreSettingsHelper.Keys.INTERNAL_SERVER_ERROR_PAGE, "1cf699a7-a0c4-4be0-855f-466042a36a8d"); // Page 3
+        settings.setValueIfMissing(CoreSettingsHelper.Keys.UNAUTHORIZED_PAGE, "f4501c31-690f-46f4-853d-167165a4fc03"); // Page 6
+        settings.setValueIfMissing(CoreSettingsHelper.Keys.USER_TYPE, BasicUser.TYPE);
         settings.setValue(CoreSettingsHelper.Keys.THEME, BootstrapTheme.ID); // Override theme variant
         settings.setValue(CoreSettingsHelper.Keys.THEME_VARIANT, "bootstrap-main_only"); // Override theme variant
+
+
         settings.save();
     }
 
@@ -274,6 +280,32 @@ public class SampleDataCreator {
 
     }
 
+    private static void createPage6() {
+
+        Content lead = new Content();
+        lead.identifier = "92e9b4f7-0269-48b7-81b6-fe4186754481";
+        lead.value = "Goblin abracadabra dobbawacko, \"whack roo dee shnazzle,\" boo shnozzle wuggle fling nip razzle-wacko...crungle hum dee! Flung bam dizzle loo bleeb shnaz nip ingle? Zonkha-izzle-boo!";
+        lead.create();
+
+        Content body = new Content();
+        body.identifier = "ad3c9bbe-d9fe-4f89-bca7-daedb8d16da7";
+        body.value = "Blung wooble duh tizzle bam wiggle? Ho nip doo Principal Skinner shnuzzlecringle. Flung yap bling boo crongle-blob!! Zap zap da Chaka Khan zonkshnazzle. Dee boo Smithers flibzung! Blob ha blang zip flap twaddle dee blob? Flib da zongity blooflee. Dingleloo-zapping-bling!\n\n\"Bam ingle da?\" slop flibfloo. Da yip yap Kenny wubbletang. Yap blab goblinwiggle. Ha crangle hum wobble cringely wogglewibble, loo flang razz roo slappy shnizzlecrangle zoom. Jingle flee cringlewacko, \"blung ha duh bang,\" roo blee tongle tingle loo razz-zang...hizzy zap duh! \"Boo dobba dee?\" quibble razzwacko. Flob hum hizzle duh wubble bizzle yap blee? Zip ha Luke zonkshnazzle!";
+        body.create();
+
+        RootNode node = new RootNode("f4501c31-690f-46f4-853d-167165a4fc03", 1);
+        node.nodeType(BasicPage.TYPE);
+        node.create();
+
+        BasicPage page = new BasicPage();
+        page.nodeId = node.nodeId();
+        page.version = node.version();
+        page.title = "Unauthorized Access";
+        page.leadReferenceId = lead.identifier;
+        page.bodyReferenceId = body.identifier;
+        page.create();
+
+    }
+
     private static void createAliases() {
 
         // ### Alias ###
@@ -281,13 +313,17 @@ public class SampleDataCreator {
         Alias pageNotFoundAlias = new Alias("page-not-found", "c9615819-0556-4e70-b6a9-a66c5b8d4c1a");
         pageNotFoundAlias.create();
 
+        // /start -> page 1
+        Alias start = new Alias("start", "2c36c55dd-956e-4b78-18c4-eef7e56aa17");
+        start.create();
+
         // /error -> page 3
         Alias errorAlias = new Alias("error", "1cf699a7-a0c4-4be0-855f-466042a36a8d");
         errorAlias.create();
 
-        // /start -> page 1
-        Alias start = new Alias("start", "2c36c55dd-956e-4b78-18c4-eef7e56aa17");
-        start.create();
+        // /error -> page 6
+        Alias unauthorizedAlias = new Alias("unauthorized", "f4501c31-690f-46f4-853d-167165a4fc03");
+        unauthorizedAlias.create();
 
         // /fourth -> page 4
         Alias fourth = new Alias("fourth", "aa1755dd-18c4-4b78-956e-eef7e562c36c");

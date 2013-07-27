@@ -9,10 +9,15 @@ public class Core {
         public static final String NAVIGATION = "navigation";
         public static final String NAVIGATION_ITEM = "navigation_item";
         public static final String FORM = "form";
+
+        public static final String USER = "user";
     }
 
     public class With {
         public static final String CONTENT_PAGE = "content";
         public static final String EDITOR = "richtexteditor";
+
+        public static final String AUTH_SUBJECT = "auth_subject";
+        public static final String AUTH_FAILURE = "auth_failure";
     }
 }

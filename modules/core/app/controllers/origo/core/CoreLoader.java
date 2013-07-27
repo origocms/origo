@@ -11,9 +11,9 @@ import main.origo.core.helpers.NodeHelper;
 import main.origo.core.helpers.ThemeHelper;
 import main.origo.core.ui.NavigationElement;
 import main.origo.core.ui.RenderedNode;
+import main.origo.core.utils.ExceptionUtil;
 import models.origo.core.Alias;
 import play.Logger;
-import play.Play;
 import play.mvc.Content;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -60,14 +60,7 @@ public class CoreLoader {
     }
 
     private static Result handleException(Exception e) {
-        if (Play.isDev()) {
-            Throwable thrown = e;
-            while(thrown instanceof RuntimeException) {
-                thrown = e.getCause();
-            }
-            throw new RuntimeException(thrown);
-        }
-        Logger.error("An exception occurred while loading the start page: " + e.getMessage(), e);
+        ExceptionUtil.assertExceptionHandling(e);
         return loadPageLoadErrorPage();
     }
 
@@ -119,7 +112,7 @@ public class CoreLoader {
         return Controller.redirect(url);
     }
 
-    private static Content loadAndDecoratePage(String identifier, int version) throws NodeNotFoundException, NodeLoadException, ModuleException {
+    public static Content loadAndDecoratePage(String identifier, int version) throws NodeNotFoundException, NodeLoadException, ModuleException {
         try {
             NodeContext.set();
             Node node = loadNode(identifier, version);
@@ -134,7 +127,7 @@ public class CoreLoader {
         }
     }
 
-    private static Node loadNode(String identifier, int version) throws NodeNotFoundException, NodeLoadException, ModuleException {
+    public static Node loadNode(String identifier, int version) throws NodeNotFoundException, NodeLoadException, ModuleException {
         Logger.trace("Trying to find alias for [" + identifier + "]");
 
         Alias alias = Alias.findWithPath(identifier);
