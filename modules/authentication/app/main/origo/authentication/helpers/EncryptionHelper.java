@@ -1,4 +1,4 @@
-package main.origo.authentication.util;
+package main.origo.authentication.helpers;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -8,7 +8,7 @@ import org.jasypt.hibernate4.encryptor.HibernatePBEEncryptorRegistry;
 import play.Logger;
 import play.Play;
 
-public class EncryptionUtils {
+public class EncryptionHelper {
 
     private static PBEStringEncryptor encryptor;
     private static boolean useEncryption = true;

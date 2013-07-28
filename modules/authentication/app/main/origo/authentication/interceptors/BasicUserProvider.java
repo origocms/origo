@@ -1,6 +1,7 @@
 package main.origo.authentication.interceptors;
 
 import be.objectify.deadbolt.core.models.Subject;
+import com.google.common.collect.Maps;
 import controllers.origo.core.CoreLoader;
 import main.origo.core.ModuleException;
 import main.origo.core.NodeLoadException;
@@ -25,9 +26,9 @@ public class BasicUserProvider {
     @Provides(type=Core.Type.USER, with = BasicUser.TYPE)
     public static Subject getUser(Provides.Context context) {
         String username = (String) context.args.get("username");
-        AuthorizationEventGenerator.triggerBeforeUserLoaded();
+        AuthorizationEventGenerator.triggerBeforeUserLoaded(Maps.<String, Object>newHashMap());
         BasicUser user = BasicUser.findWithEmail(username);
-        AuthorizationEventGenerator.triggerAfterUserLoaded();
+        AuthorizationEventGenerator.triggerAfterUserLoaded(user, Maps.<String, Object>newHashMap());
         return user;
     }
 
@@ -39,15 +40,15 @@ public class BasicUserProvider {
     @Provides(type = Core.Type.USER, with = Core.With.AUTH_FAILURE)
     public static Result handleAuthFailure() {
 
-        Subject subject = AuthenticationProvider.getCurrent();
-        AuthorizationEventGenerator.triggerBeforeAuthFailure();
+        BasicUser user = AuthenticationProvider.getCurrent();
+        AuthorizationEventGenerator.triggerBeforeAuthorizationFailure(user, Maps.<String, Object>newHashMap());
 
         try {
             String unauthorizedPage = Settings.load().getValue(CoreSettingsHelper.Keys.UNAUTHORIZED_PAGE);
             try {
                 if (StringUtils.isNotBlank(unauthorizedPage)) {
                     Content content = CoreLoader.loadAndDecoratePage(unauthorizedPage, 0);
-                    if (subject != null) {
+                    if (user != null) {
                         return Controller.forbidden(content);
                     } else {
                         return Controller.unauthorized(content);
@@ -58,7 +59,7 @@ public class BasicUserProvider {
                 return CoreLoader.loadPageLoadErrorPage();
             }
 
-            if (subject != null) {
+            if (user != null) {
                 Logger.warn("Using fallback forbidden handling, sending 403 with no content");
                 return Controller.forbidden();
             } else {
@@ -66,7 +67,7 @@ public class BasicUserProvider {
                 return Controller.unauthorized();
             }
         } finally {
-            AuthorizationEventGenerator.triggerAfterAuthFailure();
+            AuthorizationEventGenerator.triggerAfterAuthorizationFailure(user, Maps.<String, Object>newHashMap());
         }
     }
 }

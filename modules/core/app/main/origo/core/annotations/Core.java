@@ -19,5 +19,6 @@ public class Core {
 
         public static final String AUTH_SUBJECT = "auth_subject";
         public static final String AUTH_FAILURE = "auth_failure";
+        public static final String AUTH_CHECK = "auth_check";
     }
 }

@@ -17,6 +17,10 @@ import java.util.Map;
 
 public class AuthorizationEventGenerator {
 
+    public static Result triggerAuthenticationCheck() throws ModuleException, NodeLoadException {
+        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, Core.With.AUTH_CHECK, Maps.<String, Object>newHashMap());
+    }
+
     public static Subject triggerProvidesUserInterceptor(String username) throws ModuleException, NodeLoadException {
         String userType = getUserType();
         return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, userType, Collections.<String, Object>singletonMap("username", username));
@@ -41,16 +45,16 @@ public class AuthorizationEventGenerator {
         return userType;
     }
 
-    public static Result triggerProvidesAuthFailure() throws ModuleException, NodeLoadException {
+    public static Result triggerProvidesAuthorizationFailure() throws ModuleException, NodeLoadException {
         return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, Core.With.AUTH_FAILURE, Maps.<String, Object>newHashMap());
     }
 
-    public static void triggerBeforeAuthFailure() {
-
+    public static void triggerBeforeAuthorizationFailure(User user, Map<String, Object> args) {
+        OnLoadEventGenerator.triggerBeforeInterceptor(null, Core.Type.USER, Core.With.AUTH_FAILURE, args);
     }
 
-    public static void triggerAfterAuthFailure() {
-
+    public static void triggerAfterAuthorizationFailure(User user, Map<String, Object> args) {
+        OnLoadEventGenerator.triggerAfterInterceptor(null, Core.Type.USER, Core.With.AUTH_FAILURE, args);
     }
 
     public static Subject triggerProvidesSubjectInterceptor() throws ModuleException, NodeLoadException {

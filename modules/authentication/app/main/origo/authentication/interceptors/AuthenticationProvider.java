@@ -1,7 +1,8 @@
 package main.origo.authentication.interceptors;
 
 import be.objectify.deadbolt.core.models.Subject;
-import main.origo.authentication.util.EncryptionUtils;
+import controllers.origo.authentication.routes;
+import main.origo.authentication.helpers.EncryptionHelper;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.Provides;
@@ -15,6 +16,7 @@ import play.Logger;
 import play.Play;
 import play.mvc.Controller;
 import play.mvc.Http;
+import play.mvc.Result;
 
 @Interceptor
 public class AuthenticationProvider {
@@ -46,8 +48,11 @@ public class AuthenticationProvider {
     }
 
     @Provides(type = Core.Type.USER, with = Core.With.AUTH_CHECK)
-    public static final isUserAuthenticated(Provides.Context context) {
-
+    public static final Result authenticateUser(Provides.Context context) {
+        if(getCurrent() != null) {
+            return null;
+        }
+        return Controller.redirect(routes.Authentication.login());
     }
 
     public static Subject authenticate(final String email, final String password){
@@ -105,10 +110,10 @@ public class AuthenticationProvider {
 
     public static String getSessionUserName() {
         checkAndUpdateTimestamp(Http.Context.current());
-        return EncryptionUtils.decrypt(Http.Context.current().session().get(EMAIL_SESSION_KEY));
+        return EncryptionHelper.decrypt(Http.Context.current().session().get(EMAIL_SESSION_KEY));
     }
 
     public static void setSessionUserName(String sessionUserName) {
-        Controller.session(EMAIL_SESSION_KEY, EncryptionUtils.encrypt(sessionUserName));
+        Controller.session(EMAIL_SESSION_KEY, EncryptionHelper.encrypt(sessionUserName));
     }
 }
