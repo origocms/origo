@@ -9,6 +9,7 @@ import play.mvc.Result;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class SubmitStateEventGenerator {
 
@@ -30,7 +31,7 @@ public class SubmitStateEventGenerator {
     }
 
     private static CachedAnnotation findOnPostInterceptorsWithType(final String state, final String withType) {
-        List<CachedAnnotation> submitStateInterceptors = InterceptorRepository.getInterceptors(SubmitState.class, new CachedAnnotation.InterceptorSelector() {
+        Set<CachedAnnotation> submitStateInterceptors = InterceptorRepository.getInterceptors(SubmitState.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation interceptor) {
                 SubmitState annotation = (SubmitState) interceptor.annotation;

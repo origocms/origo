@@ -78,6 +78,14 @@ public final class RootNode extends Model<RootNode> implements Node {
         this.nodeId = nodeId;
     }
 
+    public String nodeType() {
+        return nodeType;
+    }
+
+    public void nodeType(String nodeType) {
+        this.nodeType = nodeType;
+    }
+
     @Override
     public Integer version() {
         return version;
@@ -108,14 +116,6 @@ public final class RootNode extends Model<RootNode> implements Node {
     @Override
     public String themeVariant() {
         return null;
-    }
-
-    public String nodeType() {
-        return nodeType;
-    }
-
-    public void nodeType(String nodeType) {
-        this.nodeType = nodeType;
     }
 
     @Override
@@ -255,6 +255,23 @@ public final class RootNode extends Model<RootNode> implements Node {
 
     public static List<RootNode> findCurrentPublishedVersions() {
         return findCurrentPublishedVersionsWithDate(new Date());
+    }
+
+    public static List<RootNode> findCurrentVersions() {
+        try {
+            String queryString = "select distinct n from "+RootNode.class.getName()+" n " +
+                    "where n.version = (" +
+                    "select max(n2.version) from "+RootNode.class.getName()+" n2 " +
+                    "where n2.nodeId = n.nodeId" +
+                    ")";
+            final Query query = JPA.em().createQuery(queryString);
+            List<RootNode> nodes = query.getResultList();
+            initializeNodes(nodes);
+            return nodes;
+        } catch (NoResultException e) {
+            return Collections.emptyList();
+        }
+
     }
 
     public static List<RootNode> findCurrentPublishedVersionsWithDate(Date today) {

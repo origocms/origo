@@ -11,9 +11,8 @@ import views.html.origo.core.node.show;
 import java.util.Date;
 import java.util.List;
 
-public class Node extends Controller {
+public class NodeViewer extends Controller {
 
-    //@Get("/node")
     @Transactional
     public static Result node() {
 
@@ -22,7 +21,6 @@ public class Node extends Controller {
         return ok(list.render(nodes));
     }
 
-    //@Get("/node/{nodeId}")
     @Transactional
     public static Result nodeCurrent(String nodeId) {
 
@@ -31,7 +29,6 @@ public class Node extends Controller {
         return ok(show.render(node));
     }
 
-    //@Get("/node/{nodeId}/all")
     @Transactional
     public static Result nodeVersions(String nodeId) {
 
@@ -40,7 +37,6 @@ public class Node extends Controller {
         return ok(list.render(nodes));
     }
 
-    //@Get("/node/{nodeId}/{<[0-9]+>version}")
     @Transactional
     public static Result nodeVersion(String nodeId, Integer version) {
 

@@ -1,5 +1,6 @@
 package main.origo.core.event.forms;
 
+import com.google.common.collect.Lists;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.annotations.forms.OnSubmit;
 import main.origo.core.internal.CachedAnnotation;
@@ -7,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import play.Logger;
 import play.data.DynamicForm;
 
+import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -14,12 +16,19 @@ import java.util.Map;
 
 public class OnSubmitEventGenerator {
 
-    public static void triggerInterceptors(String withType, DynamicForm form) {
-        triggerInterceptors(withType, form, Collections.<String, Object>emptyMap());
+    public static void triggerInterceptors(String withType) {
+        triggerInterceptors(withType, Collections.<String, Object>emptyMap());
     }
 
-    public static void triggerInterceptors(String withType, DynamicForm form, Map<String, Object> args) {
+    public static void triggerInterceptors(String withType, Map<String, Object> args) {
         List<CachedAnnotation> cachedAnnotations = findOnPostInterceptorsWithType(withType);
+        if (Logger.isDebugEnabled()) {
+            StringBuffer sb = new StringBuffer();
+            for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
+                sb.append(" - ").append(cachedAnnotation.method.getClass()).append("\n");
+            }
+            Logger.debug("OnSubmitHandler about to be triggered(in order):\n" + sb.toString());
+        }
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
             try {
                 //noinspection unchecked
@@ -32,13 +41,13 @@ public class OnSubmitEventGenerator {
     }
 
     private static List<CachedAnnotation> findOnPostInterceptorsWithType(final String withType) {
-        List<CachedAnnotation> onPostInterceptors = InterceptorRepository.getInterceptors(OnSubmit.class, new CachedAnnotation.InterceptorSelector() {
+        List<CachedAnnotation> onPostInterceptors = Lists.newArrayList(InterceptorRepository.getInterceptors(OnSubmit.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation interceptor) {
                 OnSubmit annotation = (OnSubmit) interceptor.annotation;
                 return StringUtils.isEmpty(annotation.with()) || annotation.with().equals(withType);
             }
-        });
+        }));
         if (onPostInterceptors.isEmpty()) {
             Logger.warn("No @OnSubmit interceptor for with=" + withType + "'");
         }

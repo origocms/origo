@@ -18,8 +18,15 @@ public class Admin {
 
     public static class With {
         public static final String FRONT_PAGE = "frontpage";
+        public static final String CONTENT_PAGE = "content";
         public static final String USER_PAGE = "user";
         public static final String SETTINGS_PAGE = "settings";
+    }
+
+    public static class Action {
+        public static final String EDIT = ".edit";
+        public static final String CREATE = ".create";
+        public static final String DELETE = ".delete";
     }
 
     public static class Dashboard extends Element {

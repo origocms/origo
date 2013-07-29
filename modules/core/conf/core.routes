@@ -5,10 +5,10 @@
 POST    /                                       controllers.origo.core.Submit.submit()
 
 # Home page
-GET     /                                       controllers.origo.core.Node.node()
-GET     /:identifier                            controllers.origo.core.Node.nodeCurrent(identifier)
-GET     /:identifier/$version<[0-9]+>           controllers.origo.core.Node.nodeVersion(identifier, version:Integer)
-GET     /:identifier/all                        controllers.origo.core.Node.nodeVersions(identifier)
+GET     /                                       controllers.origo.core.NodeViewer.node()
+GET     /:identifier                            controllers.origo.core.NodeViewer.nodeCurrent(identifier)
+GET     /:identifier/$version<[0-9]+>           controllers.origo.core.NodeViewer.nodeVersion(identifier, version:Integer)
+GET     /:identifier/all                        controllers.origo.core.NodeViewer.nodeVersions(identifier)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                           controllers.Assets.at(path="/public", file)

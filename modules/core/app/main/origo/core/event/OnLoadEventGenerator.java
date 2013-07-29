@@ -1,5 +1,6 @@
 package main.origo.core.event;
 
+import com.google.common.collect.Lists;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.Navigation;
 import main.origo.core.Node;
@@ -88,14 +89,14 @@ public class OnLoadEventGenerator {
     }
 
     private static List<CachedAnnotation> findInterceptorForType(final String onLoadType, final String withType, final boolean after) {
-        List<CachedAnnotation> interceptors = InterceptorRepository.getInterceptors(OnLoad.class, new CachedAnnotation.InterceptorSelector() {
+        List<CachedAnnotation> interceptors = Lists.newArrayList(InterceptorRepository.getInterceptors(OnLoad.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation cachedAnnotation) {
                 OnLoad annotation = ((OnLoad) cachedAnnotation.annotation);
                 return annotation.type().equals(onLoadType) && annotation.after() == after &&
                         (StringUtils.isBlank(annotation.with()) || annotation.with().equals(withType));
             }
-        });
+        }));
         Collections.sort(interceptors, new Comparator<CachedAnnotation>() {
             @Override
             public int compare(CachedAnnotation o1, CachedAnnotation o2) {

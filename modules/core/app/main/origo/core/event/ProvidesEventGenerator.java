@@ -1,5 +1,6 @@
 package main.origo.core.event;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import main.origo.core.*;
 import main.origo.core.annotations.Provides;
@@ -9,6 +10,7 @@ import play.Logger;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Helper to trigger \@Provides origo interceptors. Should not be used directly except in core and admin, use NodeHelper
@@ -56,7 +58,7 @@ public class ProvidesEventGenerator {
      * @see main.origo.core.annotations.Provides
      * @see main.origo.core.annotations.Core
      */
-    public static List<CachedAnnotation> getAllProviders(final String type, final String with) {
+    public static Set<CachedAnnotation> getAllProviders(final String type, final String with) {
         return InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation cacheAnnotation) {
@@ -72,7 +74,7 @@ public class ProvidesEventGenerator {
      * @see main.origo.core.annotations.Provides
      * @see main.origo.core.annotations.Core
      */
-    public static List<CachedAnnotation> getAllProviders(final String type) {
+    public static Set<CachedAnnotation> getAllProviders(final String type) {
         return InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation cacheAnnotation) {
@@ -83,13 +85,13 @@ public class ProvidesEventGenerator {
     }
 
     public static CachedAnnotation findInterceptor(final String nodeType, final String withType) {
-        List<CachedAnnotation> providers = InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
+        List<CachedAnnotation> providers = Lists.newArrayList(InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation cachedAnnotation) {
                 Provides annotation = (Provides) cachedAnnotation.annotation;
                 return annotation.type().equals(nodeType) && annotation.with().equals(withType);
             }
-        });
+        }));
 
         CachedAnnotation cacheAnnotation = EventGeneratorUtils.selectEventHandler(Provides.class, nodeType, withType, providers);
         if (cacheAnnotation == null) {

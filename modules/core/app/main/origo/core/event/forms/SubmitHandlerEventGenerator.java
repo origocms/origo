@@ -11,6 +11,7 @@ import play.mvc.Result;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Set;
 
 public class SubmitHandlerEventGenerator {
 
@@ -39,7 +40,7 @@ public class SubmitHandlerEventGenerator {
 
     // TODO: Cache this instead of looking it up every time
     private static CachedAnnotation getPostHandler(final String postHandler) {
-        List<CachedAnnotation> postHandlers = InterceptorRepository.
+        Set<CachedAnnotation> postHandlers = InterceptorRepository.
                 getInterceptors(SubmitHandler.class, new CachedAnnotation.InterceptorSelector() {
                     @Override
                     public boolean isCorrectInterceptor(CachedAnnotation listener) {

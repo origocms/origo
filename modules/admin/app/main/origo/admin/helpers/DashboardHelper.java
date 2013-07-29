@@ -13,11 +13,13 @@ import main.origo.core.event.OnLoadEventGenerator;
 import main.origo.core.event.ProvidesEventGenerator;
 import main.origo.core.internal.CachedAnnotation;
 import main.origo.core.ui.Element;
+import org.apache.commons.lang3.StringUtils;
 import play.i18n.Messages;
 
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class DashboardHelper {
 
@@ -56,7 +58,18 @@ public class DashboardHelper {
     }
 
     public static Element.ListBulleted createBreadcrumb(String withType) {
+        return createBreadcrumb(withType, null);
+    }
+
+    public static Element.ListBulleted createBreadcrumb(String withType, String extraBullet) {
         List<String> dashboards = createDashboardTrail(withType);
+        if (StringUtils.isNotBlank(extraBullet)) {
+            dashboards.add(extraBullet);
+        }
+        return createBreadcrumb(dashboards);
+    }
+
+    private static Element.ListBulleted createBreadcrumb(List<String> dashboards) {
         List<Element.ListItem> items = createBreadcrumbItems(dashboards);
 
         return new Element.ListBulleted().
@@ -123,7 +136,7 @@ public class DashboardHelper {
     }
 
     private static String findParentForProvider(final String type, final String withType) {
-        List<CachedAnnotation> providers = InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
+        Set<CachedAnnotation> providers = InterceptorRepository.getInterceptors(Provides.class, new CachedAnnotation.InterceptorSelector() {
             @Override
             public boolean isCorrectInterceptor(CachedAnnotation cachedAnnotation) {
                 Provides annotation = (Provides) cachedAnnotation.annotation;

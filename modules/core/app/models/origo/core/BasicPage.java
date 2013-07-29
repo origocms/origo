@@ -53,6 +53,7 @@ public class BasicPage extends Model<BasicPage> implements Node {
 
     public BasicPage() {
         super(TYPE);
+        rootNode = new RootNode(0);
     }
 
     @Override
@@ -62,7 +63,7 @@ public class BasicPage extends Model<BasicPage> implements Node {
 
     @Override
     public String nodeType() {
-        return this.rootNode.nodeType();
+        return TYPE;
     }
 
     @Override

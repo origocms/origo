@@ -24,6 +24,7 @@ import models.origo.core.RootNode;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import views.html.origo.admin.dashboard_item;
 
@@ -53,7 +54,7 @@ public class ProvidesEventHandlerAdminProvider {
 
     @Admin.Navigation(alias = "/settings/provides", key = "breadcrumb.origo.admin.dashboard.settings.event.provides")
     public static String getProviderUrl() {
-        return routes.Dashboard.pageWithType(Core.With.CONTENT_PAGE, EDIT_TYPE).url();
+        return routes.Dashboard.dashboard(EDIT_TYPE).absoluteURL(Http.Context.current().request());
     }
 
     /**
@@ -142,7 +143,7 @@ public class ProvidesEventHandlerAdminProvider {
         createFormElement(node, selectedEventType, fieldElements);
     }
 
-    private static Set<String> getClassnames(List<CachedAnnotation> interceptors) {
+    private static Set<String> getClassnames(Set<CachedAnnotation> interceptors) {
         Set<String> providedTypes = Sets.newHashSet();
         for (CachedAnnotation cachedAnnotation : interceptors) {
             providedTypes.add(cachedAnnotation.method.getDeclaringClass().getName());
@@ -150,7 +151,7 @@ public class ProvidesEventHandlerAdminProvider {
         return providedTypes;
     }
 
-    private static Set<String> getWithTypes(List<CachedAnnotation> interceptors) {
+    private static Set<String> getWithTypes(Set<CachedAnnotation> interceptors) {
         Set<String> providedTypes = Sets.newHashSet();
         for (CachedAnnotation cachedAnnotation : interceptors) {
             providedTypes.add(((Provides) cachedAnnotation.annotation).with());
@@ -256,7 +257,7 @@ public class ProvidesEventHandlerAdminProvider {
 
     private static List<String> getAllProvides() {
 
-        List<CachedAnnotation> interceptors = InterceptorRepository.getInterceptors(Provides.class);
+        Set<CachedAnnotation> interceptors = InterceptorRepository.getInterceptors(Provides.class);
         Set<String> providedTypes = Sets.newHashSet();
         for (CachedAnnotation cachedAnnotation : interceptors) {
             Provides annotation = (Provides) cachedAnnotation.annotation;

@@ -43,9 +43,9 @@ public class DefaultSettingsDashboardProvider {
         AdminPage page = new AdminPage(Admin.With.SETTINGS_PAGE, (RootNode) context.node);
         page.setTitle("Settings - Dashboard");
 
-        context.node.addElement(DashboardHelper.createBreadcrumb(Admin.With.SETTINGS_PAGE), AdminTheme.topMeta());
+        page.addElement(DashboardHelper.createBreadcrumb(Admin.With.SETTINGS_PAGE), AdminTheme.topMeta());
         try {
-            context.node.addElement(DashboardHelper.createDashboard(context.node, Admin.With.SETTINGS_PAGE));
+            page.addElement(DashboardHelper.createDashboard(page, Admin.With.SETTINGS_PAGE));
         } catch (ModuleException e) {
             // TODO: recover somehow?
             Logger.error("Unable to load dashboard", e);

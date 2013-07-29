@@ -56,12 +56,17 @@ public class BootstrapWysiHTML5EditorProvider {
             context.node.addTailElement(new Element.Script().setWeight(9999).addAttribute("src", wysiHtmlScript));
             String parserRulesScript = routes.Assets.at("javascripts/origo/bootstrapwysihtml5/parser_rules/advanced.js").url();
             context.node.addTailElement(new Element.Script().setWeight(9999).addAttribute("src", parserRulesScript));
+            String customizationScript = routes.Assets.at("javascripts/origo/bootstrapwysihtml5/main.js").url();
+            context.node.addTailElement(new Element.Script().setWeight(9999).addAttribute("src", customizationScript));
 
             String bootstrapWysiHtmlScript = routes.Assets.at("javascripts/origo/bootstrapwysihtml5/bootstrap-wysihtml5.js").url();
             context.node.addTailElement(new Element.Script().setWeight(9999).addAttribute("src", bootstrapWysiHtmlScript));
 
-            String mainStyle = routes.Assets.at("stylesheets/origo/bootstrapwysihtml5/bootstrap-wysihtml5.min.css").url();
-            context.node.addHeadElement(new Element.Link().addAttribute("href", mainStyle).addAttribute("rel", "stylesheet"));
+            String bootstrapWysiHtml5Stylesheet = routes.Assets.at("stylesheets/origo/bootstrapwysihtml5/bootstrap-wysihtml5.min.css").url();
+            context.node.addHeadElement(new Element.Link().addAttribute("href", bootstrapWysiHtml5Stylesheet).addAttribute("rel", "stylesheet"));
+
+            String customizationStylesheet = routes.Assets.at("stylesheets/origo/bootstrapwysihtml5/main.min.css").url();
+            context.node.addHeadElement(new Element.Link().addAttribute("href", customizationStylesheet).addAttribute("rel", "stylesheet"));
 
             context.attributes.put(JS_LOADED, true);
         }

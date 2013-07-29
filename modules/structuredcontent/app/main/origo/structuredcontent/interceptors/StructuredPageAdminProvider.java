@@ -11,15 +11,15 @@ import models.origo.structuredcontent.StructuredPage;
 import views.html.origo.admin.dashboard_item;
 
 @Interceptor
-public class StructurePageAdminProvider {
+public class StructuredPageAdminProvider {
 
     private static final String BASE_TYPE = StructuredPage.TYPE;
     private static final String LIST_TYPE = BASE_TYPE + ".list";
     private static final String EDIT_TYPE = BASE_TYPE + ".edit";
 
-    @Admin.Navigation(alias="/content/pages/structured", key="breadcrumb.origo.admin.dashboard.content.structuredpage")
+    //@Admin.Navigation(alias="/content/pages/structured", key="breadcrumb.origo.admin.dashboard.content.structuredpage")
     public static String getProviderUrl() {
-        return routes.Dashboard.pageWithType(Core.With.CONTENT_PAGE, LIST_TYPE).url();
+        return routes.Dashboard.dashboard(LIST_TYPE).url();
     }
 
     /**

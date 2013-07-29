@@ -31,7 +31,7 @@ public class AdminPage implements Node {
 
     @Override
     public String nodeType() {
-        return this.rootNode.nodeType();
+        return "ADMIN";
     }
 
     @Override
@@ -60,7 +60,7 @@ public class AdminPage implements Node {
 
     @Override
     public String themeVariant() {
-        return rootNode.themeVariant();
+        return themeVariant;
     }
 
     public void setThemeVariant(String themeVariant) {

@@ -81,7 +81,7 @@ public class NavigationHelper {
 
     private static List<NavigationData> readAllNavigationAnnotations() {
 
-        List<CachedAnnotation> annotations = InterceptorRepository.getInterceptors(Admin.Navigation.class);
+        Set<CachedAnnotation> annotations = InterceptorRepository.getInterceptors(Admin.Navigation.class);
         List<NavigationData> navigationDataList = Lists.newArrayList();
 
         for(CachedAnnotation cachedAnnotation : annotations) {

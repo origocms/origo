@@ -29,8 +29,9 @@ public interface Node {
     String nodeId();
 
     /**
-     * The node type of the node
-     * @return the type
+     * The base type of the node
+     *
+     * @return a page node type
      */
     String nodeType();
 

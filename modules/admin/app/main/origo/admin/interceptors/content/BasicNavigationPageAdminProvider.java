@@ -1,7 +1,6 @@
 package main.origo.admin.interceptors.content;
 
 import com.google.common.collect.Sets;
-import main.origo.admin.interceptors.content.basicpage.BasicPageAdminProvider;
 import main.origo.core.ModuleException;
 import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Interceptor;
@@ -50,7 +49,7 @@ public class BasicNavigationPageAdminProvider {
             try {
                 List<NavigationElement> navigationElements = NavigationHelper.getNavigation(adminPage.rootNode, NavigationElement.FRONT);
 
-                NavigationElement selectedNavigationElement = getSelectedNavigationId(navigationElements);
+                NavigationElement selectedNavigationElement = NavigationHelper.getSelectedNavigation(navigationElements);
                 BasicNavigation currentNavigation = null;
                 if (selectedNavigationElement != null) {
                     currentNavigation = BasicNavigation.findWithReferenceIdentifier(selectedNavigationElement.id);
@@ -94,19 +93,6 @@ public class BasicNavigationPageAdminProvider {
         }
     }
 
-    private static NavigationElement getSelectedNavigationId(List<NavigationElement> navigationElements) {
-        for (NavigationElement navigationElement : navigationElements) {
-            if (navigationElement.selected) {
-                return navigationElement;
-            }
-            NavigationElement element = getSelectedNavigationId(navigationElement.children);
-            if (element != null) {
-                return element;
-            }
-        }
-        return null;
-    }
-
     private static void addNavigationElement(Element element, List<NavigationElement> navigationElements, Element.InputSelectOption parent, String prepend) {
         for (NavigationElement navigationElement : navigationElements) {
             Element.InputSelectOption option = new Element.InputSelectOption().
@@ -121,7 +107,7 @@ public class BasicNavigationPageAdminProvider {
     }
 
     /**
-     * Hooks in to the submit process and stores a an alias for a page when the page is submitted.
+     * Hooks in to the submit process and stores an alias for a page when the page is submitted.
      */
     @OnSubmit(weight = 1100)
     public static void storeNavigation(OnSubmit.Context context) {
