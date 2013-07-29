@@ -31,7 +31,7 @@ import java.util.Map;
 @Target({ElementType.METHOD})
 public @interface OnLoad {
 
-    String type();
+    String type() default Core.Type.NODE;
 
     String with() default "";
     int weight() default 1000;

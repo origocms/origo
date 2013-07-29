@@ -30,7 +30,7 @@ import java.util.Map;
 @Target({ElementType.METHOD})
 public @interface Provides {
 
-    String type();
+    String type() default Core.Type.NODE;
 
     String with();
 
