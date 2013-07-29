@@ -1,6 +1,5 @@
 package main.origo;
 
-import main.origo.authentication.helpers.EncryptionHelper;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.themes.bootstrap.BootstrapTheme;
 import models.origo.authentication.BasicRole;
@@ -431,6 +430,7 @@ public class SampleDataCreator {
 
         BasicUser adminUser = new BasicUser();
         adminUser.roles.add(simpleRole);
+        adminUser.roles.add(adminRole);
         adminUser.email = "admin@email.com";
         adminUser.password = "password";
         adminUser.create();

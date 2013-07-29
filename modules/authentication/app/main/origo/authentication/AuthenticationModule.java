@@ -1,6 +1,7 @@
 package main.origo.authentication;
 
 import main.origo.authentication.helpers.EncryptionHelper;
+import main.origo.authentication.helpers.SessionHelper;
 import main.origo.authentication.interceptors.AuthenticationProvider;
 import main.origo.core.CoreModule;
 import main.origo.core.annotations.Module;
@@ -17,7 +18,7 @@ public class AuthenticationModule {
 
     @Module.Init
     public static void init() {
-        AuthenticationProvider.register();
+        SessionHelper.register();
         EncryptionHelper.register();
     }
 

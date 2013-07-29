@@ -21,6 +21,10 @@
         <class>models.origo.core.navigation.ExternalLinkNavigation</class>
         <class>models.origo.core.navigation.GroupHolderNavigation</class>
 
+        <!-- Authentication Module -->
+        <class>models.origo.authentication.BasicUser</class>
+        <class>models.origo.authentication.BasicRole</class>
+
         <!-- StructuredContent Module -->
 
         <class>models.origo.structuredcontent.Segment</class>

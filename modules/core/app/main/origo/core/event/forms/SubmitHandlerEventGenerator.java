@@ -1,12 +1,15 @@
 package main.origo.core.event.forms;
 
 import main.origo.core.InterceptorRepository;
+import main.origo.core.ModuleException;
+import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.forms.SubmitHandler;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.internal.CachedAnnotation;
 import org.apache.commons.lang3.StringUtils;
 import play.mvc.Result;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public class SubmitHandlerEventGenerator {
@@ -17,11 +20,19 @@ public class SubmitHandlerEventGenerator {
         return cachedAnnotation.method.getDeclaringClass();
     }
 
-    public static Result triggerSubmitHandler(String postHandlerName) {
+    public static Result triggerSubmitHandler(String postHandlerName) throws ModuleException, NodeLoadException {
         CachedAnnotation cachedAnnotation = getPostHandler(postHandlerName);
         try {
             return (Result) cachedAnnotation.method.invoke(null, new SubmitHandler.Context());
-        } catch (Throwable e) {
+        } catch (InvocationTargetException e) {
+            if (e.getCause() instanceof ModuleException) {
+                throw (ModuleException) e.getCause();
+            } else if (e.getCause() instanceof NodeLoadException) {
+                throw (NodeLoadException) e.getCause();
+            } else {
+                throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
+            }
+        } catch (IllegalAccessException e) {
             throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
         }
     }

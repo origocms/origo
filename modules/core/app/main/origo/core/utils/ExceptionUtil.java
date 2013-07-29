@@ -14,8 +14,8 @@ public class ExceptionUtil {
     public static void assertExceptionHandling(Exception e) {
         if (Play.isDev()) {
             Throwable thrown = e;
-            while(thrown instanceof RuntimeException) {
-                thrown = e.getCause();
+            while(thrown instanceof RuntimeException && thrown.getCause() != null) {
+                thrown = thrown.getCause();
             }
             throw new RuntimeException(thrown);
         }

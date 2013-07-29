@@ -5,6 +5,7 @@ import be.objectify.deadbolt.java.AbstractDeadboltHandler;
 import be.objectify.deadbolt.java.DynamicResourceHandler;
 import main.origo.core.ModuleException;
 import main.origo.core.NodeLoadException;
+import main.origo.core.event.NodeContext;
 import play.mvc.Http;
 import play.mvc.Result;
 
@@ -12,10 +13,13 @@ public class OrigoDeadboltHandler extends AbstractDeadboltHandler {
 
     @Override
     public Result beforeAuthCheck(Http.Context context) {
+        NodeContext.set();
         try {
             return AuthorizationEventGenerator.triggerAuthorizationCheck();
         } catch (ModuleException | NodeLoadException e) {
             throw new RuntimeException(e);
+        } finally {
+            NodeContext.clear();
         }
     }
 

@@ -29,6 +29,12 @@ public interface Node {
     String nodeId();
 
     /**
+     * The node type of the node
+     * @return the type
+     */
+    String nodeType();
+
+    /**
      * The version of this node
      *
      * @return a version number

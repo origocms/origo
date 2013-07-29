@@ -61,6 +61,11 @@ public class BasicPage extends Model<BasicPage> implements Node {
     }
 
     @Override
+    public String nodeType() {
+        return this.rootNode.nodeType();
+    }
+
+    @Override
     public Integer version() {
         return this.version;
     }

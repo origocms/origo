@@ -9,11 +9,13 @@ import play.Logger;
 public class CoreSettingsHelper {
 
     public static interface Keys {
+
         public static final String BASE_URL = "base_url";
         public static final String START_PAGE = "start_page";
         public static final String PAGE_NOT_FOUND_PAGE = "page_not_found_page";
         public static final String INTERNAL_SERVER_ERROR_PAGE = "internal_server_error_page";
         public static final String UNAUTHORIZED_PAGE = "unauthorized_page";
+        public static final String LOGIN_PAGE = "login_page";
 
         public static final String THEME = "theme";
         public static final String THEME_VARIANT = "theme_variant";
@@ -39,6 +41,10 @@ public class CoreSettingsHelper {
 
     public static String getInternalServerErrorPage() {
         return Settings.load().getValue(Keys.INTERNAL_SERVER_ERROR_PAGE);
+    }
+
+    public static String getLoginPage() {
+        return Settings.load().getValue(Keys.LOGIN_PAGE);
     }
 
     public static String getTheme() {

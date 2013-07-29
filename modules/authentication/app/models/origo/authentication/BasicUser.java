@@ -4,6 +4,7 @@ import be.objectify.deadbolt.core.models.Permission;
 import be.objectify.deadbolt.core.models.Role;
 import be.objectify.deadbolt.core.models.Subject;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import main.origo.core.User;
 import models.origo.core.Model;
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -43,11 +44,12 @@ public class BasicUser extends Model<BasicUser> implements User {
     @JsonIgnore
     public String password;
 
-    @OneToMany
+    @ManyToMany
     public Set<BasicRole> roles;
 
     public BasicUser() {
         super(TYPE);
+        roles = Sets.newHashSet();
     }
 
     @Override

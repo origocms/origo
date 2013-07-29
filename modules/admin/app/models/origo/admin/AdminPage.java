@@ -30,6 +30,11 @@ public class AdminPage implements Node {
     }
 
     @Override
+    public String nodeType() {
+        return this.rootNode.nodeType();
+    }
+
+    @Override
     public Integer version() {
         return rootNode.version();
     }
