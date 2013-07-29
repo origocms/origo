@@ -12,7 +12,6 @@ import main.origo.core.helpers.NodeHelper;
 import main.origo.core.helpers.ThemeHelper;
 import main.origo.core.ui.NavigationElement;
 import main.origo.core.ui.RenderedNode;
-import main.origo.core.utils.ExceptionUtil;
 import models.origo.core.RootNode;
 import play.Logger;
 import play.Play;
@@ -28,7 +27,7 @@ public class AdminLoader {
         try {
             return Controller.ok(loadAndDecoratePage(AdminSettingsHelper.getHomeDashboard()));
         } catch (Exception e) {
-            return handleException(e);
+            return CoreLoader.handleException(e);
         }
     }
 
@@ -36,7 +35,7 @@ public class AdminLoader {
         try {
             return Controller.ok(loadAndDecoratePage(withType));
         } catch (Exception e) {
-            return handleException(e);
+            return CoreLoader.handleException(e);
         }
     }
 
@@ -44,7 +43,7 @@ public class AdminLoader {
         try {
             return Controller.ok(loadAndDecoratePage(getType(identifier)));
         } catch (Exception e) {
-            return handleException(e);
+            return CoreLoader.handleException(e);
         }
     }
 
@@ -52,36 +51,24 @@ public class AdminLoader {
         try {
             return Controller.ok(loadAndDecoratePage(withType));
         } catch (Exception e) {
-            return handleException(e);
+            return CoreLoader.handleException(e);
         }
     }
 
     public static Result edit(String identifier) {
         try {
-            return loadAndDecoratePage(getType(identifier) + Admin.Action.EDIT, identifier);
+            return Controller.ok(loadAndDecoratePage(getType(identifier) + Admin.Action.EDIT, identifier));
         } catch (Exception e) {
-            return handleException(e);
+            return CoreLoader.handleException(e);
         }
     }
 
     public static Result delete(String identifier) {
         try {
-            return loadAndDecoratePage(getType(identifier) + Admin.Action.DELETE, identifier);
+            return Controller.ok(loadAndDecoratePage(getType(identifier) + Admin.Action.DELETE, identifier));
         } catch (Exception e) {
-            return handleException(e);
+            return CoreLoader.handleException(e);
         }
-    }
-
-    private static Result handleException(Exception e) {
-        if (Play.isDev()) {
-            Throwable thrown = e;
-            while(thrown instanceof RuntimeException) {
-                thrown = e.getCause();
-            }
-            throw new RuntimeException(thrown);
-        }
-        Logger.error("", e);
-        return CoreLoader.loadPageLoadErrorPage();
     }
 
     private static Content loadAndDecoratePage(String withType) throws NodeLoadException, ModuleException {
@@ -94,7 +81,7 @@ public class AdminLoader {
         }
     }
 
-    private static Result loadAndDecoratePage(String withType, String identifier) throws NodeLoadException, ModuleException {
+    private static Content loadAndDecoratePage(String withType, String identifier) throws NodeLoadException, ModuleException {
         try {
             NodeContext.set();
             Logger.debug("Loading [" + withType + "] as type and identifier [" + identifier + "]");
@@ -105,7 +92,6 @@ public class AdminLoader {
         } finally {
             NodeContext.clear();
         }
-        throw new NodeLoadException(identifier, "No Node with id '"+identifier+"'");
     }
 
     private static String getType(String identifier) throws NodeLoadException {

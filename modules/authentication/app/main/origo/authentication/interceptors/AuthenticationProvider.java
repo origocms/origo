@@ -121,7 +121,7 @@ public class AuthenticationProvider {
         if (subject == null) {
             throw new RuntimeException("Unable to authenticated user, incorrect username or password");
         }
-
+        SessionHelper.setSessionUserName(email);
     }
 
     /**

@@ -10,6 +10,7 @@ import main.origo.core.ui.RenderedNode;
 import main.origo.core.utils.ExceptionUtil;
 import models.origo.core.Alias;
 import play.Logger;
+import play.Play;
 import play.mvc.Content;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -122,7 +123,7 @@ public class CoreLoader {
         return Controller.redirect(url);
     }
 
-    private static Content loadAndDecoratePage(String identifier, int version) throws NodeNotFoundException, NodeLoadException, ModuleException {
+    public static Content loadAndDecoratePage(String identifier, int version) throws NodeNotFoundException, NodeLoadException, ModuleException {
         Node node = loadNode(identifier, version);
         RenderedNode renderedNode = ThemeHelper.decorate(node, ThemeHelper.loadTheme(node, CoreSettingsHelper.getThemeVariant()));
         renderedNode.navigation(getNavigation(node));

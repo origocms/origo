@@ -17,9 +17,12 @@ public class ExceptionUtil {
             while(thrown instanceof RuntimeException && thrown.getCause() != null) {
                 thrown = thrown.getCause();
             }
+            if (thrown instanceof RuntimeException) {
+                throw (RuntimeException)thrown;
+            }
             throw new RuntimeException(thrown);
         }
-        Logger.error("An exception occurred while loading the page: " + e.getMessage(), e);
+        Logger.error("An exception occurred while loading: " + e.getMessage(), e);
     }
 
 }
