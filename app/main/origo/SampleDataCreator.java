@@ -1,7 +1,9 @@
 package main.origo;
 
+import main.origo.authentication.helpers.EncryptionHelper;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.themes.bootstrap.BootstrapTheme;
+import models.origo.authentication.BasicRole;
 import models.origo.authentication.BasicUser;
 import models.origo.core.*;
 import models.origo.core.navigation.BasicNavigation;
@@ -24,6 +26,7 @@ public class SampleDataCreator {
             createPage6();
             createAliases();
             createNavigation();
+            createUsersAndRoles();
         }
     }
 
@@ -409,6 +412,28 @@ public class SampleDataCreator {
         yahooLink.link = "http://www.yahoo.com";
         yahooLink.create();
 
+    }
+
+    private static void createUsersAndRoles() {
+        BasicRole simpleRole = new BasicRole();
+        simpleRole.name = "Normal";
+        simpleRole.create();
+
+        BasicUser basicUser = new BasicUser();
+        basicUser.roles.add(simpleRole);
+        basicUser.email = "user@email.com";
+        basicUser.password = "password";
+        basicUser.create();
+
+        BasicRole adminRole = new BasicRole();
+        adminRole.name = "Admin";
+        adminRole.create();
+
+        BasicUser adminUser = new BasicUser();
+        adminUser.roles.add(simpleRole);
+        adminUser.email = "admin@email.com";
+        adminUser.password = "password";
+        adminUser.create();
     }
 
 }

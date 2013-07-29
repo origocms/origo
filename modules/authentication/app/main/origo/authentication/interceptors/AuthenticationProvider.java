@@ -2,11 +2,19 @@ package main.origo.authentication.interceptors;
 
 import be.objectify.deadbolt.core.models.Subject;
 import controllers.origo.authentication.routes;
+import controllers.origo.core.CoreLoader;
 import main.origo.authentication.helpers.EncryptionHelper;
+import main.origo.core.ModuleException;
+import main.origo.core.NodeLoadException;
+import main.origo.core.NodeNotFoundException;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.Provides;
+import main.origo.core.helpers.CoreSettingsHelper;
+import main.origo.core.security.AuthorizationEventGenerator;
+import main.origo.core.utils.ExceptionUtil;
 import models.origo.authentication.BasicUser;
+import models.origo.core.Settings;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
@@ -14,6 +22,7 @@ import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import play.Logger;
 import play.Play;
+import play.mvc.Content;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -28,7 +37,7 @@ public class AuthenticationProvider {
     private static Period sessionMaxAge;
 
     public static void register() {
-        String maxAge = Play.application().configuration().getString("application.session.maxAge");
+        String maxAge = Play.application().configuration().getString("application.session.maxAge", "30m");
         PeriodFormatter format = new PeriodFormatterBuilder()
                 .appendDays()
                 .appendSuffix("d", "d")
@@ -47,12 +56,71 @@ public class AuthenticationProvider {
         );
     }
 
-    @Provides(type = Core.Type.USER, with = Core.With.AUTH_CHECK)
-    public static final Result authenticateUser(Provides.Context context) {
+    @Provides(type = Core.Type.USER, with = Core.With.AUTHORIZATION_CHECK)
+    public static Result authenticateUser(Provides.Context context) {
         if(getCurrent() != null) {
             return null;
         }
         return Controller.redirect(routes.Authentication.login());
+    }
+
+    @Provides(type = Core.Type.USER, with = Core.With.AUTHORIZATION_FAILURE)
+    public static Result handleAuthFailure(Provides.Context context) {
+
+        BasicUser user = AuthenticationProvider.getCurrent();
+        AuthorizationEventGenerator.triggerBeforeAuthorizationFailure(user);
+
+        try {
+            String unauthorizedPage = Settings.load().getValue(CoreSettingsHelper.Keys.UNAUTHORIZED_PAGE);
+            try {
+                if (StringUtils.isNotBlank(unauthorizedPage)) {
+                    Content content = CoreLoader.loadAndDecoratePage(unauthorizedPage, 0);
+                    if (user != null) {
+                        return Controller.forbidden(content);
+                    } else {
+                        return Controller.unauthorized(content);
+                    }
+                }
+            } catch (NodeNotFoundException | NodeLoadException | ModuleException e) {
+                ExceptionUtil.assertExceptionHandling(e);
+                return CoreLoader.loadPageLoadErrorPage();
+            }
+
+            if (user != null) {
+                Logger.warn("Using fallback forbidden handling, sending 403 with no content");
+                return Controller.forbidden();
+            } else {
+                Logger.warn("Using fallback unauthorized handling, sending 401 with no content");
+                return Controller.unauthorized();
+            }
+        } finally {
+            AuthorizationEventGenerator.triggerAfterAuthorizationFailure(user);
+        }
+    }
+
+
+    @Provides(type = Core.Type.USER, with = Core.With.AUTHORIZATION_SUBJECT)
+    public static BasicUser getCurrentSubject(Provides.Context context) {
+        return getCurrent();
+    }
+
+    private static BasicUser getCurrent() {
+        String email = getSessionUserName();
+        if (email != null) {
+            return BasicUser.findWithEmail(email);
+        } else {
+            return null;
+        }
+    }
+
+    private static String formatIfNotZero(int value, String plural, String singleton) {
+        if (value > 0) {
+            if (value > 1) {
+                return "" + value + " " + plural;
+            }
+            return "" + value + " " + singleton;
+        }
+        return "";
     }
 
     public static Subject authenticate(final String email, final String password){
@@ -62,15 +130,6 @@ public class AuthenticationProvider {
             return user;
         }
         return null;
-    }
-
-    public static BasicUser getCurrent() {
-        String email = getSessionUserName();
-        if (email != null) {
-            return BasicUser.findWithEmail(email);
-        } else {
-            return null;
-        }
     }
 
     public static void setTimestamp(Http.Context ctx) {
@@ -96,16 +155,6 @@ public class AuthenticationProvider {
         } else {
             setTimestamp(ctx);
         }
-    }
-
-    private static String formatIfNotZero(int value, String plural, String singleton) {
-        if (value > 0) {
-            if (value > 1) {
-                return "" + value + " " + plural;
-            }
-            return "" + value + " " + singleton;
-        }
-        return "";
     }
 
     public static String getSessionUserName() {

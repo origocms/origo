@@ -12,6 +12,7 @@ import org.jasypt.hibernate4.type.EncryptedStringType;
 import play.db.jpa.JPA;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.Collections;

@@ -13,7 +13,7 @@ public class OrigoDeadboltHandler extends AbstractDeadboltHandler {
     @Override
     public Result beforeAuthCheck(Http.Context context) {
         try {
-            return AuthorizationEventGenerator.triggerAuthenticationCheck();
+            return AuthorizationEventGenerator.triggerAuthorizationCheck();
         } catch (ModuleException | NodeLoadException e) {
             throw new RuntimeException(e);
         }
@@ -39,6 +39,6 @@ public class OrigoDeadboltHandler extends AbstractDeadboltHandler {
 
     @Override
     public DynamicResourceHandler getDynamicResourceHandler(Http.Context context) {
-        return super.getDynamicResourceHandler(context);
+        return new OrigoDynamicResourceHandler();
     }
 }

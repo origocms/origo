@@ -26,48 +26,10 @@ public class BasicUserProvider {
     @Provides(type=Core.Type.USER, with = BasicUser.TYPE)
     public static Subject getUser(Provides.Context context) {
         String username = (String) context.args.get("username");
-        AuthorizationEventGenerator.triggerBeforeUserLoaded(Maps.<String, Object>newHashMap());
+        AuthorizationEventGenerator.triggerBeforeUserLoaded(context.args);
         BasicUser user = BasicUser.findWithEmail(username);
-        AuthorizationEventGenerator.triggerAfterUserLoaded(user, Maps.<String, Object>newHashMap());
+        AuthorizationEventGenerator.triggerAfterUserLoaded(user, context.args);
         return user;
     }
 
-    @Provides(type = Core.Type.USER, with = Core.With.AUTH_SUBJECT)
-    public static Subject getCurrentUser() {
-        return AuthenticationProvider.getCurrent();
-    }
-
-    @Provides(type = Core.Type.USER, with = Core.With.AUTH_FAILURE)
-    public static Result handleAuthFailure() {
-
-        BasicUser user = AuthenticationProvider.getCurrent();
-        AuthorizationEventGenerator.triggerBeforeAuthorizationFailure(user, Maps.<String, Object>newHashMap());
-
-        try {
-            String unauthorizedPage = Settings.load().getValue(CoreSettingsHelper.Keys.UNAUTHORIZED_PAGE);
-            try {
-                if (StringUtils.isNotBlank(unauthorizedPage)) {
-                    Content content = CoreLoader.loadAndDecoratePage(unauthorizedPage, 0);
-                    if (user != null) {
-                        return Controller.forbidden(content);
-                    } else {
-                        return Controller.unauthorized(content);
-                    }
-                }
-            } catch (NodeNotFoundException | NodeLoadException | ModuleException e) {
-                ExceptionUtil.assertExceptionHandling(e);
-                return CoreLoader.loadPageLoadErrorPage();
-            }
-
-            if (user != null) {
-                Logger.warn("Using fallback forbidden handling, sending 403 with no content");
-                return Controller.forbidden();
-            } else {
-                Logger.warn("Using fallback unauthorized handling, sending 401 with no content");
-                return Controller.unauthorized();
-            }
-        } finally {
-            AuthorizationEventGenerator.triggerAfterAuthorizationFailure(user, Maps.<String, Object>newHashMap());
-        }
-    }
 }
