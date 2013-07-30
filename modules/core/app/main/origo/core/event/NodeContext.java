@@ -21,12 +21,16 @@ public class NodeContext {
     }
 
     public static void set() {
-        current.set(new NodeContext());
+        if (current() == null) {
+            current.set(new NodeContext());
+        }
     }
 
     public static void clear() {
-        current().attributes.clear();
-        current.remove();
+        if (current() != null) {
+            current().attributes.clear();
+            current.remove();
+        }
     }
 
 }
