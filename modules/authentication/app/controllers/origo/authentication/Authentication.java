@@ -50,9 +50,19 @@ public class Authentication extends Controller {
                 Logger.debug("Decorated " + renderedNode);
             }
             return ok(ThemeHelper.render(renderedNode));
-        } catch (NodeNotFoundException | NodeLoadException | ModuleException e) {
+        } catch (ModuleException e) {
+            return CoreLoader.handleException(e);
+        } catch (NodeNotFoundException e) {
+            return CoreLoader.handleException(e);
+        } catch (NodeLoadException e) {
             return CoreLoader.handleException(e);
         }
+    }
+
+    @ContextAware
+    @Transactional(readOnly = true)
+    public static Result logout(String path) {
+        return TODO;
     }
 
 }

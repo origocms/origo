@@ -1,20 +1,18 @@
 package controllers.origo.core;
 
 import models.origo.core.RootNode;
-import org.springframework.stereotype.Component;
 import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.origo.core.node.list;
 import views.html.origo.core.node.show;
 
-import java.util.Date;
 import java.util.List;
 
 public class NodeViewer extends Controller {
 
     @Transactional
-    public static Result node() {
+    public static Result nodes() {
 
         //Load NodeModel
         List<RootNode> nodes = RootNode.findCurrentPublishedVersions();

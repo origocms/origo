@@ -36,6 +36,7 @@ public class ProvidesEventGenerator {
             throw new ModuleException(cachedAnnotation.module.name, ModuleException.Cause.NOT_ENABLED);
         }
         try {
+            assert(NodeContext.current() != null);
             NodeContext.current().attributes.put(withType, cachedAnnotation.method.getDeclaringClass());
             //noinspection unchecked
             return (T) cachedAnnotation.method.invoke(null, new Provides.Context(node, navigation, args));
