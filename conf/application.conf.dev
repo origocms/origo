@@ -7,6 +7,10 @@
 # If you deploy your application to several instances be sure to use the same key!
 application.secret="iwo1mlc@EL1Wy;1ud;r?lMHgVMWmfBiX`@uOO^hEy?mNZ^Xk]W]]W[DnC96crVLd"
 
+# Application settings
+application.session.encryption = N
+application.session.maxAge = 30m
+
 # The application languages
 # ~~~~~
 application.langs="en"
