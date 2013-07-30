@@ -16,21 +16,25 @@ import java.util.Map;
 
 public class OrigoDynamicResourceHandler implements DynamicResourceHandler {
 
-    public static final String AUTH_HANDLER = "authorization_handler";
-    public static final String AUTH_META = "authorization_meta";
-    public static final String AUTH_PATH = "authorization_path";
-
     @Override
     public boolean isAllowed(String name, String meta, DeadboltHandler deadboltHandler, Http.Context context) {
         NodeContext.set();
         try {
+            NodeContext.current().attributes.put(Security.Params.AUTH_PATH, Http.Context.current().request().path());
             Map<String, Object> args = Maps.newHashMap();
-            args.put(AUTH_HANDLER, name);
-            args.put(AUTH_META, meta);
-            args.put(AUTH_PATH, Http.Context.current().request().path());
+            args.put(Security.Params.AUTH_HANDLER, name);
+            args.put(Security.Params.AUTH_META, meta);
             Boolean isAllowed = ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, Core.With.AUTHORIZATION_CHECK, args);
             return !(isAllowed == null || !isAllowed);
-        } catch (NodeLoadException | ModuleException | RuntimeException e) {
+        } catch (NodeLoadException e) {
+            ExceptionUtil.assertExceptionHandling(e);
+            Logger.error("Authorization check failed, returning false", e);
+            return false;
+        } catch (ModuleException e) {
+            ExceptionUtil.assertExceptionHandling(e);
+            Logger.error("Authorization check failed, returning false", e);
+            return false;
+        } catch (RuntimeException e) {
             ExceptionUtil.assertExceptionHandling(e);
             Logger.error("Authorization check failed, returning false", e);
             return false;

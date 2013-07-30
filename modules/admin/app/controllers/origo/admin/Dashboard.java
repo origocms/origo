@@ -1,11 +1,8 @@
 package controllers.origo.admin;
 
-import main.origo.core.actions.ContextAware;
 import be.objectify.deadbolt.java.actions.Dynamic;
-import controllers.origo.core.CoreLoader;
-import main.origo.core.security.OrigoDynamicResourceHandler;
-import org.springframework.stereotype.Component;
-import play.Logger;
+import main.origo.core.actions.ContextAware;
+import main.origo.core.security.Security;
 import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -13,7 +10,7 @@ import play.mvc.Result;
 public class Dashboard extends Controller {
 
     @Transactional
-    @Dynamic(OrigoDynamicResourceHandler.AUTH_HANDLER)
+    @Dynamic(Security.Types.RESOURCE)
     @ContextAware
     public static Result index() {
         //TODO: Check if config !exists and redirect to wizard
@@ -22,7 +19,7 @@ public class Dashboard extends Controller {
     }
 
     @Transactional
-    @Dynamic(OrigoDynamicResourceHandler.AUTH_HANDLER)
+    @Dynamic(Security.Types.RESOURCE)
     @ContextAware
     public static Result dashboard(String dashboard) {
         //TODO: Check if config !exists and redirect to wizard

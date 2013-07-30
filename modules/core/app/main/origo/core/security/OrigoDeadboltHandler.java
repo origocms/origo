@@ -15,8 +15,10 @@ public class OrigoDeadboltHandler extends AbstractDeadboltHandler {
     public Result beforeAuthCheck(Http.Context context) {
         NodeContext.set();
         try {
-            return AuthorizationEventGenerator.triggerAuthenticationCheck();
-        } catch (ModuleException | NodeLoadException e) {
+            return AuthEventGenerator.triggerAuthenticationCheck(context.request().path());
+        } catch (NodeLoadException e) {
+            throw new RuntimeException(e);
+        } catch (ModuleException e) {
             throw new RuntimeException(e);
         } finally {
             NodeContext.clear();
@@ -27,8 +29,10 @@ public class OrigoDeadboltHandler extends AbstractDeadboltHandler {
     public Subject getSubject(Http.Context context) {
         NodeContext.set();
         try {
-            return AuthorizationEventGenerator.triggerProvidesSubjectInterceptor();
-        } catch (ModuleException | NodeLoadException e) {
+            return AuthEventGenerator.triggerProvidesSubjectInterceptor();
+        } catch (NodeLoadException e) {
+            throw new RuntimeException(e);
+        } catch (ModuleException e) {
             throw new RuntimeException(e);
         } finally {
             NodeContext.clear();
@@ -39,8 +43,10 @@ public class OrigoDeadboltHandler extends AbstractDeadboltHandler {
     public Result onAuthFailure(Http.Context context, String content) {
         NodeContext.set();
         try {
-            return AuthorizationEventGenerator.triggerProvidesAuthorizationFailure();
-        } catch (ModuleException | NodeLoadException e) {
+            return AuthEventGenerator.triggerProvidesAuthorizationFailure();
+        } catch (NodeLoadException e) {
+            throw new RuntimeException(e);
+        } catch (ModuleException e) {
             throw new RuntimeException(e);
         } finally {
             NodeContext.clear();

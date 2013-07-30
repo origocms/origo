@@ -1,35 +1,32 @@
 package main.origo.authentication.interceptors;
 
 import be.objectify.deadbolt.core.models.Subject;
+import controllers.origo.authentication.routes;
 import controllers.origo.core.CoreLoader;
 import main.origo.authentication.helpers.SessionHelper;
-import main.origo.core.ModuleException;
-import main.origo.core.Node;
-import main.origo.core.NodeLoadException;
-import main.origo.core.NodeNotFoundException;
+import main.origo.core.*;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.Provides;
 import main.origo.core.annotations.forms.OnSubmit;
 import main.origo.core.annotations.forms.SubmitState;
+import main.origo.core.event.NodeContext;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.helpers.NodeHelper;
 import main.origo.core.helpers.ThemeHelper;
 import main.origo.core.helpers.forms.FormHelper;
-import main.origo.core.security.AuthorizationEventGenerator;
+import main.origo.core.security.AuthEventGenerator;
+import main.origo.core.security.Security;
 import main.origo.core.ui.Element;
 import main.origo.core.ui.RenderedNode;
 import main.origo.core.utils.ExceptionUtil;
-import models.origo.authentication.BasicUser;
 import models.origo.core.BasicPage;
 import models.origo.core.RootNode;
-import models.origo.core.Settings;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
 import play.data.DynamicForm;
 import play.data.Form;
-import play.mvc.Content;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -38,50 +35,43 @@ import java.util.Map;
 @Interceptor
 public class AuthenticationProvider {
 
-    private static final String EMAIL_PARAM = "origo-authentication-email";
+    private static final String USERNAME_PARAM = "origo-authentication-username";
     private static final String PASSWORD_PARAM = "origo-authentication-password";
+    private static final String PATH_PARAM = "origo-authentication-path";
 
+    /**
+     * Checks if there is a authenticated user and if not triggers the display of a login page.
+     * If there is a login page set in the content that will be used, if not it will fall back to
+     * creating a "blank" node with type Core.With.AUTHENTICATION_CHECK
+     */
     @Provides(type = Core.Type.USER, with = Core.With.AUTHENTICATION_CHECK)
-    public static Result authenticateUser(Provides.Context context) {
-        if (getCurrent() != null) {
+    public static Result authenticateUser(Provides.Context context) throws ModuleException, NodeLoadException {
+        User user = AuthEventGenerator.triggerCurrentUserInterceptor();
+        if (user != null) {
             return null;
         }
-        try {
-            // Check if there is a specific page set up for login
-            String loginPage = CoreSettingsHelper.getLoginPage();
-            if (StringUtils.isNotBlank(loginPage)) {
-                return Controller.ok(CoreLoader.loadAndDecoratePage(loginPage, 0));
-            }
-
-            // Fall back to empty root node and trigger loading
-            RootNode rootNode = new RootNode(0);
-            rootNode.nodeType(Core.With.AUTHENTICATION_CHECK);
-            Node node = NodeHelper.load(rootNode);
-
-            // Render login page
-            RenderedNode renderedNode = ThemeHelper.decorate(node, ThemeHelper.loadTheme(node, CoreSettingsHelper.getThemeVariant()));
-            if (Logger.isDebugEnabled()) {
-                Logger.debug("Decorated " + renderedNode);
-            }
-            return Controller.ok(ThemeHelper.render(renderedNode));
-
-        } catch (NodeNotFoundException e) {
-            return CoreLoader.loadPageNotFoundPage();
-        } catch (Exception e) {
-            ExceptionUtil.assertExceptionHandling(e);
-            return CoreLoader.loadPageLoadErrorPage();
-        }
+        String path = (String) context.attributes.get(Security.Params.AUTH_PATH);
+        return Controller.redirect(routes.Authentication.login(path));
     }
 
+    /**
+     * Provides the actual node (page) with type Core.With.AUTHENTICATION_CHECK for the login and adds a
+     * form with type Core.With.AUTHENTICATION_CHECK
+     */
     @Provides(with = Core.With.AUTHENTICATION_CHECK)
     public static Node createLoginPage(Provides.Context context) throws ModuleException, NodeLoadException {
 
         BasicPage page = new BasicPage();
         page.rootNode = (RootNode)context.node;
+        page.nodeId = page.rootNode.nodeId();
+        page.title = "Login";
         page.addElement(FormHelper.createFormElement(context.node, Core.With.AUTHENTICATION_CHECK));
         return page;
     }
 
+    /**
+     * Adds login elements to the form
+     */
     @OnLoad(type = Core.Type.FORM, with = Core.With.AUTHENTICATION_CHECK, after = true)
     public static void addLoginForm(OnLoad.Context context) {
 
@@ -91,10 +81,15 @@ public class AuthenticationProvider {
         Element basicFieldSet = new Element.FieldSet().setId("login");
         element.addChild(basicFieldSet);
 
+        String path = (String) context.attributes.get(Security.Params.AUTH_PATH);
+        if (StringUtils.isNotBlank(path)) {
+            basicFieldSet.addChild(new Element.InputHidden().addAttribute("name", PATH_PARAM).addAttribute("value", path));
+        }
+
         basicFieldSet.addChild(new Element.Panel().
                 addChild(new Element.Panel().setWeight(10).
-                        addChild(new Element.Label().setWeight(10).setBody("Email").addAttribute("for", EMAIL_PARAM)).
-                        addChild(new Element.InputText().setWeight(20).addAttribute("name", EMAIL_PARAM))
+                        addChild(new Element.Label().setWeight(10).setBody("Username").addAttribute("for", USERNAME_PARAM)).
+                        addChild(new Element.InputText().setWeight(20).addAttribute("name", USERNAME_PARAM))
                 ).
                 addChild(new Element.Panel().setWeight(20).
                         addChild(new Element.Label().setWeight(10).setBody("Password").addAttribute("for", PASSWORD_PARAM)).
@@ -109,20 +104,27 @@ public class AuthenticationProvider {
 
     }
 
+    /**
+     * Handles the authentication of the supplied username/password.
+     */
     @OnSubmit(with = Core.With.AUTHENTICATION_CHECK)
-    public static void authenticateFormUser(OnSubmit.Context context) {
+    public static void authenticateFormUser(OnSubmit.Context context) throws NodeLoadException, ModuleException {
 
         Form form = DynamicForm.form().bindFromRequest();
         Map<String, String> data = form.data();
 
-        String email = data.get(EMAIL_PARAM);
+        String username = data.get(USERNAME_PARAM);
         String password = data.get(PASSWORD_PARAM);
+        String path = data.get(PATH_PARAM);
+        if (StringUtils.isNotBlank(path)) {
+            NodeContext.current().attributes.put(Security.Params.AUTH_PATH, path);
+        }
 
-        Subject subject = authenticate(email, password);
+        Subject subject = AuthEventGenerator.triggerValidateInterceptor(username, password);
         if (subject == null) {
             throw new RuntimeException("Unable to authenticated user, incorrect username or password");
         }
-        SessionHelper.setSessionUserName(email);
+        SessionHelper.setSessionUserName(username);
     }
 
     /**
@@ -130,76 +132,12 @@ public class AuthenticationProvider {
      */
     @SubmitState(with = Core.With.AUTHENTICATION_CHECK)
     public static Result handleSuccess(SubmitState.Context context) {
-        return Controller.redirect(CoreSettingsHelper.getStartPage());
-    }
-
-    @Provides(type = Core.Type.USER, with = Core.With.AUTHORIZATION_CHECK)
-    public static Boolean checkAuthorization(Provides.Context context) throws ModuleException, NodeLoadException {
-        if(getCurrent() == null) {
-            return false;
+        String originalPath = (String) NodeContext.current().attributes.get(Security.Params.AUTH_PATH);
+        if (StringUtils.isBlank(originalPath)) {
+            Logger.debug("No original path in context, defaulting to start page");
+            return Controller.redirect(CoreSettingsHelper.getBaseUrl() + CoreSettingsHelper.getStartPage());
         }
-
-        //context.args.get(OrigoDynamicResourceHandler.AUTH_PATH)
-        // TODO: Check authorization
-        return true;
-    }
-
-    @Provides(type = Core.Type.USER, with = Core.With.AUTHORIZATION_FAILURE)
-    public static Result handleAuthFailure(Provides.Context context) {
-
-        BasicUser user = AuthenticationProvider.getCurrent();
-        AuthorizationEventGenerator.triggerBeforeAuthorizationFailure(user);
-
-        try {
-            String unauthorizedPage = Settings.load().getValue(CoreSettingsHelper.Keys.UNAUTHORIZED_PAGE);
-            try {
-                if (StringUtils.isNotBlank(unauthorizedPage)) {
-                    Content content = CoreLoader.loadAndDecoratePage(unauthorizedPage, 0);
-                    if (user != null) {
-                        return Controller.forbidden(content);
-                    } else {
-                        return Controller.unauthorized(content);
-                    }
-                }
-            } catch (NodeNotFoundException | NodeLoadException | ModuleException e) {
-                ExceptionUtil.assertExceptionHandling(e);
-                return CoreLoader.loadPageLoadErrorPage();
-            }
-
-            if (user != null) {
-                Logger.warn("Using fallback forbidden handling, sending 403 with no content");
-                return Controller.forbidden();
-            } else {
-                Logger.warn("Using fallback unauthorized handling, sending 401 with no content");
-                return Controller.unauthorized();
-            }
-        } finally {
-            AuthorizationEventGenerator.triggerAfterAuthorizationFailure(user);
-        }
-    }
-
-
-    @Provides(type = Core.Type.USER, with = Core.With.AUTHORIZATION_SUBJECT)
-    public static BasicUser getCurrentSubject(Provides.Context context) {
-        return getCurrent();
-    }
-
-    private static BasicUser getCurrent() {
-        String email = SessionHelper.getSessionUserName();
-        if (email != null) {
-            return BasicUser.findWithEmail(email);
-        } else {
-            return null;
-        }
-    }
-
-    public static Subject authenticate(final String email, final String password){
-        BasicUser user = BasicUser.findWithEmail(email);
-        if (user != null && password.equals(user.password)) {
-            SessionHelper.setTimestamp();
-            return user;
-        }
-        return null;
+        return Controller.redirect(originalPath);
     }
 
 }

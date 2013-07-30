@@ -1,5 +1,6 @@
 package controllers.origo.admin;
 
+import be.objectify.deadbolt.java.actions.Dynamic;
 import com.google.common.collect.Lists;
 import main.origo.core.ModuleException;
 import main.origo.core.Node;
@@ -7,6 +8,7 @@ import main.origo.core.NodeLoadException;
 import main.origo.core.actions.ContextAware;
 import main.origo.core.annotations.Core;
 import main.origo.core.event.ProvidesEventGenerator;
+import main.origo.core.security.Security;
 import models.origo.core.RootNode;
 import play.db.jpa.Transactional;
 import play.libs.Json;
@@ -18,6 +20,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class InternalAssets extends Controller {
 
+    @Dynamic(Security.Types.RESOURCE)
     @ContextAware
     public static Result listPages() throws ModuleException, NodeLoadException {
 

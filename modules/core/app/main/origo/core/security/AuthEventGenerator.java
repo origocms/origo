@@ -6,6 +6,7 @@ import main.origo.core.ModuleException;
 import main.origo.core.NodeLoadException;
 import main.origo.core.User;
 import main.origo.core.annotations.Core;
+import main.origo.core.event.NodeContext;
 import main.origo.core.event.OnLoadEventGenerator;
 import main.origo.core.event.ProvidesEventGenerator;
 import main.origo.core.helpers.CoreSettingsHelper;
@@ -15,19 +16,25 @@ import play.mvc.Result;
 import java.util.Collections;
 import java.util.Map;
 
-public class AuthorizationEventGenerator {
+public class AuthEventGenerator {
 
-    public static Result triggerAuthenticationCheck() throws ModuleException, NodeLoadException {
-        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, Core.With.AUTHENTICATION_CHECK, Maps.<String, Object>newHashMap());
+    public static Result triggerAuthenticationCheck(String path) throws ModuleException, NodeLoadException {
+        NodeContext.current().attributes.put(Security.Params.AUTH_PATH, path);
+        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, Core.With.AUTHENTICATION_CHECK);
     }
 
-    public static Result triggerAuthorizationCheck() throws ModuleException, NodeLoadException {
-        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, Core.With.AUTHORIZATION_CHECK, Maps.<String, Object>newHashMap());
+    public static Boolean triggerAuthorizationCheck(String path) throws ModuleException, NodeLoadException {
+        NodeContext.current().attributes.put(Security.Params.AUTH_PATH, path);
+        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, Core.With.AUTHORIZATION_CHECK);
     }
 
     public static User triggerProvidesUserInterceptor(String username) throws ModuleException, NodeLoadException {
         String userType = getUserType();
         return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, userType, Collections.<String, Object>singletonMap("username", username));
+    }
+
+    public static User triggerCurrentUserInterceptor() throws ModuleException, NodeLoadException {
+        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, Core.With.AUTHENTICATION_CURRENT_USER);
     }
 
     public static void triggerBeforeUserLoaded() {
@@ -50,10 +57,11 @@ public class AuthorizationEventGenerator {
 
     private static String getUserType() {
         String userType = CoreSettingsHelper.getUserType();
-        if (StringUtils.isBlank(userType)) {
-            throw new RuntimeException("Unable to trigger user provider, no user type set.");
+        if (StringUtils.isNotBlank(userType)) {
+            return userType;
         }
-        return userType;
+        // TODO Add fallback to static user provider with an Admin account only
+        throw new RuntimeException("Unable to trigger user provider, no user type set.");
     }
 
     public static Result triggerProvidesAuthorizationFailure() throws ModuleException, NodeLoadException {
@@ -84,5 +92,12 @@ public class AuthorizationEventGenerator {
 
     public static Subject triggerProvidesSubjectInterceptor(Map<String, Object> args) throws ModuleException, NodeLoadException {
         return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, Core.With.AUTHORIZATION_SUBJECT, args);
+    }
+
+    public static Subject triggerValidateInterceptor(String username, String password) throws ModuleException, NodeLoadException {
+        Map<String, Object> args = Maps.newHashMap();
+        args.put(Security.Params.AUTH_USERNAME, username);
+        args.put(Security.Params.AUTH_PASSWORD, password);
+        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, Core.With.AUTHENTICATION_VALIDATE, args);
     }
 }

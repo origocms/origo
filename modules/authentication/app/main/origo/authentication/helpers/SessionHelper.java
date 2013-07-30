@@ -12,7 +12,7 @@ import play.mvc.Http;
 
 public class SessionHelper {
 
-    private static final String EMAIL_SESSION_KEY = "e%a";
+    private static final String USERNAME_SESSION_KEY = "e%a";
 
     private static final String TIMESTAMP_SESSION_KEY = "t^s";
 
@@ -58,7 +58,7 @@ public class SessionHelper {
     public static void checkAndUpdateTimestamp() {
         DateTime timestamp = getTimestamp();
         if (timestamp.isBefore(DateTime.now().minus(sessionMaxAge))) {
-            Http.Context.current().session().remove(EMAIL_SESSION_KEY);
+            Http.Context.current().session().remove(USERNAME_SESSION_KEY);
         } else {
             setTimestamp();
         }
@@ -66,11 +66,11 @@ public class SessionHelper {
 
     public static String getSessionUserName() {
         checkAndUpdateTimestamp();
-        return EncryptionHelper.decrypt(Http.Context.current().session().get(EMAIL_SESSION_KEY));
+        return EncryptionHelper.decrypt(Http.Context.current().session().get(USERNAME_SESSION_KEY));
     }
 
     public static void setSessionUserName(String sessionUserName) {
-        Controller.session(EMAIL_SESSION_KEY, EncryptionHelper.encrypt(sessionUserName));
+        Controller.session(USERNAME_SESSION_KEY, EncryptionHelper.encrypt(sessionUserName));
     }
 
     private static String formatIfNotZero(int value, String plural, String singleton) {
