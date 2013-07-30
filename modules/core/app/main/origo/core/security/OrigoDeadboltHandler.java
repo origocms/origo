@@ -15,7 +15,7 @@ public class OrigoDeadboltHandler extends AbstractDeadboltHandler {
     public Result beforeAuthCheck(Http.Context context) {
         NodeContext.set();
         try {
-            return AuthorizationEventGenerator.triggerAuthorizationCheck();
+            return AuthorizationEventGenerator.triggerAuthenticationCheck();
         } catch (ModuleException | NodeLoadException e) {
             throw new RuntimeException(e);
         } finally {

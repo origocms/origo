@@ -6,9 +6,7 @@ import main.origo.core.annotations.forms.OnSubmit;
 import main.origo.core.internal.CachedAnnotation;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
-import play.data.DynamicForm;
 
-import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -25,7 +23,7 @@ public class OnSubmitEventGenerator {
         if (Logger.isDebugEnabled()) {
             StringBuffer sb = new StringBuffer();
             for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
-                sb.append(" - ").append(cachedAnnotation.method.getClass()).append("\n");
+                sb.append(" - ").append(cachedAnnotation.method.getDeclaringClass() + "." + cachedAnnotation.method.getName()).append("\n");
             }
             Logger.debug("OnSubmitHandler about to be triggered(in order):\n" + sb.toString());
         }

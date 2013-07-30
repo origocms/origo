@@ -39,12 +39,12 @@ public class SessionHelper {
         );
     }
 
-    public static void setTimestamp(Http.Context ctx) {
-        ctx.session().put(TIMESTAMP_SESSION_KEY, String.valueOf(DateTime.now().getMillis()));
+    public static void setTimestamp() {
+        Http.Context.current().session().put(TIMESTAMP_SESSION_KEY, String.valueOf(DateTime.now().getMillis()));
     }
 
-    public static DateTime getTimestamp(Http.Context ctx) {
-        String timestamp = ctx.session().get(TIMESTAMP_SESSION_KEY);
+    public static DateTime getTimestamp() {
+        String timestamp = Http.Context.current().session().get(TIMESTAMP_SESSION_KEY);
         if (StringUtils.isEmpty(timestamp)) {
             return new DateTime(0);
         }
@@ -55,17 +55,17 @@ public class SessionHelper {
         }
     }
 
-    public static void checkAndUpdateTimestamp(Http.Context ctx) {
-        DateTime timestamp = getTimestamp(ctx);
+    public static void checkAndUpdateTimestamp() {
+        DateTime timestamp = getTimestamp();
         if (timestamp.isBefore(DateTime.now().minus(sessionMaxAge))) {
-            ctx.session().remove(EMAIL_SESSION_KEY);
+            Http.Context.current().session().remove(EMAIL_SESSION_KEY);
         } else {
-            setTimestamp(ctx);
+            setTimestamp();
         }
     }
 
     public static String getSessionUserName() {
-        checkAndUpdateTimestamp(Http.Context.current());
+        checkAndUpdateTimestamp();
         return EncryptionHelper.decrypt(Http.Context.current().session().get(EMAIL_SESSION_KEY));
     }
 

@@ -13,7 +13,6 @@ import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.Provides;
 import main.origo.core.annotations.forms.OnSubmit;
 import main.origo.core.annotations.forms.SubmitState;
-import main.origo.core.event.ProvidesEventGenerator;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.helpers.NodeHelper;
 import main.origo.core.helpers.ThemeHelper;
@@ -32,7 +31,6 @@ import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Content;
 import play.mvc.Controller;
-import play.mvc.Http;
 import play.mvc.Result;
 
 import java.util.Map;
@@ -45,6 +43,9 @@ public class AuthenticationProvider {
 
     @Provides(type = Core.Type.USER, with = Core.With.AUTHENTICATION_CHECK)
     public static Result authenticateUser(Provides.Context context) {
+        if (getCurrent() != null) {
+            return null;
+        }
         try {
             // Check if there is a specific page set up for login
             String loginPage = CoreSettingsHelper.getLoginPage();
@@ -133,11 +134,14 @@ public class AuthenticationProvider {
     }
 
     @Provides(type = Core.Type.USER, with = Core.With.AUTHORIZATION_CHECK)
-    public static Result checkAuthenticatedUser(Provides.Context context) throws ModuleException, NodeLoadException {
-        if(getCurrent() != null) {
-            return null;
+    public static Boolean checkAuthorization(Provides.Context context) throws ModuleException, NodeLoadException {
+        if(getCurrent() == null) {
+            return false;
         }
-        return ProvidesEventGenerator.triggerInterceptor(context.node, Core.Type.USER, Core.With.AUTHENTICATION_CHECK, context.args);
+
+        //context.args.get(OrigoDynamicResourceHandler.AUTH_PATH)
+        // TODO: Check authorization
+        return true;
     }
 
     @Provides(type = Core.Type.USER, with = Core.With.AUTHORIZATION_FAILURE)
@@ -192,7 +196,7 @@ public class AuthenticationProvider {
     public static Subject authenticate(final String email, final String password){
         BasicUser user = BasicUser.findWithEmail(email);
         if (user != null && password.equals(user.password)) {
-            SessionHelper.setTimestamp(Http.Context.current());
+            SessionHelper.setTimestamp();
             return user;
         }
         return null;

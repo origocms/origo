@@ -17,6 +17,10 @@ import java.util.Map;
 
 public class AuthorizationEventGenerator {
 
+    public static Result triggerAuthenticationCheck() throws ModuleException, NodeLoadException {
+        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, Core.With.AUTHENTICATION_CHECK, Maps.<String, Object>newHashMap());
+    }
+
     public static Result triggerAuthorizationCheck() throws ModuleException, NodeLoadException {
         return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, Core.With.AUTHORIZATION_CHECK, Maps.<String, Object>newHashMap());
     }
