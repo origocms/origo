@@ -1,6 +1,7 @@
 package main.origo.core.annotations.forms;
 
 import com.google.common.collect.Maps;
+import main.origo.core.event.NodeContext;
 import play.data.DynamicForm;
 import play.data.Form;
 
@@ -29,12 +30,14 @@ public @interface SubmitState {
     public class Context {
         public Form form;
         public Map<String, Object> args;
+        public Map<String, Object> attributes;
 
         public Context(Form form, Map<String, Object> args) {
             this.form = form;
             this.args = Maps.newHashMap();
             this.args.putAll(DynamicForm.form().bindFromRequest().data());
             this.args.putAll(args);
+            this.attributes = NodeContext.current().attributes;
         }
     }
 }
