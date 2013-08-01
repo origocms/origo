@@ -56,7 +56,7 @@ public class CoreLoader {
         }
     }
 
-    public static Result handleException(Exception e) {
+    public static Result handleException(Throwable e) {
         if (Play.isDev()) {
             Throwable thrown = e;
             while(thrown.getCause() != null &&

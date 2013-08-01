@@ -1,5 +1,6 @@
 package main.origo.core.event.forms;
 
+import controllers.origo.core.CoreLoader;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.ModuleException;
 import main.origo.core.NodeLoadException;
@@ -7,6 +8,7 @@ import main.origo.core.annotations.forms.SubmitHandler;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.internal.CachedAnnotation;
 import org.apache.commons.lang3.StringUtils;
+import play.Logger;
 import play.mvc.Result;
 
 import java.lang.reflect.InvocationTargetException;
@@ -26,19 +28,12 @@ public class SubmitHandlerEventGenerator {
         try {
             return (Result) cachedAnnotation.method.invoke(null, new SubmitHandler.Context());
         } catch (InvocationTargetException e) {
-            if (e.getCause() instanceof ModuleException) {
-                throw (ModuleException) e.getCause();
-            } else if (e.getCause() instanceof NodeLoadException) {
-                throw (NodeLoadException) e.getCause();
-            } else {
-                throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
-            }
+            return CoreLoader.handleException(e.getCause());
         } catch (IllegalAccessException e) {
-            throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
+            return CoreLoader.handleException(e);
         }
     }
 
-    // TODO: Cache this instead of looking it up every time
     private static CachedAnnotation getPostHandler(final String postHandler) {
         Set<CachedAnnotation> postHandlers = InterceptorRepository.
                 getInterceptors(SubmitHandler.class, new CachedAnnotation.InterceptorSelector() {
