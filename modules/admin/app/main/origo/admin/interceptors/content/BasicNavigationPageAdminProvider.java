@@ -110,11 +110,11 @@ public class BasicNavigationPageAdminProvider {
      * Hooks in to the submit process and stores an alias for a page when the page is submitted.
      */
     @OnSubmit(weight = 1100)
-    public static void storeNavigation(OnSubmit.Context context) {
+    public static Boolean storeNavigation(OnSubmit.Context context) {
 
         if (!BasicNavigation.TYPE.equals(CoreSettingsHelper.getNavigationType())) {
             // Not the active navigation type
-            return;
+            return true;
         }
 
         DynamicForm form = DynamicForm.form().bindFromRequest();
@@ -170,6 +170,7 @@ public class BasicNavigationPageAdminProvider {
             }
         }
 
+        return true;
     }
 
 }

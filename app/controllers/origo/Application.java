@@ -17,7 +17,7 @@ public class Application extends Controller {
         if (shouldRedirectToSetupPage()) {
             return redirect(routes.Setup.index());
         }
-        return CoreLoader.getStartPage();
+        return CoreLoader.loadStartPage();
     }
 
     @Transactional
@@ -26,7 +26,7 @@ public class Application extends Controller {
         if (shouldRedirectToSetupPage()) {
             return redirect(routes.Setup.index());
         }
-        Result result = CoreLoader.getPage(identifier);
+        Result result = CoreLoader.loadPage(identifier);
         return checkForFallBackPages(result);
     }
 
@@ -36,7 +36,7 @@ public class Application extends Controller {
         if (shouldRedirectToSetupPage()) {
             return redirect(routes.Setup.index());
         }
-        Result result = CoreLoader.getPage(identifier, version);
+        Result result = CoreLoader.loadPage(identifier, version);
         return checkForFallBackPages(result);
     }
 

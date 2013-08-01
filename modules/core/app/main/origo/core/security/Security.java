@@ -11,6 +11,7 @@ public class Security {
         public static final String AUTH_PATH = "authorization_path";
         public static final String AUTH_USERNAME = "authentication_username";
         public static final String AUTH_PASSWORD = "authentication_password";
+        public static final String AUTH_USER = "authentication_user";
     }
 
     public static class Types {

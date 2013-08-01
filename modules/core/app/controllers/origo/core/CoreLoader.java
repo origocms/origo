@@ -7,8 +7,8 @@ import main.origo.core.helpers.NodeHelper;
 import main.origo.core.helpers.ThemeHelper;
 import main.origo.core.ui.NavigationElement;
 import main.origo.core.ui.RenderedNode;
-import main.origo.core.utils.ExceptionUtil;
 import models.origo.core.Alias;
+import org.apache.commons.lang3.StringUtils;
 import play.Logger;
 import play.Play;
 import play.mvc.Content;
@@ -21,36 +21,36 @@ import java.util.List;
 
 public class CoreLoader {
 
-    public static Result getStartPage() {
+    public static Result loadStartPage() {
         String startPage = CoreSettingsHelper.getStartPage();
         try {
             return Controller.ok(loadAndDecoratePage(startPage, 0));
         } catch (NodeNotFoundException e) {
-            return loadPageNotFoundPage();
+            return redirectToPageNotFoundPage();
         } catch (Exception e) {
             return handleException(e);
         }
     }
 
-    public static Result getPage(String identifier) {
+    public static Result loadPage(String identifier) {
         try {
             return Controller.ok(loadAndDecoratePage(identifier, 0));
         } catch (NodeNotFoundException e) {
-            return loadPageNotFoundPage();
+            return redirectToPageNotFoundPage();
         } catch (ModuleException e) {
-            return loadPageNotFoundPage();
+            return redirectToPageNotFoundPage();
         } catch (Exception e) {
             return handleException(e);
         }
     }
 
-    public static Result getPage(String identifier, int version) {
+    public static Result loadPage(String identifier, int version) {
         try {
             return Controller.ok(loadAndDecoratePage(identifier, version));
         } catch (NodeNotFoundException e) {
-            return loadPageNotFoundPage();
+            return redirectToPageNotFoundPage();
         } catch (ModuleException e) {
-            return loadPageNotFoundPage();
+            return redirectToPageNotFoundPage();
         } catch (Exception e) {
             return handleException(e);
         }
@@ -72,10 +72,18 @@ public class CoreLoader {
             }
         }
         Logger.error("An exception occurred while loading the page: " + e.getMessage(), e);
-        return loadPageLoadErrorPage();
+        return redirectToPageLoadErrorPage();
     }
 
-    public static Result loadPageNotFoundPage() {
+    public static Result redirectToStartPage() {
+        String startPage = CoreSettingsHelper.getStartPage();
+        if (StringUtils.isBlank(startPage)) {
+            return redirectToPageNotFoundPage();
+        }
+        return Controller.redirect(CoreSettingsHelper.getBaseUrl());
+    }
+
+    public static Result redirectToPageNotFoundPage() {
         String pageNotFoundPage = CoreSettingsHelper.getPageNotFoundPage();
         Collection<Alias> aliases = Alias.findWithPageId(pageNotFoundPage);
         String url;
@@ -99,7 +107,7 @@ public class CoreLoader {
         return Controller.redirect(url);
     }
 
-    public static Result loadPageLoadErrorPage() {
+    public static Result redirectToPageLoadErrorPage() {
         String internalServerErrorPage = CoreSettingsHelper.getInternalServerErrorPage();
         Collection<Alias> aliases = Alias.findWithPageId(internalServerErrorPage);
         String url;

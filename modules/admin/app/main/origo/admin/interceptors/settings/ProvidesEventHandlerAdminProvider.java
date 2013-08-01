@@ -235,7 +235,7 @@ public class ProvidesEventHandlerAdminProvider {
      * Hooks in to the submit process and stores the event handlers when it is submitted.
      */
     @OnSubmit(with = BASE_TYPE)
-    public static void storeEvents(OnSubmit.Context context) {
+    public static Boolean storeEvents(OnSubmit.Context context) {
 
         String selectedEventType = getSelectedEventType(context.args, getAllProvides());
 
@@ -245,6 +245,8 @@ public class ProvidesEventHandlerAdminProvider {
                 handler.handlerClass = (String) context.args.get(key);
             }
         }
+
+        return true;
     }
 
     /**

@@ -5,11 +5,11 @@ import models.origo.core.EventHandler;
 import play.Logger;
 
 import java.lang.annotation.Annotation;
-import java.util.List;
+import java.util.Collection;
 
 public class EventGeneratorUtils {
 
-    public static CachedAnnotation selectEventHandler(Class<? extends Annotation> annotationType, String nodeType, String withType, List<CachedAnnotation> cachedAnnotations) {
+    public static CachedAnnotation selectEventHandler(Class<? extends Annotation> annotationType, String nodeType, String withType, Collection<CachedAnnotation> cachedAnnotations) {
         if (cachedAnnotations.isEmpty()) {
             return null;
         }
@@ -28,7 +28,7 @@ public class EventGeneratorUtils {
         return setFirstEventHandlerAsDefault(annotationType, nodeType, withType, cachedAnnotations);
     }
 
-    private static CachedAnnotation setFirstEventHandlerAsDefault(Class<? extends Annotation> annotationType, String nodeType, String withType, List<CachedAnnotation> providers) {
+    private static CachedAnnotation setFirstEventHandlerAsDefault(Class<? extends Annotation> annotationType, String nodeType, String withType, Collection<CachedAnnotation> providers) {
         CachedAnnotation annotation = providers.iterator().next();
         Logger.info("Setting ["+annotation.method.getDeclaringClass().getName()+"] as default for event ["+ nodeType +"] with ["+withType+"]");
         EventHandler eventHandler = new EventHandler();

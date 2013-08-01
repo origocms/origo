@@ -13,22 +13,20 @@ import main.origo.core.annotations.forms.OnSubmit;
 import main.origo.core.annotations.forms.SubmitState;
 import main.origo.core.event.NodeContext;
 import main.origo.core.helpers.CoreSettingsHelper;
-import main.origo.core.helpers.NodeHelper;
-import main.origo.core.helpers.ThemeHelper;
 import main.origo.core.helpers.forms.FormHelper;
 import main.origo.core.security.AuthEventGenerator;
 import main.origo.core.security.Security;
 import main.origo.core.ui.Element;
-import main.origo.core.ui.RenderedNode;
 import main.origo.core.utils.ExceptionUtil;
 import models.origo.core.BasicPage;
 import models.origo.core.RootNode;
+import models.origo.core.Settings;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
 import play.data.DynamicForm;
 import play.data.Form;
+import play.mvc.Content;
 import play.mvc.Controller;
-import play.mvc.Http;
 import play.mvc.Result;
 
 import java.util.Map;
@@ -109,7 +107,7 @@ public class AuthenticationProvider {
      * Handles the authentication of the supplied username/password.
      */
     @OnSubmit(with = Core.With.AUTHENTICATION_CHECK)
-    public static void authenticateFormUser(OnSubmit.Context context) throws NodeLoadException, ModuleException {
+    public static Boolean authenticateFormUser(OnSubmit.Context context) throws NodeLoadException, ModuleException {
 
         Form form = DynamicForm.form().bindFromRequest();
         Map<String, String> data = form.data();
@@ -118,25 +116,51 @@ public class AuthenticationProvider {
         String password = data.get(PASSWORD_PARAM);
         String path = data.get(PATH_PARAM);
         if (StringUtils.isNotBlank(path)) {
-            NodeContext.current().attributes.put(Security.Params.AUTH_PATH, path);
+            context.attributes.put(Security.Params.AUTH_PATH, path);
         }
 
         Subject subject = AuthEventGenerator.triggerValidateInterceptor(username, password);
         if (subject == null) {
-            throw new RuntimeException("Unable to authenticated user, incorrect username or password");
+            context.attributes.put("reason", "Unable to authenticated user, incorrect username or password");
+            return false;
         }
         SessionHelper.setSessionUserName(username);
+        return true;
     }
 
     /**
-     * Handling the routing at the end of the submit process, it redirects to START_PAGE from config.
+     * Handling the routing at the end of the submit process when the submit failed for some reason.
+     */
+    @SubmitState(state = SubmitState.FAILURE, with = Core.With.AUTHENTICATION_CHECK)
+    public static Result handleFailure(SubmitState.Context context) {
+
+        String unauthorizedPage = Settings.load().getValue(CoreSettingsHelper.Keys.UNAUTHORIZED_PAGE);
+        try {
+            if (StringUtils.isNotBlank(unauthorizedPage)) {
+                Content content = CoreLoader.loadAndDecoratePage(unauthorizedPage, 0);
+                return Controller.unauthorized(content);
+            }
+        } catch (NodeNotFoundException | NodeLoadException | ModuleException e) {
+            ExceptionUtil.assertExceptionHandling(e);
+            return CoreLoader.redirectToPageLoadErrorPage();
+        }
+
+        Logger.warn("Using fallback unauthorized handling, sending 401 with no content");
+        return Controller.unauthorized();
+
+    }
+
+    /**
+     * Handling the routing at the end of the submit process, it redirects to the original path the user tried to access
+     * and if that is not set in the context it redirects to the start page from the settings.
      */
     @SubmitState(with = Core.With.AUTHENTICATION_CHECK)
     public static Result handleSuccess(SubmitState.Context context) {
+
         String originalPath = (String) NodeContext.current().attributes.get(Security.Params.AUTH_PATH);
         if (StringUtils.isBlank(originalPath)) {
             Logger.debug("No original path in context, defaulting to start page");
-            return Controller.redirect(CoreSettingsHelper.getBaseUrl() + CoreSettingsHelper.getStartPage());
+            return CoreLoader.redirectToStartPage();
         }
         return Controller.redirect(originalPath);
     }

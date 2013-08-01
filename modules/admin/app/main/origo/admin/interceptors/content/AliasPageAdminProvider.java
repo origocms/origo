@@ -6,7 +6,6 @@ import main.origo.core.annotations.OnInsertElement;
 import main.origo.core.annotations.forms.OnSubmit;
 import main.origo.core.helpers.forms.FormHelper;
 import main.origo.core.ui.Element;
-import models.origo.admin.AdminPage;
 import models.origo.core.Alias;
 import org.apache.commons.lang3.StringUtils;
 import play.data.DynamicForm;
@@ -55,7 +54,7 @@ public class AliasPageAdminProvider {
      * Hooks in to the submit process and stores an alias for a page when the page is submitted.
      */
     @OnSubmit(weight = 1000)
-    public static void storeAlias(OnSubmit.Context context) {
+    public static Boolean storeAlias(OnSubmit.Context context) {
 
         DynamicForm form = DynamicForm.form().bindFromRequest();
         Map<String, String> data = form.data();
@@ -78,6 +77,7 @@ public class AliasPageAdminProvider {
                 alias.delete();
             }
         }
+        return true;
     }
 
     private static String getUrlPart(Map<String, String> data) {

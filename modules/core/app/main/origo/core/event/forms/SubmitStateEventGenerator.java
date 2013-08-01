@@ -1,13 +1,15 @@
 package main.origo.core.event.forms;
 
+import controllers.origo.core.CoreLoader;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.annotations.forms.SubmitState;
+import main.origo.core.event.EventGeneratorUtils;
 import main.origo.core.internal.CachedAnnotation;
+import play.Logger;
 import play.data.Form;
 import play.mvc.Result;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,7 +26,22 @@ public class SubmitStateEventGenerator {
     public static Result triggerInterceptor(String state, String withType, SubmitState.Context context) {
         CachedAnnotation cachedAnnotation = findOnPostInterceptorsWithType(state, withType);
         try {
-            return (Result) cachedAnnotation.method.invoke(null, context);
+            switch(state) {
+                case SubmitState.SUCCESS:
+                    if (cachedAnnotation == null) {
+                        throw new RuntimeException("Every form type (specified by using attribute 'with') must have a class annotated with @SubmitState to use as an endpoint for submit's. Unable to find a SubmitState for state='" + state + "' and type='" + withType + "'");
+                    }
+                    return (Result) cachedAnnotation.method.invoke(null, context);
+                case SubmitState.FAILURE:
+                    if (cachedAnnotation == null) {
+                        Logger.error("No @SubmitState for failures to use as an endpoint for submit's. Unable to find a SubmitState for state='" + state + "' and type='" + withType + "'");
+                        return CoreLoader.loadStartPage();
+                    }
+                    return (Result) cachedAnnotation.method.invoke(null, context);
+                default:
+                    Logger.error("Unknown state '"+state+"' for SubmitState, showing error page");
+                    return CoreLoader.redirectToPageLoadErrorPage();
+            }
         } catch (Throwable e) {
             throw new RuntimeException("", e);
         }
@@ -38,13 +55,7 @@ public class SubmitStateEventGenerator {
                 return annotation.state().equals(state) && annotation.with().equals(withType);
             }
         });
-        if (submitStateInterceptors.isEmpty()) {
-            throw new RuntimeException("Every form type (specified by using attribute 'with') must have a class annotated with @SubmitState to use as an endpoint for submit's. Unable to find a SubmitState for state='" + state + "' and type='" + withType + "'");
-        }
-        if (submitStateInterceptors.size() > 1) {
-            throw new RuntimeException("Only one @SubmitState(state='" + state + "') per type (attribute 'with') is allowed");
-        }
-        return submitStateInterceptors.iterator().next();
+        return EventGeneratorUtils.selectEventHandler(SubmitState.class, state, withType, submitStateInterceptors);
     }
 
 }

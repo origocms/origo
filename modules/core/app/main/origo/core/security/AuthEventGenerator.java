@@ -60,7 +60,7 @@ public class AuthEventGenerator {
         if (StringUtils.isNotBlank(userType)) {
             return userType;
         }
-        // TODO Add fallback to static user provider with an Admin account only
+        // TODO Add fallback to static/hardcoded user provider with an Admin account only
         throw new RuntimeException("Unable to trigger user provider, no user type set.");
     }
 
@@ -73,7 +73,7 @@ public class AuthEventGenerator {
     }
 
     public static void triggerBeforeAuthorizationFailure(User user, Map<String, Object> args) {
-        args.put("user", user);
+        args.put(Security.Params.AUTH_USER, user);
         OnLoadEventGenerator.triggerBeforeInterceptor(null, Core.Type.USER, Core.With.AUTHORIZATION_FAILURE, args);
     }
 
@@ -82,7 +82,7 @@ public class AuthEventGenerator {
     }
 
     public static void triggerAfterAuthorizationFailure(User user, Map<String, Object> args) {
-        args.put("user", user);
+        args.put(Security.Params.AUTH_USER, user);
         OnLoadEventGenerator.triggerAfterInterceptor(null, Core.Type.USER, Core.With.AUTHORIZATION_FAILURE, args);
     }
 
@@ -100,4 +100,5 @@ public class AuthEventGenerator {
         args.put(Security.Params.AUTH_PASSWORD, password);
         return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, Core.With.AUTHENTICATION_VALIDATE, args);
     }
+
 }

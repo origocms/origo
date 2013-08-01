@@ -12,7 +12,7 @@ import java.util.Map;
 public class RootNodeAdminProvider {
 
     @OnSubmit(weight = 10) // TODO: Probably should be moved to validation when that is ready
-    public static void storeNode(OnSubmit.Context context) {
+    public static Boolean storeNode(OnSubmit.Context context) {
         DynamicForm form = DynamicForm.form().bindFromRequest();
         Map<String, String> data = form.data();
         String nodeId = FormHelper.getNodeId(data);
@@ -22,6 +22,7 @@ public class RootNodeAdminProvider {
         if (oldNodeVersion != null && !oldNodeVersion.version().equals(version)) {
             throw new RuntimeException("Root node with id='" + nodeId + "' and version ='" + version + "' has a newer version stored.");
         }
+        return true;
     }
 
 }

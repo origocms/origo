@@ -8,11 +8,9 @@ import main.origo.core.annotations.forms.SubmitHandler;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.internal.CachedAnnotation;
 import org.apache.commons.lang3.StringUtils;
-import play.Logger;
 import play.mvc.Result;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 import java.util.Set;
 
 public class SubmitHandlerEventGenerator {
@@ -34,12 +32,12 @@ public class SubmitHandlerEventGenerator {
         }
     }
 
-    private static CachedAnnotation getPostHandler(final String postHandler) {
+    private static CachedAnnotation getPostHandler(final String postHandlerName) {
         Set<CachedAnnotation> postHandlers = InterceptorRepository.
                 getInterceptors(SubmitHandler.class, new CachedAnnotation.InterceptorSelector() {
                     @Override
                     public boolean isCorrectInterceptor(CachedAnnotation listener) {
-                        return postHandler.equals(listener.method.getDeclaringClass().getName());
+                        return postHandlerName.equals(listener.method.getDeclaringClass().getName());
                     }
                 });
 

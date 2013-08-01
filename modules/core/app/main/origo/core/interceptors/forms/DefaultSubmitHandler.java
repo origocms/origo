@@ -1,5 +1,8 @@
 package main.origo.core.interceptors.forms;
 
+import com.google.common.collect.Maps;
+import main.origo.core.InitializationException;
+import main.origo.core.ModuleException;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnLoad;
@@ -12,6 +15,8 @@ import main.origo.core.ui.Element;
 import play.Logger;
 import play.data.DynamicForm;
 import play.mvc.Result;
+
+import java.util.Map;
 
 /**
  * Default implementation of the submit handler. Alternate submit handlers can be used by changing the settings.
@@ -34,9 +39,29 @@ public class DefaultSubmitHandler {
 
         // TODO: insert validation here
 
-        OnSubmitEventGenerator.triggerInterceptors(withType);
+        try {
+            if (OnSubmitEventGenerator.triggerInterceptors(withType)) {
+                return SubmitStateEventGenerator.triggerInterceptor(SubmitState.SUCCESS, withType, form);
+            } else {
+                return SubmitStateEventGenerator.triggerInterceptor(SubmitState.FAILURE, withType, form);
+            }
+        } catch (Exception e) {
+            Map<String, Object> args = Maps.newHashMap();
+            args.put("reason", getReason(e));
+            args.put("exception", e);
+            return SubmitStateEventGenerator.triggerInterceptor(SubmitState.FAILURE, withType, form, args);
+        }
+    }
 
-        return SubmitStateEventGenerator.triggerInterceptor(SubmitState.SUCCESS, withType, form);
+    private static String getReason(Exception e) {
+        Throwable thrown = e;
+        while(thrown.getCause() != null &&
+                (thrown instanceof InitializationException ||
+                        thrown instanceof ModuleException ||
+                        thrown instanceof RuntimeException)) {
+            thrown = e.getCause();
+        }
+        return thrown.getMessage();
     }
 
     @OnLoad(type = Core.Type.FORM)

@@ -27,6 +27,7 @@ public class AuthorizationProvider {
             return false;
         }
 
+        // TODO: Add actual authorization check
         return true;
     }
 
@@ -49,7 +50,7 @@ public class AuthorizationProvider {
                 }
             } catch (NodeNotFoundException | NodeLoadException | ModuleException e) {
                 ExceptionUtil.assertExceptionHandling(e);
-                return CoreLoader.loadPageLoadErrorPage();
+                return CoreLoader.redirectToPageLoadErrorPage();
             }
 
             if (user != null) {

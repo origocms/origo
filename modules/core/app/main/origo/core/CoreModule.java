@@ -39,8 +39,8 @@ public class CoreModule {
         annotations.add(new AnnotationProcessor.Prototype(OnInsertElement.class, null, OnInsertElement.Context.class));
         annotations.add(new AnnotationProcessor.Prototype(OnRemoveElement.class, null, OnRemoveElement.Context.class));
 
-        // Form types
-        annotations.add(new AnnotationProcessor.Prototype(OnSubmit.class, null, OnSubmit.Context.class));
+        // Form handling types
+        annotations.add(new AnnotationProcessor.Prototype(OnSubmit.class, Boolean.class, OnSubmit.Context.class));
         annotations.add(new AnnotationProcessor.Prototype(SubmitHandler.class, Result.class, SubmitHandler.Context.class));
         annotations.add(new AnnotationProcessor.Prototype(SubmitState.class, Result.class, SubmitState.Context.class));
 

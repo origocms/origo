@@ -302,7 +302,7 @@ public class BasicPageAdminProvider {
      * Hooks in to the submit process and stores a BasicPage when it is submitted.
      */
     @OnSubmit(with = BASE_TYPE)
-    public static void storePage(OnSubmit.Context context) {
+    public static Boolean storePage(OnSubmit.Context context) {
 
         Form form = DynamicForm.form().bindFromRequest();
         Map<String, String> data = form.data();
@@ -394,6 +394,7 @@ public class BasicPageAdminProvider {
             OnUpdateEventGenerator.triggerAfterInterceptors(BasicPage.TYPE, latestVersion);
         }
 
+        return true;
     }
 
     public static String getProviderUrl() {
