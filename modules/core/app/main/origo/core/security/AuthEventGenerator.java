@@ -23,9 +23,31 @@ public class AuthEventGenerator {
         return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, Core.With.AUTHENTICATION_CHECK);
     }
 
-    public static Boolean triggerAuthorizationCheck(String path) throws ModuleException, NodeLoadException {
+    public static Boolean triggerAuthorizationCheck(String path, Map<String, Object> args) throws ModuleException, NodeLoadException {
         NodeContext.current().attributes.put(Security.Params.AUTH_PATH, path);
-        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, Core.With.AUTHORIZATION_CHECK);
+        String[] roles = AuthEventGenerator.triggerProvidesAuthorizationRolesInterceptor(path);
+        if (roles.length == 0) {
+            return true;
+        }
+
+        Subject subject = (Subject) NodeContext.current().attributes.get(Security.Params.AUTH_USER);
+        if (subject == null) {
+            subject = AuthEventGenerator.triggerCurrentUserInterceptor();
+            if (subject == null) {
+                throw new RuntimeException("No authenticated user");
+            }
+            NodeContext.current().attributes.put(Security.Params.AUTH_USER, subject);
+        }
+        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, Core.With.AUTHORIZATION_CHECK, args);
+    }
+
+    public static String[] triggerProvidesAuthorizationRolesInterceptor(String path) throws ModuleException, NodeLoadException {
+        return triggerProvidesAuthorizationRolesInterceptor(path, Maps.<String, Object>newHashMap());
+    }
+
+    public static String[] triggerProvidesAuthorizationRolesInterceptor(String path, Map<String, Object> args) throws ModuleException, NodeLoadException {
+        NodeContext.current().attributes.put(Security.Params.AUTH_PATH, path);
+        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, Core.With.AUTHORIZATION_ROLES, args);
     }
 
     public static User triggerProvidesUserInterceptor(String username) throws ModuleException, NodeLoadException {

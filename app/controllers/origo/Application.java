@@ -1,7 +1,9 @@
 package controllers.origo;
 
+import be.objectify.deadbolt.java.actions.Dynamic;
 import controllers.origo.core.CoreLoader;
 import main.origo.core.actions.ContextAware;
+import main.origo.core.security.Security;
 import models.origo.core.Settings;
 import play.db.jpa.Transactional;
 import play.mvc.Controller;
@@ -13,6 +15,7 @@ public class Application extends Controller {
 
     @Transactional
     @ContextAware
+    @Dynamic(Security.Types.RESOURCE)
     public static Result index() throws Throwable {
         if (shouldRedirectToSetupPage()) {
             return redirect(routes.Setup.index());
@@ -22,6 +25,7 @@ public class Application extends Controller {
 
     @Transactional
     @ContextAware
+    @Dynamic(Security.Types.RESOURCE)
     public static Result page(String identifier) {
         if (shouldRedirectToSetupPage()) {
             return redirect(routes.Setup.index());
@@ -32,6 +36,7 @@ public class Application extends Controller {
 
     @Transactional
     @ContextAware
+    @Dynamic(Security.Types.RESOURCE)
     public static Result pageVersion(String identifier, int version) {
         if (shouldRedirectToSetupPage()) {
             return redirect(routes.Setup.index());

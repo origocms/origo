@@ -10,21 +10,21 @@ import play.mvc.Result;
 public class Dashboard extends Controller {
 
     @Transactional
-    @Dynamic(Security.Types.RESOURCE)
     @ContextAware
+    @Dynamic(Security.Types.RESOURCE)
     public static Result index() {
         //TODO: Check if config !exists and redirect to wizard
 
-        return AdminLoader.getFrontDashboard();
+        return AdminLoader.loadFrontDashboard();
     }
 
     @Transactional
-    @Dynamic(Security.Types.RESOURCE)
     @ContextAware
+    @Dynamic(Security.Types.RESOURCE)
     public static Result dashboard(String dashboard) {
         //TODO: Check if config !exists and redirect to wizard
 
-        return AdminLoader.getDashboard(dashboard);
+        return AdminLoader.loadDashboard(dashboard);
     }
 
 }
