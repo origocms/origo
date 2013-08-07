@@ -50,6 +50,10 @@ public class AuthenticationProvider {
             return null;
         }
         String path = (String) context.attributes.get(Security.Params.AUTH_PATH);
+        String[] roles = AuthEventGenerator.triggerProvidesAuthorizationRolesInterceptor(path);
+        if (roles.length == 0) {
+            return null;
+        }
         return Controller.redirect(routes.Authentication.login(path));
     }
 

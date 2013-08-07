@@ -24,6 +24,7 @@
         <!-- Authentication Module -->
         <class>models.origo.authentication.BasicUser</class>
         <class>models.origo.authentication.BasicRole</class>
+        <class>models.origo.authentication.BasicAuthorization</class>
 
         <!-- StructuredContent Module -->
 

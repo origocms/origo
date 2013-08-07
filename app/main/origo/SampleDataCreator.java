@@ -1,7 +1,9 @@
 package main.origo;
 
+import com.google.common.collect.Sets;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.themes.bootstrap.BootstrapTheme;
+import models.origo.authentication.BasicAuthorization;
 import models.origo.authentication.BasicRole;
 import models.origo.authentication.BasicUser;
 import models.origo.core.*;
@@ -434,6 +436,17 @@ public class SampleDataCreator {
         adminUser.email = "admin@email.com";
         adminUser.password = "password";
         adminUser.create();
+
+        BasicAuthorization adminAuthorization = new BasicAuthorization();
+        adminAuthorization.path = "/admin";
+        adminAuthorization.roles = Sets.newHashSet("Admin");
+        adminAuthorization.create();
+
+        BasicAuthorization testAuthorization = new BasicAuthorization();
+        testAuthorization.path = "699eb321-7545-4b27-8a7f-94a4442d2046"; // Page 5
+        testAuthorization.roles = Sets.newHashSet("!Admin", "Normal");
+        testAuthorization.create();
+
     }
 
 }

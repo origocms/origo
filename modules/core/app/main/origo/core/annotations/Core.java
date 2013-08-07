@@ -20,6 +20,7 @@ public class Core {
         public static final String AUTHORIZATION_SUBJECT = "authorization_subject";
         public static final String AUTHORIZATION_FAILURE = "authorization_failure";
         public static final String AUTHORIZATION_CHECK = "authorization_check";
+        public static final String AUTHORIZATION_ROLES = "authorization_roles";
 
         public static final String AUTHENTICATION_CHECK = "authentication_check";
         public static final String AUTHENTICATION_CURRENT_USER = "authentication_current_user";
