@@ -4,7 +4,10 @@
 
 POST    /                                       controllers.origo.core.Submit.submit()
 
-# Home page
+# Preview Ticket
+GET     /preview/new                            controllers.origo.core.PreviewTicket.getTicket()
+
+# Node View
 GET     /                                       controllers.origo.core.NodeViewer.nodes()
 GET     /:identifier                            controllers.origo.core.NodeViewer.nodeCurrent(identifier)
 GET     /:identifier/$version<[0-9]+>           controllers.origo.core.NodeViewer.nodeVersion(identifier, version:Integer)
