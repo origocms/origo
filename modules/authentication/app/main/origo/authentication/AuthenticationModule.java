@@ -1,8 +1,5 @@
 package main.origo.authentication;
 
-import main.origo.authentication.helpers.EncryptionHelper;
-import main.origo.authentication.helpers.SessionHelper;
-import main.origo.authentication.interceptors.AuthenticationProvider;
 import main.origo.core.CoreModule;
 import main.origo.core.annotations.Module;
 import main.origo.core.internal.AnnotationProcessor;
@@ -15,12 +12,6 @@ import java.util.List;
 public class AuthenticationModule {
 
     public static final String NAME = "origo.authentication";
-
-    @Module.Init
-    public static void init() {
-        SessionHelper.register();
-        EncryptionHelper.register();
-    }
 
     @Module.Dependencies
     public static List<AnnotationProcessor.Dependency> dependencies() {

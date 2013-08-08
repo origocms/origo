@@ -4,6 +4,8 @@ import main.origo.core.interceptors.forms.DefaultFormProvider;
 import main.origo.core.interceptors.forms.DefaultSubmitHandler;
 import models.origo.core.Settings;
 import models.origo.core.navigation.BasicNavigation;
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.Period;
 import play.Logger;
 
 public class CoreSettingsHelper {
@@ -25,7 +27,11 @@ public class CoreSettingsHelper {
         public static final String SUBMIT_HANDLER = "event.submit_handler";
 
         public static final String USER_TYPE = "origo.authentication.user_type";
+
+        public static final String PREVIEW_TICKET_PERIOD = "origo.preview.ticket_period";
     }
+
+    private static Period previewTicketPeriod;
 
     public static String getBaseUrl() {
         return Settings.load().getValue(Keys.BASE_URL);
@@ -68,7 +74,19 @@ public class CoreSettingsHelper {
     }
 
     public static String getUserType() {
-        return Keys.USER_TYPE;
+        return Settings.load().getValue(Keys.USER_TYPE);
+    }
+
+    public static Period getPreviewTicketPeriod() {
+        if (previewTicketPeriod == null) {
+            String period = Settings.load().getValue(Keys.PREVIEW_TICKET_PERIOD);
+            if (StringUtils.isNotBlank(period)) {
+                previewTicketPeriod = DateHelper.parsePeriod(period);
+            } else {
+                previewTicketPeriod = Period.minutes(30);
+            }
+        }
+        return previewTicketPeriod;
     }
 
     protected static String getClassTypeIfExists(String propertyName, String fallback) {

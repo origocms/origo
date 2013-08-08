@@ -1,13 +1,11 @@
 package main.origo.authentication.interceptors;
 
 import be.objectify.deadbolt.core.models.Subject;
-import main.origo.authentication.helpers.SessionHelper;
-import main.origo.core.ModuleException;
-import main.origo.core.NodeLoadException;
+import main.origo.authentication.util.AuthenticationSessionUtils;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.Provides;
-import main.origo.core.security.AuthEventGenerator;
+import main.origo.core.helpers.SessionHelper;
 import main.origo.core.security.Security;
 import models.origo.authentication.BasicUser;
 
@@ -27,7 +25,7 @@ public class BasicUserProvider {
 
     @Provides(type = Core.Type.USER, with = Core.With.AUTHENTICATION_CURRENT_USER)
     public static BasicUser getCurrent(Provides.Context context) {
-        String username = SessionHelper.getSessionUserName();
+        String username = AuthenticationSessionUtils.getSessionUserName();
         if (username != null) {
             return BasicUser.findWithEmail(username);
         } else {

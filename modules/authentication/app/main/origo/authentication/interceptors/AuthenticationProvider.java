@@ -3,7 +3,7 @@ package main.origo.authentication.interceptors;
 import be.objectify.deadbolt.core.models.Subject;
 import controllers.origo.authentication.routes;
 import controllers.origo.core.CoreLoader;
-import main.origo.authentication.helpers.SessionHelper;
+import main.origo.authentication.util.AuthenticationSessionUtils;
 import main.origo.core.*;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
@@ -128,7 +128,7 @@ public class AuthenticationProvider {
             context.attributes.put("reason", "Unable to authenticated user, incorrect username or password");
             return false;
         }
-        SessionHelper.setSessionUserName(username);
+        AuthenticationSessionUtils.setSessionUserName(username);
         return true;
     }
 

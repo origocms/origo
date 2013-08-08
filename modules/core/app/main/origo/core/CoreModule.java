@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import main.origo.core.annotations.*;
 import main.origo.core.annotations.forms.*;
 import main.origo.core.helpers.CoreSettingsHelper;
+import main.origo.core.helpers.EncryptionHelper;
+import main.origo.core.helpers.SessionHelper;
 import main.origo.core.interceptors.forms.DefaultFormProvider;
 import main.origo.core.interceptors.forms.DefaultSubmitHandler;
 import main.origo.core.internal.AnnotationProcessor;
@@ -27,6 +29,9 @@ public class CoreModule {
         settings.setValueIfMissing(CoreSettingsHelper.Keys.SUBMIT_HANDLER, DefaultSubmitHandler.class.getName());
         settings.setValueIfMissing(CoreSettingsHelper.Keys.DEFAULT_FORM_TYPE, DefaultFormProvider.TYPE);
         settings.save();
+
+        EncryptionHelper.register();
+        SessionHelper.register();
     }
 
     @Module.Annotations

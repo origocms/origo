@@ -14,7 +14,9 @@ object ApplicationBuild extends Build {
     "mysql" % "mysql-connector-java" % "5.1.18",
     "org.hibernate" % "hibernate-entitymanager" % "4.1.1.Final",
     "org.reflections" % "reflections" % "0.9.8",
-    "be.objectify" %% "deadbolt-java" % "2.1-RC2"
+    "be.objectify" %% "deadbolt-java" % "2.1-RC2",
+    "org.jasypt" % "jasypt" %  "1.9.0",
+    "org.jasypt" % "jasypt-hibernate4" %  "1.9.0"
   )
 
   /**
@@ -31,8 +33,6 @@ object ApplicationBuild extends Build {
    * Authentication
    */
   val authenticationDependencies = Seq(
-    "org.jasypt" % "jasypt" %  "1.9.0",
-    "org.jasypt" % "jasypt-hibernate4" %  "1.9.0"
   ) ++ coreDependencies
 
   val authentication = play.Project(
