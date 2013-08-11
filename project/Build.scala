@@ -9,7 +9,10 @@ object ApplicationBuild extends Build {
 
   val coreDependencies = Seq(
     // Built-Ins
-    javaCore, javaJdbc, javaJpa, filters,
+    javaCore, javaJdbc,
+    "org.jadira.usertype" % "usertype.core" % "3.1.0.CR7",
+    "org.jadira.bindings" % "bindings" % "3.1.0.CR7",
+    javaJpa, filters,
     // Extra
     "mysql" % "mysql-connector-java" % "5.1.18",
     "org.hibernate" % "hibernate-entitymanager" % "4.1.1.Final",

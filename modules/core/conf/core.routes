@@ -5,8 +5,9 @@
 POST    /                                       controllers.origo.core.Submit.submit()
 
 # Preview Ticket
-GET     /preview/new                            controllers.origo.core.PreviewTicket.get()
-GET     /preview/remove                         controllers.origo.core.PreviewTicket.remove()
+GET     /preview/                               controllers.origo.core.PreviewToken.index()
+POST    /preview/submit                         controllers.origo.core.PreviewToken.submit()
+GET     /preview/remove                         controllers.origo.core.PreviewToken.remove()
 
 # Node View
 GET     /                                       controllers.origo.core.NodeViewer.nodes()
