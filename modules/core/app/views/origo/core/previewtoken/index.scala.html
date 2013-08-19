@@ -1,6 +1,5 @@
 @(form:Form[controllers.origo.core.PreviewToken.PreviewTokenForm])
 
-@import
 
 @helper.form(action = controllers.origo.core.routes.PreviewToken.submit) {
     @helper.inputDate(form("preview"), 'placeholder -> "yyyy/mm/dd")
