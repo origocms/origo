@@ -1,16 +1,20 @@
 package models.origo.core;
 
+import main.origo.core.User;
+import main.origo.core.formatters.Formats;
 import main.origo.core.helpers.CoreSettingsHelper;
+import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 import org.joda.time.Period;
 import play.db.jpa.JPA;
+import tyrex.services.UUID;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table(name = "preview_ticket")
-public class PreviewTicket extends Model<Meta> {
+public class PreviewTicket extends Model<PreviewTicket> {
 
     public static final String TYPE = "origo.preview_ticket";
 
@@ -20,10 +24,15 @@ public class PreviewTicket extends Model<Meta> {
 
     public String userId;
 
-    public String ticket;
+    public String token;
 
-    @Temporal(value = TemporalType.TIMESTAMP)
-    private Date validUntil;
+    @Formats.DateTimePattern(key="date.format")
+    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
+    public LocalDateTime validUntil;
+
+    @Formats.DateTimePattern(key="date.format")
+    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
+    public LocalDateTime preview;
 
     public PreviewTicket() {
         super(TYPE);
@@ -37,19 +46,39 @@ public class PreviewTicket extends Model<Meta> {
     public void updateValidUntil() {
         Period previewPeriod = CoreSettingsHelper.getPreviewTicketPeriod();
         if (validUntil != null) {
-            validUntil = new DateTime(validUntil).plus(previewPeriod).toDate();
+            validUntil = validUntil.plus(previewPeriod);
         } else {
-            validUntil = DateTime.now().plus(previewPeriod).toDate();
+            validUntil = LocalDateTime.now().plus(previewPeriod);
         }
     }
 
-    public static Content findWithTicket(String ticket) {
+    public static PreviewTicket findWithToken(String token) {
         try {
-            return (Content) JPA.em().createQuery("from "+PreviewTicket.class.getName()+" where ticket=:ticket").
-                    setParameter("ticket", ticket).getSingleResult();
+            return (PreviewTicket) JPA.em().createQuery("from "+PreviewTicket.class.getName()+" pt where pt.token=:token").
+                    setParameter("token", token).getSingleResult();
         } catch (NoResultException e) {
             return null;
         }
     }
 
+    public static PreviewTicket getIfValid(User user, String token) {
+        PreviewTicket ticket = findWithToken(token);
+        if (ticket != null) {
+            if (ticket.userId.equals(user.getIdentifier()) && ticket.isValid()) {
+                ticket.updateValidUntil();
+                return ticket;
+            }
+            ticket.delete();
+        }
+        return null;
+    }
+
+    public static PreviewTicket createInstance(User user, LocalDateTime preview) {
+        PreviewTicket ticket = new PreviewTicket();
+        ticket.updateValidUntil();
+        ticket.token = UUID.create();
+        ticket.userId = user.getIdentifier();
+        ticket.preview = preview;
+        return ticket.create();
+    }
 }
