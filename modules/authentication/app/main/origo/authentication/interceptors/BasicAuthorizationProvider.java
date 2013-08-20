@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 @Interceptor
 public class BasicAuthorizationProvider {
 
-    @Provides(type = Core.Type.USER, with = Core.With.AUTHORIZATION_CHECK)
+    @Provides(type = Core.Type.SECURITY, with = Core.With.AUTHORIZATION_CHECK)
     public static Boolean checkAuthorization(Provides.Context context) throws NodeLoadException, ModuleException {
 
         Subject subject = (Subject) context.attributes.get(Security.Params.AUTH_USER);
@@ -34,7 +34,7 @@ public class BasicAuthorizationProvider {
         return JavaDeadboltAnalyzer.checkRole(subject, roles);
     }
 
-    @Provides(type = Core.Type.USER, with = Core.With.AUTHORIZATION_ROLES)
+    @Provides(type = Core.Type.SECURITY, with = Core.With.AUTHORIZATION_ROLES)
     public static String[] getAuthorizationRoles(Provides.Context context) {
         String path = (String) context.attributes.get(Security.Params.AUTH_PATH);
 

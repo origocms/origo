@@ -10,7 +10,7 @@ public class Core {
         public static final String NAVIGATION_ITEM = "navigation_item";
         public static final String FORM = "form";
 
-        public static final String USER = "user";
+        public static final String SECURITY = "user";
     }
 
     public class With {

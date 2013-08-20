@@ -20,7 +20,7 @@ public class AuthEventGenerator {
 
     public static Result triggerAuthenticationCheck(String path) throws ModuleException, NodeLoadException {
         NodeContext.current().attributes.put(Security.Params.AUTH_PATH, path);
-        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, Core.With.AUTHENTICATION_CHECK);
+        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.SECURITY, Core.With.AUTHENTICATION_CHECK);
     }
 
     public static Boolean triggerAuthorizationCheck(String path, Map<String, Object> args) throws ModuleException, NodeLoadException {
@@ -38,7 +38,7 @@ public class AuthEventGenerator {
             }
             NodeContext.current().attributes.put(Security.Params.AUTH_USER, subject);
         }
-        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, Core.With.AUTHORIZATION_CHECK, args);
+        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.SECURITY, Core.With.AUTHORIZATION_CHECK, args);
     }
 
     public static String[] triggerProvidesAuthorizationRolesInterceptor(String path) throws ModuleException, NodeLoadException {
@@ -47,16 +47,16 @@ public class AuthEventGenerator {
 
     public static String[] triggerProvidesAuthorizationRolesInterceptor(String path, Map<String, Object> args) throws ModuleException, NodeLoadException {
         NodeContext.current().attributes.put(Security.Params.AUTH_PATH, path);
-        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, Core.With.AUTHORIZATION_ROLES, args);
+        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.SECURITY, Core.With.AUTHORIZATION_ROLES, args);
     }
 
     public static User triggerProvidesUserInterceptor(String username) throws ModuleException, NodeLoadException {
         String userType = getUserType();
-        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, userType, Collections.<String, Object>singletonMap("username", username));
+        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.SECURITY, userType, Collections.<String, Object>singletonMap("username", username));
     }
 
     public static User triggerCurrentUserInterceptor() throws ModuleException, NodeLoadException {
-        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, Core.With.AUTHENTICATION_CURRENT_USER);
+        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.SECURITY, Core.With.AUTHENTICATION_CURRENT_USER);
     }
 
     public static void triggerBeforeUserLoaded() {
@@ -65,7 +65,7 @@ public class AuthEventGenerator {
 
     public static void triggerBeforeUserLoaded(Map<String, Object> args) {
         String userType = getUserType();
-        OnLoadEventGenerator.triggerBeforeInterceptor(null, Core.Type.USER, userType, args);
+        OnLoadEventGenerator.triggerBeforeInterceptor(null, Core.Type.SECURITY, userType, args);
     }
 
     public static void triggerAfterUserLoaded(User user) {
@@ -74,7 +74,7 @@ public class AuthEventGenerator {
 
     public static void triggerAfterUserLoaded(User user, Map<String, Object> args) {
         args.put("user", user);
-        OnLoadEventGenerator.triggerBeforeInterceptor(null, Core.Type.USER, user.type(), args);
+        OnLoadEventGenerator.triggerBeforeInterceptor(null, Core.Type.SECURITY, user.type(), args);
     }
 
     private static String getUserType() {
@@ -87,7 +87,7 @@ public class AuthEventGenerator {
     }
 
     public static Result triggerProvidesAuthorizationFailure() throws ModuleException, NodeLoadException {
-        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, Core.With.AUTHORIZATION_FAILURE, Maps.<String, Object>newHashMap());
+        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.SECURITY, Core.With.AUTHORIZATION_FAILURE, Maps.<String, Object>newHashMap());
     }
 
     public static void triggerBeforeAuthorizationFailure(User user) {
@@ -96,7 +96,7 @@ public class AuthEventGenerator {
 
     public static void triggerBeforeAuthorizationFailure(User user, Map<String, Object> args) {
         args.put(Security.Params.AUTH_USER, user);
-        OnLoadEventGenerator.triggerBeforeInterceptor(null, Core.Type.USER, Core.With.AUTHORIZATION_FAILURE, args);
+        OnLoadEventGenerator.triggerBeforeInterceptor(null, Core.Type.SECURITY, Core.With.AUTHORIZATION_FAILURE, args);
     }
 
     public static void triggerAfterAuthorizationFailure(User user) {
@@ -105,7 +105,7 @@ public class AuthEventGenerator {
 
     public static void triggerAfterAuthorizationFailure(User user, Map<String, Object> args) {
         args.put(Security.Params.AUTH_USER, user);
-        OnLoadEventGenerator.triggerAfterInterceptor(null, Core.Type.USER, Core.With.AUTHORIZATION_FAILURE, args);
+        OnLoadEventGenerator.triggerAfterInterceptor(null, Core.Type.SECURITY, Core.With.AUTHORIZATION_FAILURE, args);
     }
 
     public static Subject triggerProvidesSubjectInterceptor() throws ModuleException, NodeLoadException {
@@ -113,14 +113,14 @@ public class AuthEventGenerator {
     }
 
     public static Subject triggerProvidesSubjectInterceptor(Map<String, Object> args) throws ModuleException, NodeLoadException {
-        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, Core.With.AUTHORIZATION_SUBJECT, args);
+        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.SECURITY, Core.With.AUTHORIZATION_SUBJECT, args);
     }
 
     public static Subject triggerValidateInterceptor(String username, String password) throws ModuleException, NodeLoadException {
         Map<String, Object> args = Maps.newHashMap();
         args.put(Security.Params.AUTH_USERNAME, username);
         args.put(Security.Params.AUTH_PASSWORD, password);
-        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.USER, Core.With.AUTHENTICATION_VALIDATE, args);
+        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.SECURITY, Core.With.AUTHENTICATION_VALIDATE, args);
     }
 
 }
