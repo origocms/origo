@@ -1,6 +1,7 @@
 package main.origo;
 
 import com.google.common.collect.Sets;
+import main.origo.core.actions.Component;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.themes.bootstrap.BootstrapTheme;
 import models.origo.authentication.BasicAuthorization;
@@ -25,6 +26,7 @@ public class SampleDataCreator {
             createPage4();
             createPage5();
             createPage6();
+            createPage7();
             createAliases();
             createNavigation();
             createUsersAndRoles();
@@ -277,7 +279,7 @@ public class SampleDataCreator {
         BasicPage page = new BasicPage();
         page.nodeId = node.nodeId();
         page.version = node.version();
-        page.title = "Fifth Page";
+        page.title = "Protected Page";
         page.leadReferenceId = lead.identifier;
         page.bodyReferenceId = body.identifier;
         page.create();
@@ -310,6 +312,32 @@ public class SampleDataCreator {
 
     }
 
+    private static void createPage7() {
+
+        Content lead = new Content();
+        lead.identifier = "60ba72eb-b00f-4100-abb1-6b13d24a4db3";
+        lead.value = "This page has a component in the body of the page.";
+        lead.create();
+
+        Content body = new Content();
+        body.identifier = "d7728926-3e27-44a6-be71-8c2d1c95c2ae";
+        body.value = Component.COMPONENT_MARKER;
+        body.create();
+
+        RootNode node = new RootNode("807f2ece-c143-4f32-88db-1e1dfcd3e2d9", 1);
+        node.nodeType(BasicPage.TYPE);
+        node.create();
+
+        BasicPage page = new BasicPage();
+        page.nodeId = node.nodeId();
+        page.version = node.version();
+        page.title = "Component Test Page";
+        page.leadReferenceId = lead.identifier;
+        page.bodyReferenceId = body.identifier;
+        page.create();
+
+    }
+
     private static void createAliases() {
 
         // ### Alias ###
@@ -332,6 +360,10 @@ public class SampleDataCreator {
         // /fourth -> page 4
         Alias fourth = new Alias("fourth", "aa1755dd-18c4-4b78-956e-eef7e562c36c");
         fourth.create();
+
+        // /test -> page 7 (component)
+        Alias component = new Alias("component", "807f2ece-c143-4f32-88db-1e1dfcd3e2d9");
+        component.create();
 
     }
 
@@ -361,36 +393,62 @@ public class SampleDataCreator {
         fourthPageNavigation.pageId = "aa1755dd-18c4-4b78-956e-eef7e562c36c";
         fourthPageNavigation.create();
 
+        // Group
+        BasicNavigation groupNavigation = new BasicNavigation();
+        groupNavigation.type = GroupHolderNavigation.TYPE;
+        groupNavigation.section = "front";
+        groupNavigation.referenceId = "085ffde4-b8d5-4fd6-82a7-5c6787931f1b";
+        groupNavigation.weight = 3;
+        groupNavigation.create();
+        GroupHolderNavigation externalNavigationHolder = new GroupHolderNavigation();
+        externalNavigationHolder.identifier = groupNavigation.getReferenceId();
+        externalNavigationHolder.title = "Other Pages";
+        externalNavigationHolder.create();
+
         // Fifth
         BasicNavigation fifthNavigation = new BasicNavigation();
         fifthNavigation.type = InternalPageIdNavigation.TYPE;
         fifthNavigation.section = "front";
         fifthNavigation.referenceId = "9c0cbb5a-e90a-43bf-a647-119c27e30e9d";
         fifthNavigation.weight = 5;
+        fifthNavigation.parent = groupNavigation;
         fifthNavigation.create();
         InternalPageIdNavigation fiftPageNavigation = new InternalPageIdNavigation();
         fiftPageNavigation.identifier = fifthNavigation.getReferenceId();
         fiftPageNavigation.pageId = "699eb321-7545-4b27-8a7f-94a4442d2046";
         fiftPageNavigation.create();
 
+        // Seventh (Component)
+        BasicNavigation seventhNavigation = new BasicNavigation();
+        seventhNavigation.type = InternalPageIdNavigation.TYPE;
+        seventhNavigation.section = "front";
+        seventhNavigation.referenceId = "436e626e-fd01-4fce-93b7-23c49c33a913";
+        seventhNavigation.weight = 5;
+        seventhNavigation.parent = groupNavigation;
+        seventhNavigation.create();
+        InternalPageIdNavigation seventhPageNavigation = new InternalPageIdNavigation();
+        seventhPageNavigation.identifier = seventhNavigation.getReferenceId();
+        seventhPageNavigation.pageId = "807f2ece-c143-4f32-88db-1e1dfcd3e2d9";
+        seventhPageNavigation.create();
+
         // External
-        BasicNavigation groupNavigation = new BasicNavigation();
-        groupNavigation.type = GroupHolderNavigation.TYPE;
-        groupNavigation.section = "front";
-        groupNavigation.referenceId = "6dd82bcb-3f42-4f5d-8c13-4e2ed1d4ef21";
-        groupNavigation.weight = 3;
-        groupNavigation.create();
-        GroupHolderNavigation externalNavigationHolder = new GroupHolderNavigation();
-        externalNavigationHolder.identifier = groupNavigation.getReferenceId();
-        externalNavigationHolder.title = "External";
-        externalNavigationHolder.create();
+        BasicNavigation externalGroupNavigation = new BasicNavigation();
+        externalGroupNavigation.type = GroupHolderNavigation.TYPE;
+        externalGroupNavigation.section = "front";
+        externalGroupNavigation.referenceId = "6dd82bcb-3f42-4f5d-8c13-4e2ed1d4ef21";
+        externalGroupNavigation.weight = 3;
+        externalGroupNavigation.create();
+        GroupHolderNavigation externalGroupHolderNavigation = new GroupHolderNavigation();
+        externalGroupHolderNavigation.identifier = externalGroupNavigation.getReferenceId();
+        externalGroupHolderNavigation.title = "External";
+        externalGroupHolderNavigation.create();
 
         // External - Google
         BasicNavigation googleNavigation = new BasicNavigation();
         googleNavigation.type = ExternalLinkNavigation.TYPE;
         googleNavigation.section = "front";
         googleNavigation.referenceId = "58e15bfa-da4f-4f6b-a15a-51ab6c82e670";
-        googleNavigation.parent = groupNavigation;
+        googleNavigation.parent = externalGroupNavigation;
         googleNavigation.weight = 2;
         googleNavigation.create();
         ExternalLinkNavigation googleLink = new ExternalLinkNavigation();
@@ -404,7 +462,7 @@ public class SampleDataCreator {
         yahooNavigation.type = ExternalLinkNavigation.TYPE;
         yahooNavigation.section = "front";
         yahooNavigation.referenceId = "c6f03b11-dbb6-4aec-a325-525e61370d8d";
-        yahooNavigation.parent = groupNavigation;
+        yahooNavigation.parent = externalGroupNavigation;
         yahooNavigation.weight = 3;
         yahooNavigation.create();
         ExternalLinkNavigation yahooLink = new ExternalLinkNavigation();

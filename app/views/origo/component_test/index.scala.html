@@ -1,0 +1,17 @@
+@(message: String, form: Form[controllers.origo.ComponentTest.Message])
+
+@import helper.twitterBootstrap._
+
+    <p><b>@message</b></p>
+
+    <p>
+        This is a component loaded through and decorated by the CMS.
+    </p>
+
+@helper.form(action = controllers.origo.routes.ComponentTest.submit()) {
+
+    @helper.inputText(form("text"), '_label -> "Message", '_showConstraints -> false)
+
+    <button>Submit</button>
+}
+
