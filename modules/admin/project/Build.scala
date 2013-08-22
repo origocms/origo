@@ -10,7 +10,7 @@ object ApplicationBuild extends Build {
     // Add your project dependencies here,
     javaCore,
     javaJdbc,
-    javaJPA
+    javaJpa
   )
 
   val datepicker = play.Project(
