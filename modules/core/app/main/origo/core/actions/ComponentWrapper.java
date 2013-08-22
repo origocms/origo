@@ -3,7 +3,6 @@ package main.origo.core.actions;
 import controllers.origo.core.CoreLoader;
 import main.origo.core.event.NodeContext;
 import play.Logger;
-import play.api.templates.Html;
 import play.core.j.JavaResultExtractor;
 import play.mvc.Action;
 import play.mvc.Http;
@@ -29,7 +28,7 @@ public @interface ComponentWrapper {
 
             final int statusCode = JavaResultExtractor.getStatus(result);
             final Map<String,String> headers = JavaResultExtractor.getHeaders(result);
-            final byte[] body = JavaResultExtractor.getBody(result);
+            final String body = new String(JavaResultExtractor.getBody(result));
 
             switch(statusCode) {
                 // Codes that should be handled by error pages
@@ -61,11 +60,10 @@ public @interface ComponentWrapper {
                 case 401: // Unauthorized
                 case 403: // Forbidden
                 {
-                    Html bodyHtml = Html.apply(new String(body));
-                    if (bodyHtml.body().isEmpty()) {
+                    if (body.isEmpty()) {
                         return result;
                     }
-                    return decorate(headers, bodyHtml);
+                    return decorate(headers, body);
                 }
 
                     // Codes which mean that the body should be wrapped and sent to be decorated
@@ -73,8 +71,7 @@ public @interface ComponentWrapper {
                 case 201: // Created
                 case 202: // Accepted
                 {
-                    Html bodyHtml = Html.apply(new String(body));
-                    return decorate(headers, bodyHtml);
+                    return decorate(headers, body);
                 }
                 default:
                     Logger.error("Code '"+statusCode+"' is not set up to be handled");
@@ -83,7 +80,7 @@ public @interface ComponentWrapper {
             return result;
         }
 
-        private Result decorate(Map<String, String> headers, Html body) {
+        private Result decorate(Map<String, String> headers, String body) {
 
             try {
                 NodeContext.set();

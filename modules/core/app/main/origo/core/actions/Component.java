@@ -1,7 +1,6 @@
 package main.origo.core.actions;
 
 import main.origo.core.event.NodeContext;
-import play.api.templates.Html;
 
 import java.util.Map;
 
@@ -11,10 +10,10 @@ public class Component {
     public static final String COMPONENT_MARKER = "<!-- COMPONENT -->";
 
     public Map<String, String> headers;
-    public Html body;
+    public String body;
 
     private Component() {}
-    Component(Map<String, String> headers, Html body) {
+    Component(Map<String, String> headers, String body) {
         this.headers = headers;
         this.body = body;
     }

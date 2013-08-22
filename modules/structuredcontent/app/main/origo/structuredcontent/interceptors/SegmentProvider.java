@@ -19,7 +19,10 @@ public class SegmentProvider {
     public static Element createSegment(Provides.Context context) throws NodeLoadException, ModuleException {
         Segment segment = (Segment) context.args.get("segment");
         if (!StringUtils.isBlank(segment.referenceId)) {
-            return ContentHelper.loadContent(context.node, segment.referenceId);
+            Content content = ContentHelper.loadContent(context.node, segment.referenceId);
+            if (content != null) {
+                return new Element.Panel().setId(content.identifier).setBody(content.value);
+            }
         }
         //TODO: Handle this somehow, in dev/admin maybe show a Element with a warning message and in prod swallow error?
         return null;

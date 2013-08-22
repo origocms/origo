@@ -357,6 +357,10 @@ public class SampleDataCreator {
         Alias unauthorizedAlias = new Alias("unauthorized", "f4501c31-690f-46f4-853d-167165a4fc03");
         unauthorizedAlias.create();
 
+        // /error -> page 5
+        Alias protectedAlias = new Alias("protected", "699eb321-7545-4b27-8a7f-94a4442d2046");
+        protectedAlias.create();
+
         // /fourth -> page 4
         Alias fourth = new Alias("fourth", "aa1755dd-18c4-4b78-956e-eef7e562c36c");
         fourth.create();
@@ -398,7 +402,7 @@ public class SampleDataCreator {
         groupNavigation.type = GroupHolderNavigation.TYPE;
         groupNavigation.section = "front";
         groupNavigation.referenceId = "085ffde4-b8d5-4fd6-82a7-5c6787931f1b";
-        groupNavigation.weight = 3;
+        groupNavigation.weight = 5;
         groupNavigation.create();
         GroupHolderNavigation externalNavigationHolder = new GroupHolderNavigation();
         externalNavigationHolder.identifier = groupNavigation.getReferenceId();
@@ -423,7 +427,7 @@ public class SampleDataCreator {
         seventhNavigation.type = InternalPageIdNavigation.TYPE;
         seventhNavigation.section = "front";
         seventhNavigation.referenceId = "436e626e-fd01-4fce-93b7-23c49c33a913";
-        seventhNavigation.weight = 5;
+        seventhNavigation.weight = 2;
         seventhNavigation.parent = groupNavigation;
         seventhNavigation.create();
         InternalPageIdNavigation seventhPageNavigation = new InternalPageIdNavigation();
@@ -436,7 +440,7 @@ public class SampleDataCreator {
         externalGroupNavigation.type = GroupHolderNavigation.TYPE;
         externalGroupNavigation.section = "front";
         externalGroupNavigation.referenceId = "6dd82bcb-3f42-4f5d-8c13-4e2ed1d4ef21";
-        externalGroupNavigation.weight = 3;
+        externalGroupNavigation.weight = 10;
         externalGroupNavigation.create();
         GroupHolderNavigation externalGroupHolderNavigation = new GroupHolderNavigation();
         externalGroupHolderNavigation.identifier = externalGroupNavigation.getReferenceId();

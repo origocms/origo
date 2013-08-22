@@ -63,7 +63,7 @@ public class CoreLoader {
                     (thrown instanceof InitializationException ||
                             thrown instanceof ModuleException ||
                             thrown instanceof RuntimeException)) {
-                thrown = e.getCause();
+                thrown = thrown.getCause();
             }
             if (thrown instanceof RuntimeException) {
                 throw (RuntimeException)thrown;

@@ -41,4 +41,9 @@ public class Content extends Model<Content> {
         }
     }
 
+    public Content detach() {
+        JPA.em().detach(this);
+        return this;
+    }
+
 }
