@@ -9,7 +9,7 @@ import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.Provides;
 import main.origo.core.helpers.CoreSettingsHelper;
-import main.origo.core.security.AuthEventGenerator;
+import main.origo.core.security.SecurityEventGenerator;
 import main.origo.core.utils.ExceptionUtil;
 import models.origo.core.Settings;
 import org.apache.commons.lang3.StringUtils;
@@ -24,8 +24,8 @@ public class AuthorizationProvider {
     @Provides(type = Core.Type.SECURITY, with = Core.With.AUTHORIZATION_FAILURE)
     public static Result handleAuthFailure(Provides.Context context) throws NodeLoadException, ModuleException {
 
-        User user = AuthEventGenerator.triggerCurrentUserInterceptor();
-        AuthEventGenerator.triggerBeforeAuthorizationFailure(user);
+        User user = SecurityEventGenerator.triggerCurrentUserInterceptor();
+        SecurityEventGenerator.triggerBeforeAuthorizationFailure(user);
 
         try {
             String unauthorizedPage = Settings.load().getValue(CoreSettingsHelper.Keys.UNAUTHORIZED_PAGE);
@@ -51,8 +51,9 @@ public class AuthorizationProvider {
                 return Controller.unauthorized();
             }
         } finally {
-            AuthEventGenerator.triggerAfterAuthorizationFailure(user);
+            SecurityEventGenerator.triggerAfterAuthorizationFailure(user);
         }
     }
+
 
 }

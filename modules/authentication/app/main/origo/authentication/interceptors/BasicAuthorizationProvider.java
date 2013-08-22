@@ -7,8 +7,8 @@ import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.Provides;
-import main.origo.core.security.AuthEventGenerator;
 import main.origo.core.security.Security;
+import main.origo.core.security.SecurityEventGenerator;
 import models.origo.authentication.BasicAuthorization;
 import models.origo.core.Alias;
 import org.apache.commons.lang3.StringUtils;
@@ -25,7 +25,7 @@ public class BasicAuthorizationProvider {
         Subject subject = (Subject) context.attributes.get(Security.Params.AUTH_USER);
         String path = (String) context.attributes.get(Security.Params.AUTH_PATH);
 
-        String[] roles = AuthEventGenerator.triggerProvidesAuthorizationRolesInterceptor(path);
+        String[] roles = SecurityEventGenerator.triggerProvidesAuthorizationRolesInterceptor(path);
         if (roles.length == 0) {
             // If no groups are set on the node, let anyone through
             return true;

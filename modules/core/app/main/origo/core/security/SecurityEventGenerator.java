@@ -16,7 +16,7 @@ import play.mvc.Result;
 import java.util.Collections;
 import java.util.Map;
 
-public class AuthEventGenerator {
+public class SecurityEventGenerator {
 
     public static Result triggerAuthenticationCheck(String path) throws ModuleException, NodeLoadException {
         NodeContext.current().attributes.put(Security.Params.AUTH_PATH, path);
@@ -25,14 +25,14 @@ public class AuthEventGenerator {
 
     public static Boolean triggerAuthorizationCheck(String path, Map<String, Object> args) throws ModuleException, NodeLoadException {
         NodeContext.current().attributes.put(Security.Params.AUTH_PATH, path);
-        String[] roles = AuthEventGenerator.triggerProvidesAuthorizationRolesInterceptor(path);
+        String[] roles = SecurityEventGenerator.triggerProvidesAuthorizationRolesInterceptor(path);
         if (roles.length == 0) {
             return true;
         }
 
         Subject subject = (Subject) NodeContext.current().attributes.get(Security.Params.AUTH_USER);
         if (subject == null) {
-            subject = AuthEventGenerator.triggerCurrentUserInterceptor();
+            subject = SecurityEventGenerator.triggerCurrentUserInterceptor();
             if (subject == null) {
                 throw new RuntimeException("No authenticated user");
             }

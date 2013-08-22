@@ -21,7 +21,7 @@ public class OrigoDynamicResourceHandler implements DynamicResourceHandler {
             Map<String, Object> args = Maps.newHashMap();
             args.put(Security.Params.AUTH_HANDLER, name);
             args.put(Security.Params.AUTH_META, meta);
-            Boolean isAllowed = AuthEventGenerator.triggerAuthorizationCheck(Http.Context.current().request().path(), args);
+            Boolean isAllowed = SecurityEventGenerator.triggerAuthorizationCheck(Http.Context.current().request().path(), args);
             return !(isAllowed == null || !isAllowed);
         } catch (NodeLoadException e) {
             ExceptionUtil.assertExceptionHandling(e);

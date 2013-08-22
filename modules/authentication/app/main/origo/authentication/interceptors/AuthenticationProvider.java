@@ -14,8 +14,8 @@ import main.origo.core.annotations.forms.SubmitState;
 import main.origo.core.event.NodeContext;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.helpers.forms.FormHelper;
-import main.origo.core.security.AuthEventGenerator;
 import main.origo.core.security.Security;
+import main.origo.core.security.SecurityEventGenerator;
 import main.origo.core.ui.Element;
 import main.origo.core.utils.ExceptionUtil;
 import models.origo.core.BasicPage;
@@ -45,12 +45,12 @@ public class AuthenticationProvider {
      */
     @Provides(type = Core.Type.SECURITY, with = Core.With.AUTHENTICATION_CHECK)
     public static Result authenticateUser(Provides.Context context) throws ModuleException, NodeLoadException {
-        User user = AuthEventGenerator.triggerCurrentUserInterceptor();
+        User user = SecurityEventGenerator.triggerCurrentUserInterceptor();
         if (user != null) {
             return null;
         }
         String path = (String) context.attributes.get(Security.Params.AUTH_PATH);
-        String[] roles = AuthEventGenerator.triggerProvidesAuthorizationRolesInterceptor(path);
+        String[] roles = SecurityEventGenerator.triggerProvidesAuthorizationRolesInterceptor(path);
         if (roles.length == 0) {
             return null;
         }
@@ -123,7 +123,7 @@ public class AuthenticationProvider {
             context.attributes.put(Security.Params.AUTH_PATH, path);
         }
 
-        Subject subject = AuthEventGenerator.triggerValidateInterceptor(username, password);
+        Subject subject = SecurityEventGenerator.triggerValidateInterceptor(username, password);
         if (subject == null) {
             context.attributes.put("reason", "Unable to authenticated user, incorrect username or password");
             return false;

@@ -16,9 +16,9 @@ public class BasicUserProvider {
     @Provides(type = Core.Type.SECURITY, with = BasicUser.TYPE)
     public static Subject getUser(Provides.Context context) throws ModuleException, NodeLoadException {
         String username = (String) context.args.get("username");
-        AuthEventGenerator.triggerBeforeUserLoaded(context.args);
+        SecurityEventGenerator.triggerBeforeUserLoaded(context.args);
         BasicUser user = BasicUser.findWithEmail(username);
-        AuthEventGenerator.triggerAfterUserLoaded(user, context.args);
+        SecurityEventGenerator.triggerAfterUserLoaded(user, context.args);
         return user;
     }
 */
