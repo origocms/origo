@@ -10,8 +10,6 @@ object ApplicationBuild extends Build {
   val coreDependencies = Seq(
     // Built-Ins
     javaCore, javaJdbc,
-    "org.jadira.usertype" % "usertype.core" % "3.1.0.CR7",
-    "org.jadira.bindings" % "bindings" % "3.1.0.CR7",
     javaJpa, filters,
     // Extra
     "mysql" % "mysql-connector-java" % "5.1.18",
@@ -43,6 +41,16 @@ object ApplicationBuild extends Build {
   ).dependsOn( core ).aggregate( core )
 
   /**
+   * Preview
+   */
+  val previewDependencies = Seq(
+  ) ++ coreDependencies ++ authenticationDependencies
+
+  val preview = play.Project(
+    appName + "-perview", appVersion, previewDependencies, path = file("modules/preview")
+  ).dependsOn( core, authentication ).aggregate( core, authentication )
+
+  /**
    * Admin
    */
   val adminDependencies = Seq() ++ coreDependencies ++ authenticationDependencies
@@ -56,9 +64,9 @@ object ApplicationBuild extends Build {
   val admin = play.Project(
     appName + "-admin", appVersion, adminDependencies, path = file("modules/admin")
   ).dependsOn(
-    core, authentication, datepicker, bootstrap_wysihtml
+    core, preview, authentication, datepicker, bootstrap_wysihtml
   ).aggregate(
-    core, authentication, datepicker, bootstrap_wysihtml
+    core, preview, authentication, datepicker, bootstrap_wysihtml
   )
 
   /**

@@ -43,7 +43,7 @@ public class AuthenticationProvider {
      * If there is a login page set in the content that will be used, if not it will fall back to
      * creating a "blank" node with type Core.With.AUTHENTICATION_CHECK
      */
-    @Provides(type = Core.Type.USER, with = Core.With.AUTHENTICATION_CHECK)
+    @Provides(type = Core.Type.SECURITY, with = Core.With.AUTHENTICATION_CHECK)
     public static Result authenticateUser(Provides.Context context) throws ModuleException, NodeLoadException {
         User user = AuthEventGenerator.triggerCurrentUserInterceptor();
         if (user != null) {

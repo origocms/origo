@@ -21,20 +21,10 @@ import play.mvc.Result;
 @Interceptor
 public class AuthorizationProvider {
 
-    @Provides(type = Core.Type.USER, with = Core.With.AUTHORIZATION_CHECK)
-    public static Boolean checkAuthorization(Provides.Context context) throws ModuleException, NodeLoadException {
-        if(getCurrentSubject(context) == null) {
-            return false;
-        }
-
-        // TODO: Add actual authorization check
-        return true;
-    }
-
-    @Provides(type = Core.Type.USER, with = Core.With.AUTHORIZATION_FAILURE)
+    @Provides(type = Core.Type.SECURITY, with = Core.With.AUTHORIZATION_FAILURE)
     public static Result handleAuthFailure(Provides.Context context) throws NodeLoadException, ModuleException {
 
-        User user = getCurrentSubject(context);
+        User user = AuthEventGenerator.triggerCurrentUserInterceptor();
         AuthEventGenerator.triggerBeforeAuthorizationFailure(user);
 
         try {
@@ -63,12 +53,6 @@ public class AuthorizationProvider {
         } finally {
             AuthEventGenerator.triggerAfterAuthorizationFailure(user);
         }
-    }
-
-
-    @Provides(type = Core.Type.USER, with = Core.With.AUTHORIZATION_SUBJECT)
-    public static User getCurrentSubject(Provides.Context context) throws ModuleException, NodeLoadException {
-        return AuthEventGenerator.triggerCurrentUserInterceptor();
     }
 
 }
