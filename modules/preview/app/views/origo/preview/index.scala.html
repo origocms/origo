@@ -1,0 +1,14 @@
+@(form:Form[forms.origo.preview.PreviewTokenForm])
+
+@helper.form(action = controllers.origo.preview.routes.Preview.submit) {
+    @defining("Date format: " + Messages("date.time.format")){ date_format =>
+        @helper.inputText(form("preview"), '_label -> "Time", 'class -> "datepicker", '_help -> date_format)
+    }
+
+    @if(form("preview") != null) {
+        <button class="btn">Create Ticket</button>
+    } else {
+        <button class="btn">Update Ticket</button>
+    }
+}
+

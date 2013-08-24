@@ -44,7 +44,7 @@ public class SessionHelper {
     }
 
     public static String get(String key) {
-        return Http.Context.current().session().get(EncryptionHelper.decrypt(key));
+        return Http.Context.current().session().get(EncryptionHelper.encrypt(key));
     }
 
     public static boolean checkAndUpdateTimestamp() {

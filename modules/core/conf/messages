@@ -1,2 +1,4 @@
 date.format = MM/dd/yyyy
 time.format = HH:mm
+
+date.time.format = MM/dd/yyyy HH:mm

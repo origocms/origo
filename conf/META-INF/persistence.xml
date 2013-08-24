@@ -26,6 +26,9 @@
         <class>models.origo.authentication.BasicRole</class>
         <class>models.origo.authentication.BasicAuthorization</class>
 
+        <!-- Preview Module -->
+        <class>models.origo.preview.Ticket</class>
+
         <!-- StructuredContent Module -->
 
         <class>models.origo.structuredcontent.Segment</class>

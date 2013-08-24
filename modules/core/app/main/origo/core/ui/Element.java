@@ -30,6 +30,18 @@ public class Element<T extends Element> {
 
     }
 
+    public static class Comment extends Element<Comment> {
+
+        public Comment() {
+            super("comment");
+        }
+
+        @Override
+        public Html decorate(RenderingContext renderingContext) {
+            return Html.apply("<!-- ").$plus(getBody()).$plus(Html.apply(" -->"));
+        }
+    }
+
     public static class Raw extends Element<Raw> {
 
         public Raw() {

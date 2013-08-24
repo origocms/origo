@@ -3,6 +3,7 @@
 # ~~~~
 
 ->      /core                               core.Routes
+->      /preview                            preview.Routes
 ->      /auth                               auth.Routes
 ->      /admin                              admin.Routes
 

@@ -1,0 +1,11 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Preview Ticket
+GET     /                               controllers.origo.preview.Preview.index()
+POST    /                               controllers.origo.preview.Preview.submit()
+GET     /remove                         controllers.origo.preview.Preview.remove()
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file                   controllers.Assets.at(path="/public", file)

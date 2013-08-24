@@ -1,6 +1,8 @@
 package main.origo.core.formatters;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import play.api.i18n.Lang;
@@ -19,7 +21,7 @@ public class Formats {
     /**
      * Defines the format for a <code>Date</code> field.
      */
-    @Target({FIELD})
+    @Target(FIELD)
     @Retention(RUNTIME)
     @play.data.Form.Display(name="format.date", attributes={"key"})
     public static @interface DateTimePattern {
@@ -69,7 +71,87 @@ public class Formats {
 
     }
 
+    /**
+     * Annotation formatter, triggered by the <code>@DateTime</code> annotation.
+     */
+    public static class AnnotationLocalDateTimeFormatter extends Formatters.AnnotationFormatter<DateTimePattern,LocalDateTime> {
+
+        /**
+         * Binds the field - constructs a concrete value from submitted data.
+         *
+         * @param annotation the annotation that triggered this formatter
+         * @param text the field text
+         * @param locale the current <code>Locale</code>
+         * @return a new value
+         */
+        public LocalDateTime parse(DateTimePattern annotation, String text, Locale locale) throws java.text.ParseException {
+            if(text == null || text.trim().isEmpty()) {
+                return null;
+            }
+            DateTimeFormatter fmt = DateTimeFormat.forPattern(Messages.get(new Lang(locale.getLanguage(), locale.getCountry()), annotation.key()));
+            return fmt.parseLocalDateTime(text);
+        }
+
+        /**
+         * Unbinds this field - converts a concrete value to plain string
+         *
+         * @param annotation the annotation that triggered this formatter
+         * @param value the value to unbind
+         * @param locale the current <code>Locale</code>
+         * @return printable version of the value
+         */
+        public String print(DateTimePattern annotation, LocalDateTime value, Locale locale) {
+            if(value == null) {
+                return "";
+            }
+            DateTimeFormatter fmt = DateTimeFormat.forPattern(Messages.get(new Lang(locale.getLanguage(), locale.getCountry()), annotation.key()));
+            return fmt.print(value);
+        }
+
+    }
+
+    /**
+     * Annotation formatter, triggered by the <code>@DateTime</code> annotation.
+     */
+    public static class AnnotationDateTimeFormatter extends Formatters.AnnotationFormatter<DateTimePattern,DateTime> {
+
+        /**
+         * Binds the field - constructs a concrete value from submitted data.
+         *
+         * @param annotation the annotation that triggered this formatter
+         * @param text the field text
+         * @param locale the current <code>Locale</code>
+         * @return a new value
+         */
+        public DateTime parse(DateTimePattern annotation, String text, Locale locale) throws java.text.ParseException {
+            if(text == null || text.trim().isEmpty()) {
+                return null;
+            }
+            DateTimeFormatter fmt = DateTimeFormat.forPattern(Messages.get(new Lang(locale.getLanguage(), locale.getCountry()), annotation.key()));
+            return fmt.parseDateTime(text);
+        }
+
+        /**
+         * Unbinds this field - converts a concrete value to plain string
+         *
+         * @param annotation the annotation that triggered this formatter
+         * @param value the value to unbind
+         * @param locale the current <code>Locale</code>
+         * @return printable version of the value
+         */
+        public String print(DateTimePattern annotation, DateTime value, Locale locale) {
+            if(value == null) {
+                return "";
+            }
+            DateTimeFormatter fmt = DateTimeFormat.forPattern(Messages.get(new Lang(locale.getLanguage(), locale.getCountry()), annotation.key()));
+            return fmt.print(value);
+        }
+
+    }
+
     public static void register() {
+        Formatters.register(DateTime.class, new AnnotationDateTimeFormatter());
         Formatters.register(LocalDate.class, new AnnotationLocalDateFormatter());
+        Formatters.register(LocalDateTime.class, new AnnotationLocalDateTimeFormatter());
     }
 }

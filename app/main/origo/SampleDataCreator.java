@@ -27,7 +27,7 @@ public class SampleDataCreator {
             createPage5();
             createPage6();
             createPage7();
-            createAliases();
+            createPage8();
             createNavigation();
             createUsersAndRoles();
         }
@@ -43,7 +43,6 @@ public class SampleDataCreator {
         settings.setValueIfMissing(CoreSettingsHelper.Keys.USER_TYPE, BasicUser.TYPE);
         settings.setValue(CoreSettingsHelper.Keys.THEME, BootstrapTheme.ID); // Override theme variant
         settings.setValue(CoreSettingsHelper.Keys.THEME_VARIANT, "bootstrap-main_only"); // Override theme variant
-
 
         settings.save();
     }
@@ -76,6 +75,10 @@ public class SampleDataCreator {
         page.bodyReferenceId = body.identifier;
         page.create();
 
+        // /start -> page 1
+        Alias start = new Alias("start", node.nodeId());
+        start.create();
+
     }
 
     private static void createPage2() {
@@ -107,6 +110,11 @@ public class SampleDataCreator {
         page.bodyReferenceId = body.identifier;
         page.create();
 
+        // ### Alias ###
+        // /page-not-found -> page 2
+        Alias pageNotFoundAlias = new Alias("page-not-found", node.nodeId());
+        pageNotFoundAlias.create();
+
     }
 
     private static void createPage3() {
@@ -135,6 +143,10 @@ public class SampleDataCreator {
         page.leadReferenceId = lead.identifier;
         page.bodyReferenceId = body.identifier;
         page.create();
+
+        // /error -> page 3
+        Alias errorAlias = new Alias("error", node.nodeId());
+        errorAlias.create();
 
     }
 
@@ -258,6 +270,10 @@ public class SampleDataCreator {
         meta_2_3.referenceId = content_main_1.identifier;
         meta_2_3.create();
 
+        // /fourth -> page 4
+        Alias fourth = new Alias("fourth", node2.nodeId());
+        fourth.create();
+
     }
 
     private static void createPage5() {
@@ -283,6 +299,10 @@ public class SampleDataCreator {
         page.leadReferenceId = lead.identifier;
         page.bodyReferenceId = body.identifier;
         page.create();
+
+        // /protected -> page 5
+        Alias protectedAlias = new Alias("protected", node.nodeId());
+        protectedAlias.create();
 
     }
 
@@ -310,6 +330,10 @@ public class SampleDataCreator {
         page.bodyReferenceId = body.identifier;
         page.create();
 
+        // /error -> page 6
+        Alias unauthorizedAlias = new Alias("unauthorized", node.nodeId());
+        unauthorizedAlias.create();
+
     }
 
     private static void createPage7() {
@@ -336,39 +360,46 @@ public class SampleDataCreator {
         page.bodyReferenceId = body.identifier;
         page.create();
 
+        // /component -> page 7 (component)
+        Alias component = new Alias("component", node.nodeId());
+        component.create();
     }
 
-    private static void createAliases() {
+    private static void createPage8() {
 
-        // ### Alias ###
-        // /page-not-found -> page 2
-        Alias pageNotFoundAlias = new Alias("page-not-found", "c9615819-0556-4e70-b6a9-a66c5b8d4c1a");
-        pageNotFoundAlias.create();
+        Content lead = new Content();
+        lead.identifier = "a6fbcc47-57c9-45bb-b96a-c8d376095385";
+        lead.value = "<p>Preview Tickets are used to view how the content will be displayed at a certain date and time.</p>";
+        lead.create();
 
-        // /start -> page 1
-        Alias start = new Alias("start", "2c36c55dd-956e-4b78-18c4-eef7e56aa17");
-        start.create();
+        Content body = new Content();
+        body.identifier = "c26ba92a-9cec-43ae-b63f-6e5c4f6b1eb9";
+        body.value = Component.COMPONENT_MARKER;
+        body.create();
 
-        // /error -> page 3
-        Alias errorAlias = new Alias("error", "1cf699a7-a0c4-4be0-855f-466042a36a8d");
-        errorAlias.create();
+        RootNode node = new RootNode("2ef4a79b-15f2-4d8d-a100-54d0331f8a51", 1);
+        node.nodeType(BasicPage.TYPE);
+        node.create();
 
-        // /error -> page 6
-        Alias unauthorizedAlias = new Alias("unauthorized", "f4501c31-690f-46f4-853d-167165a4fc03");
-        unauthorizedAlias.create();
+        BasicPage page = new BasicPage();
+        page.nodeId = node.nodeId();
+        page.version = node.version();
+        page.title = "Preview Ticket";
+        page.leadReferenceId = lead.identifier;
+        page.bodyReferenceId = body.identifier;
+        page.create();
 
-        // /error -> page 5
-        Alias protectedAlias = new Alias("protected", "699eb321-7545-4b27-8a7f-94a4442d2046");
-        protectedAlias.create();
+        // /preview -> page 7 (component)
+        Alias alias1 = new Alias("preview", node.nodeId());
+        alias1.create();
 
-        // /fourth -> page 4
-        Alias fourth = new Alias("fourth", "aa1755dd-18c4-4b78-956e-eef7e562c36c");
-        fourth.create();
+        // /preview -> page 7 (component)
+        Alias alias2 = new Alias("preview/submit", node.nodeId());
+        alias2.create();
 
-        // /test -> page 7 (component)
-        Alias component = new Alias("component", "807f2ece-c143-4f32-88db-1e1dfcd3e2d9");
-        component.create();
-
+        // /preview -> page 7 (component)
+        Alias alias3 = new Alias("preview/remove", node.nodeId());
+        alias3.create();
     }
 
     private static void createNavigation() {
@@ -503,6 +534,11 @@ public class SampleDataCreator {
         adminAuthorization.path = "/admin";
         adminAuthorization.roles = Sets.newHashSet("Admin");
         adminAuthorization.create();
+
+        BasicAuthorization previewAuthorization = new BasicAuthorization();
+        previewAuthorization.path = "/preview";
+        previewAuthorization.roles = Sets.newHashSet("Admin");
+        previewAuthorization.create();
 
         BasicAuthorization testAuthorization = new BasicAuthorization();
         testAuthorization.path = "699eb321-7545-4b27-8a7f-94a4442d2046"; // Page 5
