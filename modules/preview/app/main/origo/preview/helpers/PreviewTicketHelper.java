@@ -7,7 +7,7 @@ import main.origo.core.event.NodeContext;
 import main.origo.core.helpers.SessionHelper;
 import main.origo.core.security.Security;
 import main.origo.core.security.SecurityEventGenerator;
-import models.origo.preview.Ticket;
+import models.origo.preview.BasicTicket;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
@@ -23,32 +23,32 @@ public class PreviewTicketHelper {
         return getCurrent() != null;
     }
 
-    public static Ticket getCurrent() throws NodeLoadException, ModuleException {
+    public static BasicTicket getCurrent() throws NodeLoadException, ModuleException {
         String previewToken = SessionHelper.get(SESSION_PREVIEW_TICKET_KEY);
         if (StringUtils.isNotBlank(previewToken)) {
             User user = SecurityEventGenerator.triggerCurrentUserInterceptor();
             if (user != null) {
-                return Ticket.getIfValid(user, previewToken);
+                return BasicTicket.getIfValid(user, previewToken);
             }
         }
         return null;
     }
 
-    public static Ticket updateTicket(DateTime preview) throws ModuleException, NodeLoadException {
-        Ticket ticket = getCurrent();
-        if (ticket != null) {
-            ticket.preview = preview.getMillis();
-            return ticket.update();
+    public static BasicTicket updateTicket(DateTime preview) throws ModuleException, NodeLoadException {
+        BasicTicket basicTicket = getCurrent();
+        if (basicTicket != null) {
+            basicTicket.preview = preview.getMillis();
+            return basicTicket.update();
         }
         return null;
     }
 
-    public static Ticket createNewTicket(DateTime preview) {
+    public static BasicTicket createNewTicket(DateTime preview) {
         User user = (User) NodeContext.current().attributes.get(Security.Params.AUTH_USER);
         if (user != null) {
-            Ticket ticket = Ticket.createInstance(user, preview);
-            SessionHelper.set(SESSION_PREVIEW_TICKET_KEY, ticket.token);
-            return ticket;
+            BasicTicket basicTicket = BasicTicket.createInstance(user, preview);
+            SessionHelper.set(SESSION_PREVIEW_TICKET_KEY, basicTicket.token);
+            return basicTicket;
         }
         return null;
     }

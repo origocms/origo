@@ -1,7 +1,7 @@
 package forms.origo.preview;
 
 import main.origo.core.formatters.Formats;
-import models.origo.preview.Ticket;
+import models.origo.preview.BasicTicket;
 import org.joda.time.DateTime;
 import play.data.Form;
 import play.data.validation.Constraints;
@@ -12,9 +12,9 @@ public class PreviewTokenForm {
     @Constraints.Required
     public DateTime preview;
 
-    public static Form<PreviewTokenForm> fill(Ticket ticket) {
+    public static Form<PreviewTokenForm> fill(BasicTicket basicTicket) {
         PreviewTokenForm form = new PreviewTokenForm();
-        form.preview = ticket.getPreview();
+        form.preview = basicTicket.preview();
         return new Form(forms.origo.preview.PreviewTokenForm.class).fill(form);
     }
 

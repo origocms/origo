@@ -9,17 +9,26 @@ import main.origo.core.annotations.Core;
 import main.origo.core.event.NodeContext;
 import main.origo.core.event.OnLoadEventGenerator;
 import main.origo.core.event.ProvidesEventGenerator;
+import main.origo.core.preview.PreviewEventGenerator;
+import main.origo.core.preview.Ticket;
 import models.origo.core.RootNode;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
-import java.util.Date;
 
 public class NodeHelper {
 
     public static Node load(String nodeId) throws NodeNotFoundException, NodeLoadException, ModuleException {
-        //Load RootNode model
-        RootNode rootNode = RootNode.findLatestPublishedVersionWithNodeId(nodeId);
+
+        RootNode rootNode;
+        // Check for a preview ticket and load the corresponding rootnode
+        Ticket ticket = PreviewEventGenerator.getValidTicket();
+        if (ticket != null) {
+            rootNode = RootNode.findPublishedVersionWithNodeIdAndDate(nodeId, ticket.preview().toDate());
+        } else {
+            //Load RootNode model
+            rootNode = RootNode.findLatestPublishedVersionWithNodeId(nodeId);
+        }
         if (rootNode == null) {
             throw new NodeNotFoundException(nodeId);
         }
@@ -28,8 +37,16 @@ public class NodeHelper {
     }
 
     public static Node load(String nodeId, Integer version) throws NodeNotFoundException, NodeLoadException, ModuleException {
-        //Load RootNode model
-        RootNode rootNode = RootNode.findWithNodeIdAndSpecificVersion(nodeId, version);
+
+        RootNode rootNode;
+        // Check for a preview ticket and load the corresponding rootnode
+        Ticket ticket = PreviewEventGenerator.getValidTicket();
+        if (ticket != null) {
+            rootNode = RootNode.findPublishedVersionWithNodeIdAndDate(nodeId, ticket.preview().toDate());
+        } else {
+            //Load RootNode model
+            rootNode = RootNode.findWithNodeIdAndSpecificVersion(nodeId, version);
+        }
         if (rootNode == null) {
             throw new NodeNotFoundException(nodeId);
         }

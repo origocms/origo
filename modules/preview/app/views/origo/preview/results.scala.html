@@ -1,7 +1,7 @@
-@(ticket:models.origo.preview.Ticket)
+@(ticket:main.origo.core.preview.Ticket)
 
 <p>
-    <b>Token:</b> @ticket.getToken()<br>
-    <b>Valid:</b> @ticket.getValidUntil()<br>
-    <b>Preview:</b> @ticket.getPreview()<br>
+    <b>Token:</b> @ticket.token<br>
+    <b>Valid:</b> @ticket.validUntil<br>
+    <b>Preview:</b> @ticket.preview<br>
 </p>

@@ -14,6 +14,7 @@ import models.origo.core.navigation.GroupHolderNavigation;
 import models.origo.core.navigation.InternalPageIdNavigation;
 import models.origo.structuredcontent.Segment;
 import models.origo.structuredcontent.StructuredPage;
+import org.joda.time.DateTime;
 
 public class SampleDataCreator {
 
@@ -54,29 +55,73 @@ public class SampleDataCreator {
         lead.value = "Bam loo blong woogle bleebing rakity flakity crongle quabbleflup? Duh blap twaddle? Hum bam weeble flip tangity flapping flub blingdubba? Nip bam tingleingle ho doo kanoodle, zap shnozzy hum cringle boo. \"Dee yada ho?\" blo wheezeryada. Dubbaloo-dangely-dang! \"Yip bananarama yip?\" flop Chef. Flong kanoodle blab roo blab gobble blob hum goblin.";
         lead.create();
 
-        Content body = new Content();
-        body.identifier = "8659c030-6fd5-4d8e-8304-9671d4e5857f";
-        body.value = "Bam loo blong woogle bleebing rakity flakity crongle quabbleflup? Duh blap twaddle? Hum bam weeble flip tangity flapping flub blingdubba? Nip bam tingleingle ho doo kanoodle, zap shnozzy hum cringle boo. \"Dee yada ho?\" blo wheezeryada. Dubbaloo-dangely-dang! \"Yip bananarama yip?\" flop Chef. Flong kanoodle blab roo blab gobble blob hum goblin." +
+        Content bodyVersion1 = new Content();
+        bodyVersion1.identifier = "8659c030-6fd5-4d8e-8304-9671d4e5857f";
+        bodyVersion1.value = "Version 1: Bam loo blong woogle bleebing rakity flakity crongle quabbleflup? Duh blap twaddle? Hum bam weeble flip tangity flapping flub blingdubba? Nip bam tingleingle ho doo kanoodle, zap shnozzy hum cringle boo. \"Dee yada ho?\" blo wheezeryada. Dubbaloo-dangely-dang! \"Yip bananarama yip?\" flop Chef. Flong kanoodle blab roo blab gobble blob hum goblin." +
                 "Yip dee doof blong sloppy flabbing blob wooglezangle? Razz boo blaoodle, \"flong dee zap izzle,\" zap flob blab doof roo wibble-zang...boo dee ho! Hizzle ha weeble hizzy. Bam blipping blippity zupping doo blup zap oodely zingwobble. Shnazzle boo zong zip bleeb boo ha blip? Lisa zap Mr. Garrison zap tongity plop-zung. Woggle yip zung abracadabra. Zing da kanoodle-blo." +
                 "Hum duh hizzlebling ho loo dabba, boo flabbity nip zingle hum. Zip zing a zinghizzy! Hum dilznoofus flib? Duh dongely blingity flanging dee blap da blabbing bingbleeb. Crungle gobble bleebity yap noodlequabble??? Blippity hizzy oodle! Zoom blang loo flee dee bloo? Jangely bleeb twaddle!" +
                 "Shizzle fling funknizzle, \"zonk duh yap funk,\" doo Belgium gobble shnozzle nip flop-blop...flobble zip hum! Yip da Smithers goblindongle! Flung yap shizzle crongle. Blob dee crongle bang? Nip zap Cartman dingling! \"Boo flooble da?\" zung zoweebizzle. Bam ho woogle twaddle crangely oodely zung dangding? Dee duh razzleflob loo ho bananarama, boo flipping ha blop duh." +
                 "Mr. Slave yap Mr. Slave doo nippy blap-dazzle. Slop ho zowee roo slap-flobble!! Dazzle blo shnizzleblip, \"shnuzzle bam dee shizzle,\" doo zangle razz gobble dee blop-meep...kanoodle ho duh! Doo zongle shnizzlewow. Ho flob woggle? Quabble dee blab flibble? Slop crungle doo whack ho dizzle? Funk blee blangfloo, \"bla doo dee wooble,\" ho Mr. Slave dongle flee zip twiddle-razz...bing da nip!";
-        body.create();
+        bodyVersion1.create();
 
-        RootNode node = new RootNode("2c36c55dd-956e-4b78-18c4-eef7e56aa17", 1);
-        node.nodeType(BasicPage.TYPE);
-        node.create();
+        RootNode nodeVersion1 = new RootNode("2c36c55dd-956e-4b78-18c4-eef7e56aa17", 1);
+        nodeVersion1.nodeType(BasicPage.TYPE);
+        nodeVersion1.create();
 
-        BasicPage page = new BasicPage();
-        page.nodeId = node.nodeId();
-        page.version = node.version();
-        page.title = "Start Page";
-        page.leadReferenceId = lead.identifier;
-        page.bodyReferenceId = body.identifier;
-        page.create();
+        BasicPage pageVersion1 = new BasicPage();
+        pageVersion1.nodeId = nodeVersion1.nodeId();
+        pageVersion1.version = nodeVersion1.version();
+        pageVersion1.title = "Start Page";
+        pageVersion1.leadReferenceId = lead.identifier;
+        pageVersion1.bodyReferenceId = bodyVersion1.identifier;
+        pageVersion1.create();
+
+        Content bodyVersion2 = new Content();
+        bodyVersion2.identifier = "8659c030-6fd5-4d8e-8304-9671d4e5857f";
+        bodyVersion2.value = "Version 2: Bam loo blong woogle bleebing rakity flakity crongle quabbleflup? Duh blap twaddle? Hum bam weeble flip tangity flapping flub blingdubba? Nip bam tingleingle ho doo kanoodle, zap shnozzy hum cringle boo. \"Dee yada ho?\" blo wheezeryada. Dubbaloo-dangely-dang! \"Yip bananarama yip?\" flop Chef. Flong kanoodle blab roo blab gobble blob hum goblin." +
+                "Yip dee doof blong sloppy flabbing blob wooglezangle? Razz boo blaoodle, \"flong dee zap izzle,\" zap flob blab doof roo wibble-zang...boo dee ho! Hizzle ha weeble hizzy. Bam blipping blippity zupping doo blup zap oodely zingwobble. Shnazzle boo zong zip bleeb boo ha blip? Lisa zap Mr. Garrison zap tongity plop-zung. Woggle yip zung abracadabra. Zing da kanoodle-blo." +
+                "Hum duh hizzlebling ho loo dabba, boo flabbity nip zingle hum. Zip zing a zinghizzy! Hum dilznoofus flib? Duh dongely blingity flanging dee blap da blabbing bingbleeb. Crungle gobble bleebity yap noodlequabble??? Blippity hizzy oodle! Zoom blang loo flee dee bloo? Jangely bleeb twaddle!" +
+                "Shizzle fling funknizzle, \"zonk duh yap funk,\" doo Belgium gobble shnozzle nip flop-blop...flobble zip hum! Yip da Smithers goblindongle! Flung yap shizzle crongle. Blob dee crongle bang? Nip zap Cartman dingling! \"Boo flooble da?\" zung zoweebizzle. Bam ho woogle twaddle crangely oodely zung dangding? Dee duh razzleflob loo ho bananarama, boo flipping ha blop duh." +
+                "Mr. Slave yap Mr. Slave doo nippy blap-dazzle. Slop ho zowee roo slap-flobble!! Dazzle blo shnizzleblip, \"shnuzzle bam dee shizzle,\" doo zangle razz gobble dee blop-meep...kanoodle ho duh! Doo zongle shnizzlewow. Ho flob woggle? Quabble dee blab flibble? Slop crungle doo whack ho dizzle? Funk blee blangfloo, \"bla doo dee wooble,\" ho Mr. Slave dongle flee zip twiddle-razz...bing da nip!";
+        bodyVersion2.create();
+
+        RootNode nodeVersion2 = new RootNode("2c36c55dd-956e-4b78-18c4-eef7e56aa17", 2);
+        nodeVersion2.nodeType(BasicPage.TYPE);
+        nodeVersion2.published(DateTime.now().plusMonths(1).toDate());
+        nodeVersion2.create();
+
+        BasicPage pageVersion2 = new BasicPage();
+        pageVersion2.nodeId = nodeVersion2.nodeId();
+        pageVersion2.version = nodeVersion2.version();
+        pageVersion2.title = "Start Page";
+        pageVersion2.leadReferenceId = lead.identifier;
+        pageVersion2.bodyReferenceId = bodyVersion2.identifier;
+        pageVersion2.create();
+
+        Content bodyVersion3 = new Content();
+        bodyVersion3.identifier = "8659c030-6fd5-4d8e-8304-9671d4e5857f";
+        bodyVersion3.value = "Version 3: Bam loo blong woogle bleebing rakity flakity crongle quabbleflup? Duh blap twaddle? Hum bam weeble flip tangity flapping flub blingdubba? Nip bam tingleingle ho doo kanoodle, zap shnozzy hum cringle boo. \"Dee yada ho?\" blo wheezeryada. Dubbaloo-dangely-dang! \"Yip bananarama yip?\" flop Chef. Flong kanoodle blab roo blab gobble blob hum goblin." +
+                "Yip dee doof blong sloppy flabbing blob wooglezangle? Razz boo blaoodle, \"flong dee zap izzle,\" zap flob blab doof roo wibble-zang...boo dee ho! Hizzle ha weeble hizzy. Bam blipping blippity zupping doo blup zap oodely zingwobble. Shnazzle boo zong zip bleeb boo ha blip? Lisa zap Mr. Garrison zap tongity plop-zung. Woggle yip zung abracadabra. Zing da kanoodle-blo." +
+                "Hum duh hizzlebling ho loo dabba, boo flabbity nip zingle hum. Zip zing a zinghizzy! Hum dilznoofus flib? Duh dongely blingity flanging dee blap da blabbing bingbleeb. Crungle gobble bleebity yap noodlequabble??? Blippity hizzy oodle! Zoom blang loo flee dee bloo? Jangely bleeb twaddle!" +
+                "Shizzle fling funknizzle, \"zonk duh yap funk,\" doo Belgium gobble shnozzle nip flop-blop...flobble zip hum! Yip da Smithers goblindongle! Flung yap shizzle crongle. Blob dee crongle bang? Nip zap Cartman dingling! \"Boo flooble da?\" zung zoweebizzle. Bam ho woogle twaddle crangely oodely zung dangding? Dee duh razzleflob loo ho bananarama, boo flipping ha blop duh." +
+                "Mr. Slave yap Mr. Slave doo nippy blap-dazzle. Slop ho zowee roo slap-flobble!! Dazzle blo shnizzleblip, \"shnuzzle bam dee shizzle,\" doo zangle razz gobble dee blop-meep...kanoodle ho duh! Doo zongle shnizzlewow. Ho flob woggle? Quabble dee blab flibble? Slop crungle doo whack ho dizzle? Funk blee blangfloo, \"bla doo dee wooble,\" ho Mr. Slave dongle flee zip twiddle-razz...bing da nip!";
+        bodyVersion3.create();
+
+        RootNode nodeVersion3 = new RootNode("2c36c55dd-956e-4b78-18c4-eef7e56aa17", 2);
+        nodeVersion3.nodeType(BasicPage.TYPE);
+        nodeVersion3.published(DateTime.now().plusMonths(3).toDate());
+        nodeVersion3.create();
+
+        BasicPage pageVersion3 = new BasicPage();
+        pageVersion3.nodeId = nodeVersion3.nodeId();
+        pageVersion3.version = nodeVersion3.version();
+        pageVersion3.title = "Start Page";
+        pageVersion3.leadReferenceId = lead.identifier;
+        pageVersion3.bodyReferenceId = bodyVersion3.identifier;
+        pageVersion2.create();
 
         // /start -> page 1
-        Alias start = new Alias("start", node.nodeId());
+        Alias start = new Alias("start", nodeVersion2.nodeId());
         start.create();
 
     }

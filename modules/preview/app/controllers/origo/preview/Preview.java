@@ -8,7 +8,7 @@ import main.origo.core.actions.ComponentWrapper;
 import main.origo.core.actions.ContextAware;
 import main.origo.core.security.Security;
 import main.origo.preview.helpers.PreviewTicketHelper;
-import models.origo.preview.Ticket;
+import models.origo.preview.BasicTicket;
 import org.joda.time.DateTime;
 import play.data.Form;
 import play.db.jpa.Transactional;
@@ -28,7 +28,7 @@ public class Preview extends Controller {
     @Dynamic(Security.Types.RESOURCE)
     @ComponentWrapper
     public static Result index() {
-        return ok(index.render(forms.origo.preview.PreviewTokenForm.fill(new Ticket())));
+        return ok(index.render(PreviewTokenForm.fill(new BasicTicket())));
     }
 
     @Transactional
@@ -37,9 +37,9 @@ public class Preview extends Controller {
     @ComponentWrapper
     public static Result get() throws ModuleException, NodeLoadException {
 
-        Ticket ticket = PreviewTicketHelper.getCurrent();
-        if (ticket != null) {
-            return ok(results.render(ticket));
+        BasicTicket basicTicket = PreviewTicketHelper.getCurrent();
+        if (basicTicket != null) {
+            return ok(results.render(basicTicket));
         }
 
         return Results.redirect(controllers.origo.preview.routes.Preview.index());
@@ -61,13 +61,13 @@ public class Preview extends Controller {
             return badRequest(index.render(previewTokenForm));
         }
 
-        Ticket ticket = PreviewTicketHelper.updateTicket(previewTokenForm.get().getPreview());
-        if (ticket != null) {
-            return ok(results.render(ticket));
+        BasicTicket basicTicket = PreviewTicketHelper.updateTicket(previewTokenForm.get().getPreview());
+        if (basicTicket != null) {
+            return ok(results.render(basicTicket));
         }
 
-        ticket = PreviewTicketHelper.createNewTicket(previewTokenForm.get().getPreview());
-        return ok(results.render(ticket));
+        basicTicket = PreviewTicketHelper.createNewTicket(previewTokenForm.get().getPreview());
+        return ok(results.render(basicTicket));
     }
 
     @Transactional

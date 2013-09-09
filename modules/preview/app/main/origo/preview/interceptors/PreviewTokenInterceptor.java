@@ -2,11 +2,14 @@ package main.origo.preview.interceptors;
 
 import main.origo.core.ModuleException;
 import main.origo.core.NodeLoadException;
+import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnLoad;
+import main.origo.core.annotations.Provides;
+import main.origo.core.preview.Ticket;
 import main.origo.core.ui.Element;
 import main.origo.preview.helpers.PreviewTicketHelper;
-import models.origo.preview.Ticket;
+import models.origo.preview.BasicTicket;
 
 @Interceptor
 public class PreviewTokenInterceptor {
@@ -22,8 +25,12 @@ public class PreviewTokenInterceptor {
     }
 
     private static String getComment() throws ModuleException, NodeLoadException {
-        Ticket ticket = PreviewTicketHelper.getCurrent();
-        return "Preview-Ticket { token: \""+ticket.token+"\", valid-until: \"\\/Date("+ ticket.getValidUntil().getMillis()+")\\/\" }";
+        BasicTicket basicTicket = PreviewTicketHelper.getCurrent();
+        return "Preview-Ticket { token: \""+ basicTicket.token+"\", valid-until: \"\\/Date("+ basicTicket.validUntil().getMillis()+")\\/\" }";
     }
 
+    @Provides(type = Core.Type.PREVIEW, with = Core.With.PREVIEW_TOKEN)
+    public static Ticket getCurrentToken(Provides.Context context) throws ModuleException, NodeLoadException {
+        return PreviewTicketHelper.getCurrent();
+    }
 }
