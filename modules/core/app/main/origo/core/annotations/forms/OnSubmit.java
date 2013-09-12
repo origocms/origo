@@ -3,6 +3,7 @@ package main.origo.core.annotations.forms;
 import com.google.common.collect.Maps;
 import main.origo.core.event.NodeContext;
 import play.data.DynamicForm;
+import play.data.Form;
 
 import java.lang.annotation.*;
 import java.util.Map;
@@ -18,10 +19,13 @@ public @interface OnSubmit {
     String with() default "";
     int weight() default 1000;
 
-    public class Context {
+    Class validate() default Object.class;
+
+    public class Context<T> {
 
         public Map<String, Object> args;
         public Map<String, Object> attributes;
+        public Form<T> form;
 
         public Context(Map<String, Object> args) {
             this.args = Maps.newHashMap();

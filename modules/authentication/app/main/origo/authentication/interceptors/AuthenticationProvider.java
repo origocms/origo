@@ -3,6 +3,7 @@ package main.origo.authentication.interceptors;
 import be.objectify.deadbolt.core.models.Subject;
 import controllers.origo.authentication.routes;
 import controllers.origo.core.CoreLoader;
+import main.origo.authentication.form.LoginForm;
 import main.origo.authentication.util.AuthenticationSessionUtils;
 import main.origo.core.*;
 import main.origo.core.annotations.Core;
@@ -23,13 +24,10 @@ import models.origo.core.RootNode;
 import models.origo.core.Settings;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
-import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Content;
 import play.mvc.Controller;
 import play.mvc.Result;
-
-import java.util.Map;
 
 @Interceptor
 public class AuthenticationProvider {
@@ -110,15 +108,14 @@ public class AuthenticationProvider {
     /**
      * Handles the authentication of the supplied username/password.
      */
-    @OnSubmit(with = Core.With.AUTHENTICATION_CHECK)
-    public static Boolean authenticateFormUser(OnSubmit.Context context) throws NodeLoadException, ModuleException {
+    @OnSubmit(with = Core.With.AUTHENTICATION_CHECK, validate = LoginForm.class)
+    public static Boolean authenticateFormUser(OnSubmit.Context<LoginForm> context) throws NodeLoadException, ModuleException {
 
-        Form form = DynamicForm.form().bindFromRequest();
-        Map<String, String> data = form.data();
+        Form<LoginForm> loginForm = context.form;
 
-        String username = data.get(USERNAME_PARAM);
-        String password = data.get(PASSWORD_PARAM);
-        String path = data.get(PATH_PARAM);
+        String username = loginForm.get().username;
+        String password = loginForm.get().password;
+        String path = loginForm.get().path;
         if (StringUtils.isNotBlank(path)) {
             context.attributes.put(Security.Params.AUTH_PATH, path);
         }
