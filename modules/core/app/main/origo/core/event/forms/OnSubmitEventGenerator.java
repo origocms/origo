@@ -52,6 +52,18 @@ public class OnSubmitEventGenerator {
         return true;
     }
 
+    public static List<Class> getValidatedClasses(String withType) {
+        List<CachedAnnotation> cachedAnnotations = findOnPostInterceptorsWithType(withType);
+        List<Class> result = Lists.newArrayList();
+        for (CachedAnnotation annotation : cachedAnnotations) {
+            Class validate = ((OnSubmit) annotation.annotation).validate();
+            if (validate != null) {
+                result.add(validate);
+            }
+        }
+        return result;
+    }
+
     private static List<CachedAnnotation> findOnPostInterceptorsWithType(final String withType) {
         List<CachedAnnotation> onPostInterceptors = Lists.newArrayList(InterceptorRepository.getInterceptors(OnSubmit.class, new CachedAnnotation.InterceptorSelector() {
             @Override

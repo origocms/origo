@@ -167,10 +167,7 @@ public class ProvidesEventHandlerAdminProvider {
                         addChild(new Element.InputHidden().addAttribute("name", "type").addAttribute("value", selectedEventType)).
                         addChild(new Element.FieldSet().setId("handlers").addChildren(fieldElements)).
                         addChild(createButtonPanel()));
-            } catch (NodeLoadException e) {
-                // TODO: recover somehow?
-                Logger.error("Unable to load node", e);
-            } catch (ModuleException e) {
+            } catch (NodeLoadException | ModuleException e) {
                 // TODO: recover somehow?
                 Logger.error("Unable to load node", e);
             }
@@ -239,9 +236,9 @@ public class ProvidesEventHandlerAdminProvider {
 
         String selectedEventType = getSelectedEventType(context.args, getAllProvides());
 
-        for (String key : context.args.keySet()) {
-            if (key.startsWith("event.")) {
-                EventHandler handler = EventHandler.findWithNodeTypeAndWithType(selectedEventType, key.substring("event.".length()));
+        for (Object key : context.args.keySet()) {
+            if (((String)key).startsWith("event.")) {
+                EventHandler handler = EventHandler.findWithNodeTypeAndWithType(selectedEventType, ((String)key).substring("event.".length()));
                 handler.handlerClass = (String) context.args.get(key);
             }
         }

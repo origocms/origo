@@ -50,6 +50,7 @@ public class CoreModule {
         // Form handling types
         annotations.add(new AnnotationProcessor.Prototype(OnSubmit.class, Boolean.class, OnSubmit.Context.class));
         annotations.add(new AnnotationProcessor.Prototype(SubmitHandler.class, Result.class, SubmitHandler.Context.class));
+        annotations.add(new AnnotationProcessor.Prototype(ValidationHandler.class, ValidationHandler.Result.class, ValidationHandler.Context.class));
         annotations.add(new AnnotationProcessor.Prototype(SubmitState.class, Result.class, SubmitState.Context.class));
 
         // Data types

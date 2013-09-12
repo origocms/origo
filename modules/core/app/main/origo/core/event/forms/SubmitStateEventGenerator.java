@@ -3,10 +3,10 @@ package main.origo.core.event.forms;
 import controllers.origo.core.CoreLoader;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.annotations.forms.SubmitState;
+import main.origo.core.annotations.forms.ValidationHandler;
 import main.origo.core.event.EventGeneratorUtils;
 import main.origo.core.internal.CachedAnnotation;
 import play.Logger;
-import play.data.Form;
 import play.mvc.Result;
 
 import java.util.Collections;
@@ -15,15 +15,15 @@ import java.util.Set;
 
 public class SubmitStateEventGenerator {
 
-    public static Result triggerInterceptor(String state, String withType, Form form) {
-        return triggerInterceptor(state, withType, form, Collections.<String, Object>emptyMap());
+    public static Result triggerInterceptor(String state, String withType, ValidationHandler.Result validationResult) {
+        return triggerInterceptor(state, withType, validationResult, Collections.<String, Object>emptyMap());
     }
 
-    public static Result triggerInterceptor(String state, String withType, Form form, Map<String, Object> args) {
-        return triggerInterceptor(state, withType, new SubmitState.Context(form, args));
+    public static Result triggerInterceptor(String state, String withType, ValidationHandler.Result validationResult, Map<String, Object> args) {
+        return triggerInterceptor(state, withType, validationResult, new SubmitState.Context(args));
     }
 
-    public static Result triggerInterceptor(String state, String withType, SubmitState.Context context) {
+    public static Result triggerInterceptor(String state, String withType, ValidationHandler.Result validationResult, SubmitState.Context context) {
         CachedAnnotation cachedAnnotation = findOnPostInterceptorsWithType(state, withType);
         try {
             switch(state) {
@@ -33,8 +33,9 @@ public class SubmitStateEventGenerator {
                     }
                     return (Result) cachedAnnotation.method.invoke(null, context);
                 case SubmitState.FAILURE:
+                case SubmitState.VALIDATION:
                     if (cachedAnnotation == null) {
-                        Logger.error("No @SubmitState for failures to use as an endpoint for submit's. Unable to find a SubmitState for state='" + state + "' and type='" + withType + "'");
+                        Logger.error("No @SubmitState found to use as an endpoint for submit's. Unable to find a SubmitState for state='" + state + "' and type='" + withType + "'");
                         return CoreLoader.loadStartPage();
                     }
                     return (Result) cachedAnnotation.method.invoke(null, context);

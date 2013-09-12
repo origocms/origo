@@ -2,6 +2,7 @@ package main.origo.core.helpers;
 
 import main.origo.core.interceptors.forms.DefaultFormProvider;
 import main.origo.core.interceptors.forms.DefaultSubmitHandler;
+import main.origo.core.interceptors.forms.DefaultValidationHandler;
 import models.origo.core.Settings;
 import models.origo.core.navigation.BasicNavigation;
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +26,7 @@ public class CoreSettingsHelper {
 
         public static final String DEFAULT_FORM_TYPE = "event.default_form_type";
         public static final String SUBMIT_HANDLER = "event.submit_handler";
+        public static final String VALIDATION_HANDLER = "origo.validation_handler";
 
         public static final String USER_TYPE = "origo.authentication.user_type";
 
@@ -71,6 +73,10 @@ public class CoreSettingsHelper {
 
     public static String getSubmitHandler() {
         return getClassTypeIfExists(Keys.SUBMIT_HANDLER, DefaultSubmitHandler.class.getName());
+    }
+
+    public static String getValidationHandler() {
+        return getClassTypeIfExists(Keys.VALIDATION_HANDLER, DefaultValidationHandler.class.getName());
     }
 
     public static String getUserType() {

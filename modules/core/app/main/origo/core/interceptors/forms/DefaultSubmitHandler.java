@@ -8,9 +8,11 @@ import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.forms.SubmitHandler;
 import main.origo.core.annotations.forms.SubmitState;
+import main.origo.core.annotations.forms.ValidationHandler;
 import main.origo.core.event.forms.OnSubmitEventGenerator;
 import main.origo.core.event.forms.SubmitHandlerEventGenerator;
 import main.origo.core.event.forms.SubmitStateEventGenerator;
+import main.origo.core.event.forms.ValidationHandlerEventGenerator;
 import main.origo.core.ui.Element;
 import play.Logger;
 import play.data.DynamicForm;
@@ -37,19 +39,31 @@ public class DefaultSubmitHandler {
             Logger.error("DefaultSubmitHandler requires a request parameter named '" + WITH_TYPE + "' to be present in the request");
         }
 
-        // TODO: insert validation here
+        ValidationHandler.Result validationResult;
+        final String postHandlerName = ValidationHandlerEventGenerator.getRegisteredValidationHandlerName();
+        try {
+            validationResult = ValidationHandlerEventGenerator.triggerValidationHandler(postHandlerName, withType);
+        } catch (Exception e) {
+            Map<String, Object> args = Maps.newHashMap();
+            args.put("reason", getReason(e));
+            args.put("exception", e);
+            return SubmitStateEventGenerator.triggerInterceptor(SubmitState.FAILURE, withType, args);
+        }
 
+        if (validationResult.hasErrors()) {
+            return SubmitStateEventGenerator.triggerInterceptor(SubmitState.VALIDATION, withType);
+        }
         try {
             if (OnSubmitEventGenerator.triggerInterceptors(withType)) {
-                return SubmitStateEventGenerator.triggerInterceptor(SubmitState.SUCCESS, withType, form);
+                return SubmitStateEventGenerator.triggerInterceptor(SubmitState.SUCCESS, withType);
             } else {
-                return SubmitStateEventGenerator.triggerInterceptor(SubmitState.FAILURE, withType, form);
+                return SubmitStateEventGenerator.triggerInterceptor(SubmitState.FAILURE, withType);
             }
         } catch (Exception e) {
             Map<String, Object> args = Maps.newHashMap();
             args.put("reason", getReason(e));
             args.put("exception", e);
-            return SubmitStateEventGenerator.triggerInterceptor(SubmitState.FAILURE, withType, form, args);
+            return SubmitStateEventGenerator.triggerInterceptor(SubmitState.FAILURE, withType, args);
         }
     }
 

@@ -3,7 +3,6 @@ package main.origo.core.annotations.forms;
 import com.google.common.collect.Maps;
 import main.origo.core.event.NodeContext;
 import play.data.DynamicForm;
-import play.data.Form;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -20,20 +19,20 @@ import java.util.Map;
 @Target({ElementType.METHOD})
 public @interface SubmitState {
 
+
     String state() default SUCCESS;
 
     String with();
 
     public static final String SUCCESS = "success";
     public static final String FAILURE = "failure";
+    public static final String VALIDATION = "validation";
 
     public class Context {
-        public Form form;
         public Map<String, Object> args;
         public Map<String, Object> attributes;
 
-        public Context(Form form, Map<String, Object> args) {
-            this.form = form;
+        public Context(Map<String, Object> args) {
             this.args = Maps.newHashMap();
             this.args.putAll(DynamicForm.form().bindFromRequest().data());
             this.args.putAll(args);
