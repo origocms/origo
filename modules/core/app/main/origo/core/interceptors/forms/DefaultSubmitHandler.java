@@ -1,21 +1,27 @@
 package main.origo.core.interceptors.forms;
 
 import controllers.origo.core.CoreLoader;
+import main.origo.core.ModuleException;
+import main.origo.core.Node;
+import main.origo.core.NodeLoadException;
+import main.origo.core.NodeNotFoundException;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.forms.SubmitHandler;
 import main.origo.core.annotations.forms.SubmitState;
-import main.origo.core.annotations.forms.ValidationHandler;
-import main.origo.core.event.ProvidesEventGenerator;
+import main.origo.core.annotations.forms.Validation;
 import main.origo.core.event.forms.OnSubmitEventGenerator;
 import main.origo.core.event.forms.SubmitHandlerEventGenerator;
 import main.origo.core.event.forms.SubmitStateEventGenerator;
 import main.origo.core.event.forms.ValidationHandlerEventGenerator;
 import main.origo.core.ui.Element;
-import play.Logger;
+import models.origo.core.RootNode;
 import play.data.DynamicForm;
+import play.mvc.Controller;
 import play.mvc.Result;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Default implementation of the submit handler. Alternate submit handlers can be used by changing the settings.
@@ -29,33 +35,47 @@ public class DefaultSubmitHandler {
     @SubmitHandler
     public static Result handleSubmit(SubmitHandler.Context context) {
 
+        String withType = getWithType();
+
+        try {
+            Validation.Result validationResult = runValidation(context, withType);
+
+            if (validationResult.hasErrors()) {
+                return handleValidationFailure(withType, validationResult);
+            }
+            return sendSubmitState(withType, validationResult);
+
+        } catch (ModuleException | NodeLoadException | InvocationTargetException | IllegalAccessException | NodeNotFoundException e) {
+            return CoreLoader.handleException(e);
+        }
+    }
+
+    protected static String getWithType() {
         DynamicForm form = DynamicForm.form().bindFromRequest();
 
         String withType = getWithType(form);
         if (withType == null) {
-            Logger.error("DefaultSubmitHandler requires a request parameter named '" + WITH_TYPE + "' to be present in the request");
+            throw new RuntimeException("DefaultSubmitHandler requires a request parameter named '" + WITH_TYPE + "' to be present in the request");
         }
+        return withType;
+    }
 
-        ValidationHandler.Result validationResult;
-        final String postHandlerName = ValidationHandlerEventGenerator.getRegisteredValidationHandlerName();
-        try {
-            validationResult = ValidationHandlerEventGenerator.triggerValidationHandler(postHandlerName, withType);
-        } catch (Exception e) {
-            return CoreLoader.handleException(e);
-        }
+    protected static Validation.Result runValidation(SubmitHandler.Context context, String withType) throws ModuleException, NodeLoadException, InvocationTargetException, IllegalAccessException {
+        Validation.Result validationResult = ValidationHandlerEventGenerator.triggerValidationProcessingHandler(withType);
+        context.attributes.put(Validation.Result.class.getCanonicalName(), validationResult);
+        return validationResult;
+    }
 
-        if (validationResult.hasErrors()) {
-            CoreLoader.loadNode()
-            return ProvidesEventGenerator.triggerInterceptor(SubmitState.VALIDATION, withType, validationResult);
-        }
-        try {
-            if (OnSubmitEventGenerator.triggerInterceptors(withType, validationResult)) {
-                return SubmitStateEventGenerator.triggerInterceptor(SubmitState.SUCCESS, withType, validationResult);
-            } else {
-                return SubmitStateEventGenerator.triggerInterceptor(SubmitState.FAILURE, withType, validationResult);
-            }
-        } catch (Exception e) {
-            return CoreLoader.handleException(e);
+    protected static Result handleValidationFailure(String withType, Validation.Result validationResult) throws InvocationTargetException, IllegalAccessException, NodeNotFoundException, NodeLoadException, ModuleException {
+        Node node = ValidationHandlerEventGenerator.triggerValidationFailedHandler(new RootNode(0), withType, validationResult);
+        return Controller.badRequest(CoreLoader.decorateNode(node));
+    }
+
+    protected static Result sendSubmitState(String withType, Validation.Result validationResult) throws NodeLoadException, ModuleException {
+        if (OnSubmitEventGenerator.triggerInterceptors(withType, validationResult)) {
+            return SubmitStateEventGenerator.triggerInterceptor(SubmitState.SUCCESS, withType);
+        } else {
+            return SubmitStateEventGenerator.triggerInterceptor(SubmitState.FAILURE, withType);
         }
     }
 

@@ -2,7 +2,6 @@ package main.origo.core.annotations.forms;
 
 import com.google.common.collect.Maps;
 import main.origo.core.event.NodeContext;
-import play.data.DynamicForm;
 import play.data.Form;
 
 import java.lang.annotation.*;
@@ -23,19 +22,18 @@ public @interface OnSubmit {
 
     public class Context<T> {
 
-        public Map<String, Object> args;
-        public Map<String, Object> attributes;
-        public Form<T> form;
+        public final Map<String, Object> args;
+        public final Map<String, Object> attributes;
+        public final Form<T> form;
 
         public Context(Map<String, Object> args) {
-            this.args = Maps.newHashMap();
-            this.args.putAll(DynamicForm.form().bindFromRequest().data());
-            this.args.putAll(args);
-            this.attributes = NodeContext.current().attributes;
+            this(null, args);
         }
 
         public Context(Form<T> form, Map<String, Object> args) {
-            this(args);
+            this.args = Maps.newHashMap();
+            this.args.putAll(args);
+            this.attributes = NodeContext.current().attributes;
             this.form = form;
         }
     }

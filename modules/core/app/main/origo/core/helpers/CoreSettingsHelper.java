@@ -26,11 +26,12 @@ public class CoreSettingsHelper {
 
         public static final String DEFAULT_FORM_TYPE = "event.default_form_type";
         public static final String SUBMIT_HANDLER = "event.submit_handler";
-        public static final String VALIDATION_HANDLER = "origo.validation_handler";
+        public static final String VALIDATION_HANDLER = "event.validation_processing_handler";
 
         public static final String USER_TYPE = "origo.authentication.user_type";
 
         public static final String PREVIEW_TICKET_PERIOD = "origo.preview.ticket_period";
+
     }
 
     private static Period previewTicketPeriod;

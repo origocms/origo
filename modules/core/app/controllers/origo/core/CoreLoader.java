@@ -24,7 +24,7 @@ public class CoreLoader {
     public static Result loadStartPage() {
         String startPage = CoreSettingsHelper.getStartPage();
         try {
-            return Controller.ok(loadAndDecoratePage(startPage, 0));
+            return Controller.ok(loadAndDecorateNode(startPage, 0));
         } catch (NodeNotFoundException e) {
             return redirectToPageNotFoundPage();
         } catch (Exception e) {
@@ -34,7 +34,7 @@ public class CoreLoader {
 
     public static Result loadPage(String identifier) {
         try {
-            return Controller.ok(loadAndDecoratePage(identifier, 0));
+            return Controller.ok(loadAndDecorateNode(identifier, 0));
         } catch (NodeNotFoundException e) {
             return redirectToPageNotFoundPage();
         } catch (ModuleException e) {
@@ -46,7 +46,7 @@ public class CoreLoader {
 
     public static Result loadPage(String identifier, int version) {
         try {
-            return Controller.ok(loadAndDecoratePage(identifier, version));
+            return Controller.ok(loadAndDecorateNode(identifier, version));
         } catch (NodeNotFoundException e) {
             return redirectToPageNotFoundPage();
         } catch (ModuleException e) {
@@ -131,8 +131,16 @@ public class CoreLoader {
         return Controller.redirect(url);
     }
 
-    public static Content loadAndDecoratePage(String identifier, int version) throws NodeNotFoundException, NodeLoadException, ModuleException {
+    public static Content loadAndDecorateNode(String identifier) throws NodeNotFoundException, NodeLoadException, ModuleException {
+        return loadAndDecorateNode(identifier, 0);
+    }
+
+    public static Content loadAndDecorateNode(String identifier, int version) throws NodeNotFoundException, NodeLoadException, ModuleException {
         Node node = loadNode(identifier, version);
+        return decorateNode(node);
+    }
+
+    public static Content decorateNode(Node node) throws NodeNotFoundException, NodeLoadException, ModuleException {
         RenderedNode renderedNode = ThemeHelper.decorate(node, ThemeHelper.loadTheme(node, CoreSettingsHelper.getThemeVariant()));
         renderedNode.navigation(getNavigation(node));
         if (Logger.isDebugEnabled()) {

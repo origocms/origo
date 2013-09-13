@@ -31,7 +31,7 @@ public class AuthorizationProvider {
             String unauthorizedPage = Settings.load().getValue(CoreSettingsHelper.Keys.UNAUTHORIZED_PAGE);
             try {
                 if (StringUtils.isNotBlank(unauthorizedPage)) {
-                    Content content = CoreLoader.loadAndDecoratePage(unauthorizedPage, 0);
+                    Content content = CoreLoader.loadAndDecorateNode(unauthorizedPage, 0);
                     if (user != null) {
                         return Controller.forbidden(content);
                     } else {

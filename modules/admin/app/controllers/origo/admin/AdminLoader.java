@@ -96,7 +96,7 @@ public class AdminLoader {
         throw new NodeLoadException(identifier, "No Node with id '"+identifier+"'");
     }
 
-    private static Content decorateNode(Node node) throws NodeLoadException, ModuleException {
+    public static Content decorateNode(Node node) throws NodeLoadException, ModuleException {
         RenderedNode renderedNode = ThemeHelper.decorate(node, ThemeHelper.loadTheme(node, AdminSettingsHelper.getThemeVariant()));
         renderedNode.navigation(getNavigation(node));
         if (Logger.isDebugEnabled()) {

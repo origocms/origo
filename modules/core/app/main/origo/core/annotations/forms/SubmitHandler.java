@@ -14,7 +14,7 @@ public @interface SubmitHandler {
 
     public class Context {
 
-        public Map<String, Object> attributes;
+        public final Map<String, Object> attributes;
 
         public Context() {
             this.attributes = NodeContext.current().attributes;

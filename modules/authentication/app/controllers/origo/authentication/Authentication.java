@@ -4,7 +4,6 @@ import controllers.origo.core.CoreLoader;
 import main.origo.core.ModuleException;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
-import main.origo.core.NodeNotFoundException;
 import main.origo.core.actions.ContextAware;
 import main.origo.core.annotations.Core;
 import main.origo.core.event.NodeContext;
@@ -34,7 +33,7 @@ public class Authentication extends Controller {
             // Check if there is a specific page set up for login
             String loginPage = CoreSettingsHelper.getLoginPage();
             if (StringUtils.isNotBlank(loginPage)) {
-                return ok(CoreLoader.loadAndDecoratePage(loginPage, 0));
+                return CoreLoader.loadPage(loginPage, 0);
             }
 
             Logger.debug("No login page defined, using fallback");
@@ -51,8 +50,6 @@ public class Authentication extends Controller {
             }
             return ok(ThemeHelper.render(renderedNode));
         } catch (ModuleException e) {
-            return CoreLoader.handleException(e);
-        } catch (NodeNotFoundException e) {
             return CoreLoader.handleException(e);
         } catch (NodeLoadException e) {
             return CoreLoader.handleException(e);

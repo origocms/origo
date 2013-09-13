@@ -3,6 +3,7 @@ package main.origo.admin.interceptors.content;
 import controllers.origo.admin.routes;
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.DashboardHelper;
+import main.origo.admin.helpers.forms.AdminFormHelper;
 import main.origo.admin.themes.AdminTheme;
 import main.origo.admin.utils.DateUtil;
 import main.origo.core.ModuleException;
@@ -15,6 +16,7 @@ import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.Provides;
 import main.origo.core.annotations.forms.OnSubmit;
 import main.origo.core.annotations.forms.SubmitState;
+import main.origo.core.annotations.forms.Validation;
 import main.origo.core.event.forms.OnCreateEventGenerator;
 import main.origo.core.event.forms.OnUpdateEventGenerator;
 import main.origo.core.helpers.CoreSettingsHelper;
@@ -46,9 +48,7 @@ import java.util.Map;
 @Interceptor
 public class BasicPageAdminProvider {
 
-    public static final String BASE_TYPE = Core.With.CONTENT_PAGE + ".basicpage";
-    public static final String EDIT_TYPE = BASE_TYPE + Admin.Action.EDIT;
-    public static final String NEW_TYPE = BASE_TYPE + Admin.Action.CREATE;
+    public static final String TYPE = Core.With.CONTENT_PAGE + ".basicpage";
 
     private static final String TITLE_PARAM = "origo-basicpageform-title";
     private static final String PUBLISH_DATE_PARAM = "origo-basicpageform-publish-date";
@@ -60,20 +60,27 @@ public class BasicPageAdminProvider {
     private static final String BODY_PARAM = "origo-basicpageform-body";
 
     /**
-     * Provides a type with the static name 'origo.admin.basicpage.new'.
+     * Provides a type with the static name 'content.basicpage'.
      * This will create the AdminPage for the UI to render.
      *
      * @param context containing a root node with an node id
      * @return a node to be presented as part of the admin UI
      */
-    @Provides(type = Core.Type.NODE, with = BasicPageAdminProvider.NEW_TYPE)
-    public static Node createNewPage(Provides.Context context) {
-        AdminPage page = new AdminPage(BasicPageAdminProvider.NEW_TYPE, new RootNode(0));
+    @Provides(type = Core.Type.NODE, with = BasicPageAdminProvider.TYPE)
+    public static Node createPage(Provides.Context context) {
+        AdminPage page;
+        if (StringUtils.isEmpty(context.node.nodeId())) {
+            page = new AdminPage(BasicPageAdminProvider.TYPE, new RootNode(0));
+        } else if (context.node.version() == null || context.node.version() == 0) {
+            page = new AdminPage(BasicPageAdminProvider.TYPE, RootNode.findLatestVersionWithNodeId(context.node.nodeId()).copy());
+        } else {
+            page = new AdminPage(BasicPageAdminProvider.TYPE, (RootNode) context.node);
+        }
 
         // TODO: Look up themevariant (and also meta) from DB instead of resetting here.
         page.themeVariant = null;
         page.setTitle("New Basic Page");
-        page.addElement(DashboardHelper.createBreadcrumb(Admin.With.CONTENT_PAGE, BASE_TYPE), AdminTheme.topMeta());
+        page.addElement(DashboardHelper.createBreadcrumb(Admin.With.CONTENT_PAGE, TYPE), AdminTheme.topMeta());
         return page;
     }
 
@@ -82,130 +89,96 @@ public class BasicPageAdminProvider {
      *
      * @param context containing a root node with an node id
      */
-    @OnLoad(type = Core.Type.NODE, with = BasicPageAdminProvider.NEW_TYPE)
+    @OnLoad(type = Core.Type.NODE, with = BasicPageAdminProvider.TYPE)
     public static void loadNewPage(OnLoad.Context context) {
         try {
-            BasicPage page = new BasicPage();
-            context.attributes.put("page", page);
-            context.attributes.put("lead", new Content());
-            context.attributes.put("body", new Content());
-            context.node.addElement(FormHelper.createFormElement(context.node, BasicPageAdminProvider.BASE_TYPE));
-        } catch (NodeLoadException e) {
-            // TODO: recover somehow?
-            Logger.error("Unable to load node", e);
-        } catch (ModuleException e) {
-            // TODO: recover somehow?
-            Logger.error("Unable to load node", e);
-        }
-    }
+            if (StringUtils.isEmpty(context.node.nodeId())) {
+                BasicPage page = new BasicPage();
+                context.attributes.put("page", page);
+                context.attributes.put("lead", new Content());
+                context.attributes.put("body", new Content());
+            } else {
+                BasicPage basicPage = BasicPage.findLatestVersion(context.node.nodeId());
+                if (basicPage == null) {
+                    context.node.addElement(new Element.Paragraph().setWeight(10).setBody("Page '" + context.node.nodeId() + "' does not exist."));
+                    return;
+                }
+                basicPage.rootNode = RootNode.findWithNodeIdAndSpecificVersion(context.node.nodeId(), context.node.version());
 
-    /**
-     * Provides a type with the static name 'origo.admin.basicpage.edit'.
-     * This will load an existing page and set it up for editing
-     *
-     * @param context containing a root node with an node id
-     * @return a node to be presented as part of the admin UI
-     */
-    @Provides(type = Core.Type.NODE, with = BasicPageAdminProvider.EDIT_TYPE)
-    public static Node createEditPage(Provides.Context context) {
-        AdminPage page;
+                Content leadContent = Content.findWithIdentifier(basicPage.leadReferenceId);
+                Content bodyContent = Content.findWithIdentifier(basicPage.bodyReferenceId);
 
-        if (context.node.version() == null || context.node.version() == 0) {
-            page = new AdminPage(BasicPageAdminProvider.EDIT_TYPE, RootNode.findLatestVersionWithNodeId(context.node.nodeId()).copy());
-        } else {
-            page = new AdminPage(BasicPageAdminProvider.EDIT_TYPE, (RootNode) context.node);
-        }
-
-        // TODO: Look up themevariant (and also meta) from DB instead of resetting here.
-        page.themeVariant = null;
-        page.setTitle("Edit Basic Page");
-        page.addElement(DashboardHelper.createBreadcrumb(Admin.With.CONTENT_PAGE, BASE_TYPE), AdminTheme.topMeta());
-        return page;
-    }
-
-    @OnLoad(type = Core.Type.NODE, with = BasicPageAdminProvider.EDIT_TYPE)
-    public static void loadEditPage(OnLoad.Context context) {
-        try {
-            BasicPage basicPage = BasicPage.findLatestVersion(context.node.nodeId());
-            if (basicPage == null) {
-                context.node.addElement(new Element.Paragraph().setWeight(10).setBody("Page '" + context.node.nodeId() + "' does not exist."));
-                return;
+                context.attributes.put("page", basicPage);
+                context.attributes.put("lead", leadContent);
+                context.attributes.put("body", bodyContent);
             }
-            basicPage.rootNode = RootNode.findWithNodeIdAndSpecificVersion(context.node.nodeId(), context.node.version());
 
-            Content leadContent = Content.findWithIdentifier(basicPage.leadReferenceId);
-            Content bodyContent = Content.findWithIdentifier(basicPage.bodyReferenceId);
+            context.node.addElement(AdminFormHelper.createFormElement(context.node, BasicPageAdminProvider.TYPE));
 
-            context.attributes.put("page", basicPage);
-            context.attributes.put("lead", leadContent);
-            context.attributes.put("body", bodyContent);
-
-            context.node.addElement(FormHelper.createFormElement(context.node, BasicPageAdminProvider.BASE_TYPE));
-        } catch (NodeLoadException e) {
-            // TODO: recover somehow?
-            Logger.error("Unable to load node", e);
-        } catch (ModuleException e) {
+        } catch (NodeLoadException | ModuleException e) {
             // TODO: recover somehow?
             Logger.error("Unable to load node", e);
         }
+
     }
+
 
     /**
      * Adds content to the nodes with the static name 'origo.admin.basicpage.edit'.
      *
      * @param context a node of the type 'origo.admin.basicpage.edit'.
      */
-    @OnLoad(type = Core.Type.FORM, with = BASE_TYPE, after = true)
+    @OnLoad(type = Core.Type.FORM, with = TYPE, after = true)
     public static void loadEditForm(OnLoad.Context context) {
 
-            BasicPage basicPage = (BasicPage) context.attributes.get("page");
-            Content leadContent = (Content) context.attributes.get("lead");
-            Content bodyContent = (Content) context.attributes.get("body");
+        BasicPage basicPage = (BasicPage) context.attributes.get("page");
+        Content leadContent = (Content) context.attributes.get("lead");
+        Content bodyContent = (Content) context.attributes.get("body");
 
-            Element element = (Element) context.args.get("element");
-            element.setId("basicpageform").addAttribute("class", "origo-basicpageform, form");
+        Element element = (Element) context.args.get("element");
+        element.setId("basicpageform").addAttribute("class", "origo-basicpageform, form");
 
-            /**
-             * Basic Options
-             */
+        /**
+         * Basic Options
+         */
 
-            Element basicFieldSet = new Element.FieldSet().setId("basic");
-            element.addChild(basicFieldSet);
+        Element basicFieldSet = new Element.FieldSet().setId("basic");
+        element.addChild(basicFieldSet);
 
-            basicFieldSet.addChild(new Element.Legend().setBody("Basic Information"));
+        basicFieldSet.addChild(new Element.Legend().setBody("Basic Information"));
 
-            Element themeInputSelectElement = new Element.InputSelect();
-            for (CachedThemeVariant themeVariant : ThemeRepository.getAvailableThemeVariants()) {
-                Element optionElement = new Element.InputSelectOption().setBody(themeVariant.variantId);
-                if (StringUtils.isEmpty(basicPage.themeVariant)) {
-                    if (themeVariant.variantId.equals(CoreSettingsHelper.getThemeVariant())) {
-                        optionElement.addAttribute("selected", "selected");
-                    }
-                } else {
-                    if (themeVariant.variantId.equals(basicPage.themeVariant)) {
-                        optionElement.addAttribute("selected", "selected");
-                    }
+        Element themeInputSelectElement = new Element.InputSelect();
+        for (CachedThemeVariant themeVariant : ThemeRepository.getAvailableThemeVariants()) {
+            Element optionElement = new Element.InputSelectOption().setBody(themeVariant.variantId);
+            if (StringUtils.isEmpty(basicPage.themeVariant)) {
+                if (themeVariant.variantId.equals(CoreSettingsHelper.getThemeVariant())) {
+                    optionElement.addAttribute("selected", "selected");
                 }
-                themeInputSelectElement.addChild(optionElement);
+            } else {
+                if (themeVariant.variantId.equals(basicPage.themeVariant)) {
+                    optionElement.addAttribute("selected", "selected");
+                }
             }
+            themeInputSelectElement.addChild(optionElement);
+        }
 
-            basicFieldSet.addChild(new Element.Panel().addAttribute("class", "row-fluid").
-                    addChild(new Element.Panel().setWeight(10).addAttribute("class", "field span3").
-                            addChild(new Element.Label().setWeight(10).setBody("Title").addAttribute("for", TITLE_PARAM)).
-                            addChild(new Element.InputText().setWeight(20).addAttribute("name", TITLE_PARAM).addAttribute("value", basicPage.title()))).
-                    addChild(new Element.Panel().setWeight(20).addAttribute("class", "field").
-                            addChild(new Element.Label().setWeight(10).setBody("Theme Variant").addAttribute("for", THEME_VARIANT_PARAM)).
-                            addChild(themeInputSelectElement.setWeight(25).addAttribute("class", "themeSelector").
-                                    addAttribute("name", THEME_VARIANT_PARAM))));
+        basicFieldSet.addChild(new Element.Panel().addAttribute("class", "row-fluid").
+                addChild(new Element.Panel().setWeight(10).addAttribute("class", "field span3").
+                        addChild(new Element.Label().setWeight(10).setBody("Title").addAttribute("for", TITLE_PARAM)).
+                        addChild(new Element.InputText().setWeight(20).addAttribute("name", TITLE_PARAM).addAttribute("value", basicPage.title()))).
+                addChild(new Element.Panel().setWeight(20).addAttribute("class", "field").
+                        addChild(new Element.Label().setWeight(10).setBody("Theme Variant").addAttribute("for", THEME_VARIANT_PARAM)).
+                        addChild(themeInputSelectElement.setWeight(25).addAttribute("class", "themeSelector").
+                                addAttribute("name", THEME_VARIANT_PARAM))));
 
-            /**
-             * Content
-             */
+        /**
+         * Content
+         */
 
-            Element contentFieldSet = new Element.FieldSet().setId("content");
-            element.addChild(contentFieldSet);
+        Element contentFieldSet = new Element.FieldSet().setId("content");
+        element.addChild(contentFieldSet);
 
-            contentFieldSet.addChild(new Element.Legend().setBody("Content"));
+        contentFieldSet.addChild(new Element.Legend().setBody("Content"));
 
         try {
             Element leadElement = new Element.Panel().setWeight(20).addAttribute("class", "field").
@@ -219,10 +192,7 @@ public class BasicPageAdminProvider {
                     addChild(EditorHelper.createRichTextEditor(context.node, bodyContent).setWeight(20).addAttribute("class", "editor richtext").
                             addAttribute("name", BODY_PARAM).addAttribute("cols", "80").addAttribute("rows", "20"));
             contentFieldSet.addChild(bodyElement);
-        } catch (NodeLoadException e) {
-            // TODO: recover somehow?
-            Logger.error("Unable to load node", e);
-        } catch (ModuleException e) {
+        } catch (NodeLoadException | ModuleException e) {
             // TODO: recover somehow?
             Logger.error("Unable to load node", e);
         }
@@ -301,7 +271,7 @@ public class BasicPageAdminProvider {
     /**
      * Hooks in to the submit process and stores a BasicPage when it is submitted.
      */
-    @OnSubmit(with = BASE_TYPE)
+    @OnSubmit(with = TYPE, validate = BasicPage.class)
     public static Boolean storePage(OnSubmit.Context context) {
 
         Form form = DynamicForm.form().bindFromRequest();
@@ -401,10 +371,15 @@ public class BasicPageAdminProvider {
         return routes.Dashboard.dashboard(Admin.With.CONTENT_PAGE).absoluteURL(Http.Context.current().request());
     }
 
+    @Validation.Failure(with = TYPE)
+    public static Node validationFailure(Validation.Failure.Context context) {
+        return createPage(new Provides.Context(context.node, context.args));
+    }
+
     /**
      * Handling the routing at the end of the submit process, it redirects to listing the pages.
      */
-    @SubmitState(with = BASE_TYPE)
+    @SubmitState(with = TYPE)
     public static Result handleSuccess(SubmitState.Context context) {
         return Controller.redirect(routes.Dashboard.dashboard(Admin.With.CONTENT_PAGE));
     }

@@ -1,6 +1,5 @@
 package main.origo.admin.interceptors.content;
 
-import com.google.common.collect.Sets;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnInsertElement;
 import main.origo.core.annotations.forms.OnSubmit;
@@ -11,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import play.data.DynamicForm;
 
 import java.util.Map;
-import java.util.Set;
 
 @Interceptor
 public class AliasPageAdminProvider {
@@ -19,15 +17,10 @@ public class AliasPageAdminProvider {
     private static final String USE_ALIAS_PARAM = "use_alias";
     private static final String ALIAS_VALUE_PARAM = "alias";
 
-    // TODO: Hard coded for now, should be moved to configuration
-    private static Set<String> types = Sets.newHashSet(
-            BasicPageAdminProvider.EDIT_TYPE,
-            BasicPageAdminProvider.NEW_TYPE
-    );
-
     @OnInsertElement(with = Element.FieldSet.class, after = true)
     public static void addAliasFieldSet(OnInsertElement.Context context) {
-        if (types.contains(context.node.nodeType()) && context.element.getId().equals("content")) {
+        // TODO: Hard coded for now, should be moved to configuration
+        if (BasicPageAdminProvider.TYPE.equals(context.node.nodeType()) && context.element.getId().equals("content")) {
 
             Alias alias = Alias.findFirstAliasForPageId(context.node.nodeId());
 

@@ -2,7 +2,6 @@ package main.origo.core.annotations.forms;
 
 import com.google.common.collect.Maps;
 import main.origo.core.event.NodeContext;
-import play.data.DynamicForm;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -26,19 +25,15 @@ public @interface SubmitState {
 
     public static final String SUCCESS = "success";
     public static final String FAILURE = "failure";
-    public static final String VALIDATION = "validation";
 
     public class Context {
-        public Map<String, Object> args;
-        public Map<String, Object> attributes;
-        public ValidationHandler.Result validationResult;
+        public final Map<String, Object> args;
+        public final Map<String, Object> attributes;
 
         public Context(Map<String, Object> args) {
             this.args = Maps.newHashMap();
-            this.args.putAll(DynamicForm.form().bindFromRequest().data());
             this.args.putAll(args);
             this.attributes = NodeContext.current().attributes;
-            this.validationResult = new ValidationHandler.Result();
         }
     }
 }

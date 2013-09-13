@@ -11,6 +11,7 @@ import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.Provides;
 import main.origo.core.annotations.forms.OnSubmit;
 import main.origo.core.annotations.forms.SubmitState;
+import main.origo.core.annotations.forms.Validation;
 import main.origo.core.event.NodeContext;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.helpers.forms.FormHelper;
@@ -104,6 +105,7 @@ public class AuthenticationProvider {
 
     }
 
+
     /**
      * Handles the authentication of the supplied username/password.
      */
@@ -122,6 +124,11 @@ public class AuthenticationProvider {
         return true;
     }
 
+    @Validation.Failure(with = Core.With.AUTHENTICATION_CHECK)
+    public static Node validationFailure(Validation.Failure.Context context) throws NodeLoadException, ModuleException {
+        return createLoginPage(new Provides.Context(context.node, context.args));
+    }
+
     /**
      * Handling the routing at the end of the submit process when the submit failed for some reason.
      */
@@ -131,7 +138,7 @@ public class AuthenticationProvider {
         String unauthorizedPage = Settings.load().getValue(CoreSettingsHelper.Keys.UNAUTHORIZED_PAGE);
         try {
             if (StringUtils.isNotBlank(unauthorizedPage)) {
-                Content content = CoreLoader.loadAndDecoratePage(unauthorizedPage, 0);
+                Content content = CoreLoader.loadAndDecorateNode(unauthorizedPage, 0);
                 return Controller.unauthorized(content);
             }
         } catch (NodeNotFoundException | NodeLoadException | ModuleException e) {

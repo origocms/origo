@@ -1,6 +1,5 @@
 package main.origo.admin.interceptors.content;
 
-import com.google.common.collect.Sets;
 import main.origo.core.ModuleException;
 import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Interceptor;
@@ -20,7 +19,6 @@ import play.data.DynamicForm;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 @Interceptor
@@ -30,12 +28,6 @@ public class BasicNavigationPageAdminProvider {
     private static final String NAVIGATION_ID_PARAM = "nav_id";
     private static final String USE_NAVIGATION_PARAM = "nav";
 
-    // TODO: Hard coded for now, should be moved to configuration
-    private static Set<String> types = Sets.newHashSet(
-            BasicPageAdminProvider.EDIT_TYPE,
-            BasicPageAdminProvider.NEW_TYPE
-    );
-
     @OnInsertElement(with = Element.FieldSet.class, after = true)
     public static void addNavigationFieldSet(OnInsertElement.Context context) {
         if (!BasicNavigation.TYPE.equals(CoreSettingsHelper.getNavigationType())) {
@@ -43,7 +35,8 @@ public class BasicNavigationPageAdminProvider {
             return;
         }
 
-        if (types.contains(context.node.nodeType()) && context.element.getId().equals("content")) {
+        // TODO: Hard coded for now, should be moved to configuration
+        if (BasicPageAdminProvider.TYPE.equals(context.node.nodeType()) && context.element.getId().equals("content")) {
 
             AdminPage adminPage = (AdminPage) context.node;
             try {
@@ -83,10 +76,7 @@ public class BasicNavigationPageAdminProvider {
                         )
                 );
                 context.parent.addChild(new Element.InputHidden().addAttribute("name", NAVIGATION_ID_PARAM).addAttribute("value", selectedNavigationElement != null ? selectedNavigationElement.id : ""));
-            } catch (NodeLoadException e) {
-                // TODO: recover somehow?
-                Logger.error("Unable to load node", e);
-            } catch (ModuleException e) {
+            } catch (NodeLoadException | ModuleException e) {
                 // TODO: recover somehow?
                 Logger.error("Unable to load node", e);
             }

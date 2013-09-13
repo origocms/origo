@@ -2,7 +2,6 @@ package main.origo.core.annotations.forms;
 
 import com.google.common.collect.Maps;
 import main.origo.core.event.NodeContext;
-import play.data.DynamicForm;
 
 import java.lang.annotation.*;
 import java.util.Map;
@@ -18,14 +17,13 @@ public @interface OnUpdate {
 
     public static class Context {
 
-        public Object object;
-        public Map<String, Object> args;
-        public Map<String, Object> attributes;
+        public final Object object;
+        public final Map<String, Object> args;
+        public final Map<String, Object> attributes;
 
         public Context(Object object, Map<String, Object> args) {
             this.object = object;
             this.args = Maps.newHashMap();
-            this.args.putAll(DynamicForm.form().bindFromRequest().data());
             this.args.putAll(args);
             this.attributes = NodeContext.current().attributes;
         }

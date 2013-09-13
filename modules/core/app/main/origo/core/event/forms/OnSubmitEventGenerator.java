@@ -5,7 +5,7 @@ import main.origo.core.InterceptorRepository;
 import main.origo.core.ModuleException;
 import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.forms.OnSubmit;
-import main.origo.core.annotations.forms.ValidationHandler;
+import main.origo.core.annotations.forms.Validation;
 import main.origo.core.internal.CachedAnnotation;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
@@ -19,11 +19,11 @@ import java.util.Map;
 
 public class OnSubmitEventGenerator {
 
-    public static boolean triggerInterceptors(String withType, ValidationHandler.Result validationResult) throws NodeLoadException, ModuleException {
+    public static boolean triggerInterceptors(String withType, Validation.Result validationResult) throws NodeLoadException, ModuleException {
         return triggerInterceptors(withType, validationResult, Collections.<String, Object>emptyMap());
     }
 
-    public static boolean triggerInterceptors(String withType, ValidationHandler.Result validationResult, Map<String, Object> args) throws ModuleException, NodeLoadException {
+    public static boolean triggerInterceptors(String withType, Validation.Result validationResult, Map<String, Object> args) throws ModuleException, NodeLoadException {
         List<CachedAnnotation> cachedAnnotations = findOnPostInterceptorsWithType(withType);
         if (Logger.isTraceEnabled()) {
             StringBuilder sb = new StringBuilder();

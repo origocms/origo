@@ -9,7 +9,7 @@ import main.origo.core.event.OnLoadEventGenerator;
 import main.origo.core.event.ProvidesEventGenerator;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.ui.Element;
-import play.api.mvc.Call;
+import play.mvc.Call;
 
 import java.util.Map;
 
