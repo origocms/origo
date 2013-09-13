@@ -11,7 +11,7 @@ import java.util.List;
 public class DefaultValidationHandler {
 
     @ValidationHandler
-    public ValidationHandler.Result validate(ValidationHandler.Context context) {
+    public static ValidationHandler.Result validate(ValidationHandler.Context context) {
 
         List<Class> classes = OnSubmitEventGenerator.getValidatedClasses(context.with);
 

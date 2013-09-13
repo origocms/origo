@@ -1,6 +1,5 @@
 package main.origo.authentication.interceptors;
 
-import be.objectify.deadbolt.core.models.Subject;
 import controllers.origo.authentication.routes;
 import controllers.origo.core.CoreLoader;
 import main.origo.authentication.form.LoginForm;
@@ -113,18 +112,12 @@ public class AuthenticationProvider {
 
         Form<LoginForm> loginForm = context.form;
 
-        String username = loginForm.get().username;
-        String password = loginForm.get().password;
-        String path = loginForm.get().path;
+        String username = loginForm.get().getUsername();
+        String path = loginForm.get().getPath();
         if (StringUtils.isNotBlank(path)) {
             context.attributes.put(Security.Params.AUTH_PATH, path);
         }
 
-        Subject subject = SecurityEventGenerator.triggerValidateInterceptor(username, password);
-        if (subject == null) {
-            context.attributes.put("reason", "Unable to authenticated user, incorrect username or password");
-            return false;
-        }
         AuthenticationSessionUtils.setSessionUserName(username);
         return true;
     }
@@ -148,7 +141,6 @@ public class AuthenticationProvider {
 
         Logger.warn("Using fallback unauthorized handling, sending 401 with no content");
         return Controller.unauthorized();
-
     }
 
     /**

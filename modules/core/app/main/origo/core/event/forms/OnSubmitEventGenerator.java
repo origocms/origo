@@ -5,9 +5,11 @@ import main.origo.core.InterceptorRepository;
 import main.origo.core.ModuleException;
 import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.forms.OnSubmit;
+import main.origo.core.annotations.forms.ValidationHandler;
 import main.origo.core.internal.CachedAnnotation;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
+import play.data.Form;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
@@ -17,11 +19,11 @@ import java.util.Map;
 
 public class OnSubmitEventGenerator {
 
-    public static boolean triggerInterceptors(String withType) throws NodeLoadException, ModuleException {
-        return triggerInterceptors(withType, Collections.<String, Object>emptyMap());
+    public static boolean triggerInterceptors(String withType, ValidationHandler.Result validationResult) throws NodeLoadException, ModuleException {
+        return triggerInterceptors(withType, validationResult, Collections.<String, Object>emptyMap());
     }
 
-    public static boolean triggerInterceptors(String withType, Map<String, Object> args) throws ModuleException, NodeLoadException {
+    public static boolean triggerInterceptors(String withType, ValidationHandler.Result validationResult, Map<String, Object> args) throws ModuleException, NodeLoadException {
         List<CachedAnnotation> cachedAnnotations = findOnPostInterceptorsWithType(withType);
         if (Logger.isTraceEnabled()) {
             StringBuilder sb = new StringBuilder();
@@ -32,10 +34,20 @@ public class OnSubmitEventGenerator {
         }
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
             try {
-                //noinspection unchecked
-                if (!(Boolean)cachedAnnotation.method.invoke(null, new OnSubmit.Context(args))) {
-                    return false;
+                Class validate = ((OnSubmit) cachedAnnotation.annotation).validate();
+                if (validate != null) {
+                    Form form = validationResult.validatedClasses.get(validate);
+                    //noinspection unchecked
+                    if (!(Boolean)cachedAnnotation.method.invoke(null, new OnSubmit.Context(form, args))) {
+                        return false;
+                    }
+                } else {
+                    //noinspection unchecked
+                    if (!(Boolean)cachedAnnotation.method.invoke(null, new OnSubmit.Context(args))) {
+                        return false;
+                    }
                 }
+
             } catch (InvocationTargetException e) {
                 if (e.getCause() instanceof ModuleException) {
                     throw (ModuleException) e.getCause();

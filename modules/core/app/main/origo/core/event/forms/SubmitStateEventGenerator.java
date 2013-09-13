@@ -15,8 +15,16 @@ import java.util.Set;
 
 public class SubmitStateEventGenerator {
 
+    public static Result triggerInterceptor(String state, String withType) {
+        return triggerInterceptor(state, withType, new ValidationHandler.Result(), Collections.<String, Object>emptyMap());
+    }
+
     public static Result triggerInterceptor(String state, String withType, ValidationHandler.Result validationResult) {
         return triggerInterceptor(state, withType, validationResult, Collections.<String, Object>emptyMap());
+    }
+
+    public static Result triggerInterceptor(String state, String withType, Map<String, Object> args) {
+        return triggerInterceptor(state, withType, new ValidationHandler.Result(), new SubmitState.Context(args));
     }
 
     public static Result triggerInterceptor(String state, String withType, ValidationHandler.Result validationResult, Map<String, Object> args) {
@@ -25,6 +33,7 @@ public class SubmitStateEventGenerator {
 
     public static Result triggerInterceptor(String state, String withType, ValidationHandler.Result validationResult, SubmitState.Context context) {
         CachedAnnotation cachedAnnotation = findOnPostInterceptorsWithType(state, withType);
+        context.validationResult = validationResult;
         try {
             switch(state) {
                 case SubmitState.SUCCESS:

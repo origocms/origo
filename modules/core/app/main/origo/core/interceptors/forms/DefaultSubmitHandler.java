@@ -1,14 +1,13 @@
 package main.origo.core.interceptors.forms;
 
-import com.google.common.collect.Maps;
-import main.origo.core.InitializationException;
-import main.origo.core.ModuleException;
+import controllers.origo.core.CoreLoader;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.forms.SubmitHandler;
 import main.origo.core.annotations.forms.SubmitState;
 import main.origo.core.annotations.forms.ValidationHandler;
+import main.origo.core.event.ProvidesEventGenerator;
 import main.origo.core.event.forms.OnSubmitEventGenerator;
 import main.origo.core.event.forms.SubmitHandlerEventGenerator;
 import main.origo.core.event.forms.SubmitStateEventGenerator;
@@ -17,8 +16,6 @@ import main.origo.core.ui.Element;
 import play.Logger;
 import play.data.DynamicForm;
 import play.mvc.Result;
-
-import java.util.Map;
 
 /**
  * Default implementation of the submit handler. Alternate submit handlers can be used by changing the settings.
@@ -44,38 +41,22 @@ public class DefaultSubmitHandler {
         try {
             validationResult = ValidationHandlerEventGenerator.triggerValidationHandler(postHandlerName, withType);
         } catch (Exception e) {
-            Map<String, Object> args = Maps.newHashMap();
-            args.put("reason", getReason(e));
-            args.put("exception", e);
-            return SubmitStateEventGenerator.triggerInterceptor(SubmitState.FAILURE, withType, args);
+            return CoreLoader.handleException(e);
         }
 
         if (validationResult.hasErrors()) {
-            return SubmitStateEventGenerator.triggerInterceptor(SubmitState.VALIDATION, withType);
+            CoreLoader.loadNode()
+            return ProvidesEventGenerator.triggerInterceptor(SubmitState.VALIDATION, withType, validationResult);
         }
         try {
-            if (OnSubmitEventGenerator.triggerInterceptors(withType)) {
-                return SubmitStateEventGenerator.triggerInterceptor(SubmitState.SUCCESS, withType);
+            if (OnSubmitEventGenerator.triggerInterceptors(withType, validationResult)) {
+                return SubmitStateEventGenerator.triggerInterceptor(SubmitState.SUCCESS, withType, validationResult);
             } else {
-                return SubmitStateEventGenerator.triggerInterceptor(SubmitState.FAILURE, withType);
+                return SubmitStateEventGenerator.triggerInterceptor(SubmitState.FAILURE, withType, validationResult);
             }
         } catch (Exception e) {
-            Map<String, Object> args = Maps.newHashMap();
-            args.put("reason", getReason(e));
-            args.put("exception", e);
-            return SubmitStateEventGenerator.triggerInterceptor(SubmitState.FAILURE, withType, args);
+            return CoreLoader.handleException(e);
         }
-    }
-
-    private static String getReason(Exception e) {
-        Throwable thrown = e;
-        while(thrown.getCause() != null &&
-                (thrown instanceof InitializationException ||
-                        thrown instanceof ModuleException ||
-                        thrown instanceof RuntimeException)) {
-            thrown = e.getCause();
-        }
-        return thrown.getMessage();
     }
 
     @OnLoad(type = Core.Type.FORM)

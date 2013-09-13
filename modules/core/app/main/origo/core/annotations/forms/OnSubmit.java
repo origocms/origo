@@ -33,5 +33,10 @@ public @interface OnSubmit {
             this.args.putAll(args);
             this.attributes = NodeContext.current().attributes;
         }
+
+        public Context(Form<T> form, Map<String, Object> args) {
+            this(args);
+            this.form = form;
+        }
     }
 }

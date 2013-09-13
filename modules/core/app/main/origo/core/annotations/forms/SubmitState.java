@@ -31,12 +31,14 @@ public @interface SubmitState {
     public class Context {
         public Map<String, Object> args;
         public Map<String, Object> attributes;
+        public ValidationHandler.Result validationResult;
 
         public Context(Map<String, Object> args) {
             this.args = Maps.newHashMap();
             this.args.putAll(DynamicForm.form().bindFromRequest().data());
             this.args.putAll(args);
             this.attributes = NodeContext.current().attributes;
+            this.validationResult = new ValidationHandler.Result();
         }
     }
 }
