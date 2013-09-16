@@ -462,6 +462,19 @@ public class Element<T extends Element> {
         }
     }
 
+    public static class Well extends Element<Panel> {
+        public Well() {
+            super("well");
+            addAttribute("class", "well");
+        }
+
+        @Override
+        public Html decorate(RenderingContext renderingContext) {
+            Html body = ThemeHelper.decorateChildren(this, renderingContext);
+            return panel.render(this, body, this.getAttributes());
+        }
+    }
+
     public static class Paragraph extends Element<Paragraph> {
 
         public Paragraph() {

@@ -1,5 +1,6 @@
 package main.origo.core.helpers.forms;
 
+import com.google.common.collect.Lists;
 import controllers.origo.core.routes;
 import main.origo.core.ModuleException;
 import main.origo.core.Node;
@@ -17,6 +18,7 @@ import play.i18n.Messages;
 import play.mvc.Call;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class FormHelper {
@@ -31,13 +33,6 @@ public class FormHelper {
     public static Element createFormElement(Node node, String withType, String formType) throws ModuleException, NodeLoadException {
         OnLoadEventGenerator.triggerBeforeInterceptor(node, Core.Type.FORM, withType);
         Element formElement = ProvidesEventGenerator.triggerInterceptor(node, Core.Type.FORM, formType, Collections.<String, Object>singletonMap("with", withType));
-
-        Validation.Result validationResult = getValidationResult();
-        if (validationResult.hasErrors()) {
-            for (ValidationError validationError : validationResult.globalErrors) {
-                formElement.addChild(new Element.Error().setBody(validationError.message()));
-            }
-        }
 
         addNodeIdAndVersion(formElement, node);
         OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.FORM, withType, formElement);
@@ -90,23 +85,52 @@ public class FormHelper {
                 addChild(new Element.InputHidden().addAttribute("name", FormHelper.getNodeVersionParamName()).addAttribute("value", String.valueOf(node.version())));
     }
 
+    public static List<Element> getGlobalErrors() {
+        List<Element> elements = Lists.newArrayList();
+        Validation.Result validationResult = getValidationResult();
+        if (validationResult.hasErrors()) {
+            for (ValidationError validationError : validationResult.globalErrors) {
+                elements.add(new Element.Error().setBody(validationError.message()));
+            }
+        }
+        return elements;
+    }
+
+    public static Element createGlobalErrorElement() {
+        List<Element> globalErrors = FormHelper.getGlobalErrors();
+        if (!globalErrors.isEmpty()) {
+            return new Element.Well().addChildren(globalErrors);
+        }
+        return null;
+    }
+
+    public static Element getFieldError(Form form, String name) {
+        ValidationError validationError = form.error(name);
+        if (validationError != null) {
+            return new Element.Help().setWeight(1000).setBody(getFieldError(validationError));
+        }
+
+        return null;
+    }
+
+    public static String getFieldError(ValidationError validationError) {
+        return Messages.get(validationError.message(), validationError.arguments());
+    }
+
     public static Element createField(Form form, Element.Label label, Element element) {
         Element.Field field = new Element.Field().
                 addChild(label).
                 addChild(element);
 
         String name = (String) element.getAttributes().get("name");
-        ValidationError validationError = form.error(name);
+        Element validationError = getFieldError(form, name);
 
         if (validationError != null) {
             field.addAttribute("class", "error");
+            field.addChild(validationError);
         }
 
         if (!element.getAttributes().containsKey("value")) {
-            if (validationError != null) {
-                String message = Messages.get(validationError.message(), validationError.arguments());
-                field.addChild(new Element.Help().setWeight(1000).setBody(message));
-            }
             if (!CoreSettingsHelper.isSuppressPasswordValues() || !new Element.InputPassword().getType().equals(element.getType())) {
                 Form.Field formField = form.field(name);
                 element.addAttribute("value", formField.value());

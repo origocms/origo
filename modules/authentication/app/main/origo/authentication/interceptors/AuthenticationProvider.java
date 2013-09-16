@@ -81,6 +81,11 @@ public class AuthenticationProvider {
         Element element = (Element) context.args.get("element");
         element.setId("loginform").addAttribute("class", "origo-loginform, form");
 
+        Element globalErrors = FormHelper.createGlobalErrorElement();
+        if (globalErrors != null) {
+            element.addChild(globalErrors);
+        }
+
         Element basicFieldSet = new Element.FieldSet().setId("login");
         element.addChild(basicFieldSet);
 
@@ -110,7 +115,6 @@ public class AuthenticationProvider {
                 ));
 
     }
-
 
     /**
      * Handles the authentication of the supplied username/password.
