@@ -12,8 +12,11 @@ import main.origo.core.event.ProvidesEventGenerator;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.ui.Element;
 import play.data.Form;
+import play.data.validation.ValidationError;
+import play.i18n.Messages;
 import play.mvc.Call;
 
+import java.util.Collections;
 import java.util.Map;
 
 public class FormHelper {
@@ -25,11 +28,19 @@ public class FormHelper {
         return createFormElement(node, withType, CoreSettingsHelper.getDefaultFormType());
     }
 
-    public static Element createFormElement(Node node, String nodeType, String formType) throws ModuleException, NodeLoadException {
-        OnLoadEventGenerator.triggerBeforeInterceptor(node, Core.Type.FORM, nodeType);
-        Element formElement = ProvidesEventGenerator.triggerInterceptor(node, Core.Type.FORM, formType);
+    public static Element createFormElement(Node node, String withType, String formType) throws ModuleException, NodeLoadException {
+        OnLoadEventGenerator.triggerBeforeInterceptor(node, Core.Type.FORM, withType);
+        Element formElement = ProvidesEventGenerator.triggerInterceptor(node, Core.Type.FORM, formType, Collections.<String, Object>singletonMap("with", withType));
+
+        Validation.Result validationResult = getValidationResult();
+        if (validationResult.hasErrors()) {
+            for (ValidationError validationError : validationResult.globalErrors) {
+                formElement.addChild(new Element.Error().setBody(validationError.message()));
+            }
+        }
+
         addNodeIdAndVersion(formElement, node);
-        OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.FORM, nodeType, formElement);
+        OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.FORM, withType, formElement);
         return formElement;
     }
 
@@ -38,7 +49,15 @@ public class FormHelper {
     }
 
     public static <T> Form<T> getValidationResult(Class<T> validatedClass) {
-        return (Form<T>)getValidationResult().validatedClasses.get(validatedClass);
+        Validation.Result validationResult = getValidationResult();
+        if (validationResult == null) {
+            return Form.form(validatedClass);
+        }
+        Map<Class, Form> validatedClasses = validationResult.validatedClasses;
+        if (!validatedClasses.containsKey(validatedClass)) {
+            return Form.form(validatedClass);
+        }
+        return (Form<T>) validatedClasses.get(validatedClass);
     }
 
     public static Call getPostURL() {
@@ -69,5 +88,31 @@ public class FormHelper {
         form.
                 addChild(new Element.InputHidden().addAttribute("name", FormHelper.getNodeIdParamName()).addAttribute("value", node.nodeId())).
                 addChild(new Element.InputHidden().addAttribute("name", FormHelper.getNodeVersionParamName()).addAttribute("value", String.valueOf(node.version())));
+    }
+
+    public static Element createField(Form form, Element.Label label, Element element) {
+        Element.Field field = new Element.Field().
+                addChild(label).
+                addChild(element);
+
+        String name = (String) element.getAttributes().get("name");
+        ValidationError validationError = form.error(name);
+
+        if (validationError != null) {
+            field.addAttribute("class", "error");
+        }
+
+        if (!element.getAttributes().containsKey("value")) {
+            if (validationError != null) {
+                String message = Messages.get(validationError.message(), validationError.arguments());
+                field.addChild(new Element.Help().setWeight(1000).setBody(message));
+            }
+            if (!CoreSettingsHelper.isSuppressPasswordValues() || !new Element.InputPassword().getType().equals(element.getType())) {
+                Form.Field formField = form.field(name);
+                element.addAttribute("value", formField.value());
+            }
+        }
+
+        return field;
     }
 }

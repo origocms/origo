@@ -90,13 +90,17 @@ public class AuthenticationProvider {
         }
 
         basicFieldSet.addChild(new Element.Panel().
-                addChild(new Element.Panel().setWeight(10).
-                        addChild(new Element.Label().setWeight(10).setBody("Username").addAttribute("for", USERNAME_PARAM)).
-                        addChild(new Element.InputText(form).setWeight(20).addAttribute("name", USERNAME_PARAM))
+                addChild(FormHelper.createField(
+                        form,
+                        new Element.Label().setWeight(10).setBody("Username").addAttribute("for", USERNAME_PARAM),
+                        new Element.InputText().setWeight(20).addAttribute("name", USERNAME_PARAM)).
+                        setWeight(10)
                 ).
-                addChild(new Element.Panel().setWeight(20).
-                        addChild(new Element.Label().setWeight(10).setBody("Password").addAttribute("for", PASSWORD_PARAM)).
-                        addChild(new Element.InputPassword().setWeight(20).addAttribute("name", PASSWORD_PARAM))
+                addChild(FormHelper.createField(
+                        form,
+                        new Element.Label().setWeight(10).setBody("Password").addAttribute("for", PASSWORD_PARAM),
+                        new Element.InputPassword().setWeight(20).addAttribute("name", PASSWORD_PARAM)).
+                        setWeight(20)
                 )
         );
 

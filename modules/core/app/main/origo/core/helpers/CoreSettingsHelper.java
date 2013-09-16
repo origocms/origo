@@ -31,6 +31,8 @@ public class CoreSettingsHelper {
 
         public static final String PREVIEW_TICKET_PERIOD = "origo.preview.ticket_period";
 
+        public static final String INPUT_SUPPRESS_PASSWORD_VALUE = "origo.input.suppress_password_value";
+
     }
 
     private static Period previewTicketPeriod;
@@ -93,6 +95,10 @@ public class CoreSettingsHelper {
             }
         }
         return previewTicketPeriod;
+    }
+
+    public static boolean isSuppressPasswordValues() {
+        return Settings.load().getValueAsBoolean(Keys.INPUT_SUPPRESS_PASSWORD_VALUE, true);
     }
 
 }

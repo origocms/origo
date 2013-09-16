@@ -130,17 +130,20 @@ public class Element<T extends Element> {
 
     }
 
-    public static class Span extends Element<Span> {
+    public static class Help extends Base<Help> {
+
+        public Help() {
+            super("p", "help");
+        }
+
+    }
+
+    public static class Span extends Base<Span> {
 
         public Span() {
-            super("span");
+            super("span", "span");
         }
 
-        @Override
-        public Html decorate(RenderingContext renderingContext) {
-            Html body = ThemeHelper.decorateChildren(this, renderingContext);
-            return span.render(this, body, this.getAttributes());
-        }
     }
 
     public static class ListBulleted extends Element<ListBulleted> {
@@ -211,6 +214,19 @@ public class Element<T extends Element> {
         }
     }
 
+    public static class Field extends Element<Field> {
+
+        public Field() {
+            super("form_group");
+        }
+
+        @Override
+        public Html decorate(RenderingContext renderingContext) {
+            Html body = ThemeHelper.decorateChildren(this, renderingContext);
+            return field.render(this, body, this.getAttributes());
+        }
+    }
+
     public static class Legend extends Base<Legend> {
         public Legend() {
             super("legend", "legend");
@@ -255,13 +271,6 @@ public class Element<T extends Element> {
         }
         public InputText(Class c) {
             super("input_text", c);
-        }
-
-        public InputText(play.data.Form form) {
-            super("input_text", form, String.class);
-        }
-        public InputText(play.data.Form form, Class c) {
-            super("input_text", form, c);
         }
 
         @Override
@@ -466,6 +475,55 @@ public class Element<T extends Element> {
         }
     }
 
+    protected static class Emphasis<T> extends Base {
+
+        protected Emphasis(String type, String classAttribute) {
+            super("p", type);
+            addAttribute("class", classAttribute);
+        }
+
+    }
+
+    public static class Error extends Emphasis<Error> {
+
+        public Error() {
+            super("error", "error");
+        }
+
+    }
+
+    public static class Warning extends Emphasis<Warning> {
+
+        public Warning() {
+            super("warning", "warning");
+        }
+
+    }
+
+    public static class Muted extends Emphasis<Muted> {
+
+        public Muted() {
+            super("warning", "muted");
+        }
+
+    }
+
+    public static class Info extends Emphasis<Info> {
+
+        public Info() {
+            super("warning", "info");
+        }
+
+    }
+
+    public static class Success extends Emphasis<Success> {
+
+        public Success() {
+            super("warning", "success");
+        }
+
+    }
+
     public static class Text extends Element<Text> {
 
         public Text() {
@@ -576,26 +634,15 @@ public class Element<T extends Element> {
 
     private Class inputType;
 
-    private play.data.Form form;
-
     protected Element(String type) {
         this.id = UUID.randomUUID().toString();
         this.type = type;
-        this.form = play.data.Form.form();
     }
 
     protected Element(String type, Class t) {
         this.id = UUID.randomUUID().toString();
         this.type = type;
         this.inputType = t;
-        this.form = play.data.Form.form();
-    }
-
-    protected Element(String type, play.data.Form form, Class t) {
-        this.id = UUID.randomUUID().toString();
-        this.type = type;
-        this.inputType = t;
-        this.form = form;
     }
 
     public String getId() {
@@ -620,7 +667,7 @@ public class Element<T extends Element> {
     }
 
     public Map<String, String> getAttributes() {
-        return Collections.unmodifiableMap(attributes);
+        return Collections.<String, String>unmodifiableMap(attributes);
     }
 
     public T setAttributes(Map<String, String> attributes) {

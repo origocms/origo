@@ -69,6 +69,41 @@ public class AdminTheme {
         return context.element.decorate(context.renderingContext);
     }
 
+    @Decorates(types = {Element.Error.class})
+    public static Html decorateEmphasisError(Decorates.Context context) {
+        context.element.addAttribute("class", "text-error");
+        return context.element.decorate(context.renderingContext);
+    }
+
+    @Decorates(types = {Element.Warning.class})
+    public static Html decorateEmphasisWarning(Decorates.Context context) {
+        context.element.addAttribute("class", "text-warning");
+        return context.element.decorate(context.renderingContext);
+    }
+
+    @Decorates(types = {Element.Info.class})
+    public static Html decorateEmphasisInfo(Decorates.Context context) {
+        context.element.addAttribute("class", "text-info");
+        return context.element.decorate(context.renderingContext);
+    }
+
+    @Decorates(types = {Element.Success.class})
+    public static Html decorateEmphasisSuccess(Decorates.Context context) {
+        context.element.addAttribute("class", "text-success");
+        return context.element.decorate(context.renderingContext);
+    }
+
+    @Decorates(types = {Element.Field.class})
+    public static Html decorateField(Decorates.Context context) {
+        context.element.addAttribute("class", "control-group");
+        return context.element.decorate(context.renderingContext);
+    }
+
+    @Decorates(types = {Element.Help.class})
+    public static Html decorateHelp(Decorates.Context context) {
+        context.element.addAttribute("class", "help-inline");
+        return context.element.decorate(context.renderingContext);
+    }
 
     // TODO: Load this from database instead
     public static Meta centerColumnMeta() {
