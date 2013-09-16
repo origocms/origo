@@ -11,12 +11,14 @@ import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.forms.SubmitHandler;
 import main.origo.core.annotations.forms.SubmitState;
 import main.origo.core.annotations.forms.Validation;
+import main.origo.core.event.NodeContext;
 import main.origo.core.event.forms.OnSubmitEventGenerator;
-import main.origo.core.event.forms.SubmitHandlerEventGenerator;
 import main.origo.core.event.forms.SubmitStateEventGenerator;
 import main.origo.core.event.forms.ValidationHandlerEventGenerator;
+import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.ui.Element;
 import models.origo.core.RootNode;
+import org.apache.commons.lang3.StringUtils;
 import play.data.DynamicForm;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -30,7 +32,7 @@ import java.lang.reflect.InvocationTargetException;
 @Interceptor
 public class DefaultSubmitHandler {
 
-    private static final String WITH_TYPE = "_core_with_type";
+    protected static final String WITH_TYPE = "_core_with_type";
 
     @SubmitHandler
     public static Result handleSubmit(SubmitHandler.Context context) {
@@ -67,7 +69,9 @@ public class DefaultSubmitHandler {
     }
 
     protected static Result handleValidationFailure(String withType, Validation.Result validationResult) throws InvocationTargetException, IllegalAccessException, NodeNotFoundException, NodeLoadException, ModuleException {
-        Node node = ValidationHandlerEventGenerator.triggerValidationFailedHandler(new RootNode(0), withType, validationResult);
+        RootNode rootNode = new RootNode(0, withType);
+        NodeContext.current().node = rootNode;
+        Node node = ValidationHandlerEventGenerator.triggerValidationFailedHandler(rootNode, withType, validationResult);
         return Controller.badRequest(CoreLoader.decorateNode(node));
     }
 
@@ -81,7 +85,11 @@ public class DefaultSubmitHandler {
 
     @OnLoad(type = Core.Type.FORM)
     public static void addWithTypeField(OnLoad.Context context) {
-        if (DefaultSubmitHandler.class.isAssignableFrom(SubmitHandlerEventGenerator.getActiveSubmitHandler())) {
+        final String postHandler = CoreSettingsHelper.getSubmitHandler();
+        if (StringUtils.isBlank(postHandler)) {
+            throw new RuntimeException("No SubmitHandler defined in settings: "+CoreSettingsHelper.Keys.SUBMIT_HANDLER);
+        }
+        if (DefaultSubmitHandler.class.getName().equals(postHandler)) {
             Element element = (Element) context.args.get("element");
             element.addChild(new Element.InputHidden().addAttribute("name", WITH_TYPE).addAttribute("value", context.withType));
         }

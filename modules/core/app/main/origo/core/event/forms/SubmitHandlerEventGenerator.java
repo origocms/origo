@@ -5,21 +5,13 @@ import main.origo.core.InterceptorRepository;
 import main.origo.core.ModuleException;
 import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.forms.SubmitHandler;
-import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.internal.CachedAnnotation;
-import org.apache.commons.lang3.StringUtils;
 import play.mvc.Result;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 public class SubmitHandlerEventGenerator {
-
-    public static Class getActiveSubmitHandler() {
-        final String postHandlerName = getRegisteredSubmitHandlerName();
-        CachedAnnotation cachedAnnotation = getPostHandler(postHandlerName);
-        return cachedAnnotation.method.getDeclaringClass();
-    }
 
     public static Result triggerSubmitHandler(String postHandlerName) throws ModuleException, NodeLoadException {
         CachedAnnotation cachedAnnotation = getPostHandler(postHandlerName);
@@ -45,14 +37,6 @@ public class SubmitHandlerEventGenerator {
             throw new RuntimeException("No SubmitHandler found");
         }
         return postHandlers.iterator().next();
-    }
-
-    public static String getRegisteredSubmitHandlerName() {
-        final String postHandler = CoreSettingsHelper.getSubmitHandler();
-        if (StringUtils.isBlank(postHandler)) {
-            throw new RuntimeException("No SubmitHandler defined in settings");
-        }
-        return postHandler;
     }
 
 }

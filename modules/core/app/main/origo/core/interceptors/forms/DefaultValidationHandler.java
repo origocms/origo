@@ -18,10 +18,12 @@ public class DefaultValidationHandler {
         Validation.Result result = new Validation.Result();
 
         for (Class c : classes) {
-            Form form = Form.form(c).bindFromRequest();
-            result.validatedClasses.put(c, form);
-            result.errors.putAll(form.errors());
-            result.globalErrors.addAll(form.globalErrors());
+            if (c != Object.class) {
+                Form form = Form.form(c).bindFromRequest();
+                result.validatedClasses.put(c, form);
+                result.errors.putAll(form.errors());
+                result.globalErrors.addAll(form.globalErrors());
+            }
         }
 
         return result;

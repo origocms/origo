@@ -55,7 +55,7 @@ public class ValidationHandlerEventGenerator {
                 getInterceptors(annotationType, new CachedAnnotation.InterceptorSelector() {
                     @Override
                     public boolean isCorrectInterceptor(CachedAnnotation listener) {
-                        return withType.equals(((Validation.Failure)listener).with());
+                        return withType.equals(((Validation.Failure)listener.annotation).with());
                     }
                 });
 

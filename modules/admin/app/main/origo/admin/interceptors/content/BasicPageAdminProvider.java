@@ -22,6 +22,7 @@ import main.origo.core.event.forms.OnUpdateEventGenerator;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.helpers.forms.EditorHelper;
 import main.origo.core.helpers.forms.FormHelper;
+import main.origo.core.interceptors.BasicPageProvider;
 import main.origo.core.internal.CachedThemeVariant;
 import main.origo.core.ui.Element;
 import models.origo.admin.AdminPage;
@@ -48,7 +49,7 @@ import java.util.Map;
 @Interceptor
 public class BasicPageAdminProvider {
 
-    public static final String TYPE = Core.With.CONTENT_PAGE + ".basicpage";
+    public static final String TYPE = BasicPageProvider.TYPE + ".admin";
 
     private static final String TITLE_PARAM = "origo-basicpageform-title";
     private static final String PUBLISH_DATE_PARAM = "origo-basicpageform-publish-date";
@@ -115,7 +116,10 @@ public class BasicPageAdminProvider {
 
             context.node.addElement(AdminFormHelper.createFormElement(context.node, BasicPageAdminProvider.TYPE));
 
-        } catch (NodeLoadException | ModuleException e) {
+        } catch (ModuleException e) {
+            // TODO: recover somehow?
+            Logger.error("Unable to load node", e);
+        } catch (NodeLoadException e) {
             // TODO: recover somehow?
             Logger.error("Unable to load node", e);
         }
@@ -192,7 +196,10 @@ public class BasicPageAdminProvider {
                     addChild(EditorHelper.createRichTextEditor(context.node, bodyContent).setWeight(20).addAttribute("class", "editor richtext").
                             addAttribute("name", BODY_PARAM).addAttribute("cols", "80").addAttribute("rows", "20"));
             contentFieldSet.addChild(bodyElement);
-        } catch (NodeLoadException | ModuleException e) {
+        } catch (ModuleException e) {
+            // TODO: recover somehow?
+            Logger.error("Unable to load node", e);
+        } catch (NodeLoadException  e) {
             // TODO: recover somehow?
             Logger.error("Unable to load node", e);
         }

@@ -194,7 +194,7 @@ public class Element<T extends Element> {
         @Override
         public Html decorate(RenderingContext renderingContext) {
             Html body = ThemeHelper.decorateChildren(this, renderingContext);
-            return form.render(this, body, this.getAttributes());
+            return views.html.origo.core.decorators.forms.form.render(this, body, this.getAttributes());
         }
     }
 
@@ -257,10 +257,17 @@ public class Element<T extends Element> {
             super("input_text", c);
         }
 
+        public InputText(play.data.Form form) {
+            super("input_text", form, String.class);
+        }
+        public InputText(play.data.Form form, Class c) {
+            super("input_text", form, c);
+        }
+
         @Override
         public Html decorate(RenderingContext renderingContext) {
             Map<String, String> attributes = ElementHelper.combineAttributes(Collections.<String, String>singletonMap("type", "text"), this.getAttributes());
-            
+
             return input.render(this, null, attributes);
         }
     }
@@ -569,15 +576,26 @@ public class Element<T extends Element> {
 
     private Class inputType;
 
+    private play.data.Form form;
+
     protected Element(String type) {
         this.id = UUID.randomUUID().toString();
         this.type = type;
+        this.form = play.data.Form.form();
     }
 
     protected Element(String type, Class t) {
         this.id = UUID.randomUUID().toString();
         this.type = type;
         this.inputType = t;
+        this.form = play.data.Form.form();
+    }
+
+    protected Element(String type, play.data.Form form, Class t) {
+        this.id = UUID.randomUUID().toString();
+        this.type = type;
+        this.inputType = t;
+        this.form = form;
     }
 
     public String getId() {

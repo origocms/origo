@@ -32,9 +32,9 @@ import play.mvc.Result;
 @Interceptor
 public class AuthenticationProvider {
 
-    private static final String USERNAME_PARAM = "origo-authentication-username";
-    private static final String PASSWORD_PARAM = "origo-authentication-password";
-    private static final String PATH_PARAM = "origo-authentication-path";
+    private static final String USERNAME_PARAM = "username";
+    private static final String PASSWORD_PARAM = "password";
+    private static final String PATH_PARAM = "path";
 
     /**
      * Checks if there is a authenticated user and if not triggers the display of a login page.
@@ -76,6 +76,8 @@ public class AuthenticationProvider {
     @OnLoad(type = Core.Type.FORM, with = Core.With.AUTHENTICATION_CHECK, after = true)
     public static void addLoginForm(OnLoad.Context context) {
 
+        Form<LoginForm> form = FormHelper.getValidationResult(LoginForm.class);
+
         Element element = (Element) context.args.get("element");
         element.setId("loginform").addAttribute("class", "origo-loginform, form");
 
@@ -90,7 +92,7 @@ public class AuthenticationProvider {
         basicFieldSet.addChild(new Element.Panel().
                 addChild(new Element.Panel().setWeight(10).
                         addChild(new Element.Label().setWeight(10).setBody("Username").addAttribute("for", USERNAME_PARAM)).
-                        addChild(new Element.InputText().setWeight(20).addAttribute("name", USERNAME_PARAM))
+                        addChild(new Element.InputText(form).setWeight(20).addAttribute("name", USERNAME_PARAM))
                 ).
                 addChild(new Element.Panel().setWeight(20).
                         addChild(new Element.Label().setWeight(10).setBody("Password").addAttribute("for", PASSWORD_PARAM)).

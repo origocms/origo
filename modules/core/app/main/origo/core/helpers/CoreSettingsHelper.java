@@ -7,7 +7,6 @@ import models.origo.core.Settings;
 import models.origo.core.navigation.BasicNavigation;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.Period;
-import play.Logger;
 
 public class CoreSettingsHelper {
 
@@ -65,19 +64,19 @@ public class CoreSettingsHelper {
     }
 
     public static String getNavigationType() {
-        return getClassTypeIfExists(Keys.NAVIGATION_TYPE, BasicNavigation.TYPE);
+        return SettingsHelper.getClassTypeIfExists(Keys.NAVIGATION_TYPE, BasicNavigation.TYPE);
     }
 
     public static String getDefaultFormType() {
-        return getClassTypeIfExists(Keys.DEFAULT_FORM_TYPE, DefaultFormProvider.TYPE);
+        return SettingsHelper.getClassTypeIfExists(Keys.DEFAULT_FORM_TYPE, DefaultFormProvider.TYPE);
     }
 
     public static String getSubmitHandler() {
-        return getClassTypeIfExists(Keys.SUBMIT_HANDLER, DefaultSubmitHandler.class.getName());
+        return SettingsHelper.getClassTypeIfExists(Keys.SUBMIT_HANDLER, DefaultSubmitHandler.class.getName());
     }
 
     public static String getValidationHandler() {
-        return getClassTypeIfExists(Keys.VALIDATION_HANDLER, DefaultValidationHandler.class.getName());
+        return SettingsHelper.getClassTypeIfExists(Keys.VALIDATION_HANDLER, DefaultValidationHandler.class.getName());
     }
 
     public static String getUserType() {
@@ -96,15 +95,4 @@ public class CoreSettingsHelper {
         return previewTicketPeriod;
     }
 
-    protected static String getClassTypeIfExists(String propertyName, String fallback) {
-        String classType = Settings.load().getValue(propertyName);
-        if (classType != null) {
-            try {
-                return Class.forName(classType).getName();
-            } catch (ClassNotFoundException e) {
-                Logger.warn("Unable to find " + propertyName + " type [" + classType + "], using fallback [" + fallback + "] instead");
-            }
-        }
-        return fallback;
-    }
 }

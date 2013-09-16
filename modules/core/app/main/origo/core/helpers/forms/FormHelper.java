@@ -5,10 +5,13 @@ import main.origo.core.ModuleException;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Core;
+import main.origo.core.annotations.forms.Validation;
+import main.origo.core.event.NodeContext;
 import main.origo.core.event.OnLoadEventGenerator;
 import main.origo.core.event.ProvidesEventGenerator;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.ui.Element;
+import play.data.Form;
 import play.mvc.Call;
 
 import java.util.Map;
@@ -19,15 +22,23 @@ public class FormHelper {
     private static final String NODE_VERSION = "_core_node_version";
 
     public static Element createFormElement(Node node, String withType) throws NodeLoadException, ModuleException {
-        return createFormElement(CoreSettingsHelper.getDefaultFormType(), node, withType);
+        return createFormElement(node, withType, CoreSettingsHelper.getDefaultFormType());
     }
 
-    public static Element createFormElement(String formType, Node node, String nodeType) throws ModuleException, NodeLoadException {
+    public static Element createFormElement(Node node, String nodeType, String formType) throws ModuleException, NodeLoadException {
         OnLoadEventGenerator.triggerBeforeInterceptor(node, Core.Type.FORM, nodeType);
         Element formElement = ProvidesEventGenerator.triggerInterceptor(node, Core.Type.FORM, formType);
         addNodeIdAndVersion(formElement, node);
         OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.FORM, nodeType, formElement);
         return formElement;
+    }
+
+    public static Validation.Result getValidationResult() {
+        return (Validation.Result) NodeContext.current().attributes.get(Validation.Result.class.getCanonicalName());
+    }
+
+    public static <T> Form<T> getValidationResult(Class<T> validatedClass) {
+        return (Form<T>)getValidationResult().validatedClasses.get(validatedClass);
     }
 
     public static Call getPostURL() {

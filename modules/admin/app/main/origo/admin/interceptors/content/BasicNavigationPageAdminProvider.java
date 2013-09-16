@@ -76,7 +76,10 @@ public class BasicNavigationPageAdminProvider {
                         )
                 );
                 context.parent.addChild(new Element.InputHidden().addAttribute("name", NAVIGATION_ID_PARAM).addAttribute("value", selectedNavigationElement != null ? selectedNavigationElement.id : ""));
-            } catch (NodeLoadException | ModuleException e) {
+            } catch (NodeLoadException e) {
+                // TODO: recover somehow?
+                Logger.error("Unable to load node", e);
+            } catch (ModuleException e) {
                 // TODO: recover somehow?
                 Logger.error("Unable to load node", e);
             }

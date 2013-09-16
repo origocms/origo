@@ -64,6 +64,16 @@ public final class RootNode extends Model<RootNode> implements Node {
         this.version = version;
     }
 
+    public RootNode(Integer version, String nodeType) {
+        this(version);
+        this.nodeType = nodeType;
+    }
+
+    public RootNode(String nodeId, Integer version, String nodeType) {
+        this(nodeId, version);
+        this.nodeType = nodeType;
+    }
+
     @Override
     public String title() {
         return toString();
