@@ -88,7 +88,7 @@ public class FormHelper {
     public static List<Element> getGlobalErrors() {
         List<Element> elements = Lists.newArrayList();
         Validation.Result validationResult = getValidationResult();
-        if (validationResult.hasErrors()) {
+        if (validationResult != null && validationResult.hasErrors()) {
             for (ValidationError validationError : validationResult.globalErrors) {
                 elements.add(new Element.Error().setBody(validationError.message()));
             }
