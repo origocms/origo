@@ -1,10 +1,7 @@
 package main.origo.authentication.interceptors;
 
 import controllers.origo.core.CoreLoader;
-import main.origo.core.ModuleException;
-import main.origo.core.NodeLoadException;
-import main.origo.core.NodeNotFoundException;
-import main.origo.core.User;
+import main.origo.core.*;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.Provides;
@@ -18,11 +15,13 @@ import play.mvc.Content;
 import play.mvc.Controller;
 import play.mvc.Result;
 
+import java.util.Map;
+
 @Interceptor
 public class AuthorizationProvider {
 
     @Provides(type = Core.Type.SECURITY, with = Core.With.AUTHORIZATION_FAILURE)
-    public static Result handleAuthFailure(Provides.Context context) throws NodeLoadException, ModuleException {
+    public static Result handleAuthFailure(Node node, String withType, Map<String, Object> args) throws NodeLoadException, ModuleException {
 
         User user = SecurityEventGenerator.triggerCurrentUserInterceptor();
         SecurityEventGenerator.triggerBeforeAuthorizationFailure(user);

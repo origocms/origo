@@ -17,6 +17,8 @@ import models.origo.core.RootNode;
 import play.Logger;
 import views.html.origo.admin.dashboard_item;
 
+import java.util.Map;
+
 @Interceptor
 public class DefaultSettingsDashboardProvider {
 
@@ -25,7 +27,7 @@ public class DefaultSettingsDashboardProvider {
      */
     @Provides(type = Admin.Type.DASHBOARD_ITEM, with = Admin.With.SETTINGS_PAGE)
     @Relationship(parent = Admin.With.FRONT_PAGE)
-    public static Element addSettingsDashboardItemToFrontPage(Provides.Context context) {
+    public static Element addSettingsDashboardItemToFrontPage(Node node, String withType, Map<String, Object> args) {
         return DashboardHelper.createBasicDashboardItem().
                 addChild(new Element.Raw().setBody(dashboard_item.render("Settings", "", getDashboardUrl(), "View")));
     }
@@ -39,8 +41,8 @@ public class DefaultSettingsDashboardProvider {
      * Creating the Node for the Settings Dashboard.
      */
     @Provides(type = Core.Type.NODE, with = Admin.With.SETTINGS_PAGE)
-    public static Node addSettingsDashboard(Provides.Context context) throws NodeLoadException {
-        AdminPage page = new AdminPage(Admin.With.SETTINGS_PAGE, (RootNode) context.node);
+    public static Node addSettingsDashboard(Node node, String withType, Map<String, Object> args) throws NodeLoadException {
+        AdminPage page = new AdminPage(Admin.With.SETTINGS_PAGE, (RootNode) node);
         page.setTitle("Settings - Dashboard");
 
         page.addElement(DashboardHelper.createBreadcrumb(Admin.With.SETTINGS_PAGE), AdminTheme.topMeta());
@@ -59,9 +61,9 @@ public class DefaultSettingsDashboardProvider {
      */
     @Provides(type = Admin.Type.DASHBOARD, with = Admin.With.SETTINGS_PAGE)
     @Relationship(parent = Admin.With.FRONT_PAGE)
-    public static Element addSettingsDashboardContent(Provides.Context context) {
+    public static Element addSettingsDashboardContent(Node node, String withType, Map<String, Object> args) {
         return DashboardHelper.createBasicDashboard().setId("dashboard."+ Admin.With.SETTINGS_PAGE).
-                addChildren(DashboardHelper.createDashboardItems(context.node, Admin.With.SETTINGS_PAGE));
+                addChildren(DashboardHelper.createDashboardItems(node, Admin.With.SETTINGS_PAGE));
     }
 
 }

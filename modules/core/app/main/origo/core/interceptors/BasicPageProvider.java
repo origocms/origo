@@ -2,6 +2,7 @@ package main.origo.core.interceptors;
 
 
 import main.origo.core.ModuleException;
+import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
 import main.origo.core.NodeNotFoundException;
 import main.origo.core.annotations.Core;
@@ -15,6 +16,8 @@ import models.origo.core.Content;
 import models.origo.core.RootNode;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Map;
+
 /**
  * Provides and populates pages of type BasicPage.
  */
@@ -24,13 +27,13 @@ public class BasicPageProvider {
     public static final String TYPE = BasicPage.TYPE;
 
     @Provides(type = Core.Type.NODE, with = TYPE)
-    public static BasicPage loadPage(Provides.Context context) throws NodeNotFoundException {
+    public static BasicPage loadPage(Node node, String withType, Map<String, Object> args) throws NodeNotFoundException {
 
-        BasicPage page = BasicPage.findWithNodeIdAndSpecificVersion(context.node.nodeId(), context.node.version());
+        BasicPage page = BasicPage.findWithNodeIdAndSpecificVersion(node.nodeId(), node.version());
         if (page == null) {
-            throw new NodeNotFoundException(context.node.nodeId());
+            throw new NodeNotFoundException(node.nodeId());
         }
-        page.rootNode = (RootNode) context.node;
+        page.rootNode = (RootNode) node;
 
         return page;
     }

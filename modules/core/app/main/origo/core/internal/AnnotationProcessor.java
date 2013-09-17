@@ -1,5 +1,8 @@
 package main.origo.core.internal;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import main.origo.core.InitializationException;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.ModuleRepository;
@@ -14,7 +17,6 @@ import org.reflections.util.ConfigurationBuilder;
 import play.Logger;
 import play.api.templates.Html;
 import play.mvc.Content;
-import play.mvc.Result;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -99,7 +101,7 @@ public class AnnotationProcessor {
 
     private static void scanModuleSuppliedAnnotations() {
 
-        List<Prototype> annotationPrototypes = new ArrayList<>();
+        Map<Class<? extends Annotation>, List<Prototype>> annotationPrototypes = Maps.newHashMap();
 
         for (CachedModule module : ModuleRepository.getAll()) {
 
@@ -119,14 +121,21 @@ public class AnnotationProcessor {
                 try {
                     if (module.annotationsMethod != null) {
                         //noinspection unchecked
-                        annotationPrototypes.addAll((List<Prototype>) module.annotationsMethod.invoke(module.clazz));
+                        List<Prototype> prototypes = (List<Prototype>) module.annotationsMethod.invoke(module.clazz);
+                        for (Prototype prototype : prototypes) {
+                            if (!annotationPrototypes.containsKey(prototype.annotation)) {
+                                annotationPrototypes.put(prototype.annotation, Lists.<Prototype>newArrayList());
+                            }
+                            List<Prototype> list = annotationPrototypes.get(prototype.annotation);
+                            list.add(prototype);
+                        }
                     }
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     throw new InitializationException("Unable to get annotations from module", e);
                 }
 
-                for (Prototype prototype : annotationPrototypes) {
-                    scanEventHandlers(module, interceptors, prototype);
+                for (Class<? extends Annotation> annotation : annotationPrototypes.keySet()) {
+                    scanEventHandlers(module, interceptors, annotation, annotationPrototypes.get(annotation));
                 }
 
                 // Themes and Decorators
@@ -139,17 +148,19 @@ public class AnnotationProcessor {
         }
     }
 
-    public static void scanEventHandlers(CachedModule module, Set<Class<?>> classes, Prototype prototype) {
-
-        Class<? extends Annotation> annotationClass = prototype.annotation;
-        Class[] parameterTypes = prototype.expectedParameterTypes;
-        Class returnType = prototype.expectedReturnType;
+    public static void scanEventHandlers(CachedModule module, Set<Class<?>> classes, Class<? extends Annotation> annotationClass, List<Prototype> prototypes) {
 
         Logger.trace("- - Processing [" + annotationClass.getSimpleName() + "]");
 
+        Set<Method> unmatchedMethods = Sets.newHashSet();
+
+        // First pass to find methods matching a prototype
         for (Class c : classes) {
+
             Set<Method> methods = Reflections.getAllMethods(c, ReflectionUtils.withAnnotation(annotationClass));
             for (Method m : methods) {
+
+                // Basic sanity checks
                 if (!Modifier.isStatic(m.getModifiers())) {
                     throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() +
                             "' is annotated with '" + annotationClass.getName() +
@@ -160,36 +171,96 @@ public class AnnotationProcessor {
                             "' is annotated with '" + annotationClass.getName() +
                             "' but the method is not public");
                 }
-                Class[] pc = m.getParameterTypes();
-                if (pc.length != parameterTypes.length) {
-                    throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() +
-                            "' is annotated with '" + annotationClass.getName() +
-                            "' but the method does not match the required signature (different amount of parameters)");
-                }
-                for (int i = 0; i < pc.length; i++) {
-                    if (!parameterTypes[i].isAssignableFrom(pc[i])) {
-                        throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() +
-                                "' is annotated with '" + annotationClass.getName() +
-                                "' but the method does not match the required signature (parameter '" + parameterTypes[i].getName() + "' has the wrong type)");
+
+                boolean matched = false;
+                // Check if parameters and return type matches
+                for (Prototype prototype : prototypes) {
+                    if (matchPrototype(prototype, m)) {
+                        Relationship relationship = m.getAnnotation(Relationship.class);
+                        if (relationship != null) {
+                            InterceptorRepository.add(module, m.getAnnotation(annotationClass), m, relationship);
+                        } else {
+                            InterceptorRepository.add(module, m.getAnnotation(annotationClass), m);
+                        }
+                        matched = true;
                     }
                 }
-                if (returnType != null && !returnType.isAssignableFrom(m.getReturnType())) {
-                    throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() +
-                            "' is annotated with '" + annotationClass.getName() +
-                            "' but the method does not match the required signature (wrong return type, epected [" + returnType + "] and found [" + m.getReturnType() + "])");
+                if (!matched) {
+                    unmatchedMethods.add(m);
                 }
 
-                Logger.trace("- - - Found '" + m.getDeclaringClass() + "." + m.getName() + "'");
-
-                Relationship relationship = m.getAnnotation(Relationship.class);
-                if (relationship != null) {
-                    InterceptorRepository.add(module, m.getAnnotation(annotationClass), m, relationship);
-                } else {
-                    InterceptorRepository.add(module, m.getAnnotation(annotationClass), m);
-                }
             }
         }
+
+        // Second pass to give some more information about what methods failed
+        if (!unmatchedMethods.isEmpty()) {
+            StringBuffer sb = new StringBuffer();
+            for (Method m : unmatchedMethods) {
+                for (Prototype prototype : prototypes) {
+                    // Check parameters first
+                    Class[] parameterTypes = prototype.expectedParameterTypes;
+                    Class[] pc = m.getParameterTypes();
+                    if (pc.length != parameterTypes.length) {
+                        sb.append("Method '" + m.getDeclaringClass() + "." + m.getName() +
+                                "' is annotated with '" + annotationClass.getName() +
+                                "' but the method does not match the required signature (different amount of parameters)\n");
+                        break;
+                    }
+                    for (int i = 0; i < pc.length; i++) {
+                        if (!parameterTypes[i].isAssignableFrom(pc[i])) {
+                            sb.append("Method '" + m.getDeclaringClass() + "." + m.getName() +
+                                    "' is annotated with '" + annotationClass.getName() +
+                                    "' but the method does not match the required signature (parameter '" + parameterTypes[i].getName() + "' has the wrong type)\n");
+                            break;
+                        }
+                    }
+                    // Parameters match so check return type
+                    Class returnType = prototype.expectedReturnType;
+                    if (returnType != null && !returnType.isAssignableFrom(m.getReturnType())) {
+                        sb.append("Method '" + m.getDeclaringClass() + "." + m.getName() +
+                                "' is annotated with '" + annotationClass.getName() +
+                                "' but the method does not match the required signature (wrong return type, expected [" + returnType + "] and found [" + m.getReturnType() + "])");
+                        break;
+                    }
+                }
+            }
+            if (sb.length() > 0) {
+                throw new InitializationException(sb.toString());
+            }
+        }
+
         Logger.trace(" ");
+    }
+
+    private static boolean matchPrototype(Prototype prototype, Method m) {
+
+        Class returnType = prototype.expectedReturnType;
+
+        if (!isParametersMatching(prototype, m)) {
+            return false;
+        }
+
+        if (returnType != null && !returnType.isAssignableFrom(m.getReturnType())) {
+            return false;
+        }
+
+        Logger.trace("- - - Found '" + m.getDeclaringClass() + "." + m.getName() + "'");
+
+        return true;
+    }
+
+    private static boolean isParametersMatching(Prototype prototype, Method m) {
+        Class[] expectedParameterTypes = prototype.expectedParameterTypes;
+        Class[] pc = m.getParameterTypes();
+        if (pc.length != expectedParameterTypes.length) {
+            return false;
+        }
+        for (int i = 0; i < pc.length; i++) {
+            if (!expectedParameterTypes[i].isAssignableFrom(pc[i])) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static void scanThemes(Set<Class<?>> classes) {

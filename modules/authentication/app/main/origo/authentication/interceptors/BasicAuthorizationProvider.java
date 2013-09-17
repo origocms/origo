@@ -3,16 +3,19 @@ package main.origo.authentication.interceptors;
 import be.objectify.deadbolt.core.models.Subject;
 import be.objectify.deadbolt.java.JavaDeadboltAnalyzer;
 import main.origo.core.ModuleException;
+import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.Provides;
+import main.origo.core.event.NodeContext;
 import main.origo.core.security.Security;
 import main.origo.core.security.SecurityEventGenerator;
 import models.origo.authentication.BasicAuthorization;
 import models.origo.core.Alias;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,10 +23,10 @@ import java.util.regex.Pattern;
 public class BasicAuthorizationProvider {
 
     @Provides(type = Core.Type.SECURITY, with = Core.With.AUTHORIZATION_CHECK)
-    public static Boolean checkAuthorization(Provides.Context context) throws NodeLoadException, ModuleException {
+    public static Boolean checkAuthorization(Node node, String withType, Map<String, Object> args) throws NodeLoadException, ModuleException {
 
-        Subject subject = (Subject) context.attributes.get(Security.Params.AUTH_USER);
-        String path = (String) context.attributes.get(Security.Params.AUTH_PATH);
+        Subject subject = (Subject) NodeContext.current().attributes.get(Security.Params.AUTH_USER);
+        String path = (String) NodeContext.current().attributes.get(Security.Params.AUTH_PATH);
 
         String[] roles = SecurityEventGenerator.triggerProvidesAuthorizationRolesInterceptor(path);
         if (roles.length == 0) {
@@ -35,8 +38,8 @@ public class BasicAuthorizationProvider {
     }
 
     @Provides(type = Core.Type.SECURITY, with = Core.With.AUTHORIZATION_ROLES)
-    public static String[] getAuthorizationRoles(Provides.Context context) {
-        String path = (String) context.attributes.get(Security.Params.AUTH_PATH);
+    public static String[] getAuthorizationRoles(Node node, String withType, Map<String, Object> args) {
+        String path = (String) NodeContext.current().attributes.get(Security.Params.AUTH_PATH);
 
         BasicAuthorization basicAuthorization = getBasicAuthorization(path);
         if (basicAuthorization == null) {
@@ -69,7 +72,7 @@ public class BasicAuthorizationProvider {
     }
 
     public static BasicAuthorization selectLongestMatchingPath(String path) {
-        BasicAuthorization basicAuthorization = null;
+        BasicAuthorization basicAuthorization;
         String currentPath = path;
         do {
             basicAuthorization = BasicAuthorization.findWithPath(currentPath);

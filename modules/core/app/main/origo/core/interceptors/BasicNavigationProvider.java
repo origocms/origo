@@ -20,6 +20,7 @@ import play.Logger;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Standard implementation of navigation. An alternate navigation provider can be used by changing the the navigation
@@ -34,23 +35,23 @@ import java.util.List;
 public class BasicNavigationProvider {
 
     @Provides(type = Core.Type.NAVIGATION, with = BasicNavigation.TYPE)
-    public static List<NavigationElement> createNavigation(Provides.Context context) throws NodeLoadException, ModuleException {
+    public static List<NavigationElement> createNavigation(Node node, String withType, Map<String, Object> args) throws NodeLoadException, ModuleException {
         List<NavigationElement> navigationElements = Lists.newArrayList();
-        String section = (String) context.args.get("section");
-        NavigationEventGenerator.triggerBeforeNavigationLoaded(context.node, BasicNavigation.class.getName(), section);
+        String section = (String) args.get("section");
+        NavigationEventGenerator.triggerBeforeNavigationLoaded(node, BasicNavigation.class.getName(), section);
         List<BasicNavigation> navigationModels = BasicNavigation.findWithSectionWithoutParent(section);
         for (BasicNavigation navigationModel : navigationModels) {
-            NavigationEventGenerator.triggerBeforeNavigationItemLoaded(context.node, navigationModel.type, navigationModel);
-            NavigationElement navigationElement = NavigationEventGenerator.triggerProvidesNavigationItemInterceptor(context.node, navigationModel.type, navigationModel);
+            NavigationEventGenerator.triggerBeforeNavigationItemLoaded(node, navigationModel.type, navigationModel);
+            NavigationElement navigationElement = NavigationEventGenerator.triggerProvidesNavigationItemInterceptor(node, navigationModel.type, navigationModel);
             if (navigationElement != null) {
-                NavigationEventGenerator.triggerAfterNavigationItemLoaded(context.node, navigationModel.type, navigationModel, navigationElement);
-                List<NavigationElement> children = createNavigationChildren(context.node, section, navigationModel, navigationElement);
+                NavigationEventGenerator.triggerAfterNavigationItemLoaded(node, navigationModel.type, navigationModel, navigationElement);
+                List<NavigationElement> children = createNavigationChildren(node, section, navigationModel, navigationElement);
                 Collections.sort(children);
                 navigationElement.children.addAll(children);
                 navigationElements.add(navigationElement);
             }
         }
-        NavigationEventGenerator.triggerAfterNavigationLoaded(context.node, BasicNavigation.class.getName(), (Navigation) context.args.get("navigation"), navigationElements, section);
+        NavigationEventGenerator.triggerAfterNavigationLoaded(node, BasicNavigation.class.getName(), (Navigation) args.get("navigation"), navigationElements, section);
         return navigationElements;
     }
 
@@ -73,15 +74,14 @@ public class BasicNavigationProvider {
     }
 
     @Provides(type = Core.Type.NAVIGATION_ITEM, with = InternalPageIdNavigation.TYPE)
-    public static NavigationElement createPageIdNavigation(Provides.Context context) throws ModuleException, NodeLoadException {
-        Navigation navigation = (Navigation) context.args.get("navigation");
+    public static NavigationElement createPageIdNavigation(Node node, String withType, Navigation navigation, Map<String, Object> args) throws ModuleException, NodeLoadException {
         InternalPageIdNavigation navigationModel = InternalPageIdNavigation.findWithIdentifier(navigation.getReferenceId());
         RootNode referencedRootNode = RootNode.findLatestPublishedVersionWithNodeId(navigationModel.pageId);
         try {
             if (referencedRootNode != null) {
                 Node referencedNode = ProvidesEventGenerator.triggerInterceptor(referencedRootNode, Core.Type.NODE, referencedRootNode.nodeType());
                 if (referencedNode != null) {
-                    boolean selected = context.node.nodeId().equals(referencedRootNode.nodeId());
+                    boolean selected = node.nodeId().equals(referencedRootNode.nodeId());
                     NavigationElement ne = new NavigationElement();
                     ne.id = navigationModel.identifier;
                     ne.section = navigation.getSection();
@@ -107,8 +107,7 @@ public class BasicNavigationProvider {
     }
 
     @Provides(type = Core.Type.NAVIGATION_ITEM, with = ExternalLinkNavigation.TYPE)
-    public static NavigationElement createExternalLinkNavigation(Provides.Context context) {
-        Navigation navigation = (Navigation) context.args.get("navigation");
+    public static NavigationElement createExternalLinkNavigation(Node node, String withType, Navigation navigation, Map<String, Object> args) {
         ExternalLinkNavigation navigationModel = ExternalLinkNavigation.findWithIdentifier(navigation.getReferenceId());
         if (navigationModel != null) {
             NavigationElement ne = new NavigationElement();
@@ -123,8 +122,7 @@ public class BasicNavigationProvider {
     }
 
     @Provides(type = Core.Type.NAVIGATION_ITEM, with = GroupHolderNavigation.TYPE)
-    public static NavigationElement createGroupHolderNavigation(Provides.Context context) {
-        Navigation navigation = (Navigation) context.args.get("navigation");
+    public static NavigationElement createGroupHolderNavigation(Node node, String withType, Navigation navigation, Map<String, Object> args) {
         GroupHolderNavigation navigationModel = GroupHolderNavigation.findWithIdentifier(navigation.getReferenceId());
         if (navigationModel != null) {
             NavigationElement ne = new NavigationElement();

@@ -1,6 +1,7 @@
 package main.origo.core.interceptors.forms;
 
 import controllers.routes;
+import main.origo.core.Node;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnLoad;
@@ -8,6 +9,8 @@ import main.origo.core.annotations.Provides;
 import main.origo.core.helpers.ProviderHelper;
 import main.origo.core.ui.Element;
 import models.origo.core.Content;
+
+import java.util.Map;
 
 /**
  * This is the default editor in the system. A module can provide a different editor provider by changing it in the settings.
@@ -56,8 +59,8 @@ public class TinyMCEEditorProvider {
     }
 
     @Provides(type = Core.Type.NODE, with = Core.With.EDITOR)
-    public static Element createEditor(Provides.Context context) {
-        Content content = (Content) context.args.get("content");
+    public static Element createEditor(Node node, String withType, Map<String, Object> args) {
+        Content content = (Content) args.get("content");
         if (content != null) {
             return new Element.InputTextArea().setId(content.identifier).setBody(content.value);
         } else {

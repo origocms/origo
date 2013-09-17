@@ -15,17 +15,18 @@ import models.origo.structuredcontent.Segment;
 import models.origo.structuredcontent.StructuredPage;
 
 import java.util.List;
+import java.util.Map;
 
 @Interceptor
 public class StructuredPageProvider {
 
     @Provides(type = Core.Type.NODE, with = StructuredPage.TYPE)
-    public static Node loadPage(Provides.Context context) throws NodeNotFoundException {
-        StructuredPage page = StructuredPage.findWithNodeIdAndSpecificVersion(context.node.nodeId(), context.node.version());
+    public static Node loadPage(Node node, String withType, Map<String, Object> args) throws NodeNotFoundException {
+        StructuredPage page = StructuredPage.findWithNodeIdAndSpecificVersion(node.nodeId(), node.version());
         if (page == null) {
-            throw new NodeNotFoundException(context.node.nodeId());
+            throw new NodeNotFoundException(node.nodeId());
         }
-        page.rootNode = (RootNode) context.node;
+        page.rootNode = (RootNode) node;
 
         return page;
     }

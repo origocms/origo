@@ -15,6 +15,8 @@ import models.origo.admin.AdminPage;
 import models.origo.core.RootNode;
 import play.Logger;
 
+import java.util.Map;
+
 /**
  * Dashboard is the front page of the admin UI. Any \@Provides annotation with type DASHBOARD_ITEM will be picked up and
  * displayed along with the others. This is the default implementation of a DashBoardProvider. If a module would
@@ -27,13 +29,13 @@ public class DefaultDashboardProvider {
      * Creating the node for the Front page.
      */
     @Provides(type = Core.Type.NODE, with = Admin.With.FRONT_PAGE)
-    public static Node createPage(Provides.Context context) throws NodeLoadException {
-        AdminPage page = new AdminPage(Admin.With.FRONT_PAGE, (RootNode) context.node);
+    public static Node createPage(Node node, String withType, Map<String, Object> args) throws NodeLoadException {
+        AdminPage page = new AdminPage(Admin.With.FRONT_PAGE, (RootNode) node);
         page.setTitle("Dashboard");
 
-        context.node.addElement(DashboardHelper.createBreadcrumb(Admin.With.FRONT_PAGE), AdminTheme.topMeta());
+        node.addElement(DashboardHelper.createBreadcrumb(Admin.With.FRONT_PAGE), AdminTheme.topMeta());
         try {
-            context.node.addElement(DashboardHelper.createDashboard(context.node, Admin.With.FRONT_PAGE));
+            node.addElement(DashboardHelper.createDashboard(node, Admin.With.FRONT_PAGE));
         } catch (ModuleException e) {
             // TODO: recover somehow?
             Logger.error("Unable to load dashboard", e);
@@ -46,9 +48,9 @@ public class DefaultDashboardProvider {
      * Creating the Dashboard for the Node created above.
      */
     @Provides(type = Admin.Type.DASHBOARD, with = Admin.With.FRONT_PAGE)
-    public static Element createFrontPageDashboard(Provides.Context context) {
+    public static Element createFrontPageDashboard(Node node, String withType, Map<String, Object> args) {
         return DashboardHelper.createBasicDashboard().setId("dashboard."+Admin.With.FRONT_PAGE).
-                addChildren(DashboardHelper.createDashboardItems(context.node, Admin.With.FRONT_PAGE));
+                addChildren(DashboardHelper.createDashboardItems(node, Admin.With.FRONT_PAGE));
     }
 
     @Admin.Navigation(alias="/dashboard", key = "breadcrumb.origo.admin.dashboard.frontpage", weight = 1)

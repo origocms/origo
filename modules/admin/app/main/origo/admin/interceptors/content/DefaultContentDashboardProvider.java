@@ -1,7 +1,6 @@
 package main.origo.admin.interceptors.content;
 
 import controllers.origo.admin.routes;
-import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.DashboardHelper;
 import main.origo.admin.themes.AdminTheme;
 import main.origo.core.ModuleException;
@@ -9,12 +8,12 @@ import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
-import main.origo.core.annotations.Provides;
-import main.origo.core.annotations.Relationship;
 import main.origo.core.ui.Element;
 import models.origo.admin.AdminPage;
 import models.origo.core.RootNode;
 import play.Logger;
+
+import java.util.Map;
 
 @Interceptor
 public class DefaultContentDashboardProvider {
@@ -24,7 +23,7 @@ public class DefaultContentDashboardProvider {
      */
     //@Provides(type = Admin.Type.DASHBOARD_ITEM, with = Core.With.CONTENT_PAGE)
     //@Relationship(parent = Admin.With.FRONT_PAGE)
-    public static Element addContentDashboardItemToFrontPage(Provides.Context context) {
+    public static Element addContentDashboardItemToFrontPage(Node node, String withType, Map<String, Object> args) {
         return DashboardHelper.createBasicDashboardItem().
                 setId("item.link." + Core.With.CONTENT_PAGE).
                 addChild(new Element.Panel().setWeight(10).
@@ -46,13 +45,13 @@ public class DefaultContentDashboardProvider {
      * Creating the Node for the Content page.
      */
     //@Provides(type = Core.Type.NODE, with = Core.With.CONTENT_PAGE)
-    public static Node addContentDashboard(Provides.Context context) throws NodeLoadException {
-        AdminPage page = new AdminPage(Core.With.CONTENT_PAGE, (RootNode) context.node);
+    public static Node addContentDashboard(Node node, String withType, Map<String, Object> args) throws NodeLoadException {
+        AdminPage page = new AdminPage(Core.With.CONTENT_PAGE, (RootNode) node);
         page.setTitle("Content - Dashboard");
 
-        context.node.addElement(DashboardHelper.createBreadcrumb(Core.With.CONTENT_PAGE), AdminTheme.topMeta());
+        node.addElement(DashboardHelper.createBreadcrumb(Core.With.CONTENT_PAGE), AdminTheme.topMeta());
         try {
-            context.node.addElement(DashboardHelper.createDashboard(context.node, Core.With.CONTENT_PAGE));
+            node.addElement(DashboardHelper.createDashboard(node, Core.With.CONTENT_PAGE));
         } catch (ModuleException e) {
             // TODO: recover somehow?
             Logger.error("Unable to load dashboard", e);
@@ -66,10 +65,10 @@ public class DefaultContentDashboardProvider {
      */
     //@Provides(type = Admin.Type.DASHBOARD, with = Core.With.CONTENT_PAGE)
     //@Relationship(parent = Admin.With.FRONT_PAGE)
-    public static Element addContentDashboardContent(Provides.Context context) {
+    public static Element addContentDashboardContent(Node node, String withType, Map<String, Object> args) {
         return DashboardHelper.createBasicDashboard().
                 setId("dashboard." + Core.With.CONTENT_PAGE).
-                addChildren(DashboardHelper.createDashboardItems(context.node, Core.With.CONTENT_PAGE));
+                addChildren(DashboardHelper.createDashboardItems(node, Core.With.CONTENT_PAGE));
     }
 
 }

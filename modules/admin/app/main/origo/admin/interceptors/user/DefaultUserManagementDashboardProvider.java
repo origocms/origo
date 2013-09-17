@@ -16,6 +16,8 @@ import models.origo.admin.AdminPage;
 import models.origo.core.RootNode;
 import play.Logger;
 
+import java.util.Map;
+
 @Interceptor
 public class DefaultUserManagementDashboardProvider {
 
@@ -24,7 +26,7 @@ public class DefaultUserManagementDashboardProvider {
      */
     @Provides(type = Admin.Type.DASHBOARD_ITEM, with = Admin.With.USER_PAGE)
     @Relationship(parent = Admin.With.FRONT_PAGE)
-    public static Element addUserDashboardItemToFrontPage(Provides.Context context) {
+    public static Element addUserDashboardItemToFrontPage(Node node, String withType, Map<String, Object> args) {
         return DashboardHelper.createBasicDashboardItem().
                 setId("item.link." + Admin.With.USER_PAGE).
                 addChild(new Element.Panel().setWeight(20).
@@ -41,13 +43,13 @@ public class DefaultUserManagementDashboardProvider {
      * Creating the Node for the User Dashboard.
      */
     @Provides(type = Core.Type.NODE, with = Admin.With.USER_PAGE)
-    public static Node createUserDashboard(Provides.Context context) throws NodeLoadException {
-        AdminPage page = new AdminPage(Admin.With.USER_PAGE, (RootNode) context.node);
+    public static Node createUserDashboard(Node node, String withType, Map<String, Object> args) throws NodeLoadException {
+        AdminPage page = new AdminPage(Admin.With.USER_PAGE, (RootNode) node);
         page.setTitle("User Management - Dashboard");
         page.addElement(DashboardHelper.createBreadcrumb(Admin.With.USER_PAGE), AdminTheme.topMeta());
 
         try {
-            context.node.addElement(DashboardHelper.createDashboard(context.node, Admin.With.USER_PAGE));
+            node.addElement(DashboardHelper.createDashboard(node, Admin.With.USER_PAGE));
         } catch (ModuleException e) {
             // TODO: recover somehow?
             Logger.error("Unable to load dashboard", e);
@@ -61,9 +63,9 @@ public class DefaultUserManagementDashboardProvider {
      */
     @Provides(type = Admin.Type.DASHBOARD, with = Admin.With.USER_PAGE)
     @Relationship(parent = Admin.With.FRONT_PAGE)
-    public static Element addUserDashboardContent(Provides.Context context) {
+    public static Element addUserDashboardContent(Node node, String withType, Map<String, Object> args) {
         return DashboardHelper.createBasicDashboard().setId("dashboard."+Admin.With.USER_PAGE).
-                addChildren(DashboardHelper.createDashboardItems(context.node, Admin.With.USER_PAGE));
+                addChildren(DashboardHelper.createDashboardItems(node, Admin.With.USER_PAGE));
     }
 
 }

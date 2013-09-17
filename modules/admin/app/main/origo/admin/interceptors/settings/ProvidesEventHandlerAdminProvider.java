@@ -46,7 +46,7 @@ public class ProvidesEventHandlerAdminProvider {
      */
     @Provides(type = Admin.Type.DASHBOARD_ITEM, with = BASE_TYPE)
     @Relationship(parent = Admin.With.SETTINGS_PAGE)
-    public static Element createDashboardItem(Provides.Context context) {
+    public static Element createDashboardItem(Node node, String withType, Map<String, Object> args) {
 
         return new Admin.DashboardItem().
                 addChild(new Element.Raw().setBody(dashboard_item.render("Event Handlers", "Select which event handler should be used for each type", getProviderUrl(), "List All")));
@@ -60,12 +60,11 @@ public class ProvidesEventHandlerAdminProvider {
     /**
      * Provides a type with the static name 'origo.admin.settings.event.edit'.
      *
-     * @param context containing a root node with an node id
      * @return a node to be presented as part of the admin UI
      */
     @Provides(type = Core.Type.NODE, with = EDIT_TYPE)
-    public static Node createEditPage(Provides.Context context) {
-        AdminPage page = new AdminPage(EDIT_TYPE, (RootNode) context.node);
+    public static Node createEditPage(Node node, String withType, Map<String, Object> args) {
+        AdminPage page = new AdminPage(EDIT_TYPE, (RootNode) node);
         page.setTitle("Event Handlers");
         page.setThemeVariant(AdminTheme.LEFT_AND_MAIN_COLUMNS_VARIANT_NAME);
         page.addElement(DashboardHelper.createBreadcrumb(BASE_TYPE), AdminTheme.topMeta());

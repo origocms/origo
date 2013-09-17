@@ -12,9 +12,11 @@ import main.origo.core.interceptors.forms.DefaultSubmitHandler;
 import main.origo.core.internal.AnnotationProcessor;
 import main.origo.core.themes.DefaultTheme;
 import models.origo.core.Settings;
+import play.data.Form;
 import play.mvc.Result;
 
 import java.util.List;
+import java.util.Map;
 
 @Module(name=CoreModule.NAME, order=0, packages = "main.origo.core")
 @Module.Version(major = 0, minor = 1, patch = 0)
@@ -42,7 +44,9 @@ public class CoreModule {
         List<AnnotationProcessor.Prototype> annotations = Lists.newArrayList();
 
         // Basic types
-        annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Provides.Context.class));
+        annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class, Navigation.class, Map.class));
+        annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class, Form.class, Map.class));
+        annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class, Map.class));
         annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, OnLoad.Context.class));
         annotations.add(new AnnotationProcessor.Prototype(OnInsertElement.class, null, OnInsertElement.Context.class));
         annotations.add(new AnnotationProcessor.Prototype(OnRemoveElement.class, null, OnRemoveElement.Context.class));

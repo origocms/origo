@@ -29,6 +29,8 @@ import play.mvc.Content;
 import play.mvc.Controller;
 import play.mvc.Result;
 
+import java.util.Map;
+
 @Interceptor
 public class AuthenticationProvider {
 
@@ -42,12 +44,12 @@ public class AuthenticationProvider {
      * creating a "blank" node with type Core.With.AUTHENTICATION_CHECK
      */
     @Provides(type = Core.Type.SECURITY, with = Core.With.AUTHENTICATION_CHECK)
-    public static Result authenticateUser(Provides.Context context) throws ModuleException, NodeLoadException {
+    public static Result authenticateUser(Node node, String withType, Map<String, Object> args) throws ModuleException, NodeLoadException {
         User user = SecurityEventGenerator.triggerCurrentUserInterceptor();
         if (user != null) {
             return null;
         }
-        String path = (String) context.attributes.get(Security.Params.AUTH_PATH);
+        String path = (String) NodeContext.current().attributes.get(Security.Params.AUTH_PATH);
         String[] roles = SecurityEventGenerator.triggerProvidesAuthorizationRolesInterceptor(path);
         if (roles.length == 0) {
             return null;
@@ -60,13 +62,13 @@ public class AuthenticationProvider {
      * form with type Core.With.AUTHENTICATION_CHECK
      */
     @Provides(with = Core.With.AUTHENTICATION_CHECK)
-    public static Node createLoginPage(Provides.Context context) throws ModuleException, NodeLoadException {
+    public static Node createLoginPage(Node node, String withType, Map<String, Object> args) throws ModuleException, NodeLoadException {
 
         BasicPage page = new BasicPage();
-        page.rootNode = (RootNode)context.node;
+        page.rootNode = (RootNode)node;
         page.nodeId = page.rootNode.nodeId();
         page.title = "Login";
-        page.addElement(FormHelper.createFormElement(context.node, Core.With.AUTHENTICATION_CHECK));
+        page.addElement(FormHelper.createFormElement(node, Core.With.AUTHENTICATION_CHECK));
         return page;
     }
 
@@ -136,7 +138,7 @@ public class AuthenticationProvider {
 
     @Validation.Failure(with = Core.With.AUTHENTICATION_CHECK)
     public static Node validationFailure(Validation.Failure.Context context) throws NodeLoadException, ModuleException {
-        return createLoginPage(new Provides.Context(context.node, context.args));
+        return createLoginPage(context.node, Core.With.AUTHENTICATION_CHECK, context.args);
     }
 
     /**

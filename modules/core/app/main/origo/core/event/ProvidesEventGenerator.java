@@ -6,8 +6,8 @@ import main.origo.core.*;
 import main.origo.core.annotations.Provides;
 import main.origo.core.internal.CachedAnnotation;
 import play.Logger;
+import play.data.Form;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,29 +26,58 @@ public class ProvidesEventGenerator {
     }
 
     public static <T> T triggerInterceptor(Node node, String providesType, String withType, Map<String, Object> args) throws NodeLoadException, ModuleException {
-        return triggerInterceptor(node, providesType, withType, null, args);
+        CachedAnnotation cachedAnnotation = getCachedAnnotationIfModuleIsEnabled(providesType, withType);
+        try {
+            assert(NodeContext.current() != null);
+            NodeContext.current().attributes.put(withType, cachedAnnotation.method.getDeclaringClass());
+            //noinspection unchecked
+            return (T) cachedAnnotation.method.invoke(null, node, withType, args);
+        } catch (Exception e) {
+            return getCause(cachedAnnotation, e);
+        }
     }
 
     public static <T> T triggerInterceptor(Node node, String providesType, String withType, Navigation navigation, Map<String, Object> args) throws NodeLoadException, ModuleException {
+        CachedAnnotation cachedAnnotation = getCachedAnnotationIfModuleIsEnabled(providesType, withType);
+        try {
+            assert(NodeContext.current() != null);
+            NodeContext.current().attributes.put(withType, cachedAnnotation.method.getDeclaringClass());
+            //noinspection unchecked
+            return (T) cachedAnnotation.method.invoke(null, node, withType, navigation, args);
+        } catch (Exception e) {
+            return getCause(cachedAnnotation, e);
+        }
+    }
+
+    public static <T> T triggerInterceptor(Node node, String providesType, String withType, Form form, Map<String, Object> args) throws NodeLoadException, ModuleException {
+        CachedAnnotation cachedAnnotation = getCachedAnnotationIfModuleIsEnabled(providesType, withType);
+        try {
+            assert(NodeContext.current() != null);
+            NodeContext.current().attributes.put(withType, cachedAnnotation.method.getDeclaringClass());
+            //noinspection unchecked
+            return (T) cachedAnnotation.method.invoke(null, node, withType, form, args);
+        } catch (Exception e) {
+            return getCause(cachedAnnotation, e);
+        }
+    }
+
+    private static CachedAnnotation getCachedAnnotationIfModuleIsEnabled(String providesType, String withType) throws ModuleException {
         CachedAnnotation cachedAnnotation = findInterceptor(providesType, withType);
         if (!ModuleRepository.isEnabled(cachedAnnotation.module)) {
             Logger.debug("Module '" + cachedAnnotation.module.name + "' is disabled");
             throw new ModuleException(cachedAnnotation.module.name, ModuleException.Cause.NOT_ENABLED);
         }
-        try {
-            assert(NodeContext.current() != null);
-            NodeContext.current().attributes.put(withType, cachedAnnotation.method.getDeclaringClass());
-            //noinspection unchecked
-            return (T) cachedAnnotation.method.invoke(null, new Provides.Context(node, navigation, args));
-        } catch (InvocationTargetException e) {
-            if (e.getCause() instanceof ModuleException) {
-                throw (ModuleException) e.getCause();
-            } else if (e.getCause() instanceof NodeLoadException) {
-                throw (NodeLoadException) e.getCause();
-            } else {
-                throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
-            }
-        } catch (IllegalAccessException e) {
+        return cachedAnnotation;
+    }
+
+    private static <T> T getCause(CachedAnnotation cachedAnnotation, Exception e) throws ModuleException, NodeLoadException {
+        if (e.getCause() instanceof ModuleException) {
+            throw (ModuleException) e.getCause();
+        } else if (e.getCause() instanceof NodeLoadException) {
+            throw (NodeLoadException) e.getCause();
+        } else if (e instanceof IllegalArgumentException) {
+            throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]: "+ e.getMessage());
+        } else {
             throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
         }
     }

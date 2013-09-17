@@ -1,13 +1,9 @@
 package main.origo.core.annotations;
 
-import main.origo.core.Navigation;
-import main.origo.core.Node;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.Map;
 
 /**
  * A method annotated with \@Provides will be called to instantiate a new instance of this type each time
@@ -33,18 +29,5 @@ public @interface Provides {
     String type() default Core.Type.NODE;
 
     String with();
-
-    public static class Context extends AbstractContext {
-
-        public Context(Node node, Map<String, Object> args) {
-            super(node, args);
-        }
-
-        public Context(Node node, Navigation navigation, Map<String, Object> args) {
-            super(node, args);
-            this.args.put("navigation", navigation);
-        }
-
-    }
 
 }

@@ -64,18 +64,17 @@ public class BasicPageAdminProvider {
      * Provides a type with the static name 'content.basicpage'.
      * This will create the AdminPage for the UI to render.
      *
-     * @param context containing a root node with an node id
      * @return a node to be presented as part of the admin UI
      */
     @Provides(type = Core.Type.NODE, with = BasicPageAdminProvider.TYPE)
-    public static Node createPage(Provides.Context context) {
+    public static Node createPage(Node node, String withType, Map<String, Object> args) {
         AdminPage page;
-        if (StringUtils.isEmpty(context.node.nodeId())) {
+        if (StringUtils.isEmpty(node.nodeId())) {
             page = new AdminPage(BasicPageAdminProvider.TYPE, new RootNode(0));
-        } else if (context.node.version() == null || context.node.version() == 0) {
-            page = new AdminPage(BasicPageAdminProvider.TYPE, RootNode.findLatestVersionWithNodeId(context.node.nodeId()).copy());
+        } else if (node.version() == null || node.version() == 0) {
+            page = new AdminPage(BasicPageAdminProvider.TYPE, RootNode.findLatestVersionWithNodeId(node.nodeId()).copy());
         } else {
-            page = new AdminPage(BasicPageAdminProvider.TYPE, (RootNode) context.node);
+            page = new AdminPage(BasicPageAdminProvider.TYPE, (RootNode) node);
         }
 
         // TODO: Look up themevariant (and also meta) from DB instead of resetting here.
@@ -86,7 +85,7 @@ public class BasicPageAdminProvider {
     }
 
     /**
-     * This will create a new BasicPage for editing
+     * This will create a new or load a BasicPage for editing
      *
      * @param context containing a root node with an node id
      */
@@ -380,7 +379,7 @@ public class BasicPageAdminProvider {
 
     @Validation.Failure(with = TYPE)
     public static Node validationFailure(Validation.Failure.Context context) {
-        return createPage(new Provides.Context(context.node, context.args));
+        return createPage(context.node, TYPE, context.args);
     }
 
     /**

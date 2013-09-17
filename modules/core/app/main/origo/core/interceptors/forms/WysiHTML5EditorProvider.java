@@ -1,6 +1,7 @@
 package main.origo.core.interceptors.forms;
 
 import controllers.routes;
+import main.origo.core.Node;
 import main.origo.core.annotations.*;
 import main.origo.core.helpers.ProviderHelper;
 import main.origo.core.ui.Element;
@@ -9,6 +10,8 @@ import models.origo.core.Content;
 import play.api.templates.Html;
 import views.html.origo.core.decorators.forms.wysi.wysihtml5_script;
 import views.html.origo.core.decorators.forms.wysi.wysihtml5_toolbar;
+
+import java.util.Map;
 
 @Interceptor
 public class WysiHTML5EditorProvider {
@@ -66,8 +69,8 @@ public class WysiHTML5EditorProvider {
     }
 
     @Provides(type = Core.Type.NODE, with = Core.With.EDITOR)
-    public static Element createEditor(Provides.Context context) {
-        Content content = (Content) context.args.get("content");
+    public static Element createEditor(Node node, String withType, Map<String, Object> args) {
+        Content content = (Content) args.get("content");
         if (content != null) {
             return new Element.InputTextArea().setId(content.identifier).setBody(content.value);
         } else {

@@ -16,11 +16,11 @@ import main.origo.core.event.ProvidesEventGenerator;
 import main.origo.core.ui.Element;
 import models.origo.admin.AdminPage;
 import models.origo.core.RootNode;
-import play.Logger;
 import views.html.origo.admin.dashboard_item;
 import views.html.origo.admin.decorators.content;
 
 import java.util.List;
+import java.util.Map;
 
 @Interceptor
 public class ContentAdminProvider {
@@ -30,7 +30,7 @@ public class ContentAdminProvider {
     */
     @Provides(type = Admin.Type.DASHBOARD_ITEM, with = Admin.With.CONTENT_PAGE)
     @Relationship(parent = Admin.With.FRONT_PAGE)
-    public static Element addContentDashboardItemToFrontPage(Provides.Context context) {
+    public static Element addContentDashboardItemToFrontPage(Node node, String withType, Map<String, Object> args) {
         return DashboardHelper.createBasicDashboardItem().
                 addChild(new Element.Raw().setBody(dashboard_item.render("Content", "", getDashboardUrl(), "View")));
     }
@@ -44,8 +44,8 @@ public class ContentAdminProvider {
      * Creating the Content listing page.
      */
     @Provides(type = Core.Type.NODE, with = Admin.With.CONTENT_PAGE)
-    public static Node createContentList(Provides.Context context) throws NodeLoadException, ModuleException {
-        AdminPage page = new AdminPage(Admin.With.CONTENT_PAGE, (RootNode) context.node);
+    public static Node createContentList(Node node, String withType, Map<String, Object> args) throws NodeLoadException, ModuleException {
+        AdminPage page = new AdminPage(Admin.With.CONTENT_PAGE, (RootNode) node);
         page.setTitle("Content");
 
         page.addElement(DashboardHelper.createBreadcrumb(Admin.With.CONTENT_PAGE), AdminTheme.topMeta());
@@ -54,8 +54,7 @@ public class ContentAdminProvider {
 
         List<Node> nodes = Lists.newArrayList();
         for (RootNode rootNode : rootNodes) {
-            Node node = ProvidesEventGenerator.triggerInterceptor(rootNode, Core.Type.NODE, rootNode.nodeType());
-            nodes.add(node);
+            nodes.add(ProvidesEventGenerator.<Node>triggerInterceptor(rootNode, Core.Type.NODE, rootNode.nodeType()));
         }
 
         page.addElement(new Element.Raw().setBody(content.render(nodes)));

@@ -1,6 +1,7 @@
 package main.origo.preview.interceptors;
 
 import main.origo.core.ModuleException;
+import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
@@ -10,6 +11,8 @@ import main.origo.core.preview.Ticket;
 import main.origo.core.ui.Element;
 import main.origo.preview.helpers.PreviewTicketHelper;
 import models.origo.preview.BasicTicket;
+
+import java.util.Map;
 
 @Interceptor
 public class PreviewTokenInterceptor {
@@ -30,7 +33,7 @@ public class PreviewTokenInterceptor {
     }
 
     @Provides(type = Core.Type.PREVIEW, with = Core.With.PREVIEW_TOKEN)
-    public static Ticket getCurrentToken(Provides.Context context) throws ModuleException, NodeLoadException {
+    public static Ticket getCurrentToken(Node node, String withType, Map<String, Object> args) throws ModuleException, NodeLoadException {
         return PreviewTicketHelper.getCurrent();
     }
 }
