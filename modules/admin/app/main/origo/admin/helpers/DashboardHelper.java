@@ -1,6 +1,7 @@
 package main.origo.admin.helpers;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import controllers.origo.admin.routes;
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.event.DashboardEventGenerator;
@@ -26,18 +27,18 @@ public class DashboardHelper {
     private static final String PREFIX = "breadcrumb.origo.admin.dashboard.";
 
     public static Element createDashboard(Node node, String withType) throws NodeLoadException, ModuleException {
-        OnLoadEventGenerator.triggerBeforeInterceptor(node, Admin.Type.DASHBOARD, withType);
+        OnLoadEventGenerator.triggerBeforeInterceptor(node, Admin.Type.DASHBOARD, withType, Maps.<String, Object>newHashMap());
         Element element = ProvidesEventGenerator.triggerInterceptor(node, Admin.Type.DASHBOARD, withType);
         if (element == null) {
             throw new NodeLoadException(node.nodeId(), "The provider for type [" + withType + "] did not return a Element");
         }
 
-        OnLoadEventGenerator.triggerAfterInterceptor(node, Admin.Type.DASHBOARD, withType);
+        OnLoadEventGenerator.triggerAfterInterceptor(node, Admin.Type.DASHBOARD, withType, element, Maps.<String, Object>newHashMap());
         return element;
     }
 
-    public static List<Element> createDashboardItems(Node node, String withType) {
-        OnLoadEventGenerator.triggerBeforeInterceptor(node, Admin.Type.DASHBOARD_ITEM, withType);
+    public static List<Element> createDashboardItems(Node node, String withType) throws ModuleException, NodeLoadException {
+        OnLoadEventGenerator.triggerBeforeInterceptor(node, Admin.Type.DASHBOARD_ITEM, withType, Maps.<String, Object>newHashMap());
         List<Element> elements = DashboardEventGenerator.triggerProvidesDashboardItemInterceptor(node, withType);
         for (Element element : elements) {
             OnLoadEventGenerator.triggerAfterInterceptor(node, Admin.Type.DASHBOARD_ITEM, withType, element, Collections.<String, Object>emptyMap());

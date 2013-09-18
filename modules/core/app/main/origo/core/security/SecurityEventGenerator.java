@@ -59,20 +59,20 @@ public class SecurityEventGenerator {
         return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.SECURITY, Core.With.AUTHENTICATION_CURRENT_USER);
     }
 
-    public static void triggerBeforeUserLoaded() {
+    public static void triggerBeforeUserLoaded() throws NodeLoadException, ModuleException {
         triggerBeforeUserLoaded(Maps.<String, Object>newHashMap());
     }
 
-    public static void triggerBeforeUserLoaded(Map<String, Object> args) {
+    public static void triggerBeforeUserLoaded(Map<String, Object> args) throws ModuleException, NodeLoadException {
         String userType = getUserType();
         OnLoadEventGenerator.triggerBeforeInterceptor(null, Core.Type.SECURITY, userType, args);
     }
 
-    public static void triggerAfterUserLoaded(User user) {
+    public static void triggerAfterUserLoaded(User user) throws NodeLoadException, ModuleException {
         triggerAfterUserLoaded(user, Maps.<String, Object>newHashMap());
     }
 
-    public static void triggerAfterUserLoaded(User user, Map<String, Object> args) {
+    public static void triggerAfterUserLoaded(User user, Map<String, Object> args) throws ModuleException, NodeLoadException {
         args.put("user", user);
         OnLoadEventGenerator.triggerBeforeInterceptor(null, Core.Type.SECURITY, user.type(), args);
     }
@@ -90,20 +90,20 @@ public class SecurityEventGenerator {
         return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.SECURITY, Core.With.AUTHORIZATION_FAILURE, Maps.<String, Object>newHashMap());
     }
 
-    public static void triggerBeforeAuthorizationFailure(User user) {
+    public static void triggerBeforeAuthorizationFailure(User user) throws NodeLoadException, ModuleException {
         triggerBeforeAuthorizationFailure(user, Maps.<String, Object>newHashMap());
     }
 
-    public static void triggerBeforeAuthorizationFailure(User user, Map<String, Object> args) {
+    public static void triggerBeforeAuthorizationFailure(User user, Map<String, Object> args) throws ModuleException, NodeLoadException {
         args.put(Security.Params.AUTH_USER, user);
         OnLoadEventGenerator.triggerBeforeInterceptor(null, Core.Type.SECURITY, Core.With.AUTHORIZATION_FAILURE, args);
     }
 
-    public static void triggerAfterAuthorizationFailure(User user) {
+    public static void triggerAfterAuthorizationFailure(User user) throws NodeLoadException, ModuleException {
         triggerAfterAuthorizationFailure(user, Maps.<String, Object>newHashMap());
     }
 
-    public static void triggerAfterAuthorizationFailure(User user, Map<String, Object> args) {
+    public static void triggerAfterAuthorizationFailure(User user, Map<String, Object> args) throws ModuleException, NodeLoadException {
         args.put(Security.Params.AUTH_USER, user);
         OnLoadEventGenerator.triggerAfterInterceptor(null, Core.Type.SECURITY, Core.With.AUTHORIZATION_FAILURE, args);
     }

@@ -21,11 +21,11 @@ public class SegmentHelper {
         return ProvidesEventGenerator.triggerInterceptor(node, TYPE_SEGMENT, withType, Collections.<String, Object>singletonMap("segment", segment));
     }
 
-    public static void triggerBeforeSegmentLoaded(Node node, String nodeType, Segment segment) {
+    public static void triggerBeforeSegmentLoaded(Node node, String nodeType, Segment segment) throws ModuleException, NodeLoadException {
         OnLoadEventGenerator.triggerBeforeInterceptor(node,  TYPE_SEGMENT, nodeType, Collections.<String, Object>singletonMap("segment", segment));
     }
 
-    public static void triggerAfterSegmentLoaded(Node node, String withType, Segment segment, Element element) {
+    public static void triggerAfterSegmentLoaded(Node node, String withType, Segment segment, Element element) throws ModuleException, NodeLoadException {
         OnLoadEventGenerator.triggerAfterInterceptor(node, TYPE_SEGMENT, withType, element, Collections.<String, Object>singletonMap("segment", segment));
     }
 

@@ -6,6 +6,7 @@ import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.Provides;
+import main.origo.core.event.NodeContext;
 import main.origo.core.helpers.ProviderHelper;
 import main.origo.core.ui.Element;
 import models.origo.core.Content;
@@ -21,13 +22,13 @@ public class TinyMCEEditorProvider {
     private static final String JS_LOADED = "tinymce_js_loaded";
 
     @OnLoad(type = Core.Type.NODE, with = Core.With.EDITOR)
-    public static void setupEditor(OnLoad.Context context) {
-        if (ProviderHelper.isProvider(context.withType, TinyMCEEditorProvider.class) && !context.attributes.containsKey(JS_LOADED)) {
+    public static void setupEditor(Node node, String withType, Map<String, Object> args) {
+        if (ProviderHelper.isProvider(withType, TinyMCEEditorProvider.class) && !NodeContext.current().attributes.containsKey(JS_LOADED)) {
             String jqueryTinyMCEScript = routes.Assets.at("javascripts/origo/tiny_mce/jquery.tiny_mce.js").url();
             if (jqueryTinyMCEScript != null) {
                 String tinyMCEScript = routes.Assets.at("javascripts/origo/tiny_mce/tiny_mce.js").url();
-                context.node.addTailElement(new Element.Script().setId(Core.With.EDITOR+"_src").setWeight(9999).addAttribute("type", "text/javascript").addAttribute("src", jqueryTinyMCEScript));
-                context.node.addTailElement(new Element.Script().setId(Core.With.EDITOR+"_invocation").setWeight(10000).addAttribute("type", "text/javascript").
+                node.addTailElement(new Element.Script().setId(Core.With.EDITOR+"_src").setWeight(9999).addAttribute("type", "text/javascript").addAttribute("src", jqueryTinyMCEScript));
+                node.addTailElement(new Element.Script().setId(Core.With.EDITOR+"_invocation").setWeight(10000).addAttribute("type", "text/javascript").
                         setBody(
                                 "$(document).ready(function() {\n" +
                                         "  $('textarea.tinymce').tinymce({\n" +
@@ -54,7 +55,7 @@ public class TinyMCEEditorProvider {
                 );
             }
 
-            context.attributes.put(JS_LOADED, true);
+            NodeContext.current().attributes.put(JS_LOADED, true);
         }
     }
 

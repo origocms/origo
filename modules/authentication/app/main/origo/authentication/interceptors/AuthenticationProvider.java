@@ -76,11 +76,11 @@ public class AuthenticationProvider {
      * Adds login elements to the form
      */
     @OnLoad(type = Core.Type.FORM, with = Core.With.AUTHENTICATION_CHECK, after = true)
-    public static void addLoginForm(OnLoad.Context context) {
+    public static void addLoginForm(Node node, String withType, Map<String, Object> args) {
 
         Form<LoginForm> form = FormHelper.getValidationResult(LoginForm.class);
 
-        Element element = (Element) context.args.get("element");
+        Element element = (Element) args.get("element");
         element.setId("loginform").addAttribute("class", "origo-loginform, form");
 
         Element globalErrors = FormHelper.createGlobalErrorElement();
@@ -91,7 +91,7 @@ public class AuthenticationProvider {
         Element basicFieldSet = new Element.FieldSet().setId("login");
         element.addChild(basicFieldSet);
 
-        String path = (String) context.attributes.get(Security.Params.AUTH_PATH);
+        String path = (String) NodeContext.current().attributes.get(Security.Params.AUTH_PATH);
         if (StringUtils.isNotBlank(path)) {
             basicFieldSet.addChild(new Element.InputHidden().addAttribute("name", PATH_PARAM).addAttribute("value", path));
         }

@@ -3,6 +3,7 @@ package main.origo.bootstrapwysihtml5.interceptors;
 import controllers.routes;
 import main.origo.core.Node;
 import main.origo.core.annotations.*;
+import main.origo.core.event.NodeContext;
 import main.origo.core.helpers.ProviderHelper;
 import main.origo.core.ui.Element;
 import main.origo.core.ui.RenderingContext;
@@ -53,25 +54,25 @@ public class BootstrapWysiHTML5EditorProvider {
     }
 
     @OnLoad(type = Core.Type.NODE, with = Core.With.EDITOR)
-    public static void setupEditor(OnLoad.Context context) {
-        if (ProviderHelper.isProvider(context.withType, BootstrapWysiHTML5EditorProvider.class) && !context.attributes.containsKey(JS_LOADED)) {
+    public static void setupEditor(Node node, String withType, Map<String, Object> args) {
+        if (ProviderHelper.isProvider(withType, BootstrapWysiHTML5EditorProvider.class) && !NodeContext.current().attributes.containsKey(JS_LOADED)) {
             String wysiHtmlScript = routes.Assets.at("javascripts/origo/bootstrapwysihtml5/wysihtml5-0.4.0pre.min.js").url();
-            context.node.addTailElement(new Element.Script().setWeight(9999).addAttribute("src", wysiHtmlScript));
+            node.addTailElement(new Element.Script().setWeight(9999).addAttribute("src", wysiHtmlScript));
             String parserRulesScript = routes.Assets.at("javascripts/origo/bootstrapwysihtml5/parser_rules/advanced.js").url();
-            context.node.addTailElement(new Element.Script().setWeight(9999).addAttribute("src", parserRulesScript));
+            node.addTailElement(new Element.Script().setWeight(9999).addAttribute("src", parserRulesScript));
             String customizationScript = routes.Assets.at("javascripts/origo/bootstrapwysihtml5/main.js").url();
-            context.node.addTailElement(new Element.Script().setWeight(9999).addAttribute("src", customizationScript));
+            node.addTailElement(new Element.Script().setWeight(9999).addAttribute("src", customizationScript));
 
             String bootstrapWysiHtmlScript = routes.Assets.at("javascripts/origo/bootstrapwysihtml5/bootstrap-wysihtml5.js").url();
-            context.node.addTailElement(new Element.Script().setWeight(9999).addAttribute("src", bootstrapWysiHtmlScript));
+            node.addTailElement(new Element.Script().setWeight(9999).addAttribute("src", bootstrapWysiHtmlScript));
 
             String bootstrapWysiHtml5Stylesheet = routes.Assets.at("stylesheets/origo/bootstrapwysihtml5/bootstrap-wysihtml5.min.css").url();
-            context.node.addHeadElement(new Element.Link().addAttribute("href", bootstrapWysiHtml5Stylesheet).addAttribute("rel", "stylesheet"));
+            node.addHeadElement(new Element.Link().addAttribute("href", bootstrapWysiHtml5Stylesheet).addAttribute("rel", "stylesheet"));
 
             String customizationStylesheet = routes.Assets.at("stylesheets/origo/bootstrapwysihtml5/main.min.css").url();
-            context.node.addHeadElement(new Element.Link().addAttribute("href", customizationStylesheet).addAttribute("rel", "stylesheet"));
+            node.addHeadElement(new Element.Link().addAttribute("href", customizationStylesheet).addAttribute("rel", "stylesheet"));
 
-            context.attributes.put(JS_LOADED, true);
+            NodeContext.current().attributes.put(JS_LOADED, true);
         }
     }
 

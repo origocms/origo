@@ -24,6 +24,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 
 /**
  * Default implementation of the submit handler. Alternate submit handlers can be used by changing the settings.
@@ -84,14 +85,14 @@ public class DefaultSubmitHandler {
     }
 
     @OnLoad(type = Core.Type.FORM)
-    public static void addWithTypeField(OnLoad.Context context) {
+    public static void addWithTypeField(Node node, String withType, Map<String, Object> args) {
         final String postHandler = CoreSettingsHelper.getSubmitHandler();
         if (StringUtils.isBlank(postHandler)) {
             throw new RuntimeException("No SubmitHandler defined in settings: "+CoreSettingsHelper.Keys.SUBMIT_HANDLER);
         }
         if (DefaultSubmitHandler.class.getName().equals(postHandler)) {
-            Element element = (Element) context.args.get("element");
-            element.addChild(new Element.InputHidden().addAttribute("name", WITH_TYPE).addAttribute("value", context.withType));
+            Element element = (Element) args.get("element");
+            element.addChild(new Element.InputHidden().addAttribute("name", WITH_TYPE).addAttribute("value", withType));
         }
     }
 

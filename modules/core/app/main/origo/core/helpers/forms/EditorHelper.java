@@ -27,11 +27,11 @@ public class EditorHelper {
         return ProvidesEventGenerator.triggerInterceptor(node, Core.Type.NODE, withType, Collections.<String, Object>singletonMap("content", content));
     }
 
-    public static void triggerBeforeRichTextEditorLoaded(Node node, String withType, Content content) {
+    public static void triggerBeforeRichTextEditorLoaded(Node node, String withType, Content content) throws ModuleException, NodeLoadException {
         OnLoadEventGenerator.triggerBeforeInterceptor(node, Core.Type.NODE, withType, Collections.<String, Object>singletonMap("content", content));
     }
 
-    public static void triggerAfterRichTextEditorLoaded(Node node, String withType, Element element, Content content) {
+    public static void triggerAfterRichTextEditorLoaded(Node node, String withType, Element element, Content content) throws ModuleException, NodeLoadException {
         OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.NODE, withType, element, Collections.<String, Object>singletonMap("content", content));
     }
 

@@ -48,7 +48,7 @@ public class DefaultDashboardProvider {
      * Creating the Dashboard for the Node created above.
      */
     @Provides(type = Admin.Type.DASHBOARD, with = Admin.With.FRONT_PAGE)
-    public static Element createFrontPageDashboard(Node node, String withType, Map<String, Object> args) {
+    public static Element createFrontPageDashboard(Node node, String withType, Map<String, Object> args) throws NodeLoadException, ModuleException {
         return DashboardHelper.createBasicDashboard().setId("dashboard."+Admin.With.FRONT_PAGE).
                 addChildren(DashboardHelper.createDashboardItems(node, Admin.With.FRONT_PAGE));
     }

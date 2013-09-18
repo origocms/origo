@@ -7,6 +7,7 @@ import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.Provides;
+import main.origo.core.event.NodeContext;
 import main.origo.core.preview.Ticket;
 import main.origo.core.ui.Element;
 import main.origo.preview.helpers.PreviewTicketHelper;
@@ -20,10 +21,10 @@ public class PreviewTokenInterceptor {
     private static final String COMMENT_LOADED = "preview_comment_loaded";
 
     @OnLoad
-    public static void loadNode(OnLoad.Context context) throws ModuleException, NodeLoadException {
-        if (!context.attributes.containsKey(COMMENT_LOADED) && PreviewTicketHelper.hasTicket() && PreviewTicketHelper.verifyCurrent()) {
-            context.node.addHeadElement(new Element.Comment().setBody(getComment()));
-            context.attributes.put(COMMENT_LOADED, true);
+    public static void loadNode(Node node, String withType, Map<String, Object> args) throws ModuleException, NodeLoadException {
+        if (!NodeContext.current().attributes.containsKey(COMMENT_LOADED) && PreviewTicketHelper.hasTicket() && PreviewTicketHelper.verifyCurrent()) {
+            node.addHeadElement(new Element.Comment().setBody(getComment()));
+            NodeContext.current().attributes.put(COMMENT_LOADED, true);
         }
     }
 

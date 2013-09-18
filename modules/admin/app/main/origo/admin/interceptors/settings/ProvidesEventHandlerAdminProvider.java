@@ -72,18 +72,18 @@ public class ProvidesEventHandlerAdminProvider {
     }
 
     @OnLoad(type = Core.Type.NODE, with = EDIT_TYPE)
-    public static void loadEditPage(OnLoad.Context context) {
+    public static void loadEditPage(Node node, String withType, Map<String, Object> args) {
 
         List<String> providerTypes = getAllProvides();
 
         if (!providerTypes.isEmpty()) {
 
-            String selectedEventType = getSelectedEventType(context.args, providerTypes);
-            addProviderTypeElements(context.node, providerTypes, selectedEventType);
-            addProviderElements(context.node, selectedEventType);
+            String selectedEventType = getSelectedEventType(args, providerTypes);
+            addProviderTypeElements(node, providerTypes, selectedEventType);
+            addProviderElements(node, selectedEventType);
 
         } else {
-            context.node.addElement(new Element.Panel().
+            node.addElement(new Element.Panel().
                     addAttribute("class", "well well-big").
                     setBody("No handlers found."));
         }

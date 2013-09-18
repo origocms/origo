@@ -32,14 +32,14 @@ public class StructuredPageProvider {
     }
 
     @OnLoad(type = Core.Type.NODE, with = StructuredPage.TYPE)
-    public static void loadContent(OnLoad.Context context) throws NodeLoadException, ModuleException {
+    public static void loadContent(Node node, String withType, Map<String, Object> args) throws NodeLoadException, ModuleException {
 
-        List<Segment> segmentModels = Segment.findWithNodeIdAndSpecificVersion(context.node.nodeId(), context.node.version());
+        List<Segment> segmentModels = Segment.findWithNodeIdAndSpecificVersion(node.nodeId(), node.version());
         for (Segment segment : segmentModels) {
-            SegmentHelper.triggerBeforeSegmentLoaded(context.node, segment.type, segment);
-            Element element = SegmentHelper.triggerSegmentProvider(context.node, segment.type, segment);
-            SegmentHelper.triggerAfterSegmentLoaded(context.node, segment.type, segment, element);
-            context.node.addElement(element);
+            SegmentHelper.triggerBeforeSegmentLoaded(node, segment.type, segment);
+            Element element = SegmentHelper.triggerSegmentProvider(node, segment.type, segment);
+            SegmentHelper.triggerAfterSegmentLoaded(node, segment.type, segment, element);
+            node.addElement(element);
         }
 
     }

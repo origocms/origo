@@ -63,7 +63,7 @@ public class DefaultUserManagementDashboardProvider {
      */
     @Provides(type = Admin.Type.DASHBOARD, with = Admin.With.USER_PAGE)
     @Relationship(parent = Admin.With.FRONT_PAGE)
-    public static Element addUserDashboardContent(Node node, String withType, Map<String, Object> args) {
+    public static Element addUserDashboardContent(Node node, String withType, Map<String, Object> args) throws NodeLoadException, ModuleException {
         return DashboardHelper.createBasicDashboard().setId("dashboard."+Admin.With.USER_PAGE).
                 addChildren(DashboardHelper.createDashboardItems(node, Admin.With.USER_PAGE));
     }

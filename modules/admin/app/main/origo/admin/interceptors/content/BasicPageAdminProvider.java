@@ -86,24 +86,23 @@ public class BasicPageAdminProvider {
 
     /**
      * This will create a new or load a BasicPage for editing
-     *
-     * @param context containing a root node with an node id
      */
     @OnLoad(type = Core.Type.NODE, with = BasicPageAdminProvider.TYPE)
-    public static void loadNewPage(OnLoad.Context context) {
+    public static void loadNewPage(Node node, String withType, Map<String, Object> args) {
+
         try {
-            if (StringUtils.isEmpty(context.node.nodeId())) {
+            if (StringUtils.isEmpty(node.nodeId())) {
                 BasicPage page = new BasicPage();
                 context.attributes.put("page", page);
                 context.attributes.put("lead", new Content());
                 context.attributes.put("body", new Content());
             } else {
-                BasicPage basicPage = BasicPage.findLatestVersion(context.node.nodeId());
+                BasicPage basicPage = BasicPage.findLatestVersion(node.nodeId());
                 if (basicPage == null) {
-                    context.node.addElement(new Element.Paragraph().setWeight(10).setBody("Page '" + context.node.nodeId() + "' does not exist."));
+                    node.addElement(new Element.Paragraph().setWeight(10).setBody("Page '" + node.nodeId() + "' does not exist."));
                     return;
                 }
-                basicPage.rootNode = RootNode.findWithNodeIdAndSpecificVersion(context.node.nodeId(), context.node.version());
+                basicPage.rootNode = RootNode.findWithNodeIdAndSpecificVersion(node.nodeId(), node.version());
 
                 Content leadContent = Content.findWithIdentifier(basicPage.leadReferenceId);
                 Content bodyContent = Content.findWithIdentifier(basicPage.bodyReferenceId);
@@ -113,7 +112,7 @@ public class BasicPageAdminProvider {
                 context.attributes.put("body", bodyContent);
             }
 
-            context.node.addElement(AdminFormHelper.createFormElement(context.node, BasicPageAdminProvider.TYPE));
+            node.addElement(AdminFormHelper.createFormElement(node, BasicPageAdminProvider.TYPE));
 
         } catch (ModuleException e) {
             // TODO: recover somehow?
@@ -128,22 +127,21 @@ public class BasicPageAdminProvider {
 
     /**
      * Adds content to the nodes with the static name 'origo.admin.basicpage.edit'.
-     *
-     * @param context a node of the type 'origo.admin.basicpage.edit'.
      */
     @OnLoad(type = Core.Type.FORM, with = TYPE, after = true)
-    public static void loadEditForm(OnLoad.Context context) {
+    public static void loadEditForm(Node node, String withType, Map<String, Object> args) {
 
         BasicPage basicPage = (BasicPage) context.attributes.get("page");
         Content leadContent = (Content) context.attributes.get("lead");
         Content bodyContent = (Content) context.attributes.get("body");
 
-        Element element = (Element) context.args.get("element");
+        Element element = (Element) args.get("element");
         element.setId("basicpageform").addAttribute("class", "origo-basicpageform, form");
 
         /**
          * Basic Options
          */
+
 
         Element basicFieldSet = new Element.FieldSet().setId("basic");
         element.addChild(basicFieldSet);
@@ -178,6 +176,7 @@ public class BasicPageAdminProvider {
          * Content
          */
 
+
         Element contentFieldSet = new Element.FieldSet().setId("content");
         element.addChild(contentFieldSet);
 
@@ -186,13 +185,13 @@ public class BasicPageAdminProvider {
         try {
             Element leadElement = new Element.Panel().setWeight(20).addAttribute("class", "field").
                     addChild(new Element.Label().setWeight(10).setBody("Lead").addAttribute("for", LEAD_PARAM)).
-                    addChild(EditorHelper.createRichTextEditor(context.node, leadContent).setWeight(20).addAttribute("class", "editor richtext").
+                    addChild(EditorHelper.createRichTextEditor(node, leadContent).setWeight(20).addAttribute("class", "editor richtext").
                             addAttribute("name", LEAD_PARAM).addAttribute("cols", "80").addAttribute("rows", "10"));
             contentFieldSet.addChild(leadElement);
 
             Element bodyElement = new Element.Panel().setWeight(30).addAttribute("class", "field").
                     addChild(new Element.Label().setWeight(10).setBody("Body").addAttribute("for", BODY_PARAM)).
-                    addChild(EditorHelper.createRichTextEditor(context.node, bodyContent).setWeight(20).addAttribute("class", "editor richtext").
+                    addChild(EditorHelper.createRichTextEditor(node, bodyContent).setWeight(20).addAttribute("class", "editor richtext").
                             addAttribute("name", BODY_PARAM).addAttribute("cols", "80").addAttribute("rows", "20"));
             contentFieldSet.addChild(bodyElement);
         } catch (ModuleException e) {
@@ -206,6 +205,7 @@ public class BasicPageAdminProvider {
         /**
          * Publishing options
          */
+
 
         Element publishingFieldSet = new Element.FieldSet().setId("publishing").setWeight(50);
         element.addChild(publishingFieldSet);

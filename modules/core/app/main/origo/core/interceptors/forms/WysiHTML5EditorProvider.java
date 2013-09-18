@@ -3,6 +3,7 @@ package main.origo.core.interceptors.forms;
 import controllers.routes;
 import main.origo.core.Node;
 import main.origo.core.annotations.*;
+import main.origo.core.event.NodeContext;
 import main.origo.core.helpers.ProviderHelper;
 import main.origo.core.ui.Element;
 import main.origo.core.ui.RenderingContext;
@@ -43,14 +44,14 @@ public class WysiHTML5EditorProvider {
     }
 
     @OnLoad(type = Core.Type.NODE, with = Core.With.EDITOR)
-    public static void setupEditor(OnLoad.Context context) {
-        if (ProviderHelper.isProvider(context.withType, WysiHTML5EditorProvider.class) && !context.attributes.containsKey(JS_LOADED)) {
+    public static void setupEditor(Node node, String withType, Map<String, Object> args) {
+        if (ProviderHelper.isProvider(withType, WysiHTML5EditorProvider.class) && !NodeContext.current().attributes.containsKey(JS_LOADED)) {
             String mainScript = routes.Assets.at("javascripts/origo/wysihtml5/wysihtml5-0.4.0pre.min.js").url();
-            context.node.addTailElement(new Element.Script().setWeight(9999).addAttribute("src", mainScript).addAttribute("type", "text/javascript"));
+            node.addTailElement(new Element.Script().setWeight(9999).addAttribute("src", mainScript).addAttribute("type", "text/javascript"));
             String parserRulesScript = routes.Assets.at("javascripts/origo/wysihtml5/parser_rules/advanced.js").url();
-            context.node.addTailElement(new Element.Script().setWeight(9999).addAttribute("src", parserRulesScript).addAttribute("type", "text/javascript"));
+            node.addTailElement(new Element.Script().setWeight(9999).addAttribute("src", parserRulesScript).addAttribute("type", "text/javascript"));
 
-            context.attributes.put(JS_LOADED, true);
+            NodeContext.current().attributes.put(JS_LOADED, true);
         }
     }
 

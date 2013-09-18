@@ -1,16 +1,14 @@
 package main.origo.core.event;
 
 import com.google.common.collect.Lists;
-import main.origo.core.InterceptorRepository;
-import main.origo.core.Navigation;
-import main.origo.core.Node;
+import main.origo.core.*;
 import main.origo.core.annotations.OnLoad;
 import main.origo.core.internal.CachedAnnotation;
 import main.origo.core.ui.Element;
 import main.origo.core.ui.NavigationElement;
 import org.apache.commons.lang3.StringUtils;
+import play.data.Form;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -24,69 +22,135 @@ import java.util.Map;
  */
 public class OnLoadEventGenerator {
 
-    private static void triggerBeforeInterceptor(String type, String withType, OnLoad.Context context) {
-        List<CachedAnnotation> interceptors = findInterceptorForType(type, !StringUtils.isBlank(withType) ? withType : context.node.getClass().getName(), false);
+    public static void triggerBeforeInterceptor(Node node, String type, String withType, Map<String, Object> args) throws NodeLoadException, ModuleException {
+        List<CachedAnnotation> interceptors = findInterceptorForType(type, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), false);
         if (interceptors != null && !interceptors.isEmpty()) {
-            for (CachedAnnotation interceptor : interceptors) {
+            for (CachedAnnotation cachedAnnotation : interceptors) {
                 try {
-                    interceptor.method.invoke(null, context);
-                } catch (Throwable e) {
-                    throw new RuntimeException("", e);
+                    cachedAnnotation.method.invoke(null, node, withType, args);
+                } catch (Exception e) {
+                    getCause(cachedAnnotation, e);
                 }
             }
         }
     }
 
-    public static void triggerBeforeInterceptor(Node node, String type, String withType, Navigation navigation, Map<String, Object> args) {
-        triggerBeforeInterceptor(type, withType, new OnLoad.Context(node, withType, navigation, args));
+    public static void triggerBeforeInterceptor(Node node, String type, String withType, Navigation navigation, Map<String, Object> args) throws NodeLoadException, ModuleException {
+        List<CachedAnnotation> interceptors = findInterceptorForType(type, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), false);
+        if (interceptors != null && !interceptors.isEmpty()) {
+            for (CachedAnnotation cachedAnnotation : interceptors) {
+                try {
+                    cachedAnnotation.method.invoke(null, node, withType, navigation, args);
+                } catch (Exception e) {
+                    getCause(cachedAnnotation, e);
+                }
+            }
+        }
     }
 
-    public static void triggerBeforeInterceptor(Node node, String type, String withType) {
-        triggerBeforeInterceptor(node, type, withType, Collections.<String, Object>emptyMap());
+    public static void triggerBeforeInterceptor(Node node, String type, String withType, Form form, Map<String, Object> args) throws NodeLoadException, ModuleException {
+        List<CachedAnnotation> interceptors = findInterceptorForType(type, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), false);
+        if (interceptors != null && !interceptors.isEmpty()) {
+            for (CachedAnnotation cachedAnnotation : interceptors) {
+                try {
+                    cachedAnnotation.method.invoke(null, node, withType, form, args);
+                } catch (Exception e) {
+                    getCause(cachedAnnotation, e);
+                }
+            }
+        }
     }
 
-    public static void triggerBeforeInterceptor(Node node, String type, String withType, Map<String, Object> args) {
-        triggerBeforeInterceptor(type, withType, new OnLoad.Context(node, withType, args));
+    public static void triggerBeforeInterceptor(Node node, String type, String withType, Element element, Map<String, Object> args) throws NodeLoadException, ModuleException {
+        List<CachedAnnotation> interceptors = findInterceptorForType(type, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), false);
+        if (interceptors != null && !interceptors.isEmpty()) {
+            for (CachedAnnotation cachedAnnotation : interceptors) {
+                try {
+                    cachedAnnotation.method.invoke(null, node, withType, element, args);
+                } catch (Exception e) {
+                    getCause(cachedAnnotation, e);
+                }
+            }
+        }
     }
 
-    private static void triggerAfterInterceptor(String onLoadType, String withType, OnLoad.Context context) {
-        List<CachedAnnotation> interceptorList = findInterceptorForType(onLoadType, !StringUtils.isBlank(withType) ? withType : context.node.getClass().getName(), true);
+    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Map<String, Object> args) throws NodeLoadException, ModuleException {
+        List<CachedAnnotation> interceptorList = findInterceptorForType(onLoadType, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), true);
         if (interceptorList != null && !interceptorList.isEmpty()) {
-            for (CachedAnnotation interceptor : interceptorList) {
+            for (CachedAnnotation cachedAnnotation : interceptorList) {
                 try {
-                    interceptor.method.invoke(null, context);
-                } catch (InvocationTargetException e) {
-                    throw new RuntimeException("Unable to invoke method", e.getCause());
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException("Unable to invoke method", e.getCause());
+                    cachedAnnotation.method.invoke(null, node, withType, args);
+                } catch (Exception e) {
+                    getCause(cachedAnnotation, e);
                 }
             }
         }
     }
 
-    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Element element) {
-        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, withType, element, Collections.<String, Object>emptyMap()));
+    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Navigation navigation, Map<String, Object> args) throws NodeLoadException, ModuleException {
+        List<CachedAnnotation> interceptorList = findInterceptorForType(onLoadType, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), true);
+        if (interceptorList != null && !interceptorList.isEmpty()) {
+            for (CachedAnnotation cachedAnnotation : interceptorList) {
+                try {
+                    cachedAnnotation.method.invoke(null, node, withType, navigation, args);
+                } catch (Exception e) {
+                    getCause(cachedAnnotation, e);
+                }
+            }
+        }
     }
 
-    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Element element, Map<String, Object> args) {
-        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, withType, element, args));
+    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Form form, Map<String, Object> args) throws NodeLoadException, ModuleException {
+        List<CachedAnnotation> interceptorList = findInterceptorForType(onLoadType, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), true);
+        if (interceptorList != null && !interceptorList.isEmpty()) {
+            for (CachedAnnotation cachedAnnotation : interceptorList) {
+                try {
+                    cachedAnnotation.method.invoke(null, node, withType, form, args);
+                } catch (Exception e) {
+                    getCause(cachedAnnotation, e);
+                }
+            }
+        }
     }
 
-    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Navigation navigation, NavigationElement navigationElement) {
-        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, withType, navigation, navigationElement, Collections.<String, Object>emptyMap()));
+    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Element element, Map<String, Object> args) throws NodeLoadException, ModuleException {
+        List<CachedAnnotation> interceptorList = findInterceptorForType(onLoadType, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), true);
+        if (interceptorList != null && !interceptorList.isEmpty()) {
+            for (CachedAnnotation cachedAnnotation : interceptorList) {
+                try {
+                    cachedAnnotation.method.invoke(null, node, withType, element, args);
+                } catch (Exception e) {
+                    getCause(cachedAnnotation, e);
+                }
+            }
+        }
     }
 
-    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Navigation navigation, NavigationElement navigationElement, Map<String, Object> args) {
-        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, withType, navigation, navigationElement, args));
+    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Navigation navigation, NavigationElement element, Map<String, Object> args) throws NodeLoadException, ModuleException {
+        List<CachedAnnotation> interceptorList = findInterceptorForType(onLoadType, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), true);
+        if (interceptorList != null && !interceptorList.isEmpty()) {
+            for (CachedAnnotation cachedAnnotation : interceptorList) {
+                try {
+                    cachedAnnotation.method.invoke(null, node, withType, navigation, element, args);
+                } catch (Exception e) {
+                    getCause(cachedAnnotation, e);
+                }
+            }
+        }
     }
 
-    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType) {
-        triggerAfterInterceptor(node, onLoadType, withType, Collections.<String, Object>emptyMap());
+    private static void getCause(CachedAnnotation cachedAnnotation, Exception e) throws ModuleException, NodeLoadException {
+        if (e.getCause() instanceof ModuleException) {
+            throw (ModuleException) e.getCause();
+        } else if (e.getCause() instanceof NodeLoadException) {
+            throw (NodeLoadException) e.getCause();
+        } else if (e instanceof IllegalArgumentException) {
+            throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]: "+ e.getMessage());
+        } else {
+            throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
+        }
     }
 
-    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Map<String, Object> args) {
-        triggerAfterInterceptor(onLoadType, withType, new OnLoad.Context(node, withType, args));
-    }
 
     private static List<CachedAnnotation> findInterceptorForType(final String onLoadType, final String withType, final boolean after) {
         List<CachedAnnotation> interceptors = Lists.newArrayList(InterceptorRepository.getInterceptors(OnLoad.class, new CachedAnnotation.InterceptorSelector() {

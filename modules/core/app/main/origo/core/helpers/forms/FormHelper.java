@@ -31,11 +31,20 @@ public class FormHelper {
     }
 
     public static Element createFormElement(Node node, String withType, String formType) throws ModuleException, NodeLoadException {
-        OnLoadEventGenerator.triggerBeforeInterceptor(node, Core.Type.FORM, withType);
+        OnLoadEventGenerator.triggerBeforeInterceptor(node, Core.Type.FORM, withType, Collections.<String, Object>emptyMap());
         Element formElement = ProvidesEventGenerator.triggerInterceptor(node, Core.Type.FORM, formType, Collections.<String, Object>singletonMap("with", withType));
 
         addNodeIdAndVersion(formElement, node);
-        OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.FORM, withType, formElement);
+        OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.FORM, withType, formElement, Collections.<String, Object>emptyMap());
+        return formElement;
+    }
+
+    public static Element createFormElement(Node node, String withType, String formType, Form form) throws ModuleException, NodeLoadException {
+        OnLoadEventGenerator.triggerBeforeInterceptor(node, Core.Type.FORM, withType, form, Collections.<String, Object>emptyMap());
+        Element formElement = ProvidesEventGenerator.triggerInterceptor(node, Core.Type.FORM, formType, Collections.<String, Object>singletonMap("with", withType));
+
+        addNodeIdAndVersion(formElement, node);
+        OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.FORM, withType, formElement, Collections.<String, Object>emptyMap());
         return formElement;
     }
 

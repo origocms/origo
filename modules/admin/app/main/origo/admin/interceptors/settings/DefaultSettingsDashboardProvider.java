@@ -61,7 +61,7 @@ public class DefaultSettingsDashboardProvider {
      */
     @Provides(type = Admin.Type.DASHBOARD, with = Admin.With.SETTINGS_PAGE)
     @Relationship(parent = Admin.With.FRONT_PAGE)
-    public static Element addSettingsDashboardContent(Node node, String withType, Map<String, Object> args) {
+    public static Element addSettingsDashboardContent(Node node, String withType, Map<String, Object> args) throws NodeLoadException, ModuleException {
         return DashboardHelper.createBasicDashboard().setId("dashboard."+ Admin.With.SETTINGS_PAGE).
                 addChildren(DashboardHelper.createDashboardItems(node, Admin.With.SETTINGS_PAGE));
     }

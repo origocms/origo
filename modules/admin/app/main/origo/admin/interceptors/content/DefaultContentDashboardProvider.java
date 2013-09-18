@@ -65,7 +65,7 @@ public class DefaultContentDashboardProvider {
      */
     //@Provides(type = Admin.Type.DASHBOARD, with = Core.With.CONTENT_PAGE)
     //@Relationship(parent = Admin.With.FRONT_PAGE)
-    public static Element addContentDashboardContent(Node node, String withType, Map<String, Object> args) {
+    public static Element addContentDashboardContent(Node node, String withType, Map<String, Object> args) throws NodeLoadException, ModuleException {
         return DashboardHelper.createBasicDashboard().
                 setId("dashboard." + Core.With.CONTENT_PAGE).
                 addChildren(DashboardHelper.createDashboardItems(node, Core.With.CONTENT_PAGE));

@@ -21,13 +21,13 @@ public class NavigationEventGenerator {
         return ProvidesEventGenerator.triggerInterceptor(node, Core.Type.NAVIGATION, withType, Collections.<String, Object>singletonMap("section", section));
     }
 
-    public static void triggerBeforeNavigationLoaded(Node node, String withType, String section) {
+    public static void triggerBeforeNavigationLoaded(Node node, String withType, String section) throws ModuleException, NodeLoadException {
         Map<String, Object> args = Maps.newHashMap();
         args.put("section", section);
         OnLoadEventGenerator.triggerBeforeInterceptor(node, Core.Type.NAVIGATION, withType, args);
     }
 
-    public static void triggerAfterNavigationLoaded(Node node, String withType, Navigation navigation, List<NavigationElement> navigationElements, String section) {
+    public static void triggerAfterNavigationLoaded(Node node, String withType, Navigation navigation, List<NavigationElement> navigationElements, String section) throws ModuleException, NodeLoadException {
         //TODO: Figure out how to do this with a complete type Collection<NavigationElement>.class? instead of Collection.class
         for (NavigationElement element : navigationElements) {
             OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.NAVIGATION, withType, navigation, element, Collections.<String, Object>singletonMap("section", section));
@@ -47,11 +47,11 @@ public class NavigationEventGenerator {
         return ProvidesEventGenerator.triggerInterceptor(node, Core.Type.NAVIGATION_ITEM, withType, navigation, args);
     }
 
-    public static void triggerBeforeNavigationItemLoaded(Node node, String withType, Navigation navigation) {
+    public static void triggerBeforeNavigationItemLoaded(Node node, String withType, Navigation navigation) throws ModuleException, NodeLoadException {
         OnLoadEventGenerator.triggerBeforeInterceptor(node, Core.Type.NAVIGATION_ITEM, withType, navigation, Collections.<String, Object>emptyMap());
     }
 
-    public static void triggerAfterNavigationItemLoaded(Node node, String withType, Navigation navigation, NavigationElement navigationElement) {
+    public static void triggerAfterNavigationItemLoaded(Node node, String withType, Navigation navigation, NavigationElement navigationElement) throws ModuleException, NodeLoadException {
         OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.NAVIGATION_ITEM, withType, navigation, navigationElement, Collections.<String, Object>emptyMap());
     }
 }

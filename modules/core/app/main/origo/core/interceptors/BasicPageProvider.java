@@ -39,14 +39,14 @@ public class BasicPageProvider {
     }
 
     @OnLoad(type = Core.Type.NODE, with = TYPE)
-    public static void loadContent(OnLoad.Context context) throws ModuleException, NodeLoadException {
-        context.node.addElement(loadContent(context, ((BasicPage) context.node).leadReferenceId));
-        context.node.addElement(loadContent(context, ((BasicPage) context.node).bodyReferenceId));
+    public static void loadContent(Node node, String withType, Map<String, Object> args) throws ModuleException, NodeLoadException {
+        node.addElement(loadContent(node, ((BasicPage) node).leadReferenceId));
+        node.addElement(loadContent(node, ((BasicPage) node).bodyReferenceId));
     }
 
-    private static Element loadContent(OnLoad.Context context, String referenceId) throws NodeLoadException, ModuleException {
+    private static Element loadContent(Node node, String referenceId) throws NodeLoadException, ModuleException {
         if (!StringUtils.isBlank(referenceId)) {
-            Content content = ContentHelper.loadContent(context.node, referenceId);
+            Content content = ContentHelper.loadContent(node, referenceId);
             if (content != null) {
                 return new Element.Panel().setId(content.identifier).setBody(content.value);
             }
