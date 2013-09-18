@@ -5,6 +5,8 @@ import com.google.common.collect.Maps;
 import main.origo.core.*;
 import main.origo.core.annotations.Provides;
 import main.origo.core.internal.CachedAnnotation;
+import main.origo.core.internal.InterceptorExecutor;
+import models.origo.core.Content;
 import play.Logger;
 import play.data.Form;
 
@@ -27,38 +29,30 @@ public class ProvidesEventGenerator {
 
     public static <T> T triggerInterceptor(Node node, String providesType, String withType, Map<String, Object> args) throws NodeLoadException, ModuleException {
         CachedAnnotation cachedAnnotation = getCachedAnnotationIfModuleIsEnabled(providesType, withType);
-        try {
-            assert(NodeContext.current() != null);
-            NodeContext.current().attributes.put(withType, cachedAnnotation.method.getDeclaringClass());
-            //noinspection unchecked
-            return (T) cachedAnnotation.method.invoke(null, node, withType, args);
-        } catch (Exception e) {
-            return getCause(cachedAnnotation, e);
-        }
+        assert(NodeContext.current() != null);
+        NodeContext.current().attributes.put(withType, cachedAnnotation.method.getDeclaringClass());
+        return InterceptorExecutor.execute(cachedAnnotation, node, withType, args);
     }
 
     public static <T> T triggerInterceptor(Node node, String providesType, String withType, Navigation navigation, Map<String, Object> args) throws NodeLoadException, ModuleException {
         CachedAnnotation cachedAnnotation = getCachedAnnotationIfModuleIsEnabled(providesType, withType);
-        try {
-            assert(NodeContext.current() != null);
-            NodeContext.current().attributes.put(withType, cachedAnnotation.method.getDeclaringClass());
-            //noinspection unchecked
-            return (T) cachedAnnotation.method.invoke(null, node, withType, navigation, args);
-        } catch (Exception e) {
-            return getCause(cachedAnnotation, e);
-        }
+        assert(NodeContext.current() != null);
+        NodeContext.current().attributes.put(withType, cachedAnnotation.method.getDeclaringClass());
+        return InterceptorExecutor.execute(cachedAnnotation, node, withType, navigation, args);
     }
 
     public static <T> T triggerInterceptor(Node node, String providesType, String withType, Form form, Map<String, Object> args) throws NodeLoadException, ModuleException {
         CachedAnnotation cachedAnnotation = getCachedAnnotationIfModuleIsEnabled(providesType, withType);
-        try {
-            assert(NodeContext.current() != null);
-            NodeContext.current().attributes.put(withType, cachedAnnotation.method.getDeclaringClass());
-            //noinspection unchecked
-            return (T) cachedAnnotation.method.invoke(null, node, withType, form, args);
-        } catch (Exception e) {
-            return getCause(cachedAnnotation, e);
-        }
+        assert(NodeContext.current() != null);
+        NodeContext.current().attributes.put(withType, cachedAnnotation.method.getDeclaringClass());
+        return InterceptorExecutor.execute(cachedAnnotation, node, withType, form, args);
+    }
+
+    public static <T> T triggerInterceptor(Node node, String providesType, String withType, Content content, Map<String, Object> args) throws NodeLoadException, ModuleException {
+        CachedAnnotation cachedAnnotation = getCachedAnnotationIfModuleIsEnabled(providesType, withType);
+        assert(NodeContext.current() != null);
+        NodeContext.current().attributes.put(withType, cachedAnnotation.method.getDeclaringClass());
+        return InterceptorExecutor.execute(cachedAnnotation, node, withType, content, args);
     }
 
     private static CachedAnnotation getCachedAnnotationIfModuleIsEnabled(String providesType, String withType) throws ModuleException {
@@ -68,18 +62,6 @@ public class ProvidesEventGenerator {
             throw new ModuleException(cachedAnnotation.module.name, ModuleException.Cause.NOT_ENABLED);
         }
         return cachedAnnotation;
-    }
-
-    private static <T> T getCause(CachedAnnotation cachedAnnotation, Exception e) throws ModuleException, NodeLoadException {
-        if (e.getCause() instanceof ModuleException) {
-            throw (ModuleException) e.getCause();
-        } else if (e.getCause() instanceof NodeLoadException) {
-            throw (NodeLoadException) e.getCause();
-        } else if (e instanceof IllegalArgumentException) {
-            throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]: "+ e.getMessage());
-        } else {
-            throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
-        }
     }
 
     /**

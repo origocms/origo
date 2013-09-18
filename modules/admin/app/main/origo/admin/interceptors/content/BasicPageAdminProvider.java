@@ -2,6 +2,7 @@ package main.origo.admin.interceptors.content;
 
 import controllers.origo.admin.routes;
 import main.origo.admin.annotations.Admin;
+import main.origo.admin.forms.BasicPageForm;
 import main.origo.admin.helpers.DashboardHelper;
 import main.origo.admin.helpers.forms.AdminFormHelper;
 import main.origo.admin.themes.AdminTheme;
@@ -30,8 +31,9 @@ import models.origo.core.BasicPage;
 import models.origo.core.Content;
 import models.origo.core.RootNode;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 import play.Logger;
-import play.data.DynamicForm;
 import play.data.Form;
 import play.i18n.Messages;
 import play.mvc.Controller;
@@ -51,14 +53,14 @@ public class BasicPageAdminProvider {
 
     public static final String TYPE = BasicPageProvider.TYPE + ".admin";
 
-    private static final String TITLE_PARAM = "origo-basicpageform-title";
-    private static final String PUBLISH_DATE_PARAM = "origo-basicpageform-publish-date";
-    private static final String PUBLISH_TIME_PARAM = "origo-basicpageform-publish-time";
-    private static final String UNPUBLISH_DATE_PARAM = "origo-basicpageform-unpublish-date";
-    private static final String UNPUBLISH_TIME_PARAM = "origo-basicpageform-unpublish-time";
-    private static final String THEME_VARIANT_PARAM = "origo-basicpageform-theme-variant";
-    private static final String LEAD_PARAM = "origo-basicpageform-lead";
-    private static final String BODY_PARAM = "origo-basicpageform-body";
+    private static final String TITLE_PARAM = "title";
+    private static final String PUBLISH_DATE_PARAM = "publishDate";
+    private static final String PUBLISH_TIME_PARAM = "publishTime";
+    private static final String UNPUBLISH_DATE_PARAM = "unpublishDate";
+    private static final String UNPUBLISH_TIME_PARAM = "unpublishTime";
+    private static final String THEME_VARIANT_PARAM = "themeVariant";
+    private static final String LEAD_PARAM = "leadText";
+    private static final String BODY_PARAM = "bodyText";
 
     /**
      * Provides a type with the static name 'content.basicpage'.
@@ -91,28 +93,39 @@ public class BasicPageAdminProvider {
     public static void loadNewPage(Node node, String withType, Map<String, Object> args) {
 
         try {
-            if (StringUtils.isEmpty(node.nodeId())) {
-                BasicPage page = new BasicPage();
-                context.attributes.put("page", page);
-                context.attributes.put("lead", new Content());
-                context.attributes.put("body", new Content());
-            } else {
+
+            Form<BasicPageForm> form = FormHelper.getValidationResult(BasicPageForm.class);
+
+            if (form.hasErrors()) {
+
+                node.addElement(AdminFormHelper.createFormElement(node, BasicPageAdminProvider.TYPE));
+                return;
+
+            }
+
+            BasicPageForm page = new BasicPageForm();
+            if (StringUtils.isNotEmpty(node.nodeId())) {
                 BasicPage basicPage = BasicPage.findLatestVersion(node.nodeId());
                 if (basicPage == null) {
                     node.addElement(new Element.Paragraph().setWeight(10).setBody("Page '" + node.nodeId() + "' does not exist."));
                     return;
                 }
-                basicPage.rootNode = RootNode.findWithNodeIdAndSpecificVersion(node.nodeId(), node.version());
+                RootNode rootNode = RootNode.findWithNodeIdAndSpecificVersion(node.nodeId(), node.version());
 
                 Content leadContent = Content.findWithIdentifier(basicPage.leadReferenceId);
                 Content bodyContent = Content.findWithIdentifier(basicPage.bodyReferenceId);
 
-                context.attributes.put("page", basicPage);
-                context.attributes.put("lead", leadContent);
-                context.attributes.put("body", bodyContent);
+                page.publishDate = LocalDate.fromDateFields(rootNode.published());
+                page.publishTime = LocalTime.fromDateFields(rootNode.published());
+                page.unpublishDate = LocalDate.fromDateFields(rootNode.unpublished());
+                page.unpublishTime = LocalTime.fromDateFields(rootNode.unpublished());
+                page.themeVariant = rootNode.themeVariant();
+                page.leadText = leadContent.value;
+                page.bodyText = bodyContent.value;
             }
 
-            node.addElement(AdminFormHelper.createFormElement(node, BasicPageAdminProvider.TYPE));
+            form.fill(page);
+            node.addElement(AdminFormHelper.createFormElement(node, BasicPageAdminProvider.TYPE, form));
 
         } catch (ModuleException e) {
             // TODO: recover somehow?
@@ -129,19 +142,19 @@ public class BasicPageAdminProvider {
      * Adds content to the nodes with the static name 'origo.admin.basicpage.edit'.
      */
     @OnLoad(type = Core.Type.FORM, with = TYPE, after = true)
-    public static void loadEditForm(Node node, String withType, Map<String, Object> args) {
-
-        BasicPage basicPage = (BasicPage) context.attributes.get("page");
-        Content leadContent = (Content) context.attributes.get("lead");
-        Content bodyContent = (Content) context.attributes.get("body");
+    public static void loadEditForm(Node node, String withType, Form<BasicPageForm> form, Map<String, Object> args) {
 
         Element element = (Element) args.get("element");
         element.setId("basicpageform").addAttribute("class", "origo-basicpageform, form");
 
+        Element globalErrors = FormHelper.createGlobalErrorElement();
+        if (globalErrors != null) {
+            element.addChild(globalErrors);
+        }
+
         /**
          * Basic Options
          */
-
 
         Element basicFieldSet = new Element.FieldSet().setId("basic");
         element.addChild(basicFieldSet);
@@ -149,14 +162,15 @@ public class BasicPageAdminProvider {
         basicFieldSet.addChild(new Element.Legend().setBody("Basic Information"));
 
         Element themeInputSelectElement = new Element.InputSelect();
+        String themeVariantFormValue = FormHelper.getFieldValue(form, THEME_VARIANT_PARAM);
         for (CachedThemeVariant themeVariant : ThemeRepository.getAvailableThemeVariants()) {
             Element optionElement = new Element.InputSelectOption().setBody(themeVariant.variantId);
-            if (StringUtils.isEmpty(basicPage.themeVariant)) {
+            if (StringUtils.isEmpty(themeVariantFormValue)) {
                 if (themeVariant.variantId.equals(CoreSettingsHelper.getThemeVariant())) {
                     optionElement.addAttribute("selected", "selected");
                 }
             } else {
-                if (themeVariant.variantId.equals(basicPage.themeVariant)) {
+                if (themeVariant.variantId.equals(themeVariantFormValue)) {
                     optionElement.addAttribute("selected", "selected");
                 }
             }
@@ -164,13 +178,17 @@ public class BasicPageAdminProvider {
         }
 
         basicFieldSet.addChild(new Element.Panel().addAttribute("class", "row-fluid").
-                addChild(new Element.Panel().setWeight(10).addAttribute("class", "field span3").
-                        addChild(new Element.Label().setWeight(10).setBody("Title").addAttribute("for", TITLE_PARAM)).
-                        addChild(new Element.InputText().setWeight(20).addAttribute("name", TITLE_PARAM).addAttribute("value", basicPage.title()))).
-                addChild(new Element.Panel().setWeight(20).addAttribute("class", "field").
-                        addChild(new Element.Label().setWeight(10).setBody("Theme Variant").addAttribute("for", THEME_VARIANT_PARAM)).
-                        addChild(themeInputSelectElement.setWeight(25).addAttribute("class", "themeSelector").
-                                addAttribute("name", THEME_VARIANT_PARAM))));
+                addChild(
+                        FormHelper.createField(form,
+                                new Element.Label().setWeight(10).setBody("Title").addAttribute("for", TITLE_PARAM),
+                                new Element.InputText().setWeight(20).addAttribute("name", TITLE_PARAM)
+                        ).addAttribute("class", "span3")
+                ).
+                addChild(
+                        FormHelper.createField(form,
+                                new Element.Label().setWeight(10).setBody("Theme Variant").addAttribute("for", THEME_VARIANT_PARAM),
+                                themeInputSelectElement.setWeight(25).addAttribute("class", "themeSelector").
+                                        addAttribute("name", THEME_VARIANT_PARAM))));
 
         /**
          * Content
@@ -183,17 +201,23 @@ public class BasicPageAdminProvider {
         contentFieldSet.addChild(new Element.Legend().setBody("Content"));
 
         try {
-            Element leadElement = new Element.Panel().setWeight(20).addAttribute("class", "field").
-                    addChild(new Element.Label().setWeight(10).setBody("Lead").addAttribute("for", LEAD_PARAM)).
-                    addChild(EditorHelper.createRichTextEditor(node, leadContent).setWeight(20).addAttribute("class", "editor richtext").
-                            addAttribute("name", LEAD_PARAM).addAttribute("cols", "80").addAttribute("rows", "10"));
-            contentFieldSet.addChild(leadElement);
+            contentFieldSet.addChild(
+                    FormHelper.createField(form,
+                            new Element.Label().setWeight(10).setBody("Lead").addAttribute("for", LEAD_PARAM),
+                            EditorHelper.createRichTextEditor(node, new Content(FormHelper.getFieldValue(form, LEAD_PARAM))).
+                                    setWeight(20).addAttribute("class", "editor richtext").
+                                    addAttribute("name", LEAD_PARAM).addAttribute("cols", "80").addAttribute("rows", "10")
+                    )
+            );
 
-            Element bodyElement = new Element.Panel().setWeight(30).addAttribute("class", "field").
-                    addChild(new Element.Label().setWeight(10).setBody("Body").addAttribute("for", BODY_PARAM)).
-                    addChild(EditorHelper.createRichTextEditor(node, bodyContent).setWeight(20).addAttribute("class", "editor richtext").
-                            addAttribute("name", BODY_PARAM).addAttribute("cols", "80").addAttribute("rows", "20"));
-            contentFieldSet.addChild(bodyElement);
+            contentFieldSet.addChild(
+                    FormHelper.createField(form,
+                            new Element.Label().setWeight(10).setBody("Body").addAttribute("for", BODY_PARAM),
+                            EditorHelper.createRichTextEditor(node, new Content(FormHelper.getFieldValue(form, BODY_PARAM))).
+                                    setWeight(20).addAttribute("class", "editor richtext").
+                                    addAttribute("name", BODY_PARAM).addAttribute("cols", "80").addAttribute("rows", "20")
+                    )
+            );
         } catch (ModuleException e) {
             // TODO: recover somehow?
             Logger.error("Unable to load node", e);
@@ -220,7 +244,7 @@ public class BasicPageAdminProvider {
                         ).
                         addChild(new Element.InputText(Date.class).setId("date-" + PUBLISH_DATE_PARAM).
                                 addAttribute("name", PUBLISH_DATE_PARAM).
-                                addAttribute("value", DateUtil.formatDateIfNotNull(basicPage.published())).
+                                addAttribute("value", FormHelper.getFieldValue(form, PUBLISH_DATE_PARAM)).
                                 addAttribute("placeholder", datePattern.toLowerCase())
                         )
                 ).
@@ -230,7 +254,7 @@ public class BasicPageAdminProvider {
                         ).
                         addChild(new Element.InputText(Date.class).setId("date-" + UNPUBLISH_DATE_PARAM).
                                 addAttribute("name", UNPUBLISH_DATE_PARAM).
-                                addAttribute("value", DateUtil.formatDateIfNotNull(basicPage.unpublished())).
+                                addAttribute("value", FormHelper.getFieldValue(form, UNPUBLISH_DATE_PARAM)).
                                 addAttribute("placeholder", datePattern.toLowerCase()))
                 );
         publishingFieldSet.addChild(publishElement);
@@ -243,7 +267,7 @@ public class BasicPageAdminProvider {
                         ).
                         addChild(new Element.InputText().setId("date-" + PUBLISH_TIME_PARAM).
                                 addAttribute("name", PUBLISH_TIME_PARAM).
-                                addAttribute("value", DateUtil.formatTimeIfNotNull(basicPage.published())).
+                                addAttribute("value", FormHelper.getFieldValue(form, PUBLISH_TIME_PARAM)).
                                 addAttribute("placeholder", timePattern.toLowerCase()))
                 ).
                 addChild(new Element.Panel().addAttribute("class", "panel split-right").
@@ -252,7 +276,7 @@ public class BasicPageAdminProvider {
                         ).
                         addChild(new Element.InputText().setId("date-" + UNPUBLISH_TIME_PARAM).
                                 addAttribute("name", UNPUBLISH_TIME_PARAM).
-                                addAttribute("value", DateUtil.formatTimeIfNotNull(basicPage.unpublished())).
+                                addAttribute("value", FormHelper.getFieldValue(form, UNPUBLISH_TIME_PARAM)).
                                 addAttribute("placeholder", timePattern.toLowerCase()))
                 );
         publishingFieldSet.addChild(publishTimeElement);
@@ -277,10 +301,10 @@ public class BasicPageAdminProvider {
     /**
      * Hooks in to the submit process and stores a BasicPage when it is submitted.
      */
-    @OnSubmit(with = TYPE, validate = BasicPage.class)
+    @OnSubmit(with = TYPE, validate = BasicPageForm.class)
     public static Boolean storePage(OnSubmit.Context context) {
 
-        Form form = DynamicForm.form().bindFromRequest();
+        Form<BasicPageForm> form = FormHelper.getValidationResult(BasicPageForm.class);
         Map<String, String> data = form.data();
 
         String nodeId = FormHelper.getNodeId(data);

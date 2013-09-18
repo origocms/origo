@@ -32,6 +32,11 @@ public class Content extends Model<Content> {
         this.value = "";
     }
 
+    public Content(String value) {
+        this();
+        this.value = value;
+    }
+
     public static Content findWithIdentifier(String identifier) {
         try {
             return (Content) JPA.em().createQuery("from "+Content.class.getName()+" where identifier=:identifier").

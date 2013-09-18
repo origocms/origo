@@ -30,10 +30,13 @@ public class FormHelper {
         return createFormElement(node, withType, CoreSettingsHelper.getDefaultFormType());
     }
 
+    public static Element createFormElement(Node node, String withType, Form form) throws NodeLoadException, ModuleException {
+        return createFormElement(node, withType, CoreSettingsHelper.getDefaultFormType(), form);
+    }
+
     public static Element createFormElement(Node node, String withType, String formType) throws ModuleException, NodeLoadException {
         OnLoadEventGenerator.triggerBeforeInterceptor(node, Core.Type.FORM, withType, Collections.<String, Object>emptyMap());
         Element formElement = ProvidesEventGenerator.triggerInterceptor(node, Core.Type.FORM, formType, Collections.<String, Object>singletonMap("with", withType));
-
         addNodeIdAndVersion(formElement, node);
         OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.FORM, withType, formElement, Collections.<String, Object>emptyMap());
         return formElement;
@@ -42,9 +45,8 @@ public class FormHelper {
     public static Element createFormElement(Node node, String withType, String formType, Form form) throws ModuleException, NodeLoadException {
         OnLoadEventGenerator.triggerBeforeInterceptor(node, Core.Type.FORM, withType, form, Collections.<String, Object>emptyMap());
         Element formElement = ProvidesEventGenerator.triggerInterceptor(node, Core.Type.FORM, formType, Collections.<String, Object>singletonMap("with", withType));
-
         addNodeIdAndVersion(formElement, node);
-        OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.FORM, withType, formElement, Collections.<String, Object>emptyMap());
+        OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.FORM, withType, form, formElement, Collections.<String, Object>emptyMap());
         return formElement;
     }
 
@@ -147,5 +149,9 @@ public class FormHelper {
         }
 
         return field;
+    }
+
+    public static String getFieldValue(Form form, String name) {
+        return form.field(name).value();
     }
 }

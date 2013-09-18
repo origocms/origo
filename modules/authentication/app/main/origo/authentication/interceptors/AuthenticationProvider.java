@@ -64,11 +64,14 @@ public class AuthenticationProvider {
     @Provides(with = Core.With.AUTHENTICATION_CHECK)
     public static Node createLoginPage(Node node, String withType, Map<String, Object> args) throws ModuleException, NodeLoadException {
 
+        Form<LoginForm> form = FormHelper.getValidationResult(LoginForm.class);
+
         BasicPage page = new BasicPage();
         page.rootNode = (RootNode)node;
         page.nodeId = page.rootNode.nodeId();
         page.title = "Login";
-        page.addElement(FormHelper.createFormElement(node, Core.With.AUTHENTICATION_CHECK));
+
+        page.addElement(FormHelper.createFormElement(node, Core.With.AUTHENTICATION_CHECK, form));
         return page;
     }
 
@@ -76,11 +79,8 @@ public class AuthenticationProvider {
      * Adds login elements to the form
      */
     @OnLoad(type = Core.Type.FORM, with = Core.With.AUTHENTICATION_CHECK, after = true)
-    public static void addLoginForm(Node node, String withType, Map<String, Object> args) {
+    public static void addLoginForm(Node node, String withType, Form form, Element element, Map<String, Object> args) {
 
-        Form<LoginForm> form = FormHelper.getValidationResult(LoginForm.class);
-
-        Element element = (Element) args.get("element");
         element.setId("loginform").addAttribute("class", "origo-loginform, form");
 
         Element globalErrors = FormHelper.createGlobalErrorElement();

@@ -51,13 +51,12 @@ public class AdminSubmitHandler extends DefaultSubmitHandler {
     }
 
     @OnLoad(type = Core.Type.FORM)
-    public static void addWithTypeField(Node node, String withType, Map<String, Object> args) {
+    public static void addWithTypeField(Node node, String withType, Element element, Map<String, Object> args) {
         final String postHandler = AdminSettingsHelper.getSubmitHandler();
         if (StringUtils.isBlank(postHandler)) {
             throw new RuntimeException("No SubmitHandler defined in settings: "+CoreSettingsHelper.Keys.SUBMIT_HANDLER);
         }
         if (DefaultSubmitHandler.class.getName().equals(postHandler)) {
-            Element element = (Element) args.get("element");
             element.addChild(new Element.InputHidden().addAttribute("name", WITH_TYPE).addAttribute("value", withType));
         }
     }

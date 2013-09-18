@@ -13,9 +13,7 @@ import java.util.Map;
 public class DefaultAdminNavigationProvider {
 
     @Provides(type = Core.Type.NAVIGATION_ITEM, with = "origo.admin.navigation")
-    public static NavigationElement createAliasNavigation(Node node, String withType, Map<String, Object> args) {
-
-        AdminNavigation navigation = (AdminNavigation) args.get("navigation");
+    public static NavigationElement createAliasNavigation(Node node, String withType, AdminNavigation navigation, Map<String, Object> args) {
 
         // TODO: Set this selected somehow
         //boolean selected = context.node.nodeId().equals(alias.pageId);
