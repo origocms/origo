@@ -143,7 +143,7 @@ public class AuthenticationProvider {
      * Handling the routing at the end of the submit process when the submit failed for some reason.
      */
     @SubmitState(state = SubmitState.FAILURE, with = Core.With.AUTHENTICATION_CHECK)
-    public static Result handleFailure(SubmitState.Context context) {
+    public static Result handleFailure() {
 
         String unauthorizedPage = Settings.load().getValue(CoreSettingsHelper.Keys.UNAUTHORIZED_PAGE);
         try {
@@ -165,7 +165,7 @@ public class AuthenticationProvider {
      * and if that is not set in the context it redirects to the start page from the settings.
      */
     @SubmitState(with = Core.With.AUTHENTICATION_CHECK)
-    public static Result handleSuccess(SubmitState.Context context) {
+    public static Result handleSuccess() {
 
         String originalPath = (String) NodeContext.current().attributes.get(Security.Params.AUTH_PATH);
         if (StringUtils.isBlank(originalPath)) {

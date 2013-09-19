@@ -19,24 +19,20 @@ public class SubmitStateEventGenerator {
     }
 
     public static Result triggerInterceptor(String state, String withType, Map<String, Object> args) {
-        return triggerInterceptor(state, withType, new SubmitState.Context(args));
-    }
-
-    public static Result triggerInterceptor(String state, String withType, SubmitState.Context context) {
         CachedAnnotation cachedAnnotation = findOnPostInterceptorsWithType(state, withType);
         try {
             switch(state) {
                 case SubmitState.SUCCESS:
                     if (cachedAnnotation == null) {
-                        throw new RuntimeException("Every form type (specified by using attribute 'with') must have a class annotated with @SubmitState to use as an endpoint for submit's. Unable to find a SubmitState for state='" + state + "' and type='" + withType + "'");
+                        throw new RuntimeException("Every form type (specified by using attribute 'with') must have a class annotated with @SubmitState to use as an endpoint for submits. Unable to find a SubmitState for state='" + state + "' and type='" + withType + "'");
                     }
-                    return (Result) cachedAnnotation.method.invoke(null, context);
+                    return (Result) cachedAnnotation.method.invoke(null, args);
                 case SubmitState.FAILURE:
                     if (cachedAnnotation == null) {
                         Logger.error("No @SubmitState found to use as an endpoint for submit's. Unable to find a SubmitState for state='" + state + "' and type='" + withType + "'");
                         return CoreLoader.redirectToStartPage();
                     }
-                    return (Result) cachedAnnotation.method.invoke(null, context);
+                    return (Result) cachedAnnotation.method.invoke(null, args);
                 default:
                     Logger.error("Unknown state '"+state+"' for SubmitState, showing error page");
                     return CoreLoader.redirectToPageLoadErrorPage();

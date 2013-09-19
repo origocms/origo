@@ -409,7 +409,7 @@ public class BasicPageAdminProvider {
      * Handling the routing at the end of the submit process, it redirects to listing the pages.
      */
     @SubmitState(with = TYPE)
-    public static Result handleSuccess(SubmitState.Context context) {
+    public static Result handleSuccess() {
         return Controller.redirect(routes.Dashboard.dashboard(Admin.With.CONTENT_PAGE));
     }
 

@@ -249,7 +249,7 @@ public class ProvidesEventHandlerAdminProvider {
      * Handling the routing at the end of the submit process, it redirects to listing the handlers.
      */
     @SubmitState(with = BASE_TYPE)
-    public static Result handleSuccess(SubmitState.Context context) {
+    public static Result handleSuccess() {
         return Controller.redirect(routes.Dashboard.dashboard(Admin.With.SETTINGS_PAGE).url());
     }
 
