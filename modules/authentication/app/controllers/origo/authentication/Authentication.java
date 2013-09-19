@@ -1,6 +1,6 @@
 package controllers.origo.authentication;
 
-import controllers.origo.core.CoreLoader;
+import main.origo.core.CoreLoader;
 import main.origo.core.ModuleException;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;

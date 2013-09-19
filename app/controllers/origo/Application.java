@@ -1,7 +1,7 @@
 package controllers.origo;
 
 import be.objectify.deadbolt.java.actions.Dynamic;
-import controllers.origo.core.CoreLoader;
+import main.origo.core.CoreLoader;
 import main.origo.core.actions.ContextAware;
 import main.origo.core.security.Security;
 import models.origo.core.Settings;

@@ -1,5 +1,6 @@
 package controllers.origo.core;
 
+import main.origo.core.CoreLoader;
 import main.origo.core.actions.ContextAware;
 import main.origo.core.event.forms.SubmitHandlerEventGenerator;
 import main.origo.core.helpers.CoreSettingsHelper;

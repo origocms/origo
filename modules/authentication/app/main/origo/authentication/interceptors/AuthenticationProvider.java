@@ -1,7 +1,6 @@
 package main.origo.authentication.interceptors;
 
 import controllers.origo.authentication.routes;
-import controllers.origo.core.CoreLoader;
 import main.origo.authentication.form.LoginForm;
 import main.origo.authentication.util.AuthenticationSessionUtils;
 import main.origo.core.*;

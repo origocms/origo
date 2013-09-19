@@ -1,6 +1,7 @@
 package controllers.origo.admin;
 
 import be.objectify.deadbolt.java.actions.Dynamic;
+import main.origo.admin.AdminLoader;
 import main.origo.core.actions.ContextAware;
 import main.origo.core.security.Security;
 import play.db.jpa.Transactional;

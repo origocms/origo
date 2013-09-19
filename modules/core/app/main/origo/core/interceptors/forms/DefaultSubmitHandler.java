@@ -1,10 +1,6 @@
 package main.origo.core.interceptors.forms;
 
-import controllers.origo.core.CoreLoader;
-import main.origo.core.ModuleException;
-import main.origo.core.Node;
-import main.origo.core.NodeLoadException;
-import main.origo.core.NodeNotFoundException;
+import main.origo.core.*;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnLoad;

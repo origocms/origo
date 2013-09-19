@@ -1,6 +1,6 @@
 package main.origo.core.actions;
 
-import controllers.origo.core.CoreLoader;
+import main.origo.core.CoreLoader;
 import main.origo.core.event.NodeContext;
 import play.Logger;
 import play.core.j.JavaResultExtractor;

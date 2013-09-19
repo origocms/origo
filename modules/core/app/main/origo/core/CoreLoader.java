@@ -1,6 +1,5 @@
-package controllers.origo.core;
+package main.origo.core;
 
-import main.origo.core.*;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.helpers.NavigationHelper;
 import main.origo.core.helpers.NodeHelper;

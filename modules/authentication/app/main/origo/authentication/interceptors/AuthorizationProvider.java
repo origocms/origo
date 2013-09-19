@@ -1,6 +1,5 @@
 package main.origo.authentication.interceptors;
 
-import controllers.origo.core.CoreLoader;
 import main.origo.core.*;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;

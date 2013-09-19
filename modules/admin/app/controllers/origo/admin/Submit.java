@@ -1,8 +1,8 @@
 package controllers.origo.admin;
 
 import be.objectify.deadbolt.java.actions.Dynamic;
-import controllers.origo.core.CoreLoader;
 import main.origo.admin.helpers.AdminSettingsHelper;
+import main.origo.core.CoreLoader;
 import main.origo.core.actions.ContextAware;
 import main.origo.core.event.forms.SubmitHandlerEventGenerator;
 import main.origo.core.security.Security;

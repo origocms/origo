@@ -1,7 +1,7 @@
 package main.origo.core.event.forms;
 
 import com.google.common.collect.Maps;
-import controllers.origo.core.CoreLoader;
+import main.origo.core.CoreLoader;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.annotations.forms.SubmitState;
 import main.origo.core.event.EventGeneratorUtils;

@@ -1,9 +1,9 @@
-package controllers.origo.admin;
+package main.origo.admin;
 
-import controllers.origo.core.CoreLoader;
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.helpers.AdminSettingsHelper;
 import main.origo.admin.helpers.NavigationHelper;
+import main.origo.core.CoreLoader;
 import main.origo.core.ModuleException;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
