@@ -7,6 +7,7 @@ import main.origo.core.annotations.ThemeVariant;
 import main.origo.core.helpers.ElementHelper;
 import main.origo.core.helpers.ThemeHelper;
 import main.origo.core.ui.Element;
+import main.origo.core.ui.RenderedNode;
 import models.origo.core.Meta;
 import play.api.templates.Html;
 import play.mvc.Content;
@@ -25,18 +26,18 @@ public class AdminTheme {
     public static final String THREE_COLUMNS_VARIANT_NAME = "admin-three_columns";
 
     @ThemeVariant(id = DEFAULT_VARIANT_NAME, regions = {"top", "main"})
-    public static Content renderDefaultTemplate(ThemeVariant.Context context) {
-        return variant_main_only.render(context);
+    public static Content renderDefaultTemplate(RenderedNode node) {
+        return variant_main_only.render(node);
     }
 
     @ThemeVariant(id = LEFT_AND_MAIN_COLUMNS_VARIANT_NAME, regions = {"top", "main", "left"})
-    public static Content renderDefaultMainAndLeftColumnTemplate(ThemeVariant.Context context) {
-        return variant_main_and_left_columns.render(context);
+    public static Content renderDefaultMainAndLeftColumnTemplate(RenderedNode node) {
+        return variant_main_and_left_columns.render(node);
     }
 
     @ThemeVariant(id = THREE_COLUMNS_VARIANT_NAME, regions = {"top", "main", "left", "right"})
-    public static Content renderDefaultThreeColumnTemplate(ThemeVariant.Context context) {
-        return variant_three_columns.render(context);
+    public static Content renderDefaultThreeColumnTemplate(RenderedNode node) {
+        return variant_three_columns.render(node);
     }
 
     public static String defaultDashboardClasses() {

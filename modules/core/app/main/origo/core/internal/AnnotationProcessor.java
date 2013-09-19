@@ -8,6 +8,7 @@ import main.origo.core.InterceptorRepository;
 import main.origo.core.ModuleRepository;
 import main.origo.core.ThemeRepository;
 import main.origo.core.annotations.*;
+import main.origo.core.ui.RenderedNode;
 import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
@@ -195,32 +196,28 @@ public class AnnotationProcessor {
 
         // Second pass to give some more information about what methods failed
         if (!unmatchedMethods.isEmpty()) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             for (Method m : unmatchedMethods) {
                 for (Prototype prototype : prototypes) {
                     // Check parameters first
                     Class[] parameterTypes = prototype.expectedParameterTypes;
                     Class[] pc = m.getParameterTypes();
                     if (pc.length != parameterTypes.length) {
-                        sb.append("Method '" + m.getDeclaringClass() + "." + m.getName() +
-                                "' is annotated with '" + annotationClass.getName() +
-                                "' but the method does not match the required signature (different amount of parameters)\n");
+                        sb.append("Method '").append(m.getDeclaringClass()).append(".").append(m.getName()).append("' is annotated with '").append(annotationClass.getName()).append("' but the method does not match the required signature (different amount of parameters)\n");
                         break;
                     }
                     for (int i = 0; i < pc.length; i++) {
+                        //noinspection unchecked
                         if (!parameterTypes[i].isAssignableFrom(pc[i])) {
-                            sb.append("Method '" + m.getDeclaringClass() + "." + m.getName() +
-                                    "' is annotated with '" + annotationClass.getName() +
-                                    "' but the method does not match the required signature (parameter '" + parameterTypes[i].getName() + "' has the wrong type)\n");
+                            sb.append("Method '").append(m.getDeclaringClass()).append(".").append(m.getName()).append("' is annotated with '").append(annotationClass.getName()).append("' but the method does not match the required signature (parameter '").append(parameterTypes[i].getName()).append("' has the wrong type)\n");
                             break;
                         }
                     }
                     // Parameters match so check return type
                     Class returnType = prototype.expectedReturnType;
+                    //noinspection unchecked
                     if (returnType != null && !returnType.isAssignableFrom(m.getReturnType())) {
-                        sb.append("Method '" + m.getDeclaringClass() + "." + m.getName() +
-                                "' is annotated with '" + annotationClass.getName() +
-                                "' but the method does not match the required signature (wrong return type, expected [" + returnType + "] and found [" + m.getReturnType() + "])");
+                        sb.append("Method '").append(m.getDeclaringClass()).append(".").append(m.getName()).append("' is annotated with '").append(annotationClass.getName()).append("' but the method does not match the required signature (wrong return type, expected [").append(returnType).append("] and found [").append(m.getReturnType()).append("])");
                         break;
                     }
                 }
@@ -241,6 +238,7 @@ public class AnnotationProcessor {
             return false;
         }
 
+        //noinspection unchecked
         if (returnType != null && !returnType.isAssignableFrom(m.getReturnType())) {
             return false;
         }
@@ -257,6 +255,7 @@ public class AnnotationProcessor {
             return false;
         }
         for (int i = 0; i < pc.length; i++) {
+            //noinspection unchecked
             if (!expectedParameterTypes[i].isAssignableFrom(pc[i])) {
                 return false;
             }
@@ -275,7 +274,7 @@ public class AnnotationProcessor {
 
             for (Method m : methods) {
 
-                assertCorrectSignature(m, Content.class, ThemeVariant.class, ThemeVariant.Context.class);
+                assertCorrectSignature(m, Content.class, ThemeVariant.class, RenderedNode.class);
 
                 ThemeVariant themeVariant = m.getAnnotation(ThemeVariant.class);
                 ThemeRepository.addThemeVariant(themeAnnotation.id(), themeVariant.id(), themeVariant.regions(), m);

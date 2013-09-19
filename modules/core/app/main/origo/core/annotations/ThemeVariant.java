@@ -1,7 +1,5 @@
 package main.origo.core.annotations;
 
-import main.origo.core.ui.RenderedNode;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -40,11 +38,4 @@ public @interface ThemeVariant {
      */
     String output() default "HTML";
 
-    public static class Context {
-        public RenderedNode node;
-
-        public Context(RenderedNode node) {
-            this.node = node;
-        }
-    }
 }

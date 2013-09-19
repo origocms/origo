@@ -4,6 +4,7 @@ import main.origo.core.annotations.Decorates;
 import main.origo.core.annotations.Theme;
 import main.origo.core.annotations.ThemeVariant;
 import main.origo.core.ui.Element;
+import main.origo.core.ui.RenderedNode;
 import play.api.templates.Html;
 import play.mvc.Content;
 import views.html.origo.themes.bootstrap.variant_main_and_left_columns;
@@ -16,18 +17,18 @@ public class BootstrapTheme {
     public static final String ID = "bootstrap";
 
     @ThemeVariant(id = "bootstrap-main_only", regions = {"main"})
-    public static Content renderDefaultMainOnlyTemplate(ThemeVariant.Context context) {
-        return variant_main_only.render(context);
+    public static Content renderDefaultMainOnlyTemplate(RenderedNode node) {
+        return variant_main_only.render(node);
     }
 
     @ThemeVariant(id = "bootstrap-main_and_left_columns", regions = {"main", "left"})
-    public static Content renderDefaultMainAndLeftColumnTemplate(ThemeVariant.Context context) {
-        return variant_main_and_left_columns.render(context);
+    public static Content renderDefaultMainAndLeftColumnTemplate(RenderedNode node) {
+        return variant_main_and_left_columns.render(node);
     }
 
     @ThemeVariant(id = "bootstrap-three_columns", regions = {"main", "left", "right"})
-    public static Content renderDefaultThreeColumnTemplate(ThemeVariant.Context context) {
-        return variant_three_columns.render(context);
+    public static Content renderDefaultThreeColumnTemplate(RenderedNode node) {
+        return variant_three_columns.render(node);
     }
 
     @Decorates(types = {Element.InputSubmit.class, Element.InputButton.class, Element.InputReset.class})

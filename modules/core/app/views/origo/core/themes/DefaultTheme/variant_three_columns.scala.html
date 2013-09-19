@@ -1,30 +1,30 @@
-@(context: main.origo.core.annotations.ThemeVariant.Context)
+@(node:main.origo.core.ui.RenderedNode)
 
 @import views.html.origo.core.tags._
 
-@theme(context.node) {
+@theme(node) {
 
-<div class="header">
-    <h1>Origo CMS</h1><h2> - @context.node.title</h2>
-</div>
-
-
-<div class="container">
-
-    <div class="row">
-        <div class="span2">
-            @_navigation(context.node.navigation)
-        </div>
-        <div class="span2">
-            @_region(context, "left")
-        </div>
-        <div class="span6">
-            @_region(context, "main")
-        </div>
-        <div class="span2">
-            @_region(context, "right")
-        </div>
+    <div class="header">
+        <h1>Origo CMS</h1><h2> - @node.title</h2>
     </div>
 
-</div>
+
+    <div class="container">
+
+        <div class="row">
+            <div class="span2">
+                @_navigation(node.navigation)
+            </div>
+            <div class="span2">
+                @_region(node, "left")
+            </div>
+            <div class="span6">
+                @_region(node, "main")
+            </div>
+            <div class="span2">
+                @_region(node, "right")
+            </div>
+        </div>
+
+    </div>
 }

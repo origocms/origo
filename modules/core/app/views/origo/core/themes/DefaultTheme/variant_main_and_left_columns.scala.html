@@ -1,11 +1,11 @@
-@(context: main.origo.core.annotations.ThemeVariant.Context)
+@(node:main.origo.core.ui.RenderedNode)
 
 @import views.html.origo.core.tags._
 
-@theme(context.node) {
+@theme(node) {
 
     <div class="header">
-        <h1>Origo CMS</h1><h2> - @context.node.title</h2>
+        <h1>Origo CMS</h1><h2> - @node.title</h2>
     </div>
 
 
@@ -13,14 +13,14 @@
 
         <div class="row">
             <div class="span2">
-                @_navigation(context.node.navigation)
+                @_navigation(node.navigation)
             </div>
             <div class="span2">
-                @_region(context, "left")
+                @_region(node, "left")
             </div>
 
             <div class="span8">
-                @_region(context, "main")
+                @_region(node, "main")
             </div>
         </div>
 

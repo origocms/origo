@@ -5,7 +5,6 @@ import com.google.common.collect.Maps;
 import main.origo.core.Node;
 import main.origo.core.ThemeRepository;
 import main.origo.core.annotations.Decorates;
-import main.origo.core.annotations.ThemeVariant;
 import main.origo.core.internal.CachedDecorator;
 import main.origo.core.internal.CachedThemeVariant;
 import main.origo.core.ui.Element;
@@ -138,7 +137,7 @@ public class ThemeHelper {
     public static Content render(RenderedNode renderedNode) {
         CachedThemeVariant cachedThemeVariant = renderedNode.themeVariant();
         try {
-            return (Content) cachedThemeVariant.templateMethod.invoke(null, new ThemeVariant.Context(renderedNode));
+            return (Content) cachedThemeVariant.templateMethod.invoke(null, renderedNode);
         } catch (InvocationTargetException e) {
             throw new RuntimeException(e.getCause());
         } catch (IllegalAccessException e) {

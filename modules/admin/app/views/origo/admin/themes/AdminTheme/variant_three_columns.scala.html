@@ -1,4 +1,4 @@
-@(context: main.origo.core.annotations.ThemeVariant.Context)
+@(node:main.origo.core.ui.RenderedNode)
 
 @import views.html.origo.core.tags._
 
@@ -9,13 +9,13 @@
 @scripts = {
 }
 
-@theme(context.node, head, scripts) {
+@theme(node, head, scripts) {
 
-    @_navigation(context.node.navigation)
+    @_navigation(node.navigation)
 
     <header class="jumbotron subhead" id="overview">
         <div class="container">
-            <h1>@context.node.title</h1>
+            <h1>@node.title</h1>
         </div>
     </header>
 
@@ -23,19 +23,19 @@
     <div class="container">
         <div class="row">
             <div class="span12">
-                @_region(context, "top")
+                @_region(node, "top")
             </div>
         </div>
 
         <div class="row">
             <div class="span3">
-                @_region(context, "left")
+                @_region(node, "left")
             </div>
             <div class="span6">
-                @_region(context, "main")
+                @_region(node, "main")
             </div>
             <div class="span3">
-                @_region(context, "right")
+                @_region(node, "right")
             </div>
         </div>
     </div>
