@@ -8,6 +8,7 @@ import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.forms.Validation;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.internal.CachedAnnotation;
+import main.origo.core.internal.ReflectionInvoker;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -23,7 +24,7 @@ public class ValidationHandlerEventGenerator {
     public static Validation.Result triggerValidationProcessingHandler(String withType, Map<String, Object> args) throws ModuleException, NodeLoadException, InvocationTargetException, IllegalAccessException {
         final String postHandlerName = CoreSettingsHelper.getValidationHandler();
         CachedAnnotation cachedAnnotation = getProcessingHandler(postHandlerName, Validation.Processing.class);
-        return (Validation.Result)cachedAnnotation.method.invoke(null, new Validation.Processing.Context(withType, args));
+        return ReflectionInvoker.execute(cachedAnnotation, withType, args);
     }
 
     private static CachedAnnotation getProcessingHandler(final String postHandlerName, Class<? extends Annotation> annotationType) {
@@ -47,7 +48,7 @@ public class ValidationHandlerEventGenerator {
 
     public static Node triggerValidationFailedHandler(Node node, String withType, Validation.Result validationResult, Map<String, Object> args) throws InvocationTargetException, IllegalAccessException {
         CachedAnnotation cachedAnnotation = getFailureHandler(withType, Validation.Failure.class);
-        return (Node)cachedAnnotation.method.invoke(null, new Validation.Failure.Context(node, withType, validationResult, args));
+        return ReflectionInvoker.execute(cachedAnnotation, node, withType, validationResult, args);
     }
 
     private static CachedAnnotation getFailureHandler(final String withType, Class<? extends Annotation> annotationType) {

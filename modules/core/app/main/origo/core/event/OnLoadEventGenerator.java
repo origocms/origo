@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import main.origo.core.*;
 import main.origo.core.annotations.OnLoad;
 import main.origo.core.internal.CachedAnnotation;
-import main.origo.core.internal.InterceptorExecutor;
+import main.origo.core.internal.ReflectionInvoker;
 import main.origo.core.ui.Element;
 import main.origo.core.ui.NavigationElement;
 import models.origo.core.Content;
@@ -28,7 +28,7 @@ public class OnLoadEventGenerator {
         List<CachedAnnotation> interceptors = findInterceptorForType(type, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), false);
         if (interceptors != null && !interceptors.isEmpty()) {
             for (CachedAnnotation cachedAnnotation : interceptors) {
-                InterceptorExecutor.execute(cachedAnnotation, node, withType, args);
+                ReflectionInvoker.execute(cachedAnnotation, node, withType, args);
             }
         }
     }
@@ -37,7 +37,7 @@ public class OnLoadEventGenerator {
         List<CachedAnnotation> interceptors = findInterceptorForType(type, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), false);
         if (interceptors != null && !interceptors.isEmpty()) {
             for (CachedAnnotation cachedAnnotation : interceptors) {
-                InterceptorExecutor.execute(cachedAnnotation, node, withType, navigation, args);
+                ReflectionInvoker.execute(cachedAnnotation, node, withType, navigation, args);
             }
         }
     }
@@ -46,7 +46,7 @@ public class OnLoadEventGenerator {
         List<CachedAnnotation> interceptors = findInterceptorForType(type, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), false);
         if (interceptors != null && !interceptors.isEmpty()) {
             for (CachedAnnotation cachedAnnotation : interceptors) {
-                InterceptorExecutor.execute(cachedAnnotation, node, withType, form, args);
+                ReflectionInvoker.execute(cachedAnnotation, node, withType, form, args);
             }
         }
     }
@@ -55,7 +55,7 @@ public class OnLoadEventGenerator {
         List<CachedAnnotation> interceptors = findInterceptorForType(type, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), false);
         if (interceptors != null && !interceptors.isEmpty()) {
             for (CachedAnnotation cachedAnnotation : interceptors) {
-                InterceptorExecutor.execute(cachedAnnotation, node, withType, element, args);
+                ReflectionInvoker.execute(cachedAnnotation, node, withType, element, args);
             }
         }
     }
@@ -64,7 +64,7 @@ public class OnLoadEventGenerator {
         List<CachedAnnotation> interceptors = findInterceptorForType(type, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), false);
         if (interceptors != null && !interceptors.isEmpty()) {
             for (CachedAnnotation cachedAnnotation : interceptors) {
-                InterceptorExecutor.execute(cachedAnnotation, node, withType, content, args);
+                ReflectionInvoker.execute(cachedAnnotation, node, withType, content, args);
             }
         }
     }
@@ -73,7 +73,7 @@ public class OnLoadEventGenerator {
         List<CachedAnnotation> interceptorList = findInterceptorForType(onLoadType, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), true);
         if (interceptorList != null && !interceptorList.isEmpty()) {
             for (CachedAnnotation cachedAnnotation : interceptorList) {
-                InterceptorExecutor.execute(cachedAnnotation, node, withType, args);
+                ReflectionInvoker.execute(cachedAnnotation, node, withType, args);
             }
         }
     }
@@ -82,7 +82,7 @@ public class OnLoadEventGenerator {
         List<CachedAnnotation> interceptorList = findInterceptorForType(onLoadType, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), true);
         if (interceptorList != null && !interceptorList.isEmpty()) {
             for (CachedAnnotation cachedAnnotation : interceptorList) {
-                InterceptorExecutor.execute(cachedAnnotation, node, withType, navigation, args);
+                ReflectionInvoker.execute(cachedAnnotation, node, withType, navigation, args);
             }
         }
     }
@@ -91,7 +91,7 @@ public class OnLoadEventGenerator {
         List<CachedAnnotation> interceptorList = findInterceptorForType(onLoadType, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), true);
         if (interceptorList != null && !interceptorList.isEmpty()) {
             for (CachedAnnotation cachedAnnotation : interceptorList) {
-                InterceptorExecutor.execute(cachedAnnotation, node, withType, form, args);
+                ReflectionInvoker.execute(cachedAnnotation, node, withType, form, args);
             }
         }
     }
@@ -100,7 +100,7 @@ public class OnLoadEventGenerator {
         List<CachedAnnotation> interceptorList = findInterceptorForType(onLoadType, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), true);
         if (interceptorList != null && !interceptorList.isEmpty()) {
             for (CachedAnnotation cachedAnnotation : interceptorList) {
-                InterceptorExecutor.execute(cachedAnnotation, node, withType, element, args);
+                ReflectionInvoker.execute(cachedAnnotation, node, withType, element, args);
             }
         }
     }
@@ -109,7 +109,7 @@ public class OnLoadEventGenerator {
         List<CachedAnnotation> interceptorList = findInterceptorForType(onLoadType, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), true);
         if (interceptorList != null && !interceptorList.isEmpty()) {
             for (CachedAnnotation cachedAnnotation : interceptorList) {
-                InterceptorExecutor.execute(cachedAnnotation, node, withType, form, element, args);
+                ReflectionInvoker.execute(cachedAnnotation, node, withType, form, element, args);
             }
         }
     }
@@ -118,7 +118,7 @@ public class OnLoadEventGenerator {
         List<CachedAnnotation> interceptorList = findInterceptorForType(onLoadType, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), true);
         if (interceptorList != null && !interceptorList.isEmpty()) {
             for (CachedAnnotation cachedAnnotation : interceptorList) {
-                InterceptorExecutor.execute(cachedAnnotation, node, withType, navigation, element, args);
+                ReflectionInvoker.execute(cachedAnnotation, node, withType, navigation, element, args);
             }
         }
     }

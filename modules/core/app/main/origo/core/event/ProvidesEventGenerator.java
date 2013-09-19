@@ -5,7 +5,7 @@ import com.google.common.collect.Maps;
 import main.origo.core.*;
 import main.origo.core.annotations.Provides;
 import main.origo.core.internal.CachedAnnotation;
-import main.origo.core.internal.InterceptorExecutor;
+import main.origo.core.internal.ReflectionInvoker;
 import models.origo.core.Content;
 import play.Logger;
 import play.data.Form;
@@ -31,28 +31,28 @@ public class ProvidesEventGenerator {
         CachedAnnotation cachedAnnotation = getCachedAnnotationIfModuleIsEnabled(providesType, withType);
         assert(NodeContext.current() != null);
         NodeContext.current().attributes.put(withType, cachedAnnotation.method.getDeclaringClass());
-        return InterceptorExecutor.execute(cachedAnnotation, node, withType, args);
+        return ReflectionInvoker.execute(cachedAnnotation, node, withType, args);
     }
 
     public static <T> T triggerInterceptor(Node node, String providesType, String withType, Navigation navigation, Map<String, Object> args) throws NodeLoadException, ModuleException {
         CachedAnnotation cachedAnnotation = getCachedAnnotationIfModuleIsEnabled(providesType, withType);
         assert(NodeContext.current() != null);
         NodeContext.current().attributes.put(withType, cachedAnnotation.method.getDeclaringClass());
-        return InterceptorExecutor.execute(cachedAnnotation, node, withType, navigation, args);
+        return ReflectionInvoker.execute(cachedAnnotation, node, withType, navigation, args);
     }
 
     public static <T> T triggerInterceptor(Node node, String providesType, String withType, Form form, Map<String, Object> args) throws NodeLoadException, ModuleException {
         CachedAnnotation cachedAnnotation = getCachedAnnotationIfModuleIsEnabled(providesType, withType);
         assert(NodeContext.current() != null);
         NodeContext.current().attributes.put(withType, cachedAnnotation.method.getDeclaringClass());
-        return InterceptorExecutor.execute(cachedAnnotation, node, withType, form, args);
+        return ReflectionInvoker.execute(cachedAnnotation, node, withType, form, args);
     }
 
     public static <T> T triggerInterceptor(Node node, String providesType, String withType, Content content, Map<String, Object> args) throws NodeLoadException, ModuleException {
         CachedAnnotation cachedAnnotation = getCachedAnnotationIfModuleIsEnabled(providesType, withType);
         assert(NodeContext.current() != null);
         NodeContext.current().attributes.put(withType, cachedAnnotation.method.getDeclaringClass());
-        return InterceptorExecutor.execute(cachedAnnotation, node, withType, content, args);
+        return ReflectionInvoker.execute(cachedAnnotation, node, withType, content, args);
     }
 
     private static CachedAnnotation getCachedAnnotationIfModuleIsEnabled(String providesType, String withType) throws ModuleException {

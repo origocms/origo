@@ -6,7 +6,7 @@ import main.origo.core.InterceptorRepository;
 import main.origo.core.annotations.OnInsertElement;
 import main.origo.core.annotations.OnRemoveElement;
 import main.origo.core.internal.CachedAnnotation;
-import main.origo.core.internal.InterceptorExecutor;
+import main.origo.core.internal.ReflectionInvoker;
 import main.origo.core.ui.Element;
 
 import java.util.Collections;
@@ -18,28 +18,28 @@ public class ElementEventGenerator {
     public static void triggerBeforeInsert(Element parent, Element element) {
         List<CachedAnnotation> interceptors = findOnInsertInterceptors(element.getClass(), element.getInputType(), true);
         for (CachedAnnotation annotation : interceptors) {
-            InterceptorExecutor.execute(annotation, NodeContext.current().node, parent, element, Maps.newHashMap());
+            ReflectionInvoker.execute(annotation, NodeContext.current().node, parent, element, Maps.newHashMap());
         }
     }
 
     public static void triggerAfterInsert(Element parent, Element element) {
         List<CachedAnnotation> interceptors = findOnInsertInterceptors(element.getClass(), element.getInputType(), false);
         for (CachedAnnotation annotation : interceptors) {
-            InterceptorExecutor.execute(annotation, NodeContext.current().node, parent, element, Maps.newHashMap());
+            ReflectionInvoker.execute(annotation, NodeContext.current().node, parent, element, Maps.newHashMap());
         }
     }
 
     public static void triggerBeforeRemove(Element parent, Element element) {
         List<CachedAnnotation> interceptors = findOnRemoveInterceptors(element.getClass(), element.getInputType(), true);
         for (CachedAnnotation annotation : interceptors) {
-            InterceptorExecutor.execute(annotation, NodeContext.current().node, parent, element, Maps.newHashMap());
+            ReflectionInvoker.execute(annotation, NodeContext.current().node, parent, element, Maps.newHashMap());
         }
     }
 
     public static void triggerAfterRemove(Element parent, Element element) {
         List<CachedAnnotation> interceptors = findOnRemoveInterceptors(element.getClass(), element.getInputType(), false);
         for (CachedAnnotation annotation : interceptors) {
-            InterceptorExecutor.execute(annotation, NodeContext.current().node, parent, element, Maps.newHashMap());
+            ReflectionInvoker.execute(annotation, NodeContext.current().node, parent, element, Maps.newHashMap());
         }
     }
 

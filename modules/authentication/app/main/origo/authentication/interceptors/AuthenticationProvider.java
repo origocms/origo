@@ -135,8 +135,8 @@ public class AuthenticationProvider {
     }
 
     @Validation.Failure(with = Core.With.AUTHENTICATION_CHECK)
-    public static Node validationFailure(Validation.Failure.Context context) throws NodeLoadException, ModuleException {
-        return createLoginPage(context.node, Core.With.AUTHENTICATION_CHECK, context.args);
+    public static Node validationFailure(Node node, Map<String, Object> args) throws NodeLoadException, ModuleException {
+        return createLoginPage(node, Core.With.AUTHENTICATION_CHECK, args);
     }
 
     /**

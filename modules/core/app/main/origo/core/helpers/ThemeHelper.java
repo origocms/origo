@@ -7,6 +7,7 @@ import main.origo.core.ThemeRepository;
 import main.origo.core.annotations.Decorates;
 import main.origo.core.internal.CachedDecorator;
 import main.origo.core.internal.CachedThemeVariant;
+import main.origo.core.internal.ReflectionInvoker;
 import main.origo.core.ui.Element;
 import main.origo.core.ui.RenderedNode;
 import main.origo.core.ui.RenderingContext;
@@ -16,7 +17,6 @@ import play.Logger;
 import play.api.templates.Html;
 import play.mvc.Content;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
@@ -87,7 +87,7 @@ public class ThemeHelper {
         if (!decorators.isEmpty()) {
             CachedDecorator decorator = selectDecorator(element.getClass(), decorators);
             try {
-                decoratedOutput = (Html) decorator.method.invoke(null, new Decorates.Context(element, renderingContext));
+                decoratedOutput = ReflectionInvoker.execute(decorator, element, renderingContext);
             } catch (Throwable e) {
                 throw new RuntimeException("", e);
             }
@@ -136,13 +136,7 @@ public class ThemeHelper {
 
     public static Content render(RenderedNode renderedNode) {
         CachedThemeVariant cachedThemeVariant = renderedNode.themeVariant();
-        try {
-            return (Content) cachedThemeVariant.templateMethod.invoke(null, renderedNode);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e.getCause());
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        return ReflectionInvoker.execute(cachedThemeVariant, renderedNode);
     }
 
     public static CachedDecorator selectDecorator(Class<? extends Element> type, List<CachedDecorator> cachedDecorators) {

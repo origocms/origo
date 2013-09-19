@@ -401,8 +401,8 @@ public class BasicPageAdminProvider {
     }
 
     @Validation.Failure(with = TYPE)
-    public static Node validationFailure(Validation.Failure.Context context) {
-        return createPage(context.node, TYPE, context.args);
+    public static Node validationFailure(Node node, Map<String, Object> args) {
+        return createPage(node, TYPE, args);
     }
 
     /**

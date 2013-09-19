@@ -6,6 +6,7 @@ import main.origo.core.Navigation;
 import main.origo.core.Node;
 import main.origo.core.annotations.forms.OnCreate;
 import main.origo.core.internal.CachedAnnotation;
+import main.origo.core.internal.ReflectionInvoker;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
 
@@ -35,13 +36,7 @@ public class OnCreateEventGenerator {
     private static void triggerNavigationInterceptors(String withType, Navigation navigation, Map<String, Object> args, boolean after) {
         List<CachedAnnotation> cachedAnnotations = findOnPostInterceptorsWithType(withType, after);
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
-            try {
-                //noinspection unchecked
-                cachedAnnotation.method.invoke(null, navigation, args);
-            } catch (Throwable e) {
-                Logger.error("", e);
-                throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
-            }
+            ReflectionInvoker.execute(cachedAnnotation, navigation, args);
         }
     }
 
@@ -64,13 +59,7 @@ public class OnCreateEventGenerator {
     private static void triggerNodeInterceptors(String withType, Node node, Map<String, Object> args, boolean after) {
         List<CachedAnnotation> cachedAnnotations = findOnPostInterceptorsWithType(withType, after);
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
-            try {
-                //noinspection unchecked
-                cachedAnnotation.method.invoke(null, node, args);
-            } catch (Throwable e) {
-                Logger.error("", e);
-                throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
-            }
+            ReflectionInvoker.execute(cachedAnnotation, node, args);
         }
     }
 
@@ -93,13 +82,7 @@ public class OnCreateEventGenerator {
     private static void triggerObjectInterceptors(String withType, Object object, Map<String, Object> args, boolean after) {
         List<CachedAnnotation> cachedAnnotations = findOnPostInterceptorsWithType(withType, after);
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
-            try {
-                //noinspection unchecked
-                cachedAnnotation.method.invoke(null, object, args);
-            } catch (Throwable e) {
-                Logger.error("", e);
-                throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
-            }
+            ReflectionInvoker.execute(cachedAnnotation, object, args);
         }
     }
 

@@ -7,7 +7,7 @@ import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.forms.OnSubmit;
 import main.origo.core.annotations.forms.Validation;
 import main.origo.core.internal.CachedAnnotation;
-import main.origo.core.internal.InterceptorExecutor;
+import main.origo.core.internal.ReflectionInvoker;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
 import play.data.Form;
@@ -36,12 +36,12 @@ public class OnSubmitEventGenerator {
             Class validate = ((OnSubmit) cachedAnnotation.annotation).validate();
             if (validate != null) {
                 Form form = validationResult.validatedClasses.get(validate);
-                boolean proceed = InterceptorExecutor.execute(cachedAnnotation, withType, form, args);
+                boolean proceed = ReflectionInvoker.execute(cachedAnnotation, withType, form, args);
                 if (!proceed) {
                     return false;
                 }
             } else {
-                boolean proceed = InterceptorExecutor.execute(cachedAnnotation, withType, args);
+                boolean proceed = ReflectionInvoker.execute(cachedAnnotation, withType, args);
                 if (!proceed) {
                     return false;
                 }

@@ -1,15 +1,16 @@
 package main.origo.admin.event;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import main.origo.admin.annotations.Admin;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.Node;
 import main.origo.core.annotations.Provides;
 import main.origo.core.internal.CachedAnnotation;
+import main.origo.core.internal.ReflectionInvoker;
 import main.origo.core.ui.Element;
 import play.Logger;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -23,13 +24,7 @@ public class DashboardEventGenerator {
         Set<CachedAnnotation> cachedAnnotations = findProvidersWithParent(Admin.Type.DASHBOARD_ITEM, withType);
         List<Element> items = Lists.newArrayList();
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
-            try {
-                //noinspection unchecked
-                items.add((Element) cachedAnnotation.method.invoke(null, node, withType, Collections.<String, Object>emptyMap()));
-            } catch (Throwable e) {
-                Logger.error("", e);
-                throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
-            }
+            return ReflectionInvoker.execute(cachedAnnotation, node, withType, Maps.newHashMap());
         }
         return items;
     }

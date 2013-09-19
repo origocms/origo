@@ -5,6 +5,7 @@ import main.origo.core.annotations.Theme;
 import main.origo.core.annotations.ThemeVariant;
 import main.origo.core.ui.Element;
 import main.origo.core.ui.RenderedNode;
+import main.origo.core.ui.RenderingContext;
 import play.api.templates.Html;
 import play.mvc.Content;
 import views.html.origo.themes.bootstrap.variant_main_and_left_columns;
@@ -32,45 +33,45 @@ public class BootstrapTheme {
     }
 
     @Decorates(types = {Element.InputSubmit.class, Element.InputButton.class, Element.InputReset.class})
-    public static Html decorateButton(Decorates.Context context) {
-        context.element.addAttribute("class", "btn");
-        return context.element.decorate(context.renderingContext);
+    public static Html decorateButton(Element element, RenderingContext renderingContext) {
+        element.addAttribute("class", "btn");
+        return element.decorate(renderingContext);
     }
 
     @Decorates(types = {Element.Error.class})
-    public static Html decorateEmphasisError(Decorates.Context context) {
-        context.element.addAttribute("class", "text-error");
-        return context.element.decorate(context.renderingContext);
+    public static Html decorateEmphasisError(Element element, RenderingContext renderingContext) {
+        element.addAttribute("class", "text-error");
+        return element.decorate(renderingContext);
     }
 
     @Decorates(types = {Element.Warning.class})
-    public static Html decorateEmphasisWarning(Decorates.Context context) {
-        context.element.addAttribute("class", "text-warning");
-        return context.element.decorate(context.renderingContext);
+    public static Html decorateEmphasisWarning(Element element, RenderingContext renderingContext) {
+        element.addAttribute("class", "text-warning");
+        return element.decorate(renderingContext);
     }
 
     @Decorates(types = {Element.Info.class})
-    public static Html decorateEmphasisInfo(Decorates.Context context) {
-        context.element.addAttribute("class", "text-info");
-        return context.element.decorate(context.renderingContext);
+    public static Html decorateEmphasisInfo(Element element, RenderingContext renderingContext) {
+        element.addAttribute("class", "text-info");
+        return element.decorate(renderingContext);
     }
 
     @Decorates(types = {Element.Success.class})
-    public static Html decorateEmphasisSuccess(Decorates.Context context) {
-        context.element.addAttribute("class", "text-success");
-        return context.element.decorate(context.renderingContext);
+    public static Html decorateEmphasisSuccess(Element element, RenderingContext renderingContext) {
+        element.addAttribute("class", "text-success");
+        return element.decorate(renderingContext);
     }
 
     @Decorates(types = {Element.Field.class})
-    public static Html decorateField(Decorates.Context context) {
-        context.element.addAttribute("class", "control-group");
-        return context.element.decorate(context.renderingContext);
+    public static Html decorateField(Element element, RenderingContext renderingContext) {
+        element.addAttribute("class", "control-group");
+        return element.decorate(renderingContext);
     }
 
     @Decorates(types = {Element.Help.class})
-    public static Html decorateHelp(Decorates.Context context) {
-        context.element.addAttribute("class", "help-inline");
-        return context.element.decorate(context.renderingContext);
+    public static Html decorateHelp(Element element, RenderingContext renderingContext) {
+        element.addAttribute("class", "help-inline");
+        return element.decorate(renderingContext);
     }
 
 }

@@ -8,7 +8,9 @@ import main.origo.core.InterceptorRepository;
 import main.origo.core.ModuleRepository;
 import main.origo.core.ThemeRepository;
 import main.origo.core.annotations.*;
+import main.origo.core.ui.Element;
 import main.origo.core.ui.RenderedNode;
+import main.origo.core.ui.RenderingContext;
 import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
@@ -292,7 +294,7 @@ public class AnnotationProcessor {
 
             for (Method m : methods) {
 
-                assertCorrectSignature(m, Html.class, Decorates.class, Decorates.Context.class);
+                assertCorrectSignature(m, Html.class, Decorates.class, Element.class, RenderingContext.class);
 
                 Decorates decorates = m.getAnnotation(Decorates.class);
                 if (themeAnnotation != null) {
