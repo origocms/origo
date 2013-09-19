@@ -47,22 +47,42 @@ public class CoreModule {
         List<AnnotationProcessor.Prototype> annotations = Lists.newArrayList();
 
         // Basic types
+        annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class, Navigation.class));
         annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class, Navigation.class, Map.class));
+        annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class, Form.class));
         annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class, Form.class, Map.class));
+        annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class, Content.class));
         annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class, Content.class, Map.class));
+        annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class));
         annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class, Map.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Navigation.class));
         annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Navigation.class, Map.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Form.class));
         annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Form.class, Map.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Form.class, Element.class));
         annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Form.class, Element.class, Map.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Element.class));
         annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Element.class, Map.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Navigation.class, NavigationElement.class));
         annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Navigation.class, NavigationElement.class, Map.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Content.class));
         annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Content.class, Map.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class));
         annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Map.class));
-        annotations.add(new AnnotationProcessor.Prototype(OnInsertElement.class, null, OnInsertElement.Context.class));
-        annotations.add(new AnnotationProcessor.Prototype(OnRemoveElement.class, null, OnRemoveElement.Context.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnInsertElement.class, null, Element.class, Element.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnInsertElement.class, null, Node.class, Element.class, Element.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnInsertElement.class, null, Element.class, Element.class, Map.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnInsertElement.class, null, Node.class, Element.class, Element.class, Map.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnRemoveElement.class, null, Element.class, Element.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnRemoveElement.class, null, Node.class, Element.class, Element.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnRemoveElement.class, null, Element.class, Element.class, Map.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnRemoveElement.class, null, Node.class, Element.class, Element.class, Map.class));
 
         // Form handling types
-        annotations.add(new AnnotationProcessor.Prototype(OnSubmit.class, Boolean.class, OnSubmit.Context.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnSubmit.class, Boolean.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnSubmit.class, Boolean.class, Map.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnSubmit.class, Boolean.class, Form.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnSubmit.class, Boolean.class, Form.class, Map.class));
         annotations.add(new AnnotationProcessor.Prototype(SubmitHandler.class, Result.class, SubmitHandler.Context.class));
         annotations.add(new AnnotationProcessor.Prototype(Validation.Processing.class, Validation.Result.class, Validation.Processing.Context.class));
         annotations.add(new AnnotationProcessor.Prototype(Validation.Failure.class, Node.class, Validation.Failure.Context.class));

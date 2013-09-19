@@ -77,13 +77,13 @@ public class BootstrapWysiHTML5EditorProvider {
     }
 
     @OnInsertElement(with = Element.InputTextArea.class, after = true)
-    public static void insertScript(OnInsertElement.Context context) {
-        if (context.attributes.containsKey(JS_LOADED)) {
-            if (!context.attributes.containsKey("templates_created")) {
-                context.node.addTailElement(new BootstrapWysiHtml5CustomTemplatesElement());
-                context.attributes.put("templates_created", true);
+    public static void insertScript(Node node, Element parent, Element element) {
+        if (NodeContext.current().attributes.containsKey(JS_LOADED)) {
+            if (!NodeContext.current().attributes.containsKey("templates_created")) {
+                node.addTailElement(new BootstrapWysiHtml5CustomTemplatesElement());
+                NodeContext.current().attributes.put("templates_created", true);
             }
-            context.node.addTailElement(new BootstrapWysiHtml5ScriptElement().setId(context.element.id));
+            NodeContext.current().node.addTailElement(new BootstrapWysiHtml5ScriptElement().setId(element.id));
         }
     }
 

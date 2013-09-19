@@ -1,9 +1,11 @@
 package main.origo.bootstrapdatepicker.interceptors;
 
 import controllers.routes;
+import main.origo.core.Node;
 import main.origo.core.annotations.Decorates;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnInsertElement;
+import main.origo.core.event.NodeContext;
 import main.origo.core.helpers.ElementHelper;
 import main.origo.core.ui.Element;
 import play.api.templates.Html;
@@ -26,30 +28,30 @@ public class BootstrapDatePickerDecorator {
     }
 
     @OnInsertElement(with = Element.InputText.class, input = Date.class)
-    public static void addJavascriptSrc(OnInsertElement.Context context) {
-        if(!context.attributes.containsKey(JS_LOADED)) {
+    public static void addJavascriptSrc(Node node, Element parent, Element element) {
+        if(!NodeContext.current().attributes.containsKey(JS_LOADED)) {
             String script = routes.Assets.at("javascripts/origo/bootstrapdatepicker/bootstrap-datepicker.js").url();
-            context.node.addTailElement(new Element.Script().addAttribute("src", script));
+            node.addTailElement(new Element.Script().addAttribute("src", script));
             String style = routes.Assets.at("stylesheets/origo/bootstrapdatepicker/datepicker-custom.css").url();
-            context.node.addHeadElement(new Element.Link().addAttribute("href", style).addAttribute("rel", "stylesheet"));
+            node.addHeadElement(new Element.Link().addAttribute("href", style).addAttribute("rel", "stylesheet"));
 
-            context.attributes.put(JS_LOADED, true);
+            NodeContext.current().attributes.put(JS_LOADED, true);
         }
 
     }
 
     @OnInsertElement(with = Element.InputText.class, after = true, input = Date.class)
-    public static void addJavascriptInvocation(OnInsertElement.Context context) {
+    public static void addJavascriptInvocation(Node node, Element parent, Element element) {
 
         String dateFormat = Messages.get("date.format").toLowerCase();
 
-        context.node.addTailElement(new Element.Script().setBody(
-                "$('#" + "datepicker-" + context.element.id + "').datepicker({ " +
+        node.addTailElement(new Element.Script().setBody(
+                "$('#" + "datepicker-" + element.id + "').datepicker({ " +
                         "format: '" + dateFormat + "', " +
                         "todayBtn: 'linked', " +
                         "todayHighlight: true, " +
                         "});\n" +
-                "$('#cal-datepicker-" + context.element.id +"').bind('click', function(){$('#" + "datepicker-" + context.element.id + "').datepicker('show');})"
+                "$('#cal-datepicker-" + element.id +"').bind('click', function(){$('#" + "datepicker-" + element.id + "').datepicker('show');})"
         ));
 
     }

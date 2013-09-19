@@ -1,5 +1,6 @@
 package main.origo.admin.interceptors.content;
 
+import main.origo.core.Node;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnInsertElement;
 import main.origo.core.annotations.forms.OnSubmit;
@@ -18,11 +19,11 @@ public class AliasPageAdminProvider {
     private static final String ALIAS_VALUE_PARAM = "alias";
 
     @OnInsertElement(with = Element.FieldSet.class, after = true)
-    public static void addAliasFieldSet(OnInsertElement.Context context) {
+    public static void addAliasFieldSet(Node node, Element parent, Element element) {
         // TODO: Hard coded for now, should be moved to configuration
-        if (BasicPageAdminProvider.TYPE.equals(context.node.nodeType()) && context.element.getId().equals("content")) {
+        if (BasicPageAdminProvider.TYPE.equals(node.nodeType()) && element.getId().equals("content")) {
 
-            Alias alias = Alias.findFirstAliasForPageId(context.node.nodeId());
+            Alias alias = Alias.findFirstAliasForPageId(node.nodeId());
 
             Element.InputCheckbox useAliasCheckbox = new Element.InputCheckbox(Boolean.class).
                     addAttribute("name", USE_ALIAS_PARAM).
@@ -30,7 +31,7 @@ public class AliasPageAdminProvider {
             if (alias != null) {
                 useAliasCheckbox.addAttribute("checked", "checked");
             }
-            context.parent.addChild(new Element.FieldSet().setWeight(100).
+            parent.addChild(new Element.FieldSet().setWeight(100).
                     addChild(new Element.Legend().setBody("Alias")).
                     addChild(new Element.Panel().
                             addChild(new Element.Label().addAttribute("class", "checkbox").
@@ -47,7 +48,7 @@ public class AliasPageAdminProvider {
      * Hooks in to the submit process and stores an alias for a page when the page is submitted.
      */
     @OnSubmit(weight = 1000)
-    public static Boolean storeAlias(OnSubmit.Context context) {
+    public static Boolean storeAlias() {
 
         DynamicForm form = DynamicForm.form().bindFromRequest();
         Map<String, String> data = form.data();

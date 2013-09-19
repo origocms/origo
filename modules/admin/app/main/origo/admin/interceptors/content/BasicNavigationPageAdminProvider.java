@@ -1,6 +1,7 @@
 package main.origo.admin.interceptors.content;
 
 import main.origo.core.ModuleException;
+import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnInsertElement;
@@ -29,16 +30,16 @@ public class BasicNavigationPageAdminProvider {
     private static final String USE_NAVIGATION_PARAM = "nav";
 
     @OnInsertElement(with = Element.FieldSet.class, after = true)
-    public static void addNavigationFieldSet(OnInsertElement.Context context) {
+    public static void addNavigationFieldSet(Node node, Element parent, Element element) {
         if (!BasicNavigation.TYPE.equals(CoreSettingsHelper.getNavigationType())) {
             // Not the active navigation type
             return;
         }
 
         // TODO: Hard coded for now, should be moved to configuration
-        if (BasicPageAdminProvider.TYPE.equals(context.node.nodeType()) && context.element.getId().equals("content")) {
+        if (BasicPageAdminProvider.TYPE.equals(node.nodeType()) && element.getId().equals("content")) {
 
-            AdminPage adminPage = (AdminPage) context.node;
+            AdminPage adminPage = (AdminPage) node;
             try {
                 List<NavigationElement> navigationElements = NavigationHelper.getNavigation(adminPage.rootNode, NavigationElement.FRONT);
 
@@ -63,7 +64,7 @@ public class BasicNavigationPageAdminProvider {
                 if (currentNavigation != null) {
                     useNavigationCheckBox.addAttribute("checked", "checked");
                 }
-                context.parent.addChild(new Element.FieldSet().setWeight(200).
+                parent.addChild(new Element.FieldSet().setWeight(200).
                         addChild(new Element.Legend().setBody("Navigation")).
                         addChild(new Element.Panel().
                                 addChild(new Element.Label().addAttribute("class", "checkbox").
@@ -75,7 +76,7 @@ public class BasicNavigationPageAdminProvider {
                                         addChild(parentInputSelect))
                         )
                 );
-                context.parent.addChild(new Element.InputHidden().addAttribute("name", NAVIGATION_ID_PARAM).addAttribute("value", selectedNavigationElement != null ? selectedNavigationElement.id : ""));
+                parent.addChild(new Element.InputHidden().addAttribute("name", NAVIGATION_ID_PARAM).addAttribute("value", selectedNavigationElement != null ? selectedNavigationElement.id : ""));
             } catch (NodeLoadException e) {
                 // TODO: recover somehow?
                 Logger.error("Unable to load node", e);
@@ -101,9 +102,10 @@ public class BasicNavigationPageAdminProvider {
 
     /**
      * Hooks in to the submit process and stores an alias for a page when the page is submitted.
+     * TODO: Add a BasicNavigationForm and use validation
      */
     @OnSubmit(weight = 1100)
-    public static Boolean storeNavigation(OnSubmit.Context context) {
+    public static Boolean storeNavigation() {
 
         if (!BasicNavigation.TYPE.equals(CoreSettingsHelper.getNavigationType())) {
             // Not the active navigation type

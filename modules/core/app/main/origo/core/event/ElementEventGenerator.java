@@ -1,14 +1,14 @@
 package main.origo.core.event;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.annotations.OnInsertElement;
 import main.origo.core.annotations.OnRemoveElement;
 import main.origo.core.internal.CachedAnnotation;
+import main.origo.core.internal.InterceptorExecutor;
 import main.origo.core.ui.Element;
-import play.Logger;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -18,52 +18,28 @@ public class ElementEventGenerator {
     public static void triggerBeforeInsert(Element parent, Element element) {
         List<CachedAnnotation> interceptors = findOnInsertInterceptors(element.getClass(), element.getInputType(), true);
         for (CachedAnnotation annotation : interceptors) {
-            try {
-                //noinspection unchecked
-                annotation.method.invoke(null, new OnInsertElement.Context(NodeContext.current().node, parent, element));
-            } catch (Throwable e) {
-                Logger.error("", e);
-                throw new RuntimeException("Unable to invoke method [" + annotation.method.toString() + "]", e.getCause());
-            }
+            InterceptorExecutor.execute(annotation, NodeContext.current().node, parent, element, Maps.newHashMap());
         }
     }
 
     public static void triggerAfterInsert(Element parent, Element element) {
         List<CachedAnnotation> interceptors = findOnInsertInterceptors(element.getClass(), element.getInputType(), false);
         for (CachedAnnotation annotation : interceptors) {
-            try {
-                //noinspection unchecked
-                annotation.method.invoke(null, new OnInsertElement.Context(NodeContext.current().node, parent, element));
-            } catch (Throwable e) {
-                Logger.error("", e);
-                throw new RuntimeException("Unable to invoke method [" + annotation.method.toString() + "]", e.getCause());
-            }
+            InterceptorExecutor.execute(annotation, NodeContext.current().node, parent, element, Maps.newHashMap());
         }
     }
 
     public static void triggerBeforeRemove(Element parent, Element element) {
         List<CachedAnnotation> interceptors = findOnRemoveInterceptors(element.getClass(), element.getInputType(), true);
         for (CachedAnnotation annotation : interceptors) {
-            try {
-                //noinspection unchecked
-                annotation.method.invoke(null, new OnRemoveElement.Context(NodeContext.current().node, parent, element));
-            } catch (Throwable e) {
-                Logger.error("", e);
-                throw new RuntimeException("Unable to invoke method [" + annotation.method.toString() + "]", e.getCause());
-            }
+            InterceptorExecutor.execute(annotation, NodeContext.current().node, parent, element, Maps.newHashMap());
         }
     }
 
     public static void triggerAfterRemove(Element parent, Element element) {
         List<CachedAnnotation> interceptors = findOnRemoveInterceptors(element.getClass(), element.getInputType(), false);
         for (CachedAnnotation annotation : interceptors) {
-            try {
-                //noinspection unchecked
-                annotation.method.invoke(null, new OnRemoveElement.Context(NodeContext.current().node, parent, element));
-            } catch (Throwable e) {
-                Logger.error("", e);
-                throw new RuntimeException("Unable to invoke method [" + annotation.method.toString() + "]", e.getCause());
-            }
+            InterceptorExecutor.execute(annotation, NodeContext.current().node, parent, element, Maps.newHashMap());
         }
     }
 

@@ -56,16 +56,16 @@ public class WysiHTML5EditorProvider {
     }
 
     @OnInsertElement(with = Element.InputTextArea.class)
-    public static void insertToolbar(OnInsertElement.Context context) {
-        if (context.attributes.containsKey(JS_LOADED)) {
-            context.parent.addChild(new WysiHtml5ToolbarElement().setId(context.element.id));
+    public static void insertToolbar(Node node, Element parent, Element element, Map<String, Object> args) {
+        if (NodeContext.current().attributes.containsKey(JS_LOADED)) {
+            parent.addChild(new WysiHtml5ToolbarElement().setId(element.id));
         }
     }
 
     @OnInsertElement(with = Element.InputTextArea.class, after = true)
-    public static void insertScript(OnInsertElement.Context context) {
-        if (context.attributes.containsKey(JS_LOADED)) {
-            context.node.addTailElement(new WysiHtml5ScriptElement().setId(context.element.id));
+    public static void insertScript(Node node, Element parent, Element element, Map<String, Object> args) {
+        if (NodeContext.current().attributes.containsKey(JS_LOADED)) {
+            node.addTailElement(new WysiHtml5ScriptElement().setId(element.id));
         }
     }
 

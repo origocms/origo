@@ -122,14 +122,12 @@ public class AuthenticationProvider {
      * Handles the authentication of the supplied username/password.
      */
     @OnSubmit(with = Core.With.AUTHENTICATION_CHECK, validate = LoginForm.class)
-    public static Boolean authenticateFormUser(OnSubmit.Context<LoginForm> context) throws NodeLoadException, ModuleException {
-
-        Form<LoginForm> loginForm = context.form;
+    public static Boolean authenticateFormUser(Form<LoginForm> loginForm) throws NodeLoadException, ModuleException {
 
         String username = loginForm.get().getUsername();
         String path = loginForm.get().getPath();
         if (StringUtils.isNotBlank(path)) {
-            context.attributes.put(Security.Params.AUTH_PATH, path);
+            NodeContext.current().attributes.put(Security.Params.AUTH_PATH, path);
         }
 
         AuthenticationSessionUtils.setSessionUserName(username);

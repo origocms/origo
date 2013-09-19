@@ -302,9 +302,8 @@ public class BasicPageAdminProvider {
      * Hooks in to the submit process and stores a BasicPage when it is submitted.
      */
     @OnSubmit(with = TYPE, validate = BasicPageForm.class)
-    public static Boolean storePage(OnSubmit.Context context) {
+    public static Boolean storePage(Form<BasicPageForm> form) {
 
-        Form<BasicPageForm> form = FormHelper.getValidationResult(BasicPageForm.class);
         Map<String, String> data = form.data();
 
         String nodeId = FormHelper.getNodeId(data);

@@ -183,6 +183,7 @@ public class AnnotationProcessor {
                             InterceptorRepository.add(module, m.getAnnotation(annotationClass), m);
                         }
                         matched = true;
+                        break;
                     }
                 }
                 if (!matched) {

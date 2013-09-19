@@ -7,11 +7,11 @@ import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.forms.OnSubmit;
 import main.origo.core.annotations.forms.Validation;
 import main.origo.core.internal.CachedAnnotation;
+import main.origo.core.internal.InterceptorExecutor;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
 import play.data.Form;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -33,32 +33,18 @@ public class OnSubmitEventGenerator {
             Logger.trace("OnSubmitHandler(s) about to be triggered(in order):\n" + sb.toString());
         }
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
-            try {
-                Class validate = ((OnSubmit) cachedAnnotation.annotation).validate();
-                if (validate != null) {
-                    Form form = validationResult.validatedClasses.get(validate);
-                    //noinspection unchecked
-                    if (!(Boolean)cachedAnnotation.method.invoke(null, new OnSubmit.Context(form, args))) {
-                        return false;
-                    }
-                } else {
-                    //noinspection unchecked
-                    if (!(Boolean)cachedAnnotation.method.invoke(null, new OnSubmit.Context(args))) {
-                        return false;
-                    }
+            Class validate = ((OnSubmit) cachedAnnotation.annotation).validate();
+            if (validate != null) {
+                Form form = validationResult.validatedClasses.get(validate);
+                boolean proceed = InterceptorExecutor.execute(cachedAnnotation, withType, form, args);
+                if (!proceed) {
+                    return false;
                 }
-
-            } catch (InvocationTargetException e) {
-                if (e.getCause() instanceof ModuleException) {
-                    throw (ModuleException) e.getCause();
-                } else if (e.getCause() instanceof NodeLoadException) {
-                    throw (NodeLoadException) e.getCause();
-                } else {
-                    throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
+            } else {
+                boolean proceed = InterceptorExecutor.execute(cachedAnnotation, withType, args);
+                if (!proceed) {
+                    return false;
                 }
-
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
             }
         }
         return true;

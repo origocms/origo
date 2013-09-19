@@ -231,14 +231,14 @@ public class ProvidesEventHandlerAdminProvider {
      * Hooks in to the submit process and stores the event handlers when it is submitted.
      */
     @OnSubmit(with = BASE_TYPE)
-    public static Boolean storeEvents(OnSubmit.Context context) {
+    public static Boolean storeEvents(Map<String, Object> args) {
 
-        String selectedEventType = getSelectedEventType(context.args, getAllProvides());
+        String selectedEventType = getSelectedEventType(args, getAllProvides());
 
-        for (Object key : context.args.keySet()) {
+        for (Object key : args.keySet()) {
             if (((String)key).startsWith("event.")) {
                 EventHandler handler = EventHandler.findWithNodeTypeAndWithType(selectedEventType, ((String)key).substring("event.".length()));
-                handler.handlerClass = (String) context.args.get(key);
+                handler.handlerClass = (String) args.get(key);
             }
         }
 

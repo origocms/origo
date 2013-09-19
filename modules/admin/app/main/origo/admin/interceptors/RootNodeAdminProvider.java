@@ -11,8 +11,8 @@ import java.util.Map;
 @Interceptor
 public class RootNodeAdminProvider {
 
-    @OnSubmit(weight = 10) // TODO: Probably should be moved to validation when that is ready
-    public static Boolean storeNode(OnSubmit.Context context) {
+    @OnSubmit(weight = 10) // TODO: Create a RootNodeForm and use validation
+    public static Boolean storeNode() {
         DynamicForm form = DynamicForm.form().bindFromRequest();
         Map<String, String> data = form.data();
         String nodeId = FormHelper.getNodeId(data);
