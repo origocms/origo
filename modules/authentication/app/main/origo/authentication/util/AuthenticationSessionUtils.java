@@ -20,4 +20,7 @@ public class AuthenticationSessionUtils {
         SessionHelper.set(USERNAME_SESSION_KEY, sessionUserName);
     }
 
+    public static void removeSessionUserName() {
+        SessionHelper.remove(USERNAME_SESSION_KEY);
+    }
 }

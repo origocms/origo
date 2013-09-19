@@ -26,6 +26,7 @@ public class Core {
         public static final String AUTHENTICATION_CHECK = "authentication_check";
         public static final String AUTHENTICATION_CURRENT_USER = "authentication_current_user";
         public static final String AUTHENTICATION_VALIDATE = "authentication_validate";
+        public static final String AUTHENTICATION_SIGNOUT = "authentication_signout";
 
         public static final String PREVIEW_TOKEN = "preview_token";
     }

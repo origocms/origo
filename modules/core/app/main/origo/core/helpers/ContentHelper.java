@@ -20,8 +20,7 @@ public class ContentHelper {
         OnLoadEventGenerator.triggerBeforeInterceptor(node, Core.Type.NODE, Content.TYPE, Collections.<String, Object>emptyMap());
         Content content = ProvidesEventGenerator.triggerInterceptor(node, Core.Type.NODE, Content.TYPE, args);
         if (content != null) {
-            args.put("content", content.detach());
-            OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.NODE, Content.TYPE, args);
+            OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.NODE, Content.TYPE, content.detach(), args);
         }
         return content;
     }

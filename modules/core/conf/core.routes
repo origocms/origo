@@ -4,6 +4,9 @@
 
 POST    /                                       controllers.origo.core.Submit.submit()
 
+GET     /login                                  controllers.origo.core.Authentication.login()
+GET     /logout                                 controllers.origo.core.Authentication.logout(path:String?="")
+
 # Node View
 GET     /                                       controllers.origo.core.NodeViewer.nodes()
 GET     /:identifier                            controllers.origo.core.NodeViewer.nodeCurrent(identifier)

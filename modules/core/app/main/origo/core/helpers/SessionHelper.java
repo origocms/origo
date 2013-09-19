@@ -47,6 +47,10 @@ public class SessionHelper {
         return Http.Context.current().session().get(EncryptionHelper.encrypt(key));
     }
 
+    public static void remove(String key) {
+        Http.Context.current().session().remove(EncryptionHelper.encrypt(key));
+    }
+
     public static boolean checkAndUpdateTimestamp() {
         DateTime timestamp = getTimestamp();
         if (timestamp.isAfter(DateTime.now().minus(sessionMaxAge))) {

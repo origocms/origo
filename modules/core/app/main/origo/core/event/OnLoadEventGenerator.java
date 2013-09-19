@@ -123,6 +123,15 @@ public class OnLoadEventGenerator {
         }
     }
 
+    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Content content, Map<String, Object> args) throws NodeLoadException, ModuleException {
+        List<CachedAnnotation> interceptorList = findInterceptorForType(onLoadType, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), true);
+        if (interceptorList != null && !interceptorList.isEmpty()) {
+            for (CachedAnnotation cachedAnnotation : interceptorList) {
+                ReflectionInvoker.execute(cachedAnnotation, node, withType, content, args);
+            }
+        }
+    }
+
     private static List<CachedAnnotation> findInterceptorForType(final String onLoadType, final String withType, final boolean after) {
         List<CachedAnnotation> interceptors = Lists.newArrayList(InterceptorRepository.getInterceptors(OnLoad.class, new CachedAnnotation.InterceptorSelector() {
             @Override

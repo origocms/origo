@@ -19,12 +19,20 @@ import java.util.Map;
 public class SecurityEventGenerator {
 
     public static Result triggerAuthenticationCheck(String path) throws ModuleException, NodeLoadException {
-        NodeContext.current().attributes.put(Security.Params.AUTH_PATH, path);
+        if (StringUtils.isNotBlank(path)) {
+            NodeContext.current().attributes.put(Security.Params.AUTH_PATH, path);
+        }
         return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.SECURITY, Core.With.AUTHENTICATION_CHECK);
     }
 
+    public static Result triggerSignout() throws ModuleException, NodeLoadException {
+        return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.SECURITY, Core.With.AUTHENTICATION_SIGNOUT);
+    }
+
     public static Boolean triggerAuthorizationCheck(String path, Map<String, Object> args) throws ModuleException, NodeLoadException {
-        NodeContext.current().attributes.put(Security.Params.AUTH_PATH, path);
+        if (StringUtils.isNotBlank(path)) {
+            NodeContext.current().attributes.put(Security.Params.AUTH_PATH, path);
+        }
         String[] roles = SecurityEventGenerator.triggerProvidesAuthorizationRolesInterceptor(path);
         if (roles.length == 0) {
             return true;
@@ -46,7 +54,9 @@ public class SecurityEventGenerator {
     }
 
     public static String[] triggerProvidesAuthorizationRolesInterceptor(String path, Map<String, Object> args) throws ModuleException, NodeLoadException {
-        NodeContext.current().attributes.put(Security.Params.AUTH_PATH, path);
+        if (StringUtils.isNotBlank(path)) {
+            NodeContext.current().attributes.put(Security.Params.AUTH_PATH, path);
+        }
         return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.SECURITY, Core.With.AUTHORIZATION_ROLES, args);
     }
 

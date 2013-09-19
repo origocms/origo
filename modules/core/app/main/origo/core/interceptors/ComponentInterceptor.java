@@ -12,9 +12,7 @@ import java.util.Map;
 public class ComponentInterceptor {
 
     @OnLoad(with = Content.TYPE)
-    public static void onLoadContent(Node node, String withType, Map<String, Object> args) {
-
-        Content content = (Content) args.get("content");
+    public static void onLoadContent(Node node, String withType, Content content, Map<String, Object> args) {
 
         if (content != null && content.value.contains(Component.COMPONENT_MARKER)) {
             Component component = Component.getWrappedComponent();
