@@ -36,12 +36,12 @@ public class DefaultSubmitHandler {
     protected static final String WITH_TYPE = "_core_with_type";
 
     @SubmitHandler
-    public static Result handleSubmit(SubmitHandler.Context context) {
+    public static Result handleSubmit() {
 
         String withType = getWithType();
 
         try {
-            Validation.Result validationResult = runValidation(context, withType);
+            Validation.Result validationResult = runValidation(withType);
 
             if (validationResult.hasErrors()) {
                 return handleValidationFailure(withType, validationResult);
@@ -63,9 +63,9 @@ public class DefaultSubmitHandler {
         return withType;
     }
 
-    protected static Validation.Result runValidation(SubmitHandler.Context context, String withType) throws ModuleException, NodeLoadException, InvocationTargetException, IllegalAccessException {
+    protected static Validation.Result runValidation(String withType) throws ModuleException, NodeLoadException, InvocationTargetException, IllegalAccessException {
         Validation.Result validationResult = ValidationHandlerEventGenerator.triggerValidationProcessingHandler(withType);
-        context.attributes.put(Validation.Result.class.getCanonicalName(), validationResult);
+        NodeContext.current().attributes.put(Validation.Result.class.getCanonicalName(), validationResult);
         return validationResult;
     }
 

@@ -83,15 +83,19 @@ public class CoreModule {
         annotations.add(new AnnotationProcessor.Prototype(OnSubmit.class, Boolean.class, Map.class));
         annotations.add(new AnnotationProcessor.Prototype(OnSubmit.class, Boolean.class, Form.class));
         annotations.add(new AnnotationProcessor.Prototype(OnSubmit.class, Boolean.class, Form.class, Map.class));
-        annotations.add(new AnnotationProcessor.Prototype(SubmitHandler.class, Result.class, SubmitHandler.Context.class));
+        annotations.add(new AnnotationProcessor.Prototype(SubmitHandler.class, Result.class));
+        annotations.add(new AnnotationProcessor.Prototype(SubmitHandler.class, Result.class, Map.class));
         annotations.add(new AnnotationProcessor.Prototype(Validation.Processing.class, Validation.Result.class, Validation.Processing.Context.class));
         annotations.add(new AnnotationProcessor.Prototype(Validation.Failure.class, Node.class, Validation.Failure.Context.class));
         annotations.add(new AnnotationProcessor.Prototype(SubmitState.class, Result.class, SubmitState.Context.class));
 
         // Data types
-        annotations.add(new AnnotationProcessor.Prototype(OnCreate.class, null, OnCreate.Context.class));
-        annotations.add(new AnnotationProcessor.Prototype(OnUpdate.class, null, OnUpdate.Context.class));
-        annotations.add(new AnnotationProcessor.Prototype(OnDelete.class, null, OnDelete.Context.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnCreate.class, null, Object.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnCreate.class, null, Object.class, Map.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnUpdate.class, null, Object.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnUpdate.class, null, Object.class, Map.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnDelete.class, null, Object.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnDelete.class, null, Object.class, Map.class));
 
         return annotations;
     }

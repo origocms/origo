@@ -37,7 +37,7 @@ public class OnUpdateEventGenerator {
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
             try {
                 //noinspection unchecked
-                cachedAnnotation.method.invoke(null, new OnUpdate.Context(navigation, args));
+                cachedAnnotation.method.invoke(null, navigation, args);
             } catch (Throwable e) {
                 Logger.error("", e);
                 throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
@@ -66,7 +66,7 @@ public class OnUpdateEventGenerator {
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
             try {
                 //noinspection unchecked
-                cachedAnnotation.method.invoke(null, new OnUpdate.Context(node, args));
+                cachedAnnotation.method.invoke(null, node, args);
             } catch (Throwable e) {
                 Logger.error("", e);
                 throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
@@ -95,7 +95,7 @@ public class OnUpdateEventGenerator {
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
             try {
                 //noinspection unchecked
-                cachedAnnotation.method.invoke(null, new OnUpdate.Context(object, args));
+                cachedAnnotation.method.invoke(null, object, args);
             } catch (Throwable e) {
                 Logger.error("", e);
                 throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());

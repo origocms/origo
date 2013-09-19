@@ -16,7 +16,7 @@ public class SubmitHandlerEventGenerator {
     public static Result triggerSubmitHandler(String postHandlerName) throws ModuleException, NodeLoadException {
         CachedAnnotation cachedAnnotation = getPostHandler(postHandlerName);
         try {
-            return (Result) cachedAnnotation.method.invoke(null, new SubmitHandler.Context());
+            return (Result) cachedAnnotation.method.invoke(null);
         } catch (InvocationTargetException e) {
             return CoreLoader.handleException(e.getCause());
         } catch (IllegalAccessException e) {

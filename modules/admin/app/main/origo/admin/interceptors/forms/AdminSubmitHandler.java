@@ -28,12 +28,12 @@ import java.util.Map;
 public class AdminSubmitHandler extends DefaultSubmitHandler {
 
     @SubmitHandler
-    public static Result handleSubmit(SubmitHandler.Context context) {
+    public static Result handleSubmit() {
 
         String withType = getWithType();
 
         try {
-            Validation.Result validationResult = runValidation(context, withType);
+            Validation.Result validationResult = runValidation(withType);
 
             if (validationResult.hasErrors()) {
                 return doValidationFailure(withType, validationResult);
