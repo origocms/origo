@@ -47,14 +47,16 @@ public class CoreModule {
         List<AnnotationProcessor.Prototype> annotations = Lists.newArrayList();
 
         // Basic types
+        annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class));
+        annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class, Map.class));
         annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class, Navigation.class));
         annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class, Navigation.class, Map.class));
         annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class, Form.class));
         annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class, Form.class, Map.class));
         annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class, Content.class));
         annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class, Content.class, Map.class));
-        annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class));
-        annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class, Map.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Map.class));
         annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Navigation.class));
         annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Navigation.class, Map.class));
         annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Form.class));
@@ -67,8 +69,6 @@ public class CoreModule {
         annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Navigation.class, NavigationElement.class, Map.class));
         annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Content.class));
         annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Content.class, Map.class));
-        annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class));
-        annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Map.class));
         annotations.add(new AnnotationProcessor.Prototype(OnInsertElement.class, null, Element.class, Element.class));
         annotations.add(new AnnotationProcessor.Prototype(OnInsertElement.class, null, Node.class, Element.class, Element.class));
         annotations.add(new AnnotationProcessor.Prototype(OnInsertElement.class, null, Element.class, Element.class, Map.class));

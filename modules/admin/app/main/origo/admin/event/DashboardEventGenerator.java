@@ -24,7 +24,7 @@ public class DashboardEventGenerator {
         Set<CachedAnnotation> cachedAnnotations = findProvidersWithParent(Admin.Type.DASHBOARD_ITEM, withType);
         List<Element> items = Lists.newArrayList();
         for (CachedAnnotation cachedAnnotation : cachedAnnotations) {
-            return ReflectionInvoker.execute(cachedAnnotation, node, withType, Maps.newHashMap());
+            items.add(ReflectionInvoker.<Element>execute(cachedAnnotation, node, withType, Maps.newHashMap()));
         }
         return items;
     }
