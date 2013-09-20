@@ -12,6 +12,7 @@ import main.origo.core.helpers.forms.FormHelper;
 import main.origo.core.ui.Element;
 import main.origo.core.ui.NavigationElement;
 import models.origo.admin.AdminPage;
+import models.origo.core.BasicPage;
 import models.origo.core.navigation.BasicNavigation;
 import models.origo.core.navigation.InternalPageIdNavigation;
 import org.apache.commons.lang3.StringUtils;
@@ -37,7 +38,7 @@ public class BasicNavigationPageAdminProvider {
         }
 
         // TODO: Hard coded for now, should be moved to configuration
-        if (BasicPageAdminProvider.TYPE.equals(node.nodeType()) && element.getId().equals("content")) {
+        if (BasicPage.TYPE.equals(node.nodeType()) && element.getId().equals("content")) {
 
             AdminPage adminPage = (AdminPage) node;
             try {

@@ -7,6 +7,7 @@ import main.origo.core.annotations.forms.OnSubmit;
 import main.origo.core.helpers.forms.FormHelper;
 import main.origo.core.ui.Element;
 import models.origo.core.Alias;
+import models.origo.core.BasicPage;
 import org.apache.commons.lang3.StringUtils;
 import play.data.DynamicForm;
 
@@ -21,7 +22,7 @@ public class AliasPageAdminProvider {
     @OnInsertElement(with = Element.FieldSet.class, after = true)
     public static void addAliasFieldSet(Node node, Element parent, Element element) {
         // TODO: Hard coded for now, should be moved to configuration
-        if (BasicPageAdminProvider.TYPE.equals(node.nodeType()) && element.getId().equals("content")) {
+        if (BasicPage.TYPE.equals(node.nodeType()) && element.getId().equals("content")) {
 
             Alias alias = Alias.findFirstAliasForPageId(node.nodeId());
 

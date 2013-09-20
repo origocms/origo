@@ -63,8 +63,8 @@ public class ProvidesEventHandlerAdminProvider {
      * @return a node to be presented as part of the admin UI
      */
     @Provides(type = Core.Type.NODE, with = EDIT_TYPE)
-    public static Node createEditPage(Node node, String withType, Map<String, Object> args) {
-        AdminPage page = new AdminPage(EDIT_TYPE, (RootNode) node);
+    public static Node createEditPage(RootNode node, String withType, Map<String, Object> args) {
+        AdminPage page = AdminPage.create(node, EDIT_TYPE);
         page.setTitle("Event Handlers");
         page.setThemeVariant(AdminTheme.LEFT_AND_MAIN_COLUMNS_VARIANT_NAME);
         page.addElement(DashboardHelper.createBreadcrumb(BASE_TYPE), AdminTheme.topMeta());

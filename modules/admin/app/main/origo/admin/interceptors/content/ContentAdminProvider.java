@@ -44,8 +44,8 @@ public class ContentAdminProvider {
      * Creating the Content listing page.
      */
     @Provides(type = Core.Type.NODE, with = Admin.With.CONTENT_PAGE)
-    public static Node createContentList(Node node, String withType, Map<String, Object> args) throws NodeLoadException, ModuleException {
-        AdminPage page = new AdminPage(Admin.With.CONTENT_PAGE, (RootNode) node);
+    public static Node createContentList(RootNode node, String withType, Map<String, Object> args) throws NodeLoadException, ModuleException {
+        AdminPage page = AdminPage.create(node, Admin.With.CONTENT_PAGE);
         page.setTitle("Content");
 
         page.addElement(DashboardHelper.createBreadcrumb(Admin.With.CONTENT_PAGE), AdminTheme.topMeta());

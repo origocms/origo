@@ -23,7 +23,7 @@ public class AdminLoader {
 
     public static Result loadFrontDashboard() {
         try {
-            return Controller.ok(loadAndDecoratePage(AdminSettingsHelper.getHomeDashboard()));
+            return Controller.ok(loadAndDecorateNode(AdminSettingsHelper.getHomeDashboard()));
         } catch (Exception e) {
             return CoreLoader.handleException(e);
         }
@@ -31,7 +31,7 @@ public class AdminLoader {
 
     public static Result loadDashboard(String withType) {
         try {
-            return Controller.ok(loadAndDecoratePage(withType));
+            return Controller.ok(loadAndDecorateNode(withType));
         } catch (Exception e) {
             return CoreLoader.handleException(e);
         }
@@ -39,49 +39,33 @@ public class AdminLoader {
 
     public static Result view(String identifier) {
         try {
-            return Controller.ok(loadAndDecoratePage(getType(identifier)));
+            return Controller.ok(loadAndDecorateNode(getType(identifier), identifier));
         } catch (Exception e) {
             return CoreLoader.handleException(e);
         }
     }
 
-    public static Result create(String withType) {
+    public static Result create(String type) {
         try {
-            return Controller.ok(loadAndDecoratePage(withType));
+            return Controller.ok(loadAndDecorateNode(type));
         } catch (Exception e) {
             return CoreLoader.handleException(e);
         }
     }
 
-    public static Result edit(String identifier) {
-        try {
-            return Controller.ok(loadAndDecoratePage(getType(identifier) + Admin.Action.EDIT, identifier));
-        } catch (Exception e) {
-            return CoreLoader.handleException(e);
-        }
-    }
-
-    public static Result delete(String identifier) {
-        try {
-            return Controller.ok(loadAndDecoratePage(getType(identifier) + Admin.Action.DELETE, identifier));
-        } catch (Exception e) {
-            return CoreLoader.handleException(e);
-        }
-    }
-
-    private static Content loadAndDecoratePage(String withType) throws NodeLoadException, ModuleException {
+    private static Content loadAndDecorateNode(String withType) throws NodeLoadException, ModuleException {
         Logger.debug("Loading [" + withType + "] as type");
         RootNode rootNode = new RootNode(0);
         rootNode.nodeType(withType);
-        Node node = NodeHelper.load(rootNode);
+        Node node = NodeHelper.load(rootNode, Admin.Type.ADMIN_NODE);
         return decorateNode(node);
     }
 
-    private static Content loadAndDecoratePage(String withType, String identifier) throws NodeLoadException, ModuleException {
+    private static Content loadAndDecorateNode(String withType, String identifier) throws NodeLoadException, ModuleException {
         Logger.debug("Loading [" + withType + "] as type and identifier [" + identifier + "]");
         RootNode rootNode = new RootNode(identifier, 0);
         rootNode.nodeType(withType);
-        Node node = NodeHelper.load(rootNode);
+        Node node = NodeHelper.load(rootNode, Admin.Type.ADMIN_NODE);
         return decorateNode(node);
     }
 
@@ -97,7 +81,8 @@ public class AdminLoader {
     }
 
     public static Content decorateNode(Node node) throws NodeLoadException, ModuleException {
-        RenderedNode renderedNode = ThemeHelper.decorate(node, ThemeHelper.loadTheme(node, AdminSettingsHelper.getThemeVariant()));
+        RenderedNode renderedNode = ThemeHelper.decorate(node,
+                ThemeHelper.loadTheme(node, AdminSettingsHelper.getThemeVariant()));
         renderedNode.navigation(getNavigation(node));
         if (Logger.isDebugEnabled()) {
             Logger.debug("Decorated " + renderedNode);

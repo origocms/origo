@@ -43,8 +43,8 @@ public class DefaultUserManagementDashboardProvider {
      * Creating the Node for the User Dashboard.
      */
     @Provides(type = Core.Type.NODE, with = Admin.With.USER_PAGE)
-    public static Node createUserDashboard(Node node, String withType, Map<String, Object> args) throws NodeLoadException {
-        AdminPage page = new AdminPage(Admin.With.USER_PAGE, (RootNode) node);
+    public static Node createUserDashboard(RootNode node, String withType, Map<String, Object> args) throws NodeLoadException {
+        AdminPage page = AdminPage.create(node, Admin.With.USER_PAGE);
         page.setTitle("User Management - Dashboard");
         page.addElement(DashboardHelper.createBreadcrumb(Admin.With.USER_PAGE), AdminTheme.topMeta());
 

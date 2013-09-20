@@ -29,8 +29,8 @@ public class DefaultDashboardProvider {
      * Creating the node for the Front page.
      */
     @Provides(type = Core.Type.NODE, with = Admin.With.FRONT_PAGE)
-    public static Node createPage(Node node, String withType, Map<String, Object> args) throws NodeLoadException {
-        AdminPage page = new AdminPage(Admin.With.FRONT_PAGE, (RootNode) node);
+    public static Node createPage(RootNode node, String withType, Map<String, Object> args) throws NodeLoadException {
+        AdminPage page = AdminPage.create(node, Admin.With.FRONT_PAGE);
         page.setTitle("Dashboard");
 
         node.addElement(DashboardHelper.createBreadcrumb(Admin.With.FRONT_PAGE), AdminTheme.topMeta());

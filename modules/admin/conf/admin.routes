@@ -9,11 +9,9 @@ GET     /dashboard                                      controllers.origo.admin.
 GET     /dashboard/:dashboard                           controllers.origo.admin.Dashboard.dashboard(dashboard:String)
 GET     /                                               controllers.origo.admin.Dashboard.index()
 
-GET     /new                                            controllers.origo.admin.Application.create()
-GET     /new/:withType                                  controllers.origo.admin.Application.createWithType(withType:String)
-GET     /edit/:identifier                               controllers.origo.admin.Application.edit(identifier:String)
-GET     /delete/:identifier                             controllers.origo.admin.Application.delete(identifier:String)
-GET     /:identifier                                    controllers.origo.admin.Application.view(identifier:String)
+#GET     /new                                            controllers.origo.admin.Application.create()
+#GET     /new/:withType                                  controllers.origo.admin.Application.createWithType(withType:String)
+GET     /:identifier                                    controllers.origo.admin.Application.page(identifier:String)
 
 GET     /assets/internal/pages                          controllers.origo.admin.InternalAssets.listPages()
 

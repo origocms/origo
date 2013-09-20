@@ -12,6 +12,7 @@ import java.lang.annotation.Target;
 public class Admin {
 
     public static class Type {
+        public static final String ADMIN_NODE = "admin_node";
         public static final String DASHBOARD = "dashboard";
         public static final String DASHBOARD_ITEM = "dashboard_item";
     }
@@ -21,12 +22,6 @@ public class Admin {
         public static final String CONTENT_PAGE = "content";
         public static final String USER_PAGE = "user";
         public static final String SETTINGS_PAGE = "settings";
-    }
-
-    public static class Action {
-        public static final String EDIT = ".edit";
-        public static final String CREATE = ".create";
-        public static final String DELETE = ".delete";
     }
 
     public static class Dashboard extends Element {

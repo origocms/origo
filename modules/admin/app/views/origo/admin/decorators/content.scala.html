@@ -18,11 +18,11 @@
             <td>@node.nodeType</td>
             <td>@node.version</td>
             <td>
-                <a class="btn btn-small" href="@controllers.origo.admin.routes.Application.edit(node.nodeId)">Edit</a>
+                <a class="btn btn-small" href="@controllers.origo.admin.routes.Application.page(node.nodeId)">Edit</a>
             </td>
         </tr>
         }
     </table>
-    @*<a class="btn btn-small" href="@controllers.origo.admin.routes.Application.pageWithType(BasicPageAdminProvider.NEW_TYPE)">New</a>*@
+    @*<a class="btn btn-small" href="@controllers.origo.admin.routes.Application.create()">New</a>*@
 
 </div>

@@ -4,6 +4,7 @@ import main.origo.core.Node;
 import main.origo.core.ui.Element;
 import models.origo.core.Meta;
 import models.origo.core.RootNode;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -19,7 +20,7 @@ public class AdminPage implements Node {
 
     public String themeVariant;
 
-    public AdminPage(String type, RootNode node) {
+    private AdminPage(String type, RootNode node) {
         this.type = type;
         this.rootNode = node;
     }
@@ -145,5 +146,15 @@ public class AdminPage implements Node {
                 append("title='").append(title).append("\', ").
                 append("themeVariant='").append(themeVariant()).append("\', ").
                 toString();
+    }
+
+    public static AdminPage create(RootNode node, String type) {
+        if (node == null || StringUtils.isEmpty(node.nodeId())) {
+            return new AdminPage(type, new RootNode(0));
+        } else if (node.version() == null || node.version() == 0) {
+            return new AdminPage(type, RootNode.findLatestVersionWithNodeId(node.nodeId()).copy());
+        } else {
+            return new AdminPage(type, node);
+        }
     }
 }
