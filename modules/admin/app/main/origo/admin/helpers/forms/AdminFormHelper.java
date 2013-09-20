@@ -1,6 +1,6 @@
 package main.origo.admin.helpers.forms;
 
-import controllers.origo.core.routes;
+import controllers.origo.admin.routes;
 import main.origo.admin.helpers.AdminSettingsHelper;
 import main.origo.core.ModuleException;
 import main.origo.core.Node;

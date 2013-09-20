@@ -12,6 +12,8 @@ import main.origo.core.event.forms.OnSubmitEventGenerator;
 import main.origo.core.event.forms.SubmitStateEventGenerator;
 import main.origo.core.event.forms.ValidationHandlerEventGenerator;
 import main.origo.core.helpers.CoreSettingsHelper;
+import main.origo.core.helpers.NodeHelper;
+import main.origo.core.helpers.forms.FormHelper;
 import main.origo.core.ui.Element;
 import models.origo.core.RootNode;
 import org.apache.commons.lang3.StringUtils;
@@ -29,18 +31,19 @@ import java.util.Map;
 @Interceptor
 public class DefaultSubmitHandler {
 
-    protected static final String WITH_TYPE = "_core_with_type";
-
     @SubmitHandler
     public static Result handleSubmit() {
 
-        String withType = getWithType();
+        DynamicForm form = DynamicForm.form().bindFromRequest();
+        String withType = FormHelper.getWithType(form.data());
+        String identifier = FormHelper.getNodeId(form.data());
+        Integer version = FormHelper.getNodeVersion(form.data());
 
         try {
             Validation.Result validationResult = runValidation(withType);
 
             if (validationResult.hasErrors()) {
-                return handleValidationFailure(withType, validationResult);
+                return handleValidationFailure(identifier, version, validationResult);
             }
             return sendSubmitState(withType, validationResult);
 
@@ -49,26 +52,16 @@ public class DefaultSubmitHandler {
         }
     }
 
-    protected static String getWithType() {
-        DynamicForm form = DynamicForm.form().bindFromRequest();
-
-        String withType = getWithType(form);
-        if (withType == null) {
-            throw new RuntimeException("DefaultSubmitHandler requires a request parameter named '" + WITH_TYPE + "' to be present in the request");
-        }
-        return withType;
-    }
-
     protected static Validation.Result runValidation(String withType) throws ModuleException, NodeLoadException, InvocationTargetException, IllegalAccessException {
         Validation.Result validationResult = ValidationHandlerEventGenerator.triggerValidationProcessingHandler(withType);
         NodeContext.current().attributes.put(Validation.Result.class.getCanonicalName(), validationResult);
         return validationResult;
     }
 
-    protected static Result handleValidationFailure(String withType, Validation.Result validationResult) throws InvocationTargetException, IllegalAccessException, NodeNotFoundException, NodeLoadException, ModuleException {
-        RootNode rootNode = new RootNode(0, withType);
+    protected static Result handleValidationFailure(String identifier, Integer version, Validation.Result validationResult) throws InvocationTargetException, IllegalAccessException, NodeNotFoundException, NodeLoadException, ModuleException {
+        RootNode rootNode = NodeHelper.loadRootNode(identifier, version);
         NodeContext.current().node = rootNode;
-        Node node = ValidationHandlerEventGenerator.triggerValidationFailedHandler(rootNode, withType, validationResult);
+        Node node = ValidationHandlerEventGenerator.triggerValidationFailedHandler(rootNode, rootNode.nodeType(), validationResult);
         return Controller.badRequest(CoreLoader.decorateNode(node));
     }
 
@@ -81,18 +74,16 @@ public class DefaultSubmitHandler {
     }
 
     @OnLoad(type = Core.Type.FORM)
-    public static void addWithTypeField(Node node, String withType, Element element, Map<String, Object> args) {
+    public static void addNodeFields(Node node, String withType, Element element, Map<String, Object> args) {
         final String postHandler = CoreSettingsHelper.getSubmitHandler();
         if (StringUtils.isBlank(postHandler)) {
             throw new RuntimeException("No SubmitHandler defined in settings: "+CoreSettingsHelper.Keys.SUBMIT_HANDLER);
         }
         if (DefaultSubmitHandler.class.getName().equals(postHandler)) {
-            element.addChild(new Element.InputHidden().addAttribute("name", WITH_TYPE).addAttribute("value", withType));
+            FormHelper.addNodeId(element, node.nodeId());
+            FormHelper.addNodeVersion(element, node.version());
+            FormHelper.addWithType(element, node.nodeType());
         }
-    }
-
-    public static String getWithType(DynamicForm form) {
-        return form.get(WITH_TYPE);
     }
 
 }

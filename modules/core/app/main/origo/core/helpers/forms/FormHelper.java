@@ -23,8 +23,9 @@ import java.util.Map;
 
 public class FormHelper {
 
-    private static final String NODE_ID = "_core_node_id";
-    private static final String NODE_VERSION = "_core_node_version";
+    protected static final String WITH_TYPE = "_core_with_type";
+    protected static final String NODE_ID = "_core_node_id";
+    protected static final String NODE_VERSION = "_core_node_version";
 
     public static Element createFormElement(Node node, String withType) throws NodeLoadException, ModuleException {
         return createFormElement(node, withType, CoreSettingsHelper.getDefaultFormType());
@@ -37,7 +38,6 @@ public class FormHelper {
     public static Element createFormElement(Node node, String withType, String formType) throws ModuleException, NodeLoadException {
         OnLoadEventGenerator.triggerBeforeInterceptor(node, Core.Type.FORM, withType, Collections.<String, Object>emptyMap());
         Element formElement = ProvidesEventGenerator.triggerInterceptor(node, Core.Type.FORM, formType, Collections.<String, Object>singletonMap("with", withType));
-        addNodeIdAndVersion(formElement, node);
         OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.FORM, withType, formElement, Collections.<String, Object>emptyMap());
         return formElement;
     }
@@ -45,7 +45,6 @@ public class FormHelper {
     public static Element createFormElement(Node node, String withType, String formType, Form form) throws ModuleException, NodeLoadException {
         OnLoadEventGenerator.triggerBeforeInterceptor(node, Core.Type.FORM, withType, form, Collections.<String, Object>emptyMap());
         Element formElement = ProvidesEventGenerator.triggerInterceptor(node, Core.Type.FORM, formType, Collections.<String, Object>singletonMap("with", withType));
-        addNodeIdAndVersion(formElement, node);
         OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.FORM, withType, form, formElement, Collections.<String, Object>emptyMap());
         return formElement;
     }
@@ -70,14 +69,6 @@ public class FormHelper {
         return routes.Submit.submit();
     }
 
-    public static String getNodeIdParamName() {
-        return NODE_ID;
-    }
-
-    public static String getNodeVersionParamName() {
-        return NODE_VERSION;
-    }
-
     public static String getNodeId(Map<String,String> data) {
         return data.get(NODE_ID);
     }
@@ -90,10 +81,27 @@ public class FormHelper {
         }
     }
 
-    public static void addNodeIdAndVersion(Element form, Node node) {
-        form.
-                addChild(new Element.InputHidden().addAttribute("name", FormHelper.getNodeIdParamName()).addAttribute("value", node.nodeId())).
-                addChild(new Element.InputHidden().addAttribute("name", FormHelper.getNodeVersionParamName()).addAttribute("value", String.valueOf(node.version())));
+    public static String getWithType(Map<String, String> data) {
+        String withType = data.get(WITH_TYPE);
+        if (withType == null) {
+            throw new RuntimeException("DefaultSubmitHandler requires a request parameter named '" + WITH_TYPE + "' to be present in the request");
+        }
+        return withType;
+    }
+
+    public static void addNodeId(Element element, String nodeId) {
+        element.
+                addChild(new Element.InputHidden().addAttribute("name", NODE_ID).addAttribute("value", nodeId));
+    }
+
+    public static void addNodeVersion(Element element, Integer version) {
+        element.
+                addChild(new Element.InputHidden().addAttribute("name", NODE_VERSION).addAttribute("value", String.valueOf(version)));
+    }
+
+    public static void addWithType(Element element, String withType) {
+        element.
+                addChild(new Element.InputHidden().addAttribute("name", WITH_TYPE).addAttribute("value", withType));
     }
 
     public static List<Element> getGlobalErrors() {

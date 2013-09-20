@@ -1,5 +1,7 @@
 package main.origo.core.utils;
 
+import main.origo.core.InitializationException;
+import main.origo.core.ModuleException;
 import play.Logger;
 import play.Play;
 
@@ -25,4 +27,18 @@ public class ExceptionUtil {
         Logger.error("An exception occurred while loading: " + e.getMessage(), e);
     }
 
+    public static RuntimeException getCause(Throwable e) {
+        Throwable thrown = e;
+        while(thrown.getCause() != null &&
+                (thrown instanceof InitializationException ||
+                        thrown instanceof ModuleException ||
+                        thrown instanceof RuntimeException)) {
+            thrown = thrown.getCause();
+        }
+        if (thrown instanceof RuntimeException) {
+            throw (RuntimeException)thrown;
+        } else {
+            throw new RuntimeException(thrown);
+        }
+    }
 }

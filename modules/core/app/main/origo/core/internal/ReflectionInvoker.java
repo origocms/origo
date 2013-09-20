@@ -21,9 +21,9 @@ public class ReflectionInvoker {
             //noinspection unchecked
             return (T) cachedAnnotation.method.invoke(null, validatedArgs.toArray());
         } catch (IllegalAccessException e) {
-            throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]: "+ e.getCause());
+            throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getCause());
         } catch (InvocationTargetException e) {
-            throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]: "+ e.getMessage());
+            throw new RuntimeException("Unable to invoke method [" + cachedAnnotation.method.toString() + "]", e.getTargetException());
         }
 
     }

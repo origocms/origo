@@ -6,6 +6,7 @@ import main.origo.core.helpers.NodeHelper;
 import main.origo.core.helpers.ThemeHelper;
 import main.origo.core.ui.NavigationElement;
 import main.origo.core.ui.RenderedNode;
+import main.origo.core.utils.ExceptionUtil;
 import models.origo.core.Alias;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
@@ -57,18 +58,7 @@ public class CoreLoader {
 
     public static Result handleException(Throwable e) {
         if (Play.isDev()) {
-            Throwable thrown = e;
-            while(thrown.getCause() != null &&
-                    (thrown instanceof InitializationException ||
-                            thrown instanceof ModuleException ||
-                            thrown instanceof RuntimeException)) {
-                thrown = thrown.getCause();
-            }
-            if (thrown instanceof RuntimeException) {
-                throw (RuntimeException)thrown;
-            } else {
-                throw new RuntimeException(thrown);
-            }
+            throw ExceptionUtil.getCause(e);
         }
         Logger.error("An exception occurred while loading the page: " + e.getMessage(), e);
         return redirectToPageLoadErrorPage();
