@@ -37,11 +37,12 @@ public class EventHandler extends Model<EventHandler> {
         }
     }
 
-    public static EventHandler findWithAnnotationAndWithType(String annotation, String withType) {
+    public static EventHandler findWithAnnotationAndWithType(String annotation, String handlerClass, String withType) {
         try {
             return (EventHandler) JPA.em().
-                    createQuery("from "+EventHandler.class.getName()+" eh where eh.annotation=:annotation and eh.withType=:withType").
+                    createQuery("from "+EventHandler.class.getName()+" eh where eh.annotation=:annotation and eh.handlerClass=:handlerClass and eh.withType=:withType").
                     setParameter("annotation", annotation).
+                    setParameter("handlerClass", handlerClass).
                     setParameter("withType", withType).
                     getSingleResult();
         } catch (NoResultException e) {

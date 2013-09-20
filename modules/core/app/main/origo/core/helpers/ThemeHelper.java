@@ -6,6 +6,7 @@ import main.origo.core.Node;
 import main.origo.core.ThemeRepository;
 import main.origo.core.annotations.Decorates;
 import main.origo.core.internal.CachedDecorator;
+import main.origo.core.internal.CachedTheme;
 import main.origo.core.internal.CachedThemeVariant;
 import main.origo.core.internal.ReflectionInvoker;
 import main.origo.core.ui.Element;
@@ -27,7 +28,8 @@ public class ThemeHelper {
         setupRegions(themeVariant, renderedNode);
         renderedNode.themeVariant(themeVariant);
         renderedNode.title(node.title());
-        RenderingContext renderingContext = new RenderingContext(themeVariant, node, renderedNode);
+        CachedTheme theme = ThemeRepository.getTheme(themeVariant.themeId);
+        RenderingContext renderingContext = new RenderingContext(theme, themeVariant, node, renderedNode);
         for (String pageRegion : node.regions()) {
             for (Element element : node.elements(pageRegion)) {
                 Html decoratedContent = decorate(element, renderingContext);
@@ -85,7 +87,7 @@ public class ThemeHelper {
         List<CachedDecorator> decorators = ThemeRepository.getDecorators(renderingContext.themeVariant.themeId, element);
 
         if (!decorators.isEmpty()) {
-            CachedDecorator decorator = selectDecorator(element.getClass(), decorators);
+            CachedDecorator decorator = selectDecorator(element.getClass(), renderingContext.theme, decorators);
             try {
                 decoratedOutput = ReflectionInvoker.execute(decorator, element, renderingContext);
             } catch (Throwable e) {
@@ -139,17 +141,17 @@ public class ThemeHelper {
         return ReflectionInvoker.execute(cachedThemeVariant, renderedNode);
     }
 
-    public static CachedDecorator selectDecorator(Class<? extends Element> type, List<CachedDecorator> cachedDecorators) {
+    public static CachedDecorator selectDecorator(Class<? extends Element> type, CachedTheme theme, List<CachedDecorator> cachedDecorators) {
         if (cachedDecorators.isEmpty()) {
             return null;
         }
 
-        EventHandler storedEventHandlerType = EventHandler.findWithAnnotationAndWithType(Decorates.class.getName(), type.getName());
+        EventHandler storedEventHandlerType = EventHandler.findWithAnnotationAndWithType(Decorates.class.getName(), theme.getClass().getCanonicalName(), type.getName());
         if (storedEventHandlerType == null) {
             return setFirstDecoratorAsDefault(type, cachedDecorators);
         }
         for (CachedDecorator cachedDecorator : cachedDecorators) {
-            if (storedEventHandlerType.handlerClass.equals(cachedDecorator.method.getDeclaringClass().getName())) {
+            if (storedEventHandlerType.handlerClass.equals(cachedDecorator.method.getDeclaringClass().getCanonicalName())) {
                 return cachedDecorator;
             }
         }
@@ -159,12 +161,12 @@ public class ThemeHelper {
 
     private static CachedDecorator setFirstDecoratorAsDefault(Class<? extends Element> elementType, List<CachedDecorator> decorators) {
         CachedDecorator annotation = decorators.iterator().next();
-        Logger.info("Setting ["+annotation.method.getDeclaringClass().getName()+"] as default for type ["+ elementType+"]");
+        Logger.info("Setting ["+annotation.method.getDeclaringClass().getCanonicalName()+"] as default for type ["+ elementType+"]");
         EventHandler eventHandler = new EventHandler();
         eventHandler.annotation = Decorates.class.getName();
         eventHandler.withType = elementType.getName();
         eventHandler.nodeType = null;
-        eventHandler.handlerClass = annotation.method.getDeclaringClass().getName();
+        eventHandler.handlerClass = annotation.method.getDeclaringClass().getCanonicalName();
         eventHandler.create();
         return annotation;
     }
