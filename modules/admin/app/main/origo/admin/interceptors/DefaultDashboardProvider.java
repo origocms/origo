@@ -7,8 +7,8 @@ import main.origo.admin.themes.AdminTheme;
 import main.origo.core.ModuleException;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
-import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
+import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.Provides;
 import main.origo.core.ui.Element;
 import models.origo.admin.AdminPage;
@@ -28,11 +28,15 @@ public class DefaultDashboardProvider {
     /*
      * Creating the node for the Front page.
      */
-    @Provides(type = Core.Type.NODE, with = Admin.With.FRONT_PAGE)
+    @Provides(type = Admin.Type.ADMIN_NODE, with = Admin.With.FRONT_PAGE)
     public static Node createPage(RootNode node, String withType, Map<String, Object> args) throws NodeLoadException {
         AdminPage page = AdminPage.create(node, Admin.With.FRONT_PAGE);
         page.setTitle("Dashboard");
+        return page;
+    }
 
+    @OnLoad(type = Admin.Type.ADMIN_NODE, with = Admin.With.FRONT_PAGE)
+    public static void loadPage(Node node) throws NodeLoadException {
         node.addElement(DashboardHelper.createBreadcrumb(Admin.With.FRONT_PAGE), AdminTheme.topMeta());
         try {
             node.addElement(DashboardHelper.createDashboard(node, Admin.With.FRONT_PAGE));
@@ -40,8 +44,6 @@ public class DefaultDashboardProvider {
             // TODO: recover somehow?
             Logger.error("Unable to load dashboard", e);
         }
-
-        return page;
     }
 
     /*

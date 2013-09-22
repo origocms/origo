@@ -43,7 +43,7 @@ public class ContentAdminProvider {
     /*
      * Creating the Content listing page.
      */
-    @Provides(type = Core.Type.NODE, with = Admin.With.CONTENT_PAGE)
+    @Provides(type = Admin.Type.ADMIN_NODE, with = Admin.With.CONTENT_PAGE)
     public static Node createContentList(RootNode node, String withType, Map<String, Object> args) throws NodeLoadException, ModuleException {
         AdminPage page = AdminPage.create(node, Admin.With.CONTENT_PAGE);
         page.setTitle("Content");

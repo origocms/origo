@@ -149,12 +149,18 @@ public class AdminPage implements Node {
     }
 
     public static AdminPage create(RootNode node, String type) {
-        if (node == null || StringUtils.isEmpty(node.nodeId())) {
+        if (node == null) {
             return new AdminPage(type, new RootNode(0));
-        } else if (node.version() == null || node.version() == 0) {
-            return new AdminPage(type, RootNode.findLatestVersionWithNodeId(node.nodeId()).copy());
         } else {
-            return new AdminPage(type, node);
+            if (StringUtils.isNotBlank(node.nodeId())) {
+                if (node.version() == null || node.version() == 0) {
+                    return new AdminPage(type, RootNode.findLatestVersionWithNodeId(node.nodeId()).copy());
+                } else {
+                    return new AdminPage(type, RootNode.findLatestPublishedVersionWithNodeId(node.nodeId()));
+                }
+            } else {
+                return new AdminPage(type, node);
+            }
         }
     }
 }

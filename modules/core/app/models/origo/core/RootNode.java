@@ -55,7 +55,7 @@ public final class RootNode extends Model<RootNode> implements Node {
     }
 
     public RootNode(Integer version) {
-        this(UUID.randomUUID().toString(), version);
+        this(null, version);
     }
 
     public RootNode(String nodeId, Integer version) {

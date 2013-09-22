@@ -11,7 +11,10 @@ import main.origo.core.InterceptorRepository;
 import main.origo.core.ModuleException;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
-import main.origo.core.annotations.*;
+import main.origo.core.annotations.Interceptor;
+import main.origo.core.annotations.OnLoad;
+import main.origo.core.annotations.Provides;
+import main.origo.core.annotations.Relationship;
 import main.origo.core.annotations.forms.OnSubmit;
 import main.origo.core.annotations.forms.SubmitState;
 import main.origo.core.event.ProvidesEventGenerator;
@@ -62,7 +65,7 @@ public class ProvidesEventHandlerAdminProvider {
      *
      * @return a node to be presented as part of the admin UI
      */
-    @Provides(type = Core.Type.NODE, with = EDIT_TYPE)
+    @Provides(type = Admin.Type.ADMIN_NODE, with = EDIT_TYPE)
     public static Node createEditPage(RootNode node, String withType, Map<String, Object> args) {
         AdminPage page = AdminPage.create(node, EDIT_TYPE);
         page.setTitle("Event Handlers");
@@ -71,7 +74,7 @@ public class ProvidesEventHandlerAdminProvider {
         return page;
     }
 
-    @OnLoad(type = Core.Type.NODE, with = EDIT_TYPE)
+    @OnLoad(type = Admin.Type.ADMIN_NODE, with = EDIT_TYPE)
     public static void loadEditPage(Node node, String withType, Map<String, Object> args) {
 
         List<String> providerTypes = getAllProvides();

@@ -7,8 +7,8 @@ import main.origo.admin.themes.AdminTheme;
 import main.origo.core.ModuleException;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
-import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
+import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.Provides;
 import main.origo.core.annotations.Relationship;
 import main.origo.core.ui.Element;
@@ -40,20 +40,23 @@ public class DefaultSettingsDashboardProvider {
     /*
      * Creating the Node for the Settings Dashboard.
      */
-    @Provides(type = Core.Type.NODE, with = Admin.With.SETTINGS_PAGE)
+    @Provides(type = Admin.Type.ADMIN_NODE, with = Admin.With.SETTINGS_PAGE)
     public static Node addSettingsDashboard(RootNode node, String withType, Map<String, Object> args) throws NodeLoadException {
         AdminPage page = AdminPage.create(node, Admin.With.SETTINGS_PAGE);
         page.setTitle("Settings - Dashboard");
+        return page;
+    }
 
-        page.addElement(DashboardHelper.createBreadcrumb(Admin.With.SETTINGS_PAGE), AdminTheme.topMeta());
+    @OnLoad(type = Admin.Type.ADMIN_NODE, with = Admin.With.SETTINGS_PAGE)
+    public static void loadPage(Node node) throws NodeLoadException {
+
+        node.addElement(DashboardHelper.createBreadcrumb(Admin.With.SETTINGS_PAGE), AdminTheme.topMeta());
         try {
-            page.addElement(DashboardHelper.createDashboard(page, Admin.With.SETTINGS_PAGE));
+            node.addElement(DashboardHelper.createDashboard(node, Admin.With.SETTINGS_PAGE));
         } catch (ModuleException e) {
             // TODO: recover somehow?
             Logger.error("Unable to load dashboard", e);
         }
-
-        return page;
     }
 
     /*

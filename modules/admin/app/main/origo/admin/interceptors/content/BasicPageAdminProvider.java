@@ -72,7 +72,6 @@ public class BasicPageAdminProvider {
         // TODO: Look up themevariant (and also meta) from DB instead of resetting here.
         page.themeVariant = null;
         page.setTitle("New Basic Page");
-        page.addElement(DashboardHelper.createBreadcrumb(Admin.With.CONTENT_PAGE, BasicPage.TYPE), AdminTheme.topMeta());
         return page;
     }
 
@@ -81,7 +80,7 @@ public class BasicPageAdminProvider {
      */
     @OnLoad(type = Admin.Type.ADMIN_NODE, with = BasicPage.TYPE)
     public static void loadNewPage(Node node, String withType, Map<String, Object> args) throws ModuleException, NodeLoadException {
-
+        node.addElement(DashboardHelper.createBreadcrumb(Admin.With.CONTENT_PAGE, BasicPage.TYPE), AdminTheme.topMeta());
         Form<BasicPageForm> form = FormHelper.getValidationResult(BasicPageForm.class);
 
         if (form.hasErrors()) {

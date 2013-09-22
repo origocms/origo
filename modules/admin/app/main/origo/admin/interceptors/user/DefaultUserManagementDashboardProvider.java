@@ -7,8 +7,8 @@ import main.origo.admin.themes.AdminTheme;
 import main.origo.core.ModuleException;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
-import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
+import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.Provides;
 import main.origo.core.annotations.Relationship;
 import main.origo.core.ui.Element;
@@ -20,6 +20,29 @@ import java.util.Map;
 
 @Interceptor
 public class DefaultUserManagementDashboardProvider {
+
+    /*
+     * Creating the Node for the User Dashboard.
+     */
+    @Provides(type = Admin.Type.ADMIN_NODE, with = Admin.With.USER_PAGE)
+    public static Node createUserDashboard(RootNode node, String withType, Map<String, Object> args) throws NodeLoadException {
+        AdminPage page = AdminPage.create(node, Admin.With.USER_PAGE);
+        page.setTitle("User Management - Dashboard");
+        return page;
+    }
+
+    @OnLoad(type = Admin.Type.ADMIN_NODE, with = Admin.With.USER_PAGE)
+    public static void loadPage(Node node) throws NodeLoadException {
+        node.addElement(DashboardHelper.createBreadcrumb(Admin.With.USER_PAGE), AdminTheme.topMeta());
+
+        try {
+            node.addElement(DashboardHelper.createDashboard(node, Admin.With.USER_PAGE));
+        } catch (ModuleException e) {
+            // TODO: recover somehow?
+            Logger.error("Unable to load dashboard", e);
+        }
+
+    }
 
     /*
      * Dashboard Item for front page.
@@ -37,25 +60,6 @@ public class DefaultUserManagementDashboardProvider {
     @Admin.Navigation(alias="/user", key="breadcrumb.origo.admin.dashboard.user")
     public static String getDashboardUrl() {
         return routes.Dashboard.dashboard(Admin.With.USER_PAGE).url();
-    }
-
-    /*
-     * Creating the Node for the User Dashboard.
-     */
-    @Provides(type = Core.Type.NODE, with = Admin.With.USER_PAGE)
-    public static Node createUserDashboard(RootNode node, String withType, Map<String, Object> args) throws NodeLoadException {
-        AdminPage page = AdminPage.create(node, Admin.With.USER_PAGE);
-        page.setTitle("User Management - Dashboard");
-        page.addElement(DashboardHelper.createBreadcrumb(Admin.With.USER_PAGE), AdminTheme.topMeta());
-
-        try {
-            node.addElement(DashboardHelper.createDashboard(node, Admin.With.USER_PAGE));
-        } catch (ModuleException e) {
-            // TODO: recover somehow?
-            Logger.error("Unable to load dashboard", e);
-        }
-
-        return page;
     }
 
     /*
