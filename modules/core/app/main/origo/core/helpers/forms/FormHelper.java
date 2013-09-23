@@ -11,7 +11,9 @@ import main.origo.core.event.NodeContext;
 import main.origo.core.event.OnLoadEventGenerator;
 import main.origo.core.event.ProvidesEventGenerator;
 import main.origo.core.helpers.CoreSettingsHelper;
+import main.origo.core.internal.ReflectionInvoker;
 import main.origo.core.ui.Element;
+import org.apache.commons.lang3.StringUtils;
 import play.data.Form;
 import play.data.validation.ValidationError;
 import play.i18n.Messages;
@@ -151,8 +153,14 @@ public class FormHelper {
 
         if (!element.getAttributes().containsKey("value")) {
             if (!CoreSettingsHelper.isSuppressPasswordValues() || !new Element.InputPassword().getType().equals(element.getType())) {
-                Form.Field formField = form.field(name);
-                element.addAttribute("value", formField.value());
+                String value = getFieldValue(form, name);
+                if (StringUtils.isNotBlank(value)) {
+                    if (new Element.InputTextArea().getType().equals(element.getType())) {
+                        element.setBody(value);
+                    } else {
+                        element.addAttribute("value", value);
+                    }
+                }
             }
         }
 
@@ -160,6 +168,10 @@ public class FormHelper {
     }
 
     public static String getFieldValue(Form form, String name) {
-        return form.field(name).value();
+        if (form.hasErrors()) {
+            return form.field(name).value();
+        } else {
+            return ReflectionInvoker.getFieldValue(form.get(), name);
+        }
     }
 }
