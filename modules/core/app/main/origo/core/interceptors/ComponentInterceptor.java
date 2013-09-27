@@ -2,8 +2,10 @@ package main.origo.core.interceptors;
 
 import main.origo.core.Node;
 import main.origo.core.actions.Component;
+import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnLoad;
+import main.origo.core.ui.Element;
 import models.origo.core.Text;
 
 import java.util.Map;
@@ -11,13 +13,14 @@ import java.util.Map;
 @Interceptor
 public class ComponentInterceptor {
 
-    @OnLoad(with = Text.TYPE)
-    public static void onLoadContent(Node node, String withType, Text text, Map<String, Object> args) {
+    @OnLoad(type = Core.Type.CONTENT, with = Text.TYPE)
+    public static void onLoadContent(Node node, String withType, Element element, Map<String, Object> args) {
 
-        if (text != null && text.value.contains(Component.COMPONENT_MARKER)) {
+        if (element != null && element.getBody().body().contains(Component.COMPONENT_MARKER)) {
             Component component = Component.getWrappedComponent();
             if (component != null) {
-                text.value = text.value.replace(Component.COMPONENT_MARKER, component.body);
+                int idx = element.getBody().buffer().indexOf(Component.COMPONENT_MARKER);
+                element.getBody().buffer().replace(idx, idx+Component.COMPONENT_MARKER.length(), component.body);
             }
         }
 

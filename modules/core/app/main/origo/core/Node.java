@@ -10,7 +10,7 @@ import java.util.Set;
 /**
  * An interface that each module/add-on/plugin should implement if it adds a type with a \@Provides annotation.
  * While the modules/add-ons/plugins handle a rootNode and modify it, it will be of this type. When rendering
- * starts this will be turned into a RenderedNode.
+ * starts this will be turned into a DecoratedNode.
  *
  * @see main.origo.core.annotations.Provides
  * @see main.origo.core.annotations.ThemeVariant

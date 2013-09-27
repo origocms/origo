@@ -1,7 +1,7 @@
 package main.origo.admin.annotations;
 
+import main.origo.core.ui.DecorationContext;
 import main.origo.core.ui.Element;
-import main.origo.core.ui.RenderingContext;
 import play.api.templates.Html;
 
 import java.lang.annotation.ElementType;
@@ -31,7 +31,7 @@ public class Admin {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             return getBody();
         }
 
@@ -44,7 +44,7 @@ public class Admin {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             return getBody();
         }
 

@@ -5,8 +5,8 @@ import main.origo.core.Node;
 import main.origo.core.annotations.*;
 import main.origo.core.event.NodeContext;
 import main.origo.core.helpers.ProviderHelper;
+import main.origo.core.ui.DecorationContext;
 import main.origo.core.ui.Element;
-import main.origo.core.ui.RenderingContext;
 import models.origo.core.Text;
 import play.api.templates.Html;
 import views.html.origo.bootstrapwysihtml5.decorators.forms.wysi.bootstrapwysihtml5_script;
@@ -26,7 +26,7 @@ public class BootstrapWysiHTML5EditorProvider {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             return bootstrapwysihtml5_templates_script.render(this.id);
         }
     }
@@ -38,7 +38,7 @@ public class BootstrapWysiHTML5EditorProvider {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             return bootstrapwysihtml5_script.render(this.id);
         }
     }

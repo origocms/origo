@@ -9,9 +9,9 @@ import main.origo.core.internal.CachedDecorator;
 import main.origo.core.internal.CachedTheme;
 import main.origo.core.internal.CachedThemeVariant;
 import main.origo.core.internal.ReflectionInvoker;
+import main.origo.core.ui.DecoratedNode;
+import main.origo.core.ui.DecorationContext;
 import main.origo.core.ui.Element;
-import main.origo.core.ui.RenderedNode;
-import main.origo.core.ui.RenderingContext;
 import models.origo.core.EventHandler;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
@@ -23,16 +23,16 @@ import java.util.Map;
 
 public class ThemeHelper {
 
-    public static RenderedNode decorate(Node node, CachedThemeVariant themeVariant) {
-        RenderedNode renderedNode = new RenderedNode(node.nodeId());
-        setupRegions(themeVariant, renderedNode);
-        renderedNode.themeVariant(themeVariant);
-        renderedNode.title(node.title());
+    public static DecoratedNode decorate(Node node, CachedThemeVariant themeVariant) {
+        DecoratedNode decoratedNode = new DecoratedNode(node.nodeId());
+        setupRegions(themeVariant, decoratedNode);
+        decoratedNode.themeVariant(themeVariant);
+        decoratedNode.title(node.title());
         CachedTheme theme = ThemeRepository.getTheme(themeVariant.themeId);
-        RenderingContext renderingContext = new RenderingContext(theme, themeVariant, node, renderedNode);
+        DecorationContext decorationContext = new DecorationContext(theme, themeVariant, node, decoratedNode);
         for (String pageRegion : node.regions()) {
             for (Element element : node.elements(pageRegion)) {
-                Html decoratedContent = decorate(element, renderingContext);
+                Html decoratedContent = decorate(element, decorationContext);
 
                 switch(pageRegion) {
 
@@ -40,7 +40,7 @@ public class ThemeHelper {
                         if (!element.isAlwaysInBody()) {
                             throw new RuntimeException("Element ["+element.getType()+"] is not allowed in the head. Tried to add "+element.toString());
                         }
-                        renderedNode.addHead(decoratedContent);
+                        decoratedNode.addHead(decoratedContent);
                         break;
                     }
 
@@ -48,7 +48,7 @@ public class ThemeHelper {
                         if (element.isAlwaysInHead()) {
                             throw new RuntimeException("Element ["+element.getType()+"] is not allowed in the body. Tried to add "+element.toString());
                         }
-                        renderedNode.addTail(decoratedContent);
+                        decoratedNode.addTail(decoratedContent);
                         break;
                     }
 
@@ -56,13 +56,13 @@ public class ThemeHelper {
                         if (element.isAlwaysInHead()) {
                             throw new RuntimeException("Element ["+element.getType()+"] is not allowed in the body. Tried to add "+element.toString());
                         }
-                        renderedNode.add(pageRegion, decoratedContent);
+                        decoratedNode.add(pageRegion, decoratedContent);
                         break;
                     }
                 }
             }
         }
-        return renderedNode;
+        return decoratedNode;
     }
 
     /**
@@ -70,49 +70,49 @@ public class ThemeHelper {
      * nullpointer even if the region has no ui elements.
      *
      * @param themeVariant the theme variant that holds the regions available
-     * @param renderedNode the node about to rendered
+     * @param decoratedNode the node about to rendered
      */
-    private static void setupRegions(CachedThemeVariant themeVariant, RenderedNode renderedNode) {
+    private static void setupRegions(CachedThemeVariant themeVariant, DecoratedNode decoratedNode) {
         Map<String, List<Html>> regions = Maps.newHashMap();
         for (String region : themeVariant.regions) {
             regions.put(region, Lists.<Html>newArrayList());
         }
-        renderedNode.regions(regions);
+        decoratedNode.regions(regions);
     }
 
-    public static Html decorate(Element element, RenderingContext renderingContext) {
-        renderingContext.nest(element);
+    public static Html decorate(Element element, DecorationContext decorationContext) {
+        decorationContext.nest(element);
         Html decoratedOutput = null;
 
-        List<CachedDecorator> decorators = ThemeRepository.getDecorators(renderingContext.themeVariant.themeId, element);
+        List<CachedDecorator> decorators = ThemeRepository.getDecorators(decorationContext.themeVariant.themeId, element);
 
         if (!decorators.isEmpty()) {
-            CachedDecorator decorator = selectDecorator(element.getClass(), renderingContext.theme, decorators);
+            CachedDecorator decorator = selectDecorator(element.getClass(), decorationContext.theme, decorators);
             try {
-                decoratedOutput = ReflectionInvoker.execute(decorator, element, renderingContext);
+                decoratedOutput = ReflectionInvoker.execute(decorator, element, decorationContext);
             } catch (Throwable e) {
                 throw new RuntimeException("", e);
             }
         }
         if (decoratedOutput == null) {
-            decoratedOutput = element.decorate(renderingContext);
+            decoratedOutput = element.decorate(decorationContext);
             if (decoratedOutput == null) {
                 Logger.error("Unable to decorate ["+element.getClass()+"]");
             }
         }
-        renderingContext.unNest();
+        decorationContext.unNest();
         return decoratedOutput;
     }
 
-    public static Html decorateChildren(Element parent, RenderingContext renderingContext) {
+    public static Html decorateChildren(Element parent, DecorationContext decorationContext) {
         Html decoratedOutput = Html.empty();
         if (parent.hasChildren()) {
-            renderingContext.nest(parent);
+            decorationContext.nest(parent);
             @SuppressWarnings("unchecked") final List<Element> children = parent.getChildren();
             for (Element childElement : children) {
-                decoratedOutput.$plus(decorate(childElement, renderingContext));
+                decoratedOutput.$plus(decorate(childElement, decorationContext));
             }
-            renderingContext.unNest();
+            decorationContext.unNest();
         }
         if (parent.hasBody()) {
             decoratedOutput.$plus(parent.getBody());
@@ -136,9 +136,9 @@ public class ThemeHelper {
         return themeVariant;
     }
 
-    public static Content render(RenderedNode renderedNode) {
-        CachedThemeVariant cachedThemeVariant = renderedNode.themeVariant();
-        return ReflectionInvoker.execute(cachedThemeVariant, renderedNode);
+    public static Content render(DecoratedNode decoratedNode) {
+        CachedThemeVariant cachedThemeVariant = decoratedNode.themeVariant();
+        return ReflectionInvoker.execute(cachedThemeVariant, decoratedNode);
     }
 
     public static CachedDecorator selectDecorator(Class<? extends Element> type, CachedTheme theme, List<CachedDecorator> cachedDecorators) {
