@@ -17,7 +17,9 @@ public class Authentication extends Controller {
     public static Result login() {
         try {
             return SecurityEventGenerator.triggerAuthenticationCheck(null);
-        } catch (NodeLoadException | ModuleException e) {
+        } catch (NodeLoadException e) {
+            return CoreLoader.handleException(e);
+        } catch (ModuleException e) {
             return CoreLoader.handleException(e);
         }
     }
@@ -28,7 +30,9 @@ public class Authentication extends Controller {
         try {
             NodeContext.current().attributes.put(main.origo.core.security.Security.Params.AUTH_PATH, path);
             return SecurityEventGenerator.triggerSignout();
-        } catch (NodeLoadException | ModuleException e) {
+        } catch (NodeLoadException e) {
+            return CoreLoader.handleException(e);
+        } catch (ModuleException e) {
             return CoreLoader.handleException(e);
         }
     }
