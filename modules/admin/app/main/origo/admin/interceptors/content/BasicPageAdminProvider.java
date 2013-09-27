@@ -71,7 +71,7 @@ public class BasicPageAdminProvider {
 
         // TODO: Look up themevariant (and also meta) from DB instead of resetting here.
         page.themeVariant = null;
-        page.setTitle("New Basic Page");
+        page.setTitle("Basic Page");
         return page;
     }
 
@@ -81,6 +81,7 @@ public class BasicPageAdminProvider {
     @OnLoad(type = Admin.Type.ADMIN_NODE, with = BasicPage.TYPE)
     public static void loadNewPage(Node node, String withType, Map<String, Object> args) throws ModuleException, NodeLoadException {
         node.addElement(DashboardHelper.createBreadcrumb(Admin.With.CONTENT_PAGE, BasicPage.TYPE), AdminTheme.topMeta());
+
         Form<BasicPageForm> form = FormHelper.getValidationResult(BasicPageForm.class);
 
         if (form.hasErrors()) {
@@ -110,12 +111,13 @@ public class BasicPageAdminProvider {
                 page.unpublishDate = LocalDate.fromDateFields(rootNode.unpublished());
                 page.unpublishTime = LocalTime.fromDateFields(rootNode.unpublished());
             }
-            page.themeVariant = rootNode.themeVariant();
+            page.title = basicPage.title();
+            page.themeVariant = basicPage.themeVariant();
             page.leadText = leadContent.value;
             page.bodyText = bodyContent.value;
         }
 
-        form.fill(page);
+        form = form.fill(page);
         node.addElement(AdminFormHelper.createFormElement(node, BasicPage.TYPE, form));
 
     }
@@ -164,13 +166,16 @@ public class BasicPageAdminProvider {
                         FormHelper.createField(form,
                                 new Element.Label().setWeight(10).setBody("Title").addAttribute("for", TITLE_PARAM),
                                 new Element.InputText().setWeight(20).addAttribute("name", TITLE_PARAM)
-                        ).addAttribute("class", "span3")
+                        ).addAttribute("class", "span6")
                 ).
                 addChild(
                         FormHelper.createField(form,
                                 new Element.Label().setWeight(10).setBody("Theme Variant").addAttribute("for", THEME_VARIANT_PARAM),
                                 themeInputSelectElement.setWeight(25).addAttribute("class", "themeSelector").
-                                        addAttribute("name", THEME_VARIANT_PARAM))));
+                                        addAttribute("name", THEME_VARIANT_PARAM)
+                        ).addAttribute("class", "span6")
+                )
+        );
 
         /**
          * Content

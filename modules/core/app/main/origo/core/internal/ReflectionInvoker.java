@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import play.api.templates.Html;
 import play.mvc.Content;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Set;
@@ -40,7 +41,7 @@ public class ReflectionInvoker {
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Unable to invoke method [" + decorator.method.toString() + "]: "+ e.getCause());
         } catch (InvocationTargetException e) {
-            throw new RuntimeException("Unable to invoke method [" + decorator.method.toString() + "]: "+ e.getMessage());
+            throw new RuntimeException("Unable to invoke method [" + decorator.method.toString() + "]: "+ e.getTargetException());
         }
 
     }
@@ -57,7 +58,7 @@ public class ReflectionInvoker {
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Unable to invoke method [" + cachedThemeVariant.templateMethod.toString() + "]: "+ e.getCause());
         } catch (InvocationTargetException e) {
-            throw new RuntimeException("Unable to invoke method [" + cachedThemeVariant.templateMethod.toString() + "]: "+ e.getMessage());
+            throw new RuntimeException("Unable to invoke method [" + cachedThemeVariant.templateMethod.toString() + "]: "+ e.getTargetException());
         }
     }
 
@@ -91,5 +92,15 @@ public class ReflectionInvoker {
             types.add(o.getClass());
         }
         return types.toArray(new Class[types.size()]);
+    }
+
+    public static <T> T getFieldValue(Object o, String name) {
+        try
+        {
+            Field f = o.getClass().getField(name);
+            return (T) f.get(o);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new RuntimeException("Unable to get field value for ["+ name +"] of class [" + o.getClass().toString() + "]", e.getCause());
+        }
     }
 }
