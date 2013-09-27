@@ -11,7 +11,7 @@ import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.helpers.NodeHelper;
 import main.origo.core.helpers.ThemeHelper;
 import main.origo.core.security.Security;
-import main.origo.core.ui.RenderedNode;
+import main.origo.core.ui.DecoratedNode;
 import models.origo.core.RootNode;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
@@ -44,11 +44,11 @@ public class Authentication extends Controller {
             Node node = NodeHelper.load(rootNode);
 
             // Render login page
-            RenderedNode renderedNode = ThemeHelper.decorate(node, ThemeHelper.loadTheme(node, CoreSettingsHelper.getThemeVariant()));
+            DecoratedNode decoratedNode = ThemeHelper.decorate(node, ThemeHelper.loadTheme(node, CoreSettingsHelper.getThemeVariant()));
             if (Logger.isDebugEnabled()) {
-                Logger.debug("Decorated " + renderedNode);
+                Logger.debug("Decorated " + decoratedNode);
             }
-            return ok(ThemeHelper.render(renderedNode));
+            return ok(ThemeHelper.render(decoratedNode));
         } catch (ModuleException e) {
             return CoreLoader.handleException(e);
         } catch (NodeLoadException e) {

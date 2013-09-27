@@ -8,20 +8,20 @@ import main.origo.core.internal.CachedThemeVariant;
 import java.util.Map;
 import java.util.Stack;
 
-public class RenderingContext {
+public class DecorationContext {
 
     public CachedTheme theme;
     public CachedThemeVariant themeVariant;
     public Node rootNode;
-    public RenderedNode renderedNode;
+    public DecoratedNode decoratedNode;
     private Stack<Element> parents;
     public Map<String, Object> attributes;
 
-    public RenderingContext(CachedTheme theme, CachedThemeVariant themeVariant, Node rootNode, RenderedNode renderedNode) {
+    public DecorationContext(CachedTheme theme, CachedThemeVariant themeVariant, Node rootNode, DecoratedNode decoratedNode) {
         this.theme = theme;
         this.themeVariant = themeVariant;
         this.rootNode = rootNode;
-        this.renderedNode = renderedNode;
+        this.decoratedNode = decoratedNode;
         this.parents = new Stack<>();
         this.attributes = NodeContext.current().attributes;
     }

@@ -4,8 +4,8 @@ import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.helpers.NavigationHelper;
 import main.origo.core.helpers.NodeHelper;
 import main.origo.core.helpers.ThemeHelper;
+import main.origo.core.ui.DecoratedNode;
 import main.origo.core.ui.NavigationElement;
-import main.origo.core.ui.RenderedNode;
 import main.origo.core.utils.ExceptionUtil;
 import models.origo.core.Alias;
 import org.apache.commons.lang3.StringUtils;
@@ -130,12 +130,12 @@ public class CoreLoader {
     }
 
     public static Content decorateNode(Node node) throws NodeNotFoundException, NodeLoadException, ModuleException {
-        RenderedNode renderedNode = ThemeHelper.decorate(node, ThemeHelper.loadTheme(node, CoreSettingsHelper.getThemeVariant()));
-        renderedNode.navigation(getNavigation(node));
+        DecoratedNode decoratedNode = ThemeHelper.decorate(node, ThemeHelper.loadTheme(node, CoreSettingsHelper.getThemeVariant()));
+        decoratedNode.navigation(getNavigation(node));
         if (Logger.isDebugEnabled()) {
-            Logger.debug("Decorated " + renderedNode);
+            Logger.debug("Decorated " + decoratedNode);
         }
-        return ThemeHelper.render(renderedNode);
+        return ThemeHelper.render(decoratedNode);
     }
 
     public static Node loadNode(String identifier, int version) throws NodeNotFoundException, NodeLoadException, ModuleException {

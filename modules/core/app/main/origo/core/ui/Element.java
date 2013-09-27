@@ -24,7 +24,7 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             return base.render(tagName, (Element)this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
         }
 
@@ -37,7 +37,7 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             return Html.apply("<!-- ").$plus(getBody()).$plus(Html.apply(" -->"));
         }
     }
@@ -49,7 +49,7 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             return getBody();
         }
     }
@@ -66,7 +66,7 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             return meta.render(this, ElementHelper.getHtmlFromBody(this), getAttributes());
         }
     }
@@ -83,7 +83,7 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             return script.render(this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
         }
     }
@@ -100,7 +100,7 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             return style.render(this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
         }
     }
@@ -117,7 +117,7 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             return link.render(this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
         }
     }
@@ -153,8 +153,8 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
-            Html body = ThemeHelper.decorateChildren(this, renderingContext);
+        public Html decorate(DecorationContext decorationContext) {
+            Html body = ThemeHelper.decorateChildren(this, decorationContext);
             return list.render("ul", this, body, this.getAttributes());
         }
     }
@@ -166,8 +166,8 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
-            Html body = ThemeHelper.decorateChildren(this, renderingContext);
+        public Html decorate(DecorationContext decorationContext) {
+            Html body = ThemeHelper.decorateChildren(this, decorationContext);
             return list.render("ol", this, body, this.getAttributes());
         }
     }
@@ -179,9 +179,9 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             if (this.hasChildren()) {
-                return list_item.render(this, ThemeHelper.decorateChildren(this, renderingContext), this.getAttributes());
+                return list_item.render(this, ThemeHelper.decorateChildren(this, decorationContext), this.getAttributes());
             } else {
                 return list_item.render(this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
             }
@@ -195,8 +195,8 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
-            Html body = ThemeHelper.decorateChildren(this, renderingContext);
+        public Html decorate(DecorationContext decorationContext) {
+            Html body = ThemeHelper.decorateChildren(this, decorationContext);
             return views.html.origo.core.decorators.forms.form.render(this, body, this.getAttributes());
         }
     }
@@ -208,8 +208,8 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
-            Html body = ThemeHelper.decorateChildren(this, renderingContext);
+        public Html decorate(DecorationContext decorationContext) {
+            Html body = ThemeHelper.decorateChildren(this, decorationContext);
             return fieldset.render(this, body, this.getAttributes());
         }
     }
@@ -221,8 +221,8 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
-            Html body = ThemeHelper.decorateChildren(this, renderingContext);
+        public Html decorate(DecorationContext decorationContext) {
+            Html body = ThemeHelper.decorateChildren(this, decorationContext);
             return field.render(this, body, this.getAttributes());
         }
     }
@@ -239,9 +239,9 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             if (this.hasChildren()) {
-                return label.render(this, ThemeHelper.decorateChildren(this, renderingContext), this.getAttributes());
+                return label.render(this, ThemeHelper.decorateChildren(this, decorationContext), this.getAttributes());
             } else {
                 return label.render(this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
             }
@@ -258,7 +258,7 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             Map<String, String> attributes = ElementHelper.combineAttributes(Collections.<String, String>singletonMap("type", "hidden"), this.getAttributes());
             return input.render(this, null, attributes);
         }
@@ -274,7 +274,7 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             Map<String, String> attributes = ElementHelper.combineAttributes(Collections.<String, String>singletonMap("type", "text"), this.getAttributes());
 
             return input.render(this, null, attributes);
@@ -291,9 +291,9 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             if (this.hasChildren()) {
-                return textarea.render(this, ThemeHelper.decorateChildren(this, renderingContext), this.getAttributes());
+                return textarea.render(this, ThemeHelper.decorateChildren(this, decorationContext), this.getAttributes());
             } else {
                 return textarea.render(this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
             }
@@ -310,7 +310,7 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             Map<String, String> attributes = ElementHelper.combineAttributes(Collections.<String, String>singletonMap("type", "radio"), this.getAttributes());
             return input.render(this, null, attributes);
         }
@@ -326,7 +326,7 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             Map<String, String> attributes = ElementHelper.combineAttributes(Collections.<String, String>singletonMap("type", "checkbox"), this.getAttributes());
             return input.render(this, null, attributes);
         }
@@ -342,8 +342,8 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
-            Html body = ThemeHelper.decorateChildren(this, renderingContext);
+        public Html decorate(DecorationContext decorationContext) {
+            Html body = ThemeHelper.decorateChildren(this, decorationContext);
             return select.render(this, body, this.getAttributes());
         }
     }
@@ -359,9 +359,9 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             if (this.hasChildren()) {
-                return select_option.render(this, ThemeHelper.decorateChildren(this, renderingContext), this.getAttributes());
+                return select_option.render(this, ThemeHelper.decorateChildren(this, decorationContext), this.getAttributes());
             } else {
                 return select_option.render(this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
             }
@@ -375,7 +375,7 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             Map<String, String> attributes = ElementHelper.combineAttributes(Collections.<String, String>singletonMap("type", "button"), this.getAttributes());
             return input.render(this, null, attributes);
         }
@@ -388,7 +388,7 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             Map<String, String> attributes = ElementHelper.combineAttributes(Collections.<String, String>singletonMap("type", "submit"), this.getAttributes());
             return input.render(this, null, attributes);
         }
@@ -401,7 +401,7 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             Map<String, String> attributes = ElementHelper.combineAttributes(Collections.<String, String>singletonMap("type", "reset"), this.getAttributes());
             return input.render(this, null, attributes);
         }
@@ -417,7 +417,7 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             Map<String, String> attributes = ElementHelper.combineAttributes(Collections.<String, String>singletonMap("type", "image"), this.getAttributes());
             return input.render(this, null, attributes);
         }
@@ -430,7 +430,7 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             Map<String, String> attributes = ElementHelper.combineAttributes(Collections.<String, String>singletonMap("type", "file"), this.getAttributes());
             return input.render(this, null, attributes);
         }
@@ -443,7 +443,7 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             Map<String, String> attributes = ElementHelper.combineAttributes(Collections.<String, String>singletonMap("type", "password"), this.getAttributes());
             return input.render(this, null, attributes);
         }
@@ -456,8 +456,8 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
-            Html body = ThemeHelper.decorateChildren(this, renderingContext);
+        public Html decorate(DecorationContext decorationContext) {
+            Html body = ThemeHelper.decorateChildren(this, decorationContext);
             return panel.render(this, body, this.getAttributes());
         }
     }
@@ -469,8 +469,8 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
-            Html body = ThemeHelper.decorateChildren(this, renderingContext);
+        public Html decorate(DecorationContext decorationContext) {
+            Html body = ThemeHelper.decorateChildren(this, decorationContext);
             return panel.render(this, body, this.getAttributes());
         }
     }
@@ -482,8 +482,8 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
-            Html body = ThemeHelper.decorateChildren(this, renderingContext);
+        public Html decorate(DecorationContext decorationContext) {
+            Html body = ThemeHelper.decorateChildren(this, decorationContext);
             return paragraph.render(this, body, this.getAttributes());
         }
     }
@@ -547,7 +547,7 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             return text.render(this, ElementHelper.getHtmlFromBody(this), this.getAttributes());
         }
     }
@@ -559,10 +559,10 @@ public class Element<T extends Element> {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             Html body = ElementHelper.getHtmlFromBody(this);
             if (this.hasChildren()) {
-                body = ThemeHelper.decorateChildren(this, renderingContext);
+                body = ThemeHelper.decorateChildren(this, decorationContext);
             }
             return anchor.render(this, body, this.getAttributes());
         }
@@ -797,7 +797,7 @@ public class Element<T extends Element> {
         return result;
     }
 
-    public Html decorate(RenderingContext renderingContext) {
+    public Html decorate(DecorationContext decorationContext) {
         return HtmlFormat.raw("Element ["+getClass().getName()+"] is not correctly decorated. Please add a decorator.");
     }
 

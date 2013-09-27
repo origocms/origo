@@ -8,7 +8,7 @@ import play.api.templates.Html;
 import java.util.List;
 import java.util.Map;
 
-public class RenderedNode {
+public class DecoratedNode {
 
     private String _id;
 
@@ -22,7 +22,7 @@ public class RenderedNode {
 
     private List<NavigationElement> _navigation = Lists.newArrayList();
 
-    public RenderedNode(String id) {
+    public DecoratedNode(String id) {
         this._id = id;
     }
 
@@ -103,6 +103,6 @@ public class RenderedNode {
 
     @Override
     public String toString() {
-        return "RenderedNode (" + _id + ") - " + _title;
+        return "DecoratedNode (" + _id + ") - " + _title;
     }
 }

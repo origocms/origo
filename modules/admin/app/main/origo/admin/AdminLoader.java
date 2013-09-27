@@ -9,8 +9,8 @@ import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
 import main.origo.core.helpers.NodeHelper;
 import main.origo.core.helpers.ThemeHelper;
+import main.origo.core.ui.DecoratedNode;
 import main.origo.core.ui.NavigationElement;
-import main.origo.core.ui.RenderedNode;
 import models.origo.core.RootNode;
 import play.Logger;
 import play.mvc.Content;
@@ -81,13 +81,13 @@ public class AdminLoader {
     }
 
     public static Content decorateNode(Node node) throws NodeLoadException, ModuleException {
-        RenderedNode renderedNode = ThemeHelper.decorate(node,
+        DecoratedNode decoratedNode = ThemeHelper.decorate(node,
                 ThemeHelper.loadTheme(node, AdminSettingsHelper.getThemeVariant()));
-        renderedNode.navigation(getNavigation(node));
+        decoratedNode.navigation(getNavigation(node));
         if (Logger.isDebugEnabled()) {
-            Logger.debug("Decorated " + renderedNode);
+            Logger.debug("Decorated " + decoratedNode);
         }
-        return ThemeHelper.render(renderedNode);
+        return ThemeHelper.render(decoratedNode);
     }
 
     public static List<NavigationElement> getNavigation(Node node) throws NodeLoadException, ModuleException {
