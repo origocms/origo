@@ -7,7 +7,7 @@ import main.origo.core.internal.CachedAnnotation;
 import main.origo.core.internal.ReflectionInvoker;
 import main.origo.core.ui.Element;
 import main.origo.core.ui.NavigationElement;
-import models.origo.core.Content;
+import models.origo.core.Text;
 import org.apache.commons.lang3.StringUtils;
 import play.data.Form;
 
@@ -60,11 +60,11 @@ public class OnLoadEventGenerator {
         }
     }
 
-    public static void triggerBeforeInterceptor(Node node, String type, String withType, Content content, Map<String, Object> args) throws NodeLoadException, ModuleException {
+    public static void triggerBeforeInterceptor(Node node, String type, String withType, Text text, Map<String, Object> args) throws NodeLoadException, ModuleException {
         List<CachedAnnotation> interceptors = findInterceptorForType(type, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), false);
         if (interceptors != null && !interceptors.isEmpty()) {
             for (CachedAnnotation cachedAnnotation : interceptors) {
-                ReflectionInvoker.execute(cachedAnnotation, node, withType, content, args);
+                ReflectionInvoker.execute(cachedAnnotation, node, withType, text, args);
             }
         }
     }
@@ -123,11 +123,11 @@ public class OnLoadEventGenerator {
         }
     }
 
-    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Content content, Map<String, Object> args) throws NodeLoadException, ModuleException {
+    public static void triggerAfterInterceptor(Node node, String onLoadType, String withType, Text text, Map<String, Object> args) throws NodeLoadException, ModuleException {
         List<CachedAnnotation> interceptorList = findInterceptorForType(onLoadType, !StringUtils.isBlank(withType) ? withType : node.getClass().getName(), true);
         if (interceptorList != null && !interceptorList.isEmpty()) {
             for (CachedAnnotation cachedAnnotation : interceptorList) {
-                ReflectionInvoker.execute(cachedAnnotation, node, withType, content, args);
+                ReflectionInvoker.execute(cachedAnnotation, node, withType, text, args);
             }
         }
     }

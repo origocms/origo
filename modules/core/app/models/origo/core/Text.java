@@ -1,6 +1,5 @@
 package models.origo.core;
 
-import main.origo.core.annotations.Core;
 import play.data.validation.Constraints;
 import play.db.jpa.JPA;
 
@@ -8,10 +7,10 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "content")
-public class Content extends Model<Content> {
+@Table(name = "text")
+public class Text extends Model<Text> {
 
-    public static final String TYPE = Core.With.CONTENT_PAGE+".content";
+    public static final String TYPE = "text";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,27 +25,27 @@ public class Content extends Model<Content> {
     @Lob
     public String value;
 
-    public Content() {
+    public Text() {
         super(TYPE);
         this.identifier = UUID.randomUUID().toString();
         this.value = "";
     }
 
-    public Content(String value) {
+    public Text(String value) {
         this();
         this.value = value;
     }
 
-    public static Content findWithIdentifier(String identifier) {
+    public static Text findWithIdentifier(String identifier) {
         try {
-            return (Content) JPA.em().createQuery("from "+Content.class.getName()+" where identifier=:identifier").
+            return (Text) JPA.em().createQuery("from "+Text.class.getName()+" where identifier=:identifier").
                     setParameter("identifier", identifier).getSingleResult();
         } catch (NoResultException e) {
             return null;
         }
     }
 
-    public Content detach() {
+    public Text detach() {
         JPA.em().detach(this);
         return this;
     }

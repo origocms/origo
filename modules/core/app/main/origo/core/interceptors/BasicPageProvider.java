@@ -12,8 +12,8 @@ import main.origo.core.annotations.Provides;
 import main.origo.core.helpers.ContentHelper;
 import main.origo.core.ui.Element;
 import models.origo.core.BasicPage;
-import models.origo.core.Content;
 import models.origo.core.RootNode;
+import models.origo.core.Text;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
@@ -46,9 +46,9 @@ public class BasicPageProvider {
 
     private static Element loadContent(Node node, String referenceId) throws NodeLoadException, ModuleException {
         if (!StringUtils.isBlank(referenceId)) {
-            Content content = ContentHelper.loadContent(node, referenceId);
-            if (content != null) {
-                return new Element.Panel().setId(content.identifier).setBody(content.value);
+            Element element = ContentHelper.loadContent(node, Text.TYPE, referenceId);
+            if (element != null) {
+                return element;
             }
         }
         //TODO: Handle this somehow, in dev/admin maybe show a Element with a warning message and in prod swallow error?

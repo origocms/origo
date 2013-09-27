@@ -11,7 +11,7 @@
 
         <class>models.origo.core.Alias</class>
         <class>models.origo.core.BasicPage</class>
-        <class>models.origo.core.Content</class>
+        <class>models.origo.core.Text</class>
         <class>models.origo.core.Meta</class>
         <class>models.origo.core.RootNode</class>
         <class>models.origo.core.Settings</class>

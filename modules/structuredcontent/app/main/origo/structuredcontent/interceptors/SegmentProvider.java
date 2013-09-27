@@ -7,7 +7,7 @@ import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.Provides;
 import main.origo.core.helpers.ContentHelper;
 import main.origo.core.ui.Element;
-import models.origo.core.Content;
+import models.origo.core.Text;
 import models.origo.structuredcontent.Segment;
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,15 +18,19 @@ public class SegmentProvider {
 
     public static final String SEGMENT = "segment";
 
-    @Provides(type = SEGMENT, with = Content.TYPE)
+    @Provides(type = SEGMENT, with = Text.TYPE)
     public static Element createSegment(Node node, String withType, Map<String, Object> args) throws NodeLoadException, ModuleException {
-        Segment segment = (Segment) args.get("segment");
-        if (!StringUtils.isBlank(segment.referenceId)) {
-            Content content = ContentHelper.loadContent(node, segment.referenceId);
-            if (content != null) {
-                return new Element.Panel().setId(content.identifier).setBody(content.value);
+        return createSegment(node, (Segment) args.get("segment"));
+    }
+
+    private static Element createSegment(Node node, Segment segment) throws NodeLoadException, ModuleException {
+        if (segment != null && !StringUtils.isBlank(segment.referenceId)) {
+            Element element = ContentHelper.loadContent(node, segment.type, segment.referenceId);
+            if (element != null) {
+                return element;
             }
         }
+
         //TODO: Handle this somehow, in dev/admin maybe show a Element with a warning message and in prod swallow error?
         return null;
     }

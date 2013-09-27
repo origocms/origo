@@ -13,8 +13,8 @@ import main.origo.core.internal.AnnotationProcessor;
 import main.origo.core.themes.DefaultTheme;
 import main.origo.core.ui.Element;
 import main.origo.core.ui.NavigationElement;
-import models.origo.core.Content;
 import models.origo.core.Settings;
+import models.origo.core.Text;
 import play.data.Form;
 import play.mvc.Result;
 
@@ -53,8 +53,8 @@ public class CoreModule {
         annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class, Navigation.class, Map.class));
         annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class, Form.class));
         annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class, Form.class, Map.class));
-        annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class, Content.class));
-        annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class, Content.class, Map.class));
+        annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class, Text.class));
+        annotations.add(new AnnotationProcessor.Prototype(Provides.class, Object.class, Node.class, String.class, Text.class, Map.class));
         annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class));
         annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Map.class));
         annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Navigation.class));
@@ -67,8 +67,8 @@ public class CoreModule {
         annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Element.class, Map.class));
         annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Navigation.class, NavigationElement.class));
         annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Navigation.class, NavigationElement.class, Map.class));
-        annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Content.class));
-        annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Content.class, Map.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Text.class));
+        annotations.add(new AnnotationProcessor.Prototype(OnLoad.class, null, Node.class, String.class, Text.class, Map.class));
         annotations.add(new AnnotationProcessor.Prototype(OnInsertElement.class, null, Element.class, Element.class));
         annotations.add(new AnnotationProcessor.Prototype(OnInsertElement.class, null, Node.class, Element.class, Element.class));
         annotations.add(new AnnotationProcessor.Prototype(OnInsertElement.class, null, Element.class, Element.class, Map.class));

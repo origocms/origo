@@ -7,22 +7,22 @@ import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Core;
 import main.origo.core.event.OnLoadEventGenerator;
 import main.origo.core.event.ProvidesEventGenerator;
-import models.origo.core.Content;
+import main.origo.core.ui.Element;
 
 import java.util.Collections;
 import java.util.Map;
 
 public class ContentHelper {
 
-    public static Content loadContent(Node node, String identifier) throws ModuleException, NodeLoadException {
+    public static Element loadContent(Node node, String withType, String identifier) throws ModuleException, NodeLoadException {
         Map<String, Object> args = Maps.newHashMap();
         args.put("identifier", identifier);
-        OnLoadEventGenerator.triggerBeforeInterceptor(node, Core.Type.NODE, Content.TYPE, Collections.<String, Object>emptyMap());
-        Content content = ProvidesEventGenerator.triggerInterceptor(node, Core.Type.NODE, Content.TYPE, args);
-        if (content != null) {
-            OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.NODE, Content.TYPE, content.detach(), args);
+        OnLoadEventGenerator.triggerBeforeInterceptor(node, Core.Type.CONTENT, withType, Collections.<String, Object>emptyMap());
+        Element element = ProvidesEventGenerator.triggerInterceptor(node, Core.Type.CONTENT, withType, args);
+        if (element != null) {
+            OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.CONTENT, withType, element, args);
         }
-        return content;
+        return element;
     }
 
 }

@@ -171,7 +171,11 @@ public class FormHelper {
         if (form.hasErrors()) {
             return form.field(name).value();
         } else {
-            return ReflectionInvoker.getFieldValue(form.get(), name);
+            try {
+                return ReflectionInvoker.getFieldValue(form.get(), name);
+            } catch (IllegalStateException e) {
+                return "";
+            }
         }
     }
 }

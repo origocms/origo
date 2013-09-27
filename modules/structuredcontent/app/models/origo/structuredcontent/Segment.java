@@ -1,6 +1,5 @@
 package models.origo.structuredcontent;
 
-import main.origo.core.annotations.Core;
 import models.origo.core.Model;
 import play.data.validation.Constraints;
 import play.db.jpa.JPA;
@@ -12,7 +11,7 @@ import java.util.List;
 @Table(name="segments")
 public class Segment extends Model<Segment> {
 
-    public static final String TYPE = Core.With.CONTENT_PAGE + ".segment";
+    public static final String TYPE = "segment";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
