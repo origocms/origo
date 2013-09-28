@@ -3,7 +3,6 @@ package main.origo.structuredcontent.interceptors;
 import controllers.origo.admin.routes;
 import main.origo.admin.annotations.Admin;
 import main.origo.core.Node;
-import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.Provides;
 import main.origo.core.annotations.Relationship;
@@ -31,7 +30,7 @@ public class StructuredPageAdminProvider {
      * @return a Element that contains a dashboard element.
      */
     @Provides(type = Admin.Type.DASHBOARD_ITEM, with = BASE_TYPE)
-    @Relationship(parent = Core.With.CONTENT_PAGE)
+    @Relationship(parent = Admin.With.CONTENT_PAGE)
     public static Element createDashboardItem(Node node, String withType, Map<String, Object> args) {
         return new Admin.DashboardItem().
                 addChild(new Element.Raw().setBody(dashboard_item.render("Structured Page", "Structured pages have several slots for content and content can be re-used in several pages.", getProviderUrl(), "List All")));

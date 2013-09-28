@@ -5,9 +5,9 @@ import main.origo.core.Node;
 import main.origo.core.annotations.*;
 import main.origo.core.event.NodeContext;
 import main.origo.core.helpers.ProviderHelper;
+import main.origo.core.ui.DecorationContext;
 import main.origo.core.ui.Element;
-import main.origo.core.ui.RenderingContext;
-import models.origo.core.Content;
+import models.origo.core.Text;
 import play.api.templates.Html;
 import views.html.origo.bootstrapwysihtml5.decorators.forms.wysi.bootstrapwysihtml5_script;
 import views.html.origo.bootstrapwysihtml5.decorators.forms.wysi.bootstrapwysihtml5_templates_script;
@@ -26,7 +26,7 @@ public class BootstrapWysiHTML5EditorProvider {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             return bootstrapwysihtml5_templates_script.render(this.id);
         }
     }
@@ -38,16 +38,16 @@ public class BootstrapWysiHTML5EditorProvider {
         }
 
         @Override
-        public Html decorate(RenderingContext renderingContext) {
+        public Html decorate(DecorationContext decorationContext) {
             return bootstrapwysihtml5_script.render(this.id);
         }
     }
 
     @Provides(type = Core.Type.NODE, with = Core.With.EDITOR)
     public static Element createEditor(Node node, String withType, Map<String, Object> args) {
-        Content content = (Content) args.get("content");
-        if (content != null) {
-            return new Element.InputTextArea().setId(content.identifier).setBody(content.value);
+        Text text = (Text) args.get("content");
+        if (text != null) {
+            return new Element.InputTextArea().setId(text.identifier).setBody(text.value);
         } else {
             return new Element.InputTextArea();
         }

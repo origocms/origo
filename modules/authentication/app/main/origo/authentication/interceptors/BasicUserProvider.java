@@ -3,10 +3,7 @@ package main.origo.authentication.interceptors;
 import be.objectify.deadbolt.core.models.Subject;
 import main.origo.authentication.form.LoginForm;
 import main.origo.authentication.util.AuthenticationSessionUtils;
-import main.origo.core.CoreLoader;
-import main.origo.core.ModuleException;
-import main.origo.core.Node;
-import main.origo.core.NodeLoadException;
+import main.origo.core.*;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnLoad;
@@ -31,6 +28,8 @@ import java.util.Map;
 
 @Interceptor
 public class BasicUserProvider {
+
+    private static final String CURRENT_USER = "user";
 
     private static final String USERNAME_PARAM = "username";
     private static final String PASSWORD_PARAM = "password";
@@ -129,13 +128,18 @@ public class BasicUserProvider {
     }
 
     @Provides(type = Core.Type.SECURITY, with = Core.With.AUTHENTICATION_CURRENT_USER)
-    public static BasicUser getCurrent(Node node, String withType, Map<String, Object> args) {
-        String username = AuthenticationSessionUtils.getSessionUserName();
-        if (username != null) {
-            return BasicUser.findWithEmail(username);
-        } else {
-            return null;
+    public static User getCurrent(Node node, String withType, Map<String, Object> args) {
+        User user = (User) NodeContext.current().attributes.get(CURRENT_USER);
+        if (user == null) {
+            String username = AuthenticationSessionUtils.getSessionUserName();
+            if (username != null) {
+                user = BasicUser.findWithEmail(username);
+                NodeContext.current().attributes.put(CURRENT_USER, user);
+                return user;
+            }
         }
+
+        return user;
     }
 
     @Provides(type = Core.Type.SECURITY, with = Core.With.AUTHENTICATION_VALIDATE)

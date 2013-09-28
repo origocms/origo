@@ -1,10 +1,6 @@
 package models.origo.structuredcontent;
 
 import main.origo.core.Node;
-import main.origo.core.annotations.Core;
-import main.origo.core.event.forms.OnCreateEventGenerator;
-import main.origo.core.event.forms.OnDeleteEventGenerator;
-import main.origo.core.event.forms.OnUpdateEventGenerator;
 import main.origo.core.ui.Element;
 import models.origo.core.Meta;
 import models.origo.core.Model;
@@ -21,7 +17,7 @@ import java.util.Set;
 @Table(name="page_structured", uniqueConstraints = @UniqueConstraint(name = "pageVersion", columnNames = {"parentNodeId", "parentVersion"}))
 public class StructuredPage extends Model<StructuredPage> implements Node {
 
-    public static final String TYPE = Core.With.CONTENT_PAGE + ".structuredpage";
+    public static final String TYPE = "structuredpage";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -7,8 +7,8 @@ import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnInsertElement;
 import main.origo.core.event.NodeContext;
 import main.origo.core.helpers.ElementHelper;
+import main.origo.core.ui.DecorationContext;
 import main.origo.core.ui.Element;
-import main.origo.core.ui.RenderingContext;
 import play.api.templates.Html;
 import play.i18n.Messages;
 import view.origo.bootstrapdatepicker.html.datepicker;
@@ -21,7 +21,7 @@ public class BootstrapDatePickerDecorator {
     private static final String JS_LOADED = "datepicker_js_loaded";
 
     @Decorates(types = Element.InputText.class, input = Date.class)
-    public static Html decorateDateFields(Element element, RenderingContext renderingContext) {
+    public static Html decorateDateFields(Element element, DecorationContext decorationContext) {
 
         element.setId("datepicker-" + element.getId());
 

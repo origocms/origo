@@ -26,11 +26,11 @@ public class CachedTheme {
     public final Map<String, CachedThemeVariant> themeVariants = Maps.newHashMap();
 
     /**
-     * Collection of decorators for each theme that can transform UIElements into elements in a RenderedNode.
+     * Collection of decorators for each theme that can transform UIElements into elements in a DecoratedNode.
      * Each type of Element can have a list of decorators, differing on input type for example.
      *
      * @see main.origo.core.ui.Element
-     * @see main.origo.core.ui.RenderedNode
+     * @see main.origo.core.ui.DecoratedNode
      */
     public final Map<Class<? extends Element>, List<CachedDecorator>> decorators = Maps.newHashMap();
 

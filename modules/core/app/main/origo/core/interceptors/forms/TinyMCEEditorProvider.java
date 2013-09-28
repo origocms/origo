@@ -9,7 +9,7 @@ import main.origo.core.annotations.Provides;
 import main.origo.core.event.NodeContext;
 import main.origo.core.helpers.ProviderHelper;
 import main.origo.core.ui.Element;
-import models.origo.core.Content;
+import models.origo.core.Text;
 
 import java.util.Map;
 
@@ -61,9 +61,9 @@ public class TinyMCEEditorProvider {
 
     @Provides(type = Core.Type.NODE, with = Core.With.EDITOR)
     public static Element createEditor(Node node, String withType, Map<String, Object> args) {
-        Content content = (Content) args.get("content");
-        if (content != null) {
-            return new Element.InputTextArea().setId(content.identifier).setBody(content.value);
+        Text text = (Text) args.get("content");
+        if (text != null) {
+            return new Element.InputTextArea().setId(text.identifier).setBody(text.value);
         } else {
             return new Element.InputTextArea();
         }

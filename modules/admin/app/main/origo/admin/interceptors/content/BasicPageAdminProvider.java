@@ -27,8 +27,8 @@ import main.origo.core.internal.CachedThemeVariant;
 import main.origo.core.ui.Element;
 import models.origo.admin.AdminPage;
 import models.origo.core.BasicPage;
-import models.origo.core.Content;
 import models.origo.core.RootNode;
+import models.origo.core.Text;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
@@ -100,8 +100,8 @@ public class BasicPageAdminProvider {
             }
             RootNode rootNode = RootNode.findWithNodeIdAndSpecificVersion(node.nodeId(), node.version());
 
-            Content leadContent = Content.findWithIdentifier(basicPage.leadReferenceId);
-            Content bodyContent = Content.findWithIdentifier(basicPage.bodyReferenceId);
+            Text leadText = Text.findWithIdentifier(basicPage.leadReferenceId);
+            Text bodyText = Text.findWithIdentifier(basicPage.bodyReferenceId);
 
             if (rootNode.published() != null) {
                 page.publishDate = LocalDate.fromDateFields(rootNode.published());
@@ -113,8 +113,8 @@ public class BasicPageAdminProvider {
             }
             page.title = basicPage.title();
             page.themeVariant = basicPage.themeVariant();
-            page.leadText = leadContent.value;
-            page.bodyText = bodyContent.value;
+            page.leadText = leadText.value;
+            page.bodyText = bodyText.value;
         }
 
         form = form.fill(page);
@@ -191,7 +191,7 @@ public class BasicPageAdminProvider {
             contentFieldSet.addChild(
                     FormHelper.createField(form,
                             new Element.Label().setWeight(10).setBody("Lead").addAttribute("for", LEAD_PARAM),
-                            EditorHelper.createRichTextEditor(node, new Content(FormHelper.getFieldValue(form, LEAD_PARAM))).
+                            EditorHelper.createRichTextEditor(node, new Text(FormHelper.getFieldValue(form, LEAD_PARAM))).
                                     setWeight(20).addAttribute("class", "editor richtext").
                                     addAttribute("name", LEAD_PARAM).addAttribute("cols", "80").addAttribute("rows", "10")
                     )
@@ -200,7 +200,7 @@ public class BasicPageAdminProvider {
             contentFieldSet.addChild(
                     FormHelper.createField(form,
                             new Element.Label().setWeight(10).setBody("Body").addAttribute("for", BODY_PARAM),
-                            EditorHelper.createRichTextEditor(node, new Content(FormHelper.getFieldValue(form, BODY_PARAM))).
+                            EditorHelper.createRichTextEditor(node, new Text(FormHelper.getFieldValue(form, BODY_PARAM))).
                                     setWeight(20).addAttribute("class", "editor richtext").
                                     addAttribute("name", BODY_PARAM).addAttribute("cols", "80").addAttribute("rows", "20")
                     )
@@ -319,13 +319,13 @@ public class BasicPageAdminProvider {
             newVersion = true;
         }
 
-        Content leadContent = Content.findWithIdentifier(latestVersion.leadReferenceId);
-        if (leadContent == null || !leadContent.value.equals(data.get(LEAD_PARAM).trim())) {
+        Text leadText = Text.findWithIdentifier(latestVersion.leadReferenceId);
+        if (leadText == null || !leadText.value.equals(data.get(LEAD_PARAM).trim())) {
             newVersion = true;
         }
 
-        Content bodyContent = Content.findWithIdentifier(latestVersion.bodyReferenceId);
-        if (bodyContent == null || !bodyContent.value.equals(data.get(BODY_PARAM).trim())) {
+        Text bodyText = Text.findWithIdentifier(latestVersion.bodyReferenceId);
+        if (bodyText == null || !bodyText.value.equals(data.get(BODY_PARAM).trim())) {
             newVersion = true;
         }
 
@@ -341,16 +341,16 @@ public class BasicPageAdminProvider {
             newPageVersion.rootNode.nodeType(BasicPage.TYPE);
 
             // Lead Content
-            Content newLeadContent = new Content();
-            newLeadContent.value = data.get(LEAD_PARAM);
-            newPageVersion.leadReferenceId = newLeadContent.identifier;
-            newLeadContent.create();
+            Text newLeadText = new Text();
+            newLeadText.value = data.get(LEAD_PARAM);
+            newPageVersion.leadReferenceId = newLeadText.identifier;
+            newLeadText.create();
 
             // Body Content
-            Content newBodyContent = new Content();
-            newBodyContent.value = data.get(BODY_PARAM);
-            newPageVersion.bodyReferenceId = newBodyContent.identifier;
-            newBodyContent.create();
+            Text newBodyText = new Text();
+            newBodyText.value = data.get(BODY_PARAM);
+            newPageVersion.bodyReferenceId = newBodyText.identifier;
+            newBodyText.create();
 
             if (oldRootNode.version() == 0) {
                 newPageVersion.rootNode.create();
