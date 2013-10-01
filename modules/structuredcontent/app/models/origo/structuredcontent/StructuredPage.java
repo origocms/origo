@@ -1,5 +1,6 @@
 package models.origo.structuredcontent;
 
+import com.google.common.collect.Sets;
 import main.origo.core.Node;
 import main.origo.core.ui.Element;
 import models.origo.core.Meta;
@@ -38,6 +39,10 @@ public class StructuredPage extends Model<StructuredPage> implements Node {
     public String title;
 
     public String themeVariant;
+
+    // Contains a list of identifiers for segments
+    @ElementCollection
+    public Set<String> segments = Sets.newHashSet();
 
     public StructuredPage() {
         super(TYPE);

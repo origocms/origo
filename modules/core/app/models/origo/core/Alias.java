@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "aliases")
-public class Alias extends Model {
+public class Alias extends Model<Alias> {
 
     public static final String TYPE = "origo.alias";
 

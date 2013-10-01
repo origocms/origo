@@ -9,11 +9,10 @@ import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.Provides;
-import main.origo.core.helpers.ContentHelper;
+import main.origo.core.helpers.SegmentHelper;
 import main.origo.core.ui.Element;
 import models.origo.core.BasicPage;
 import models.origo.core.RootNode;
-import models.origo.core.Text;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
@@ -45,8 +44,8 @@ public class BasicPageProvider {
     }
 
     private static Element loadContent(Node node, String referenceId) throws NodeLoadException, ModuleException {
-        if (!StringUtils.isBlank(referenceId)) {
-            Element element = ContentHelper.loadContent(node, Text.TYPE, referenceId);
+        if (StringUtils.isNotBlank(referenceId)) {
+            Element element = SegmentHelper.loadSegment(node, referenceId);
             if (element != null) {
                 return element;
             }

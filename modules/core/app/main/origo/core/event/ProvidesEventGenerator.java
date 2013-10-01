@@ -6,6 +6,7 @@ import main.origo.core.*;
 import main.origo.core.annotations.Provides;
 import main.origo.core.internal.CachedAnnotation;
 import main.origo.core.internal.ReflectionInvoker;
+import models.origo.core.Segment;
 import models.origo.core.Text;
 import play.Logger;
 import play.data.Form;
@@ -46,6 +47,13 @@ public class ProvidesEventGenerator {
         assert(NodeContext.current() != null);
         NodeContext.current().attributes.put(withType, cachedAnnotation.method.getDeclaringClass());
         return ReflectionInvoker.execute(cachedAnnotation, node, withType, form, args);
+    }
+
+    public static <T> T triggerInterceptor(Node node, String providesType, String withType, Segment segment, Map<String, Object> args) throws NodeLoadException, ModuleException {
+        CachedAnnotation cachedAnnotation = getCachedAnnotationIfModuleIsEnabled(providesType, withType);
+        assert(NodeContext.current() != null);
+        NodeContext.current().attributes.put(withType, cachedAnnotation.method.getDeclaringClass());
+        return ReflectionInvoker.execute(cachedAnnotation, node, withType, segment, args);
     }
 
     public static <T> T triggerInterceptor(Node node, String providesType, String withType, Text text, Map<String, Object> args) throws NodeLoadException, ModuleException {

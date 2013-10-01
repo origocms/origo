@@ -31,7 +31,7 @@
 
         <!-- StructuredContent Module -->
 
-        <class>models.origo.structuredcontent.Segment</class>
+        <class>models.origo.core.Segment</class>
         <class>models.origo.structuredcontent.StructuredPage</class>
 
         <properties>

@@ -1,29 +1,29 @@
 package main.origo.core.interceptors;
 
+import main.origo.core.ModuleException;
 import main.origo.core.Node;
+import main.origo.core.NodeLoadException;
 import main.origo.core.actions.Component;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
-import main.origo.core.annotations.OnLoad;
+import main.origo.core.annotations.Provides;
 import main.origo.core.ui.Element;
-import models.origo.core.Text;
 
 import java.util.Map;
 
 @Interceptor
 public class ComponentInterceptor {
 
-    @OnLoad(type = Core.Type.CONTENT, with = Text.TYPE)
-    public static void onLoadContent(Node node, String withType, Element element, Map<String, Object> args) {
+    @Provides(type = Core.Type.CONTENT, with = Component.TYPE)
+    public static Element createSegment(Node node, String withType, Map<String, Object> args) throws NodeLoadException, ModuleException {
 
-        if (element != null && element.getBody().body().contains(Component.COMPONENT_MARKER)) {
-            Component component = Component.getWrappedComponent();
-            if (component != null) {
-                int idx = element.getBody().buffer().indexOf(Component.COMPONENT_MARKER);
-                element.getBody().buffer().replace(idx, idx+Component.COMPONENT_MARKER.length(), component.body);
-            }
+        Component component = Component.getWrappedComponent();
+        if (component != null) {
+            return new Element.Raw().setBody(component.body);
         }
 
+        //TODO: Handle this somehow, in dev/admin maybe show a Element with a warning message and in prod swallow error?
+        return null;
     }
 
 }

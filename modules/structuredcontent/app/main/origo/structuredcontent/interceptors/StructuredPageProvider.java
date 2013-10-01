@@ -8,13 +8,11 @@ import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.Provides;
+import main.origo.core.helpers.SegmentHelper;
 import main.origo.core.ui.Element;
-import main.origo.structuredcontent.helpers.SegmentHelper;
 import models.origo.core.RootNode;
-import models.origo.structuredcontent.Segment;
 import models.origo.structuredcontent.StructuredPage;
 
-import java.util.List;
 import java.util.Map;
 
 @Interceptor
@@ -34,11 +32,10 @@ public class StructuredPageProvider {
     @OnLoad(type = Core.Type.NODE, with = StructuredPage.TYPE)
     public static void loadContent(Node node, String withType, Map<String, Object> args) throws NodeLoadException, ModuleException {
 
-        List<Segment> segmentModels = Segment.findWithNodeIdAndSpecificVersion(node.nodeId(), node.version());
-        for (Segment segment : segmentModels) {
-            SegmentHelper.triggerBeforeSegmentLoaded(node, segment.type, segment);
-            Element element = SegmentHelper.triggerSegmentProvider(node, segment.type, segment);
-            SegmentHelper.triggerAfterSegmentLoaded(node, segment.type, segment, element);
+        StructuredPage page = (StructuredPage) node;
+
+        for (String segmentIdentifier : page.segments) {
+            Element element = SegmentHelper.loadSegment(node, segmentIdentifier);
             node.addElement(element);
         }
 
