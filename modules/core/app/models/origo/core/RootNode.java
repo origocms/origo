@@ -3,6 +3,7 @@ package models.origo.core;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import main.origo.core.Node;
+import main.origo.core.State;
 import main.origo.core.helpers.ElementHelper;
 import main.origo.core.ui.Element;
 import play.data.validation.Constraints;
@@ -25,11 +26,8 @@ public final class RootNode extends Model<RootNode> implements Node {
     @Constraints.Required
     private Integer version;
 
-    @Temporal(value = TemporalType.TIMESTAMP)
-    private Date publish;
-
-    @Temporal(value = TemporalType.TIMESTAMP)
-    private Date unPublish;
+    @ManyToOne
+    private Release release;
 
     @Column(name = "type")
     private String nodeType;
@@ -105,22 +103,12 @@ public final class RootNode extends Model<RootNode> implements Node {
         this.version = version;
     }
 
-    @Override
-    public Date published() {
-        return publish;
+    public Release release() {
+        return release;
     }
 
-    public void published(Date date) {
-        this.publish = date;
-    }
-
-    @Override
-    public Date unpublished() {
-        return unPublish;
-    }
-
-    public void unpublished(Date date) {
-        this.unPublish = date;
+    public void release(Release release) {
+        this.release = release;
     }
 
     @Override
@@ -290,8 +278,8 @@ public final class RootNode extends Model<RootNode> implements Node {
                     "where n.version = (" +
                     "select max(n2.version) from "+RootNode.class.getName()+" n2 " +
                     "where n2.nodeId = n.nodeId and " +
-                    "(n2.publish = null or n2.publish < :today) and" +
-                    "(n2.unPublish = null or n2.unPublish >= :today)" +
+                    "(n2.release.publish = null or n2.release.publish < :today) and" +
+                    "(n2.release.unPublish = null or n2.release.unPublish >= :today)" +
                     ")";
             final Query query = JPA.em().createQuery(queryString);
             query.setParameter("today", today);
@@ -328,8 +316,8 @@ public final class RootNode extends Model<RootNode> implements Node {
         try {
             String queryString = "select distinct n from "+RootNode.class.getName()+" n " +
                     "where n.nodeId = :nodeId and " +
-                    "(n.publish = null or n.publish < :today) and " +
-                    "(n.unPublish = null or n.unPublish >= :today) " +
+                    "(n.release.publish = null or n.release.publish < :today) and " +
+                    "(n.release.unPublish = null or n.release.unPublish >= :today) " +
                     "order by n.version desc";
             final Query query = JPA.em().createQuery(queryString);
             query.setParameter("nodeId", nodeId);
@@ -385,11 +373,23 @@ public final class RootNode extends Model<RootNode> implements Node {
     }
 
     public RootNode copy(boolean increaseVersion) {
-        RootNode copy = new RootNode(nodeId, increaseVersion ? version + 1 : version);
-        copy.publish = publish;
-        copy.unPublish = unPublish;
-        copy.nodeType = nodeType;
-        return copy;
+        if (increaseVersion) {
+            RootNode copy = new RootNode(nodeId, version + 1);
+            copy.release = new Release(State.DRAFT);
+            return copy;
+        } else {
+            RootNode copy = new RootNode(nodeId, version);
+            copy.release = release;
+            return copy;
+        }
+    }
+
+    @Override
+    protected void doCreate(RootNode rootNode) {
+        if (rootNode.release == null) {
+            rootNode.release = new Release(State.DRAFT);
+        }
+        super.doCreate(rootNode);
     }
 
 }

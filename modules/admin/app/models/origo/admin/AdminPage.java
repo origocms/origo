@@ -3,10 +3,10 @@ package models.origo.admin;
 import main.origo.core.Node;
 import main.origo.core.ui.Element;
 import models.origo.core.Meta;
+import models.origo.core.Release;
 import models.origo.core.RootNode;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -41,13 +41,8 @@ public class AdminPage implements Node {
     }
 
     @Override
-    public Date published() {
-        return rootNode.published();
-    }
-
-    @Override
-    public Date unpublished() {
-        return rootNode.unpublished();
+    public Release release() {
+        return rootNode.release();
     }
 
     @Override

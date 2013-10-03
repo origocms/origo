@@ -10,6 +10,7 @@
         <!-- Core Module -->
 
         <class>models.origo.core.RootNode</class>
+        <class>models.origo.core.Release</class>
         <class>models.origo.core.BasicPage</class>
         <class>models.origo.core.Block</class>
         <class>models.origo.core.Meta</class>

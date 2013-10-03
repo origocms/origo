@@ -2,8 +2,8 @@ package main.origo.core;
 
 import main.origo.core.ui.Element;
 import models.origo.core.Meta;
+import models.origo.core.Release;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -50,18 +50,11 @@ public interface Node {
     String title();
 
     /**
-     * The date this version should be available for public viewing
-     *
-     * @return a date
+     * The release this node is connected to. Every change must have a release.
+     * @see Release
+     * @return a release
      */
-    Date published();
-
-    /**
-     * The date this version should be removed from public viewing
-     *
-     * @return a date
-     */
-    Date unpublished();
+    Release release();
 
     /**
      * The unique name of the theme variant used for this page

@@ -4,5 +4,5 @@
 
     Version @node.version<br/>
     Type @if(node.nodeType() != null){@node.nodeType()}else{&lt;not set&gt;}<br/>
-    Publish @if(node.published() != null){@node.published()}else{&lt;not set&gt;}<br/>
-    UnPublish @if(node.unpublished() != null){node.unpublished()}else{&lt;not set&gt;}<br/>
+    Publish @if(node.release.publish != null){@node.release.publish}else{&lt;not set&gt;}<br/>
+    UnPublish @if(node.release.unPublish != null){node.release.unPublish}else{&lt;not set&gt;}<br/>

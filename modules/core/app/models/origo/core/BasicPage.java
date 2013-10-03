@@ -70,13 +70,8 @@ public class BasicPage extends Model<BasicPage> implements Node {
     }
 
     @Override
-    public Date published() {
-        return this.rootNode.published();
-    }
-
-    @Override
-    public Date unpublished() {
-        return this.rootNode.unpublished();
+    public Release release() {
+        return rootNode.release();
     }
 
     @Override
@@ -178,7 +173,7 @@ public class BasicPage extends Model<BasicPage> implements Node {
                 ", version=" + version +
                 ", rootNode=" + rootNode +
                 ", title='" + title + '\'' +
-                ", segments=" + blocks +
+                ", blocks=" + blocks +
                 ", themeVariant='" + themeVariant + '\'' +
                 '}';
     }
@@ -190,8 +185,8 @@ public class BasicPage extends Model<BasicPage> implements Node {
                     "select n.id from models.origo.core.RootNode n where n.version = (" +
                     "select max(n2.version) from models.origo.core.RootNode n2 " +
                     "where n2.nodeId = n.nodeId and " +
-                    "(n2.publish = null or n2.publish < :today) and" +
-                    "(n2.unPublish = null or n2.unPublish >= :today)" +
+                    "(n2.release.publish = null or n2.release.publish < :today) and" +
+                    "(n2.release.unPublish = null or n2.release.unPublish >= :today)" +
                     "))";
             final Query query = JPA.em().createQuery(queryString);
             query.setParameter("today", asOfDate);
@@ -209,8 +204,8 @@ public class BasicPage extends Model<BasicPage> implements Node {
                             "select n.id from models.origo.core.RootNode n where n.version = (" +
                             "select max(n2.version) from models.origo.core.RootNode n2 " +
                             "where n2.nodeId = n.nodeId and " +
-                            "(n2.publish = null or n2.publish < :today) and" +
-                            "(n2.unPublish = null or n2.unPublish >= :today)" +
+                            "(n2.release.publish = null or n2.release.publish < :today) and" +
+                            "(n2.release.unPublish = null or n2.release.unPublish >= :today)" +
                             "))"
             ).setParameter("nodeId", nodeId).setParameter("today", asOfDate).getSingleResult();
         } catch (NoResultException e) {

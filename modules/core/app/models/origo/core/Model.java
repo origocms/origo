@@ -7,7 +7,7 @@ import play.db.jpa.JPA;
 
 public class Model<T> {
 
-    public static ThreadLocal<Boolean> PROCESSING = new ThreadLocal<>();
+    protected static ThreadLocal<Boolean> PROCESSING = new ThreadLocal<>();
 
     protected String TYPE;
 
@@ -16,7 +16,7 @@ public class Model<T> {
         this.TYPE = type;
     }
 
-    public T create() {
+    public final T create() {
         if (!PROCESSING.get()) {
             PROCESSING.set(true);
             try {
@@ -34,7 +34,7 @@ public class Model<T> {
         OnCreateEventGenerator.triggerAfterInterceptors(TYPE, this);
     }
 
-    public T update() {
+    public final T update() {
         if (!PROCESSING.get()) {
             PROCESSING.set(true);
             try {
@@ -52,7 +52,7 @@ public class Model<T> {
         OnUpdateEventGenerator.triggerAfterInterceptors(TYPE, this);
     }
 
-    public void delete() {
+    public final void delete() {
         if (!PROCESSING.get()) {
             PROCESSING.set(true);
             try {

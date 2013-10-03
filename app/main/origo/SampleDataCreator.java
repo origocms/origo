@@ -2,6 +2,7 @@ package main.origo;
 
 import com.google.common.collect.Sets;
 import main.origo.core.Node;
+import main.origo.core.State;
 import main.origo.core.actions.Component;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.themes.bootstrap.BootstrapTheme;
@@ -50,6 +51,9 @@ public class SampleDataCreator {
 
     private static void createPage1() {
 
+        Release release1 = getOrCreateRelease("First Release");
+        Release release2 = getOrCreateRelease("Second Release");
+
         BasicPage page = createPage(
                 createRootNode(BasicPage.TYPE, "2c36c55dd-956e-4b78-18c4-eef7e56aa17", 1),
                 "Start Page",
@@ -67,7 +71,7 @@ public class SampleDataCreator {
                         "Quabble dee blab flibble? Slop crungle doo whack ho dizzle? Funk blee blangfloo, \"bla doo dee wooble,\" ho Mr. Slave dongle flee zip twiddle-razz...bing da nip!"));
 
         createPage(
-                createRootNode(BasicPage.TYPE, "2c36c55dd-956e-4b78-18c4-eef7e56aa17", 2),
+                createRootNode(BasicPage.TYPE, "2c36c55dd-956e-4b78-18c4-eef7e56aa17", 2, release1),
                 "Start Page",
                 createTextBlock("Bam loo blong woogle bleebing rakity flakity crongle quabbleflup? Duh blap twaddle? Hum bam weeble flip tangity flapping flub blingdubba? Nip bam tingleingle ho doo kanoodle, zap shnozzy hum cringle boo. " +
                         "\"Dee yada ho?\" blo wheezeryada. Dubbaloo-dangely-dang! \"Yip bananarama yip?\" flop Chef. Flong kanoodle blab roo blab gobble blob hum goblin."),
@@ -83,7 +87,7 @@ public class SampleDataCreator {
                         "Quabble dee blab flibble? Slop crungle doo whack ho dizzle? Funk blee blangfloo, \"bla doo dee wooble,\" ho Mr. Slave dongle flee zip twiddle-razz...bing da nip!"));
 
         createPage(
-                createRootNode(BasicPage.TYPE, "2c36c55dd-956e-4b78-18c4-eef7e56aa17", 3),
+                createRootNode(BasicPage.TYPE, "2c36c55dd-956e-4b78-18c4-eef7e56aa17", 3, release2),
                 "Start Page",
                 createTextBlock("Bam loo blong woogle bleebing rakity flakity crongle quabbleflup? Duh blap twaddle? Hum bam weeble flip tangity flapping flub blingdubba? Nip bam tingleingle ho doo kanoodle, zap shnozzy hum cringle boo. " +
                         "\"Dee yada ho?\" blo wheezeryada. Dubbaloo-dangely-dang! \"Yip bananarama yip?\" flop Chef. Flong kanoodle blab roo blab gobble blob hum goblin."),
@@ -149,6 +153,8 @@ public class SampleDataCreator {
 
     private static void createPage4() {
 
+        Release release1 = getOrCreateRelease("First Release");
+
         Text text_1 = createText("Boo crangle Miss Beasley... zonkity flobbing zinglemeep. Rizzle wheezer wibblequibble, \"kanoodle zap yip zang,\" zap Jackson wheezer flup loo flong-bananarama...blang loo da! Bam yip zip Clinton yadazangle.<br/> " +
                 "Noodle crungle? Bang zing hum fraggle nip wubble? Zip roo twaddle shnuzzle flobbity flopping whack fragglemeep?");
 
@@ -184,7 +190,7 @@ public class SampleDataCreator {
 
         BasicPage page2 =
                 createPage(
-                        createRootNode(BasicPage.TYPE, "aa1755dd-18c4-4b78-956e-eef7e562c36c", 2),
+                        createRootNode(BasicPage.TYPE, "aa1755dd-18c4-4b78-956e-eef7e562c36c", 2, release1),
                         "Fourth Page",
                         "bootstrap-main_and_left_columns",
                         block_2_1,
@@ -196,16 +202,6 @@ public class SampleDataCreator {
         // /fourth -> page 4
         createAlias("fourth", page1.nodeId());
 
-    }
-
-    private static Meta createMeta(Node node, Block block, String region, int weight) {
-        Meta meta = new Meta();
-        meta.nodeId = node.nodeId();
-        meta.version = node.version();
-        meta.weight = weight;
-        meta.region = region;
-        meta.referenceId = block.identifier;
-        return meta.create();
     }
 
     private static void createPage5() {
@@ -421,6 +417,25 @@ public class SampleDataCreator {
         return node;
     }
 
+    private static RootNode createRootNode(String type, String nodeId, int version, Release release) {
+        RootNode node = new RootNode(nodeId, version);
+        node.nodeType(type);
+        node.release(release);
+        node.create();
+        return node;
+    }
+
+    private static Release getOrCreateRelease(String name) {
+        Release release = Release.findWithName(name);
+        if (release == null) {
+            release = new Release();
+            release.name = name;
+            release.state = State.DRAFT;
+            release.create();
+        }
+        return release;
+    }
+
     private static BasicPage createPage(RootNode node, String title, Block... blocks) {
         BasicPage page = new BasicPage(); // Page 4 version 1
         page.nodeId = node.nodeId();
@@ -467,6 +482,16 @@ public class SampleDataCreator {
         block.type = Component.TYPE;
 
         return block.create();
+    }
+
+    private static Meta createMeta(Node node, Block block, String region, int weight) {
+        Meta meta = new Meta();
+        meta.nodeId = node.nodeId();
+        meta.version = node.version();
+        meta.weight = weight;
+        meta.region = region;
+        meta.referenceId = block.identifier;
+        return meta.create();
     }
 
     private static Alias createAlias(String title, String nodeId) {

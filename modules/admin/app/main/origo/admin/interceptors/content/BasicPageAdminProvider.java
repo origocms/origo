@@ -6,7 +6,6 @@ import main.origo.admin.forms.BasicPageForm;
 import main.origo.admin.helpers.DashboardHelper;
 import main.origo.admin.helpers.forms.AdminFormHelper;
 import main.origo.admin.themes.AdminTheme;
-import main.origo.admin.utils.DateUtil;
 import main.origo.core.ModuleException;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
@@ -335,6 +334,7 @@ public class BasicPageAdminProvider {
 
             BasicPage newPageVersion = latestVersion.copy();
 
+/*
             // Properties
             newPageVersion.title = data.get(TITLE_PARAM);
             newPageVersion.themeVariant = data.get(THEME_VARIANT_PARAM);
@@ -342,7 +342,6 @@ public class BasicPageAdminProvider {
             newPageVersion.rootNode.unpublished(DateUtil.parseDate(data.get(UNPUBLISH_DATE_PARAM), data.get(UNPUBLISH_TIME_PARAM)));
             newPageVersion.rootNode.nodeType(BasicPage.TYPE);
 
-/*
             // Lead Content
             Text newLeadText = new Text();
             newLeadText.value = data.get(LEAD_PARAM);
@@ -375,8 +374,10 @@ public class BasicPageAdminProvider {
             OnUpdateEventGenerator.triggerBeforeInterceptors(BasicPage.TYPE, latestVersion);
 
             // Properties
+/*
             latestVersion.rootNode.published(DateUtil.parseDate(data.get(PUBLISH_DATE_PARAM), data.get(PUBLISH_TIME_PARAM)));
             latestVersion.rootNode.unpublished(DateUtil.parseDate(data.get(UNPUBLISH_DATE_PARAM), data.get(UNPUBLISH_TIME_PARAM)));
+*/
 
             latestVersion.rootNode.update();
             latestVersion.update();
