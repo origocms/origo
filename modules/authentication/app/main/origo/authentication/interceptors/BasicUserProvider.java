@@ -44,12 +44,13 @@ public class BasicUserProvider {
 
         Form<LoginForm> form = FormHelper.getValidationResult(LoginForm.class);
 
+        Element element = FormHelper.createFormElement(node, Core.With.AUTHENTICATION_CHECK, form);
+
         BasicPage page = new BasicPage();
         page.rootNode = (RootNode)node;
         page.nodeId = page.rootNode.nodeId();
         page.title = "Login";
-
-        page.addElement(FormHelper.createFormElement(node, Core.With.AUTHENTICATION_CHECK, form));
+        page.addElement(element);
         return page;
     }
 

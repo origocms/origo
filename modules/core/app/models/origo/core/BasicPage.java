@@ -1,5 +1,6 @@
 package models.origo.core;
 
+import com.google.common.collect.Sets;
 import main.origo.core.Node;
 import main.origo.core.ui.Element;
 import play.data.validation.Constraints;
@@ -42,11 +43,9 @@ public class BasicPage extends Model<BasicPage> implements Node {
     @Constraints.Required
     public String title;
 
-    @Constraints.Required
-    public String leadReferenceId;
-
-    @Constraints.Required
-    public String bodyReferenceId;
+    // Contains a list of identifiers for blocks
+    @ElementCollection
+    public Set<String> blocks = Sets.newHashSet();
 
     public String themeVariant;
 
@@ -167,21 +166,21 @@ public class BasicPage extends Model<BasicPage> implements Node {
         newPage.nodeId = nodeId;
         newPage.title = title;
         newPage.version = rootNodeCopy.version();
-        newPage.leadReferenceId = leadReferenceId;
-        newPage.bodyReferenceId = bodyReferenceId;
+        newPage.blocks = Sets.newHashSet(blocks);
         return newPage;
     }
 
     @Override
     public String toString() {
-        return new StringBuilder().
-                append("BasicPage {").
-                append("nodeId='").append(nodeId).append("\', ").
-                append("version=").append(version).append(", ").
-                append("rootNode=").append(rootNode).append(", ").
-                append("leadReferenceId='").append(leadReferenceId).append("\', ").
-                append("bodyReferenceId='").append(bodyReferenceId).append("\', ").
-                append('}').toString();
+        return "BasicPage{" +
+                "id=" + id +
+                ", nodeId='" + nodeId + '\'' +
+                ", version=" + version +
+                ", rootNode=" + rootNode +
+                ", title='" + title + '\'' +
+                ", segments=" + blocks +
+                ", themeVariant='" + themeVariant + '\'' +
+                '}';
     }
 
     public static List<BasicPage> findAllCurrentVersions(Date asOfDate) {

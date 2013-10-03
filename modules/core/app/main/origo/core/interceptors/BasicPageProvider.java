@@ -9,11 +9,10 @@ import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnLoad;
 import main.origo.core.annotations.Provides;
-import main.origo.core.helpers.SegmentHelper;
+import main.origo.core.helpers.BlockHelper;
 import main.origo.core.ui.Element;
 import models.origo.core.BasicPage;
 import models.origo.core.RootNode;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
@@ -39,19 +38,13 @@ public class BasicPageProvider {
 
     @OnLoad(type = Core.Type.NODE, with = TYPE)
     public static void loadContent(Node node, String withType, Map<String, Object> args) throws ModuleException, NodeLoadException {
-        node.addElement(loadContent(node, ((BasicPage) node).leadReferenceId));
-        node.addElement(loadContent(node, ((BasicPage) node).bodyReferenceId));
-    }
 
-    private static Element loadContent(Node node, String referenceId) throws NodeLoadException, ModuleException {
-        if (StringUtils.isNotBlank(referenceId)) {
-            Element element = SegmentHelper.loadSegment(node, referenceId);
-            if (element != null) {
-                return element;
-            }
+        BasicPage page = (BasicPage) node;
+
+        for (String segmentIdentifier : page.blocks) {
+            Element element = BlockHelper.loadBlock(node, segmentIdentifier);
+            node.addElement(element);
         }
-        //TODO: Handle this somehow, in dev/admin maybe show a Element with a warning message and in prod swallow error?
-        return null;
     }
 
 }

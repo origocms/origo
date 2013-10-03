@@ -30,8 +30,6 @@ import models.origo.core.BasicPage;
 import models.origo.core.RootNode;
 import models.origo.core.Text;
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 import play.Logger;
 import play.data.Form;
 import play.i18n.Messages;
@@ -100,6 +98,7 @@ public class BasicPageAdminProvider {
             }
             RootNode rootNode = RootNode.findWithNodeIdAndSpecificVersion(node.nodeId(), node.version());
 
+/*
             Text leadText = Text.findWithIdentifier(basicPage.leadReferenceId);
             Text bodyText = Text.findWithIdentifier(basicPage.bodyReferenceId);
 
@@ -115,6 +114,7 @@ public class BasicPageAdminProvider {
             page.themeVariant = basicPage.themeVariant();
             page.leadText = leadText.value;
             page.bodyText = bodyText.value;
+*/
         }
 
         form = form.fill(page);
@@ -319,6 +319,7 @@ public class BasicPageAdminProvider {
             newVersion = true;
         }
 
+/*
         Text leadText = Text.findWithIdentifier(latestVersion.leadReferenceId);
         if (leadText == null || !leadText.value.equals(data.get(LEAD_PARAM).trim())) {
             newVersion = true;
@@ -328,6 +329,7 @@ public class BasicPageAdminProvider {
         if (bodyText == null || !bodyText.value.equals(data.get(BODY_PARAM).trim())) {
             newVersion = true;
         }
+*/
 
         if (newVersion) {
 
@@ -340,6 +342,7 @@ public class BasicPageAdminProvider {
             newPageVersion.rootNode.unpublished(DateUtil.parseDate(data.get(UNPUBLISH_DATE_PARAM), data.get(UNPUBLISH_TIME_PARAM)));
             newPageVersion.rootNode.nodeType(BasicPage.TYPE);
 
+/*
             // Lead Content
             Text newLeadText = new Text();
             newLeadText.value = data.get(LEAD_PARAM);
@@ -351,6 +354,7 @@ public class BasicPageAdminProvider {
             newBodyText.value = data.get(BODY_PARAM);
             newPageVersion.bodyReferenceId = newBodyText.identifier;
             newBodyText.create();
+*/
 
             if (oldRootNode.version() == 0) {
                 newPageVersion.rootNode.create();

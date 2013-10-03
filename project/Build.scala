@@ -49,7 +49,7 @@ object ApplicationBuild extends Build {
   ) ++ coreDependencies ++ authenticationDependencies
 
   val preview = play.Project(
-    appName + "-perview", appVersion, previewDependencies, path = file("modules/preview")
+    appName + "-preview", appVersion, previewDependencies, path = file("modules/preview")
   ).dependsOn( core, authentication ).aggregate( core, authentication )
 
   /**
@@ -72,25 +72,16 @@ object ApplicationBuild extends Build {
   )
 
   /**
-   * Structured Content
-   */
-  val structuredContentDependencies = Seq() ++ coreDependencies
-
-  val structuredContent = play.Project(
-    appName + "-structuredcontent", appVersion, structuredContentDependencies, path = file("modules/structuredcontent")
-  ).dependsOn( core, admin ).aggregate( core, admin )
-
-  /**
    * Main Application
    */
-  val appDependencies = Seq() ++ coreDependencies ++ authenticationDependencies ++ adminDependencies ++ structuredContentDependencies
+  val appDependencies = Seq() ++ coreDependencies ++ authenticationDependencies ++ adminDependencies
 
   val main = play.Project(
       appName, appVersion, appDependencies
   ).dependsOn(
-      core, authentication, admin, structuredContent
+      core, authentication, admin
   ).aggregate(
-      core, authentication, admin, structuredContent
+      core, authentication, admin
   ).settings(
   )
 

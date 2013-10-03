@@ -29,6 +29,9 @@ public class Core {
         public static final String AUTHENTICATION_VALIDATE = "authentication_validate";
         public static final String AUTHENTICATION_SIGNOUT = "authentication_signout";
 
+        public static final String PREVIEW_CREATE = "preview_create";
         public static final String PREVIEW_TOKEN = "preview_token";
+
+        public static final String VALIDATION_DEFAULT_FAILURE = "validation_default_failure";
     }
 }

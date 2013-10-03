@@ -39,9 +39,7 @@ public class Authentication extends Controller {
             Logger.debug("No login page defined, using fallback");
 
             // Fall back to empty root node and trigger loading
-            RootNode rootNode = new RootNode("login-fallback", 0);
-            rootNode.nodeType(Core.With.AUTHENTICATION_CHECK);
-            Node node = NodeHelper.load(rootNode);
+            Node node = NodeHelper.load(new RootNode("login-fallback", 0, Core.With.AUTHENTICATION_CHECK));
 
             // Render login page
             DecoratedNode decoratedNode = ThemeHelper.decorate(node, ThemeHelper.loadTheme(node, CoreSettingsHelper.getThemeVariant()));

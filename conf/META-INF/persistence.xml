@@ -9,11 +9,12 @@
 
         <!-- Core Module -->
 
-        <class>models.origo.core.Alias</class>
-        <class>models.origo.core.BasicPage</class>
-        <class>models.origo.core.Text</class>
-        <class>models.origo.core.Meta</class>
         <class>models.origo.core.RootNode</class>
+        <class>models.origo.core.BasicPage</class>
+        <class>models.origo.core.Block</class>
+        <class>models.origo.core.Meta</class>
+        <class>models.origo.core.Text</class>
+        <class>models.origo.core.Alias</class>
         <class>models.origo.core.Settings</class>
         <class>models.origo.core.EventHandler</class>
         <class>models.origo.core.navigation.BasicNavigation</class>
@@ -28,11 +29,6 @@
 
         <!-- Preview Module -->
         <class>models.origo.preview.BasicTicket</class>
-
-        <!-- StructuredContent Module -->
-
-        <class>models.origo.core.Segment</class>
-        <class>models.origo.structuredcontent.StructuredPage</class>
 
         <properties>
             <property name="hibernate.hbm2ddl.auto" value="update" />

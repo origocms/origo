@@ -7635,7 +7635,7 @@
         ajaxLocation = ajaxLocation.href;
     }
 
-// Segment location into parts
+// Block location into parts
     ajaxLocParts = rurl.exec( ajaxLocation.toLowerCase() ) || [];
 
 // Base "constructor" for jQuery.ajaxPrefilter and jQuery.ajaxTransport

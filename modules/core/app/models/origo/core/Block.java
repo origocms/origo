@@ -7,9 +7,9 @@ import javax.persistence.*;
 
 @Entity
 @Table(name="segments")
-public class Segment extends Model<Segment> {
+public class Block extends Model<Block> {
 
-    public static final String TYPE = "segment";
+    public static final String TYPE = "block";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,21 +24,21 @@ public class Segment extends Model<Segment> {
     @Constraints.Required
     public String referenceId;
 
-    public Segment() {
+    public Block() {
         super(TYPE);
     }
 
-    public static Segment findWithIdentifier(String identifier) {
+    public static Block findWithIdentifier(String identifier) {
         //noinspection unchecked
-        return (Segment) JPA.em().
-                createQuery("select distinct s from "+Segment.class.getName()+" s where s.identifier = :identifier").
+        return (Block) JPA.em().
+                createQuery("select distinct s from "+Block.class.getName()+" s where s.identifier = :identifier").
                 setParameter("identifier", identifier).
                 getSingleResult();
     }
 
     @Override
     public String toString() {
-        return "Segment{" +
+        return "Block{" +
                 "id=" + id +
                 ", identifier='" + identifier + '\'' +
                 ", type='" + type + '\'' +

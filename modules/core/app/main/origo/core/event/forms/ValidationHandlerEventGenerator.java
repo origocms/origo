@@ -5,6 +5,7 @@ import main.origo.core.InterceptorRepository;
 import main.origo.core.ModuleException;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
+import main.origo.core.annotations.Core;
 import main.origo.core.annotations.forms.Validation;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.internal.CachedAnnotation;
@@ -48,7 +49,12 @@ public class ValidationHandlerEventGenerator {
 
     public static Node triggerValidationFailedHandler(Node node, String withType, Validation.Result validationResult, Map<String, Object> args) throws InvocationTargetException, IllegalAccessException {
         CachedAnnotation cachedAnnotation = getFailureHandler(withType, Validation.Failure.class);
-        return ReflectionInvoker.execute(cachedAnnotation, node, withType, validationResult, args);
+        if (cachedAnnotation != null) {
+            return ReflectionInvoker.execute(cachedAnnotation, node, withType, validationResult, args);
+        } else {
+            cachedAnnotation = getFailureHandler(Core.With.VALIDATION_DEFAULT_FAILURE, Validation.Failure.class);
+            return ReflectionInvoker.execute(cachedAnnotation, node, Core.With.VALIDATION_DEFAULT_FAILURE, validationResult, args);
+        }
     }
 
     private static CachedAnnotation getFailureHandler(final String withType, Class<? extends Annotation> annotationType) {

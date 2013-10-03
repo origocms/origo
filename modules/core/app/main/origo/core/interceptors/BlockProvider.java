@@ -7,22 +7,20 @@ import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.Provides;
 import main.origo.core.helpers.ContentHelper;
 import main.origo.core.ui.Element;
-import models.origo.core.Segment;
+import models.origo.core.Block;
 import models.origo.core.Text;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
 @Interceptor
-public class SegmentProvider {
+public class BlockProvider {
 
-    public static final String TYPE = "segment";
-
-    @Provides(type = TYPE, with = Text.TYPE)
-    public static Element createSegment(Node node, String withType, Map<String, Object> args) throws NodeLoadException, ModuleException {
-        Segment segment = (Segment) args.get("segment");
-        if (segment != null && !StringUtils.isBlank(segment.referenceId)) {
-            Element element = ContentHelper.loadContent(node, segment.type, segment.referenceId);
+    @Provides(type = Block.TYPE, with = Text.TYPE)
+    public static Element createBlock(Node node, String withType, Map<String, Object> args) throws NodeLoadException, ModuleException {
+        Block block = (Block) args.get("block");
+        if (block != null && !StringUtils.isBlank(block.referenceId)) {
+            Element element = ContentHelper.loadContent(node, block.type, block.referenceId);
             if (element != null) {
                 return element;
             }
