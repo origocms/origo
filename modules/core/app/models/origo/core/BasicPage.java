@@ -183,11 +183,11 @@ public class BasicPage extends Model<BasicPage> implements Node {
             String queryString = "select p from " + BasicPage.class.getName() + " p " +
                     "where p.id in (" +
                     "select n.id from models.origo.core.RootNode n where n.version = (" +
-                    "select max(n2.version) from models.origo.core.RootNode n2 " +
+                    "select max(n2.version) from models.origo.core.RootNode n2 left join n2.release r " +
                     "where n2.nodeId = n.nodeId and " +
-                    "(n2.release.publish = null or n2.release.publish < :today) and" +
-                    "(n2.release.unPublish = null or n2.release.unPublish >= :today)" +
-                    "))";
+                    "(r is null or (r.publish = null or r.publish < :today) and" +
+                    "(r.unPublish = null or r.unPublish >= :today)" +
+                    ")))";
             final Query query = JPA.em().createQuery(queryString);
             query.setParameter("today", asOfDate);
             return query.getResultList();
@@ -202,10 +202,11 @@ public class BasicPage extends Model<BasicPage> implements Node {
                     "select p from " + BasicPage.class.getName() + " p " +
                             "where p.nodeId = :nodeId and p.id in (" +
                             "select n.id from models.origo.core.RootNode n where n.version = (" +
-                            "select max(n2.version) from models.origo.core.RootNode n2 " +
+                            "select max(n2.version) from models.origo.core.RootNode n2 left join n2.release r " +
                             "where n2.nodeId = n.nodeId and " +
-                            "(n2.release.publish = null or n2.release.publish < :today) and" +
-                            "(n2.release.unPublish = null or n2.release.unPublish >= :today)" +
+                            "(r is null or " +
+                            "(r.publish = null or r.publish < :today) and" +
+                            "(r.unPublish = null or r.unPublish >= :today)" +
                             "))"
             ).setParameter("nodeId", nodeId).setParameter("today", asOfDate).getSingleResult();
         } catch (NoResultException e) {

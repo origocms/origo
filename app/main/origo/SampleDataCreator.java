@@ -217,6 +217,7 @@ public class SampleDataCreator {
 
         // /protected -> page 5
         createAlias("protected", page.nodeId());
+
     }
 
     private static void createPage6() {
@@ -245,6 +246,7 @@ public class SampleDataCreator {
 
         // /component -> page 7 (component)
         createAlias("component", page.nodeId());
+
     }
 
     private static void createPage8() {
@@ -263,6 +265,7 @@ public class SampleDataCreator {
 
         // /preview -> page 7 (component)
         createAlias("preview/remove", page.nodeId());
+
     }
 
     private static void createNavigation() {
@@ -418,8 +421,7 @@ public class SampleDataCreator {
     }
 
     private static RootNode createRootNode(String type, String nodeId, int version, Release release) {
-        RootNode node = new RootNode(nodeId, version);
-        node.nodeType(type);
+        RootNode node = new RootNode(nodeId, version, type);
         node.release(release);
         node.create();
         return node;
@@ -437,7 +439,8 @@ public class SampleDataCreator {
     }
 
     private static BasicPage createPage(RootNode node, String title, Block... blocks) {
-        BasicPage page = new BasicPage(); // Page 4 version 1
+        BasicPage page = new BasicPage();
+        page.rootNode = node;
         page.nodeId = node.nodeId();
         page.version = node.version();
         page.title = title;

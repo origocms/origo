@@ -26,7 +26,7 @@ public final class RootNode extends Model<RootNode> implements Node {
     @Constraints.Required
     private Integer version;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Release release;
 
     @Column(name = "type")
@@ -314,14 +314,15 @@ public final class RootNode extends Model<RootNode> implements Node {
 
     public static RootNode findPublishedVersionWithNodeIdAndDate(String nodeId, Date today) {
         try {
-            String queryString = "select distinct n from "+RootNode.class.getName()+" n " +
+            String queryString = "select distinct n from "+RootNode.class.getName()+" n left join n.release r " +
                     "where n.nodeId = :nodeId and " +
-                    "(n.release.publish = null or n.release.publish < :today) and " +
-                    "(n.release.unPublish = null or n.release.unPublish >= :today) " +
+                    "(r = null or (r.state = :state and (r.publish = null or r.publish < :today) and " +
+                    "(r.unPublish = null or r.unPublish >= :today))) " +
                     "order by n.version desc";
             final Query query = JPA.em().createQuery(queryString);
             query.setParameter("nodeId", nodeId);
             query.setParameter("today", today);
+            query.setParameter("state", State.PUBLISHED);
             List<RootNode> nodes = query.getResultList();
             if (nodes.isEmpty()) {
                 return null;
@@ -382,14 +383,6 @@ public final class RootNode extends Model<RootNode> implements Node {
             copy.release = release;
             return copy;
         }
-    }
-
-    @Override
-    protected void doCreate(RootNode rootNode) {
-        if (rootNode.release == null) {
-            rootNode.release = new Release(State.DRAFT);
-        }
-        super.doCreate(rootNode);
     }
 
 }
