@@ -94,7 +94,13 @@ public class BasicNavigationProvider {
                     throw new RuntimeException("Page referenced in navigation not found [" + navigationModel.pageId + "]");
                 }
             } else {
-                throw new RuntimeException("Navigation not found [" + navigationModel.pageId + "]");
+                RootNode rootNode = RootNode.findLatestVersionWithNodeId(navigationModel.pageId);
+                if (rootNode != null) {
+                    Logger.info("Navigation with referenceId='"+navigation.getReferenceId()+"' refers to a non published page. Ignoring.");
+                    return null;
+                } else {
+                    throw new RuntimeException("Referenced node not found [" + navigationModel.pageId + "]");
+                }
             }
         } catch (ModuleException e) {
             if (e.cause == ModuleException.Cause.NOT_ENABLED) {

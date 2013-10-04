@@ -30,6 +30,7 @@ public class SampleDataCreator {
             createPage6();
             createPage7();
             createPage8();
+            createPage9();
             createNavigation();
             createUsersAndRoles();
         }
@@ -175,7 +176,7 @@ public class SampleDataCreator {
         BasicPage page1 =
                 createPage(
                         createRootNode(BasicPage.TYPE, "aa1755dd-18c4-4b78-956e-eef7e562c36c", 1),
-                        "Fourth Page",
+                        "Fourth Page : Version 1",
                         "bootstrap-main_and_left_columns",
                         block_1_1,
                         block_1_2,
@@ -191,7 +192,7 @@ public class SampleDataCreator {
         BasicPage page2 =
                 createPage(
                         createRootNode(BasicPage.TYPE, "aa1755dd-18c4-4b78-956e-eef7e562c36c", 2, release1),
-                        "Fourth Page",
+                        "Fourth Page : Version 2",
                         "bootstrap-main_and_left_columns",
                         block_2_1,
                         block_2_2);
@@ -268,13 +269,39 @@ public class SampleDataCreator {
 
     }
 
+    private static void createPage9() {
+
+        Release release1 = getOrCreateRelease("First Release");
+
+        BasicPage page = createPage(
+                createRootNode(BasicPage.TYPE, "9a8d6387-4cee-4f07-82de-3643cb3abd3d", 1, release1),
+                "Unpublished Page",
+                createTextBlock("Bam loo blong woogle bleebing rakity flakity crongle quabbleflup? Duh blap twaddle? Hum bam weeble flip tangity flapping flub blingdubba? Nip bam tingleingle ho doo kanoodle, zap shnozzy hum cringle boo. " +
+                        "\"Dee yada ho?\" blo wheezeryada. Dubbaloo-dangely-dang! \"Yip bananarama yip?\" flop Chef. Flong kanoodle blab roo blab gobble blob hum goblin."),
+                createTextBlock("Bam loo blong woogle bleebing rakity flakity crongle quabbleflup? Duh blap twaddle? Hum bam weeble flip tangity flapping flub blingdubba? Nip bam tingleingle ho doo kanoodle, zap shnozzy hum cringle boo. " +
+                        "\"Dee yada ho?\" blo wheezeryada. Dubbaloo-dangely-dang! \"Yip bananarama yip?\" flop Chef. Flong kanoodle blab roo blab gobble blob hum goblin." +
+                        "Yip dee doof blong sloppy flabbing blob wooglezangle? Razz boo blaoodle, \"flong dee zap izzle,\" zap flob blab doof roo wibble-zang...boo dee ho! Hizzle ha weeble hizzy. Bam blipping blippity zupping doo blup zap oodely zingwobble. " +
+                        "Shnazzle boo zong zip bleeb boo ha blip? Lisa zap Mr. Garrison zap tongity plop-zung. Woggle yip zung abracadabra. Zing da kanoodle-blo." +
+                        "Hum duh hizzlebling ho loo dabba, boo flabbity nip zingle hum. Zip zing a zinghizzy! Hum dilznoofus flib? Duh dongely blingity flanging dee blap da blabbing bingbleeb. Crungle gobble bleebity yap noodlequabble??? Blippity hizzy oodle! " +
+                        "Zoom blang loo flee dee bloo? Jangely bleeb twaddle!" +
+                        "Shizzle fling funknizzle, \"zonk duh yap funk,\" doo Belgium gobble shnozzle nip flop-blop...flobble zip hum! Yip da Smithers goblindongle! Flung yap shizzle crongle. Blob dee crongle bang? Nip zap Cartman dingling! " +
+                        "\"Boo flooble da?\" zung zoweebizzle. Bam ho woogle twaddle crangely oodely zung dangding? Dee duh razzleflob loo ho bananarama, boo flipping ha blop duh." +
+                        "Mr. Slave yap Mr. Slave doo nippy blap-dazzle. Slop ho zowee roo slap-flobble!! Dazzle blo shnizzleblip, \"shnuzzle bam dee shizzle,\" doo zangle razz gobble dee blop-meep...kanoodle ho duh! Doo zongle shnizzlewow. Ho flob woggle? " +
+                        "Quabble dee blab flibble? Slop crungle doo whack ho dizzle? Funk blee blangfloo, \"bla doo dee wooble,\" ho Mr. Slave dongle flee zip twiddle-razz...bing da nip!"));
+
+        // /start -> page 1
+        createAlias("unpublished", page.nodeId());
+
+    }
+
+
     private static void createNavigation() {
 
         // Start Page
         BasicNavigation startNavigation = new BasicNavigation();
         startNavigation.type = InternalPageIdNavigation.TYPE;
         startNavigation.section = "front";
-        startNavigation.referenceId = "3f2d9e2e-12dc-4917-9a58-40d325e9784e";
+        startNavigation.referenceId = UUID.randomUUID().toString();
         startNavigation.weight = 1;
         startNavigation.create();
         InternalPageIdNavigation startPageNavigation = new InternalPageIdNavigation();
@@ -286,7 +313,7 @@ public class SampleDataCreator {
         BasicNavigation fourthNavigation = new BasicNavigation();
         fourthNavigation.type = InternalPageIdNavigation.TYPE;
         fourthNavigation.section = "front";
-        fourthNavigation.referenceId = "a8129a97-70fa-40b7-93e4-2a1caf181a0d";
+        fourthNavigation.referenceId = UUID.randomUUID().toString();
         fourthNavigation.weight = 3;
         fourthNavigation.create();
         InternalPageIdNavigation fourthPageNavigation = new InternalPageIdNavigation();
@@ -298,7 +325,7 @@ public class SampleDataCreator {
         BasicNavigation groupNavigation = new BasicNavigation();
         groupNavigation.type = GroupHolderNavigation.TYPE;
         groupNavigation.section = "front";
-        groupNavigation.referenceId = "085ffde4-b8d5-4fd6-82a7-5c6787931f1b";
+        groupNavigation.referenceId = UUID.randomUUID().toString();
         groupNavigation.weight = 5;
         groupNavigation.create();
         GroupHolderNavigation externalNavigationHolder = new GroupHolderNavigation();
@@ -310,7 +337,7 @@ public class SampleDataCreator {
         BasicNavigation fifthNavigation = new BasicNavigation();
         fifthNavigation.type = InternalPageIdNavigation.TYPE;
         fifthNavigation.section = "front";
-        fifthNavigation.referenceId = "9c0cbb5a-e90a-43bf-a647-119c27e30e9d";
+        fifthNavigation.referenceId = UUID.randomUUID().toString();
         fifthNavigation.weight = 5;
         fifthNavigation.parent = groupNavigation;
         fifthNavigation.create();
@@ -323,7 +350,7 @@ public class SampleDataCreator {
         BasicNavigation seventhNavigation = new BasicNavigation();
         seventhNavigation.type = InternalPageIdNavigation.TYPE;
         seventhNavigation.section = "front";
-        seventhNavigation.referenceId = "436e626e-fd01-4fce-93b7-23c49c33a913";
+        seventhNavigation.referenceId = UUID.randomUUID().toString();
         seventhNavigation.weight = 2;
         seventhNavigation.parent = groupNavigation;
         seventhNavigation.create();
@@ -336,7 +363,7 @@ public class SampleDataCreator {
         BasicNavigation externalGroupNavigation = new BasicNavigation();
         externalGroupNavigation.type = GroupHolderNavigation.TYPE;
         externalGroupNavigation.section = "front";
-        externalGroupNavigation.referenceId = "6dd82bcb-3f42-4f5d-8c13-4e2ed1d4ef21";
+        externalGroupNavigation.referenceId = UUID.randomUUID().toString();
         externalGroupNavigation.weight = 10;
         externalGroupNavigation.create();
         GroupHolderNavigation externalGroupHolderNavigation = new GroupHolderNavigation();
@@ -348,7 +375,7 @@ public class SampleDataCreator {
         BasicNavigation googleNavigation = new BasicNavigation();
         googleNavigation.type = ExternalLinkNavigation.TYPE;
         googleNavigation.section = "front";
-        googleNavigation.referenceId = "58e15bfa-da4f-4f6b-a15a-51ab6c82e670";
+        googleNavigation.referenceId = UUID.randomUUID().toString();
         googleNavigation.parent = externalGroupNavigation;
         googleNavigation.weight = 2;
         googleNavigation.create();
@@ -362,7 +389,7 @@ public class SampleDataCreator {
         BasicNavigation yahooNavigation = new BasicNavigation();
         yahooNavigation.type = ExternalLinkNavigation.TYPE;
         yahooNavigation.section = "front";
-        yahooNavigation.referenceId = "c6f03b11-dbb6-4aec-a325-525e61370d8d";
+        yahooNavigation.referenceId = UUID.randomUUID().toString();
         yahooNavigation.parent = externalGroupNavigation;
         yahooNavigation.weight = 3;
         yahooNavigation.create();
@@ -371,6 +398,19 @@ public class SampleDataCreator {
         yahooLink.title = "Yahoo";
         yahooLink.link = "http://www.yahoo.com";
         yahooLink.create();
+
+        // Unpublished
+        BasicNavigation unpublishedNavigation = new BasicNavigation();
+        unpublishedNavigation.type = InternalPageIdNavigation.TYPE;
+        unpublishedNavigation.section = "front";
+        unpublishedNavigation.referenceId = UUID.randomUUID().toString();
+        unpublishedNavigation.weight = 5;
+        unpublishedNavigation.parent = groupNavigation;
+        unpublishedNavigation.create();
+        InternalPageIdNavigation unpublishedPageNavigation = new InternalPageIdNavigation();
+        unpublishedPageNavigation.identifier = unpublishedNavigation.getReferenceId();
+        unpublishedPageNavigation.pageId = "9a8d6387-4cee-4f07-82de-3643cb3abd3d";
+        unpublishedPageNavigation.create();
 
     }
 
