@@ -5,7 +5,7 @@ import main.origo.core.Node;
 import main.origo.core.State;
 import main.origo.core.actions.Component;
 import main.origo.core.helpers.CoreSettingsHelper;
-import main.origo.themes.bootstrap.BootstrapTheme;
+import main.origo.themes.bootstrap3.Bootstrap3Theme;
 import models.origo.authentication.BasicAuthorization;
 import models.origo.authentication.BasicRole;
 import models.origo.authentication.BasicUser;
@@ -44,8 +44,8 @@ public class SampleDataCreator {
         settings.setValueIfMissing(CoreSettingsHelper.Keys.INTERNAL_SERVER_ERROR_PAGE, "1cf699a7-a0c4-4be0-855f-466042a36a8d"); // Page 3
         settings.setValueIfMissing(CoreSettingsHelper.Keys.UNAUTHORIZED_PAGE, "f4501c31-690f-46f4-853d-167165a4fc03"); // Page 6
         settings.setValueIfMissing(CoreSettingsHelper.Keys.USER_TYPE, BasicUser.TYPE);
-        settings.setValue(CoreSettingsHelper.Keys.THEME, BootstrapTheme.ID); // Override theme variant
-        settings.setValue(CoreSettingsHelper.Keys.THEME_VARIANT, "bootstrap-main_only"); // Override theme variant
+        settings.setValue(CoreSettingsHelper.Keys.THEME, Bootstrap3Theme.ID); // Override theme
+        settings.setValue(CoreSettingsHelper.Keys.THEME_VARIANT, "bootstrap3-main_only"); // Override theme variant
 
         settings.save();
     }
@@ -113,7 +113,7 @@ public class SampleDataCreator {
         BasicPage page = createPage(
                 createRootNode(BasicPage.TYPE, UUID.randomUUID().toString(), 1),
                 "Page Not Found",
-                "bootstrap-main_only",
+                "bootstrap2-main_only",
                 createTextBlock("Yip wiggle the Antichrist... bleebing zippity twiddletangle. Boo roo OJ ingleblong! Wiggle! Hizzy zangle bloodilznoofus, \"wooble roo bam wheezer,\" duh flee shnizzle dubba zip wiggle-quabble...wiggle boo da! " +
                         "Roo tongle zong? Dobba tangle dongely da cakefunk??? \"Bam razz nip?\" goblin Luke. Blee woggle flibbing ho shnizzleflibble???<br/>\n" +
                         "Zongle yip flob boo dong flub zip dubba? Yap flabbing blobdabba! Ho hum Cartman quibbleflibble! Tingle dee dabba dingle? Twaddle quabble wiggle doo yada rizzle dongle hum dabba. Tangle zangle bam flip boo fling? Da cake abracadabra?" +
@@ -140,7 +140,7 @@ public class SampleDataCreator {
         BasicPage page = createPage(
                 createRootNode(BasicPage.TYPE, UUID.randomUUID().toString(), 1),
                 "Internal Server Error",
-                "bootstrap-main_only",
+                "bootstrap2-main_only",
                 createTextBlock("Razzle dee crongely zoomzunk. Hizzy cake yap zingle duh dobba? Zungity wubbledongle. Oodle yip weeble-flip.<br/>\n" +
                         "Flab flab blupping doo weebleflub??? Flobble da woggle-shnozzle. Bleep flub dee wibble hum flong? Doof nip zongity blipzonk. Tangle gobble flungity zip hizzleflong???<br/>\n"),
                 createTextBlock("Ha gobble fling? Boo nip Trotsky floodazzle! Zangboo-bleebity-dazzle! Zangle dee tingle yip bing zongle duh plop? Flap zong? Tizzle fling? Loo shnizzle yip blong bleebing twaddlewhack, zap bananarama wacko ha blingity abracadabraflee tang. Yap bam tangle whack ting a blingity blo tongleflap?<br/>\n" +
@@ -177,7 +177,7 @@ public class SampleDataCreator {
                 createPage(
                         createRootNode(BasicPage.TYPE, "aa1755dd-18c4-4b78-956e-eef7e562c36c", 1),
                         "Fourth Page : Version 1",
-                        "bootstrap-main_and_left_columns",
+                        "bootstrap2-main_and_left_columns",
                         block_1_1,
                         block_1_2,
                         block_1_3);
@@ -193,7 +193,7 @@ public class SampleDataCreator {
                 createPage(
                         createRootNode(BasicPage.TYPE, "aa1755dd-18c4-4b78-956e-eef7e562c36c", 2, release1),
                         "Fourth Page : Version 2",
-                        "bootstrap-main_and_left_columns",
+                        "bootstrap2-main_and_left_columns",
                         block_2_1,
                         block_2_2);
 

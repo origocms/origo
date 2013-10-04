@@ -1,0 +1,29 @@
+@(node:main.origo.core.ui.DecoratedNode)
+
+@import views.html.origo.core.tags._
+
+@theme(node) {
+
+    <div class="container">
+
+        <div class="page-header">
+            <h1>Origo CMS</h1>
+        </div>
+
+        @_navigation(node.navigation)
+
+        <h2>@node.title</h2>
+
+        <div class="row">
+            <div class="col-md-3">
+                @_region(node, "left")
+            </div>
+
+            <div class="col-md-9">
+                @_region(node, "main")
+            </div>
+        </div>
+
+    </div>
+
+}

@@ -92,7 +92,7 @@ public class BasicUserProvider {
 
         element.addChild(new Element.Panel().setId("actions").setWeight(1000).
                 addChild(new Element.Panel().
-                        addChild(new Element.InputSubmit().setWeight(10).addAttribute("class", "btn btn-primary").addAttribute("value", "Login"))
+                        addChild(new Element.InputSubmit().setWeight(10).addAttribute("value", "Login"))
                 ));
     }
 

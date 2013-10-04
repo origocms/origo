@@ -72,6 +72,26 @@ object ApplicationBuild extends Build {
   )
 
   /**
+   * Bootstrap2 Theme
+   */
+  val bootstrap2themeDependencies = Seq(
+  ) ++ coreDependencies
+
+  val bootstrap2theme = play.Project(
+    appName + "-theme-bootstrap2", appVersion, bootstrap2themeDependencies, path = file("themes/bootstrap2")
+  ).dependsOn( core ).aggregate( core )
+
+  /**
+   * Bootstrap3 Theme
+   */
+  val bootstrap3themeDependencies = Seq(
+  ) ++ coreDependencies
+
+  val bootstrap3theme = play.Project(
+    appName + "-theme-bootstrap3", appVersion, bootstrap2themeDependencies, path = file("themes/bootstrap3")
+  ).dependsOn( core ).aggregate( core )
+
+  /**
    * Main Application
    */
   val appDependencies = Seq() ++ coreDependencies ++ authenticationDependencies ++ adminDependencies
@@ -80,8 +100,15 @@ object ApplicationBuild extends Build {
       appName, appVersion, appDependencies
   ).dependsOn(
       core, authentication, admin
+
+    /** Start of non essential dependencies */
+    , bootstrap2theme
+    , bootstrap3theme
+    /** End of non essential dependencies */
+
   ).aggregate(
       core, authentication, admin
+
   ).settings(
   )
 
