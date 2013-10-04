@@ -6,11 +6,11 @@
 
     <div class="container">
 
-        <div class="page-header">
+        @_navigation(node.navigation)
+
+        <div class="page-header hidden-sm hidden-xs visible-md visible-lg">
             <h1>Origo CMS</h1>
         </div>
-
-        @_navigation(node.navigation)
 
         <h2>@node.title</h2>
 
