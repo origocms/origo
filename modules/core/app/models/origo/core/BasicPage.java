@@ -45,6 +45,7 @@ public class BasicPage extends Model<BasicPage> implements Node {
 
     // Contains a list of identifiers for blocks
     @ElementCollection
+    @CollectionTable(name = "page_basic_blocks")
     public Set<String> blocks = Sets.newHashSet();
 
     public String themeVariant;

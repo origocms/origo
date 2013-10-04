@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity(name = "basicAuthorization")
-@Table(name = "authorization")
+@Table(name = "authorization_basic")
 public class BasicAuthorization extends Model<BasicAuthorization> {
 
     public static final String TYPE = "origo.authentication.BasicAuthorization";
@@ -24,6 +24,7 @@ public class BasicAuthorization extends Model<BasicAuthorization> {
     public String path;
 
     @ElementCollection
+    @CollectionTable(name = "authorization_basic_roles")
     public Set<String> roles = new HashSet<>();
 
     public BasicAuthorization() {
