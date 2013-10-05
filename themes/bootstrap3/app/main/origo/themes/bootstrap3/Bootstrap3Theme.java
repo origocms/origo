@@ -32,12 +32,6 @@ public class Bootstrap3Theme {
         return variant_three_columns.render(node);
     }
 
-    @Decorates(types = {Element.InputSubmit.class, Element.InputButton.class, Element.InputReset.class})
-    public static Html decorateButton(Element element, DecorationContext decorationContext) {
-        element.addAttribute("class", "btn");
-        return element.decorate(decorationContext);
-    }
-
     @Decorates(types = {Element.Error.class})
     public static Html decorateEmphasisError(Element element, DecorationContext decorationContext) {
         element.addAttribute("class", "text-error");
@@ -62,9 +56,15 @@ public class Bootstrap3Theme {
         return element.decorate(decorationContext);
     }
 
+    @Decorates(types = {Element.Form.class})
+    public static Html decorateForm(Element element, DecorationContext decorationContext) {
+        element.addAttribute("role", "form");
+        return element.decorate(decorationContext);
+    }
+
     @Decorates(types = {Element.Field.class})
     public static Html decorateField(Element element, DecorationContext decorationContext) {
-        element.addAttribute("class", "control-group");
+        element.addAttribute("class", "form-group");
         return element.decorate(decorationContext);
     }
 
@@ -74,4 +74,21 @@ public class Bootstrap3Theme {
         return element.decorate(decorationContext);
     }
 
+    @Decorates(types = {Element.InputButton.class,Element.InputReset.class})
+    public static Html decorateButton(Element element, DecorationContext decorationContext) {
+        element.attributes.put("class", "btn btn-default");
+        return element.decorate(decorationContext);
+    }
+
+    @Decorates(types = {Element.InputSubmit.class})
+    public static Html decorateSubmit(Element element, DecorationContext decorationContext) {
+        element.attributes.put("class", "btn btn-default btn-primary");
+        return element.decorate(decorationContext);
+    }
+
+    @Decorates(types = {Element.InputText.class, Element.InputSelect.class, Element.InputPassword.class, Element.InputTextArea.class})
+    public static Html decorateFormControls(Element element, DecorationContext decorationContext) {
+        element.attributes.put("class", "form-control");
+        return element.decorate(decorationContext);
+    }
 }

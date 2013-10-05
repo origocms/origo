@@ -60,7 +60,7 @@ public class BasicUserProvider {
     @OnLoad(type = Core.Type.FORM, with = Core.With.AUTHENTICATION_CHECK, after = true)
     public static void addLoginForm(Node node, String withType, Form form, Element element, Map<String, Object> args) {
 
-        element.setId("loginform").addAttribute("class", "origo-loginform, form");
+        element.setId("loginform").addAttribute("class", "origo-loginform form");
 
         Element globalErrors = FormHelper.createGlobalErrorElement();
         if (globalErrors != null) {

@@ -346,6 +346,20 @@ public class AnnotationProcessor {
     }
 
     private static void assertCorrectSignature(Method m, Class returnType, Class<? extends Annotation> annotationClass, Class... parameterTypes) {
+
+        // Basic sanity checks
+        if (!Modifier.isStatic(m.getModifiers())) {
+            throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() +
+                    "' is annotated with '" + annotationClass.getName() +
+                    "' but the method is not static");
+        }
+        if (Modifier.isPrivate(m.getModifiers()) || Modifier.isProtected(m.getModifiers())) {
+            throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() +
+                    "' is annotated with '" + annotationClass.getName() +
+                    "' but the method is not public");
+        }
+
+        // Checking parameter types
         Class[] pc = m.getParameterTypes();
         if (pc.length != parameterTypes.length) {
             throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() + "' in " +

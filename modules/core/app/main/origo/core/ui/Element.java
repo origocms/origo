@@ -1,7 +1,6 @@
 package main.origo.core.ui;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import main.origo.core.event.ElementEventGenerator;
 import main.origo.core.helpers.ElementHelper;
 import main.origo.core.helpers.ThemeHelper;
@@ -377,10 +376,7 @@ public class Element<T extends Element> {
 
         @Override
         public Html decorate(DecorationContext decorationContext) {
-            Map<String, String> attributes = Maps.newHashMap();
-            attributes.put("type", "button");
-            attributes.put("class", "btn btn-default");
-            Map<String, String> combinedAttributes = ElementHelper.combineAttributes(attributes, this.getAttributes());
+            Map<String, String> combinedAttributes = ElementHelper.combineAttributes(Collections.singletonMap("type", "button"), this.getAttributes());
             return input.render(this, null, combinedAttributes);
         }
     }
@@ -393,10 +389,7 @@ public class Element<T extends Element> {
 
         @Override
         public Html decorate(DecorationContext decorationContext) {
-            Map<String, String> attributes = Maps.newHashMap();
-            attributes.put("type", "submit");
-            attributes.put("class", "btn btn-default btn-primary");
-            Map<String, String> combinedAttributes = ElementHelper.combineAttributes(attributes, this.getAttributes());
+            Map<String, String> combinedAttributes = ElementHelper.combineAttributes(Collections.singletonMap("type", "submit"), this.getAttributes());
             return input.render(this, null, combinedAttributes);
         }
     }
@@ -409,10 +402,7 @@ public class Element<T extends Element> {
 
         @Override
         public Html decorate(DecorationContext decorationContext) {
-            Map<String, String> attributes = Maps.newHashMap();
-            attributes.put("type", "reset");
-            attributes.put("class", "btn btn-default btn-primary");
-            Map<String, String> combinedAttributes = ElementHelper.combineAttributes(attributes, this.getAttributes());
+            Map<String, String> combinedAttributes = ElementHelper.combineAttributes(Collections.singletonMap("type", "reset"), this.getAttributes());
             return input.render(this, null, combinedAttributes);
         }
     }
