@@ -50,7 +50,7 @@ public class AdminTheme {
         Html body = ThemeHelper.decorateChildren(element, decorationContext);
         return base.render("div", element, body,
                 ElementHelper.combineAttributes(element.getAttributes(),
-                        Collections.singletonMap("class", defaultDashboardClasses() + " row-fluid")));
+                        Collections.singletonMap("class", defaultDashboardClasses() + " row")));
     }
 
     public static String defaultDashboardItemClasses() {
@@ -62,48 +62,48 @@ public class AdminTheme {
         Html body = ThemeHelper.decorateChildren(element, decorationContext);
         return base.render("div", element, body,
                 ElementHelper.combineAttributes(element.getAttributes(),
-                        Collections.singletonMap("class", defaultDashboardItemClasses() + " span3")));
+                        Collections.singletonMap("class", defaultDashboardItemClasses() + " col-md-3")));
     }
 
-    @Decorates(types = {Element.InputSubmit.class, Element.InputButton.class, Element.InputReset.class})
-    public static Html decorateButton(Element element, DecorationContext decorationContext) {
-        element.addAttribute("class", "btn");
-        return element.decorate(decorationContext);
-    }
-
-    @Decorates(types = {Element.ErrorAlert.class})
+    @Decorates(types = {Element.ErrorEmphasis.class})
     public static Html decorateEmphasisError(Element element, DecorationContext decorationContext) {
         element.addAttribute("class", "text-error");
         return element.decorate(decorationContext);
     }
 
-    @Decorates(types = {Element.WarningAlert.class})
+    @Decorates(types = {Element.WarningEmphasis.class})
     public static Html decorateEmphasisWarning(Element element, DecorationContext decorationContext) {
         element.addAttribute("class", "text-warning");
         return element.decorate(decorationContext);
     }
 
-    @Decorates(types = {Element.InfoAlert.class})
+    @Decorates(types = {Element.InfoEmphasis.class})
     public static Html decorateEmphasisInfo(Element element, DecorationContext decorationContext) {
         element.addAttribute("class", "text-info");
         return element.decorate(decorationContext);
     }
 
-    @Decorates(types = {Element.SuccessAlert.class})
+    @Decorates(types = {Element.SuccessEmphasis.class})
     public static Html decorateEmphasisSuccess(Element element, DecorationContext decorationContext) {
         element.addAttribute("class", "text-success");
         return element.decorate(decorationContext);
     }
 
-    @Decorates(types = {Element.SuccessAlert.class})
+    @Decorates(types = {Element.PrimaryEmphasis.class})
+    public static Html decorateEmphasisPrimary(Element element, DecorationContext decorationContext) {
+        element.addAttribute("class", "text-primary");
+        return element.decorate(decorationContext);
+    }
+
+    @Decorates(types = {Element.MutedEmphasis.class})
     public static Html decorateEmphasisMuted(Element element, DecorationContext decorationContext) {
-        element.addAttribute("class", "muted");
+        element.addAttribute("class", "text-muted");
         return element.decorate(decorationContext);
     }
 
     @Decorates(types = {Element.ErrorAlert.class})
     public static Html decorateAlertError(Element element, DecorationContext decorationContext) {
-        element.addAttribute("class", "alert alert-error");
+        element.addAttribute("class", "alert alert-danger");
         return element.decorate(decorationContext);
     }
 
@@ -125,15 +125,39 @@ public class AdminTheme {
         return element.decorate(decorationContext);
     }
 
+    @Decorates(types = {Element.Form.class})
+    public static Html decorateForm(Element element, DecorationContext decorationContext) {
+        element.addAttribute("role", "form");
+        return element.decorate(decorationContext);
+    }
+
     @Decorates(types = {Element.Field.class})
     public static Html decorateField(Element element, DecorationContext decorationContext) {
-        element.addAttribute("class", "control-group");
+        element.addAttribute("class", "form-group");
         return element.decorate(decorationContext);
     }
 
     @Decorates(types = {Element.Help.class})
     public static Html decorateHelp(Element element, DecorationContext decorationContext) {
         element.addAttribute("class", "help-inline");
+        return element.decorate(decorationContext);
+    }
+
+    @Decorates(types = {Element.InputButton.class,Element.InputReset.class})
+    public static Html decorateButton(Element element, DecorationContext decorationContext) {
+        element.attributes.put("class", "btn btn-default");
+        return element.decorate(decorationContext);
+    }
+
+    @Decorates(types = {Element.InputSubmit.class})
+    public static Html decorateSubmit(Element element, DecorationContext decorationContext) {
+        element.attributes.put("class", "btn btn-default btn-primary");
+        return element.decorate(decorationContext);
+    }
+
+    @Decorates(types = {Element.InputText.class, Element.InputSelect.class, Element.InputPassword.class, Element.InputTextArea.class})
+    public static Html decorateFormControls(Element element, DecorationContext decorationContext) {
+        element.attributes.put("class", "form-control");
         return element.decorate(decorationContext);
     }
 

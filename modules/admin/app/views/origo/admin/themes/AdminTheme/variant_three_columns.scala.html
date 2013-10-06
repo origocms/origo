@@ -13,28 +13,27 @@
 
     @_navigation(node.navigation)
 
-    <header class="jumbotron subhead" id="overview">
+    <header class="page-header">
         <div class="container">
             <h1>@node.title</h1>
         </div>
     </header>
 
-
     <div class="container">
         <div class="row">
-            <div class="span12">
+            <div class="col-md-12">
                 @_region(node, "top")
             </div>
         </div>
 
         <div class="row">
-            <div class="span3">
+            <div class="col-md-3">
                 @_region(node, "left")
             </div>
-            <div class="span6">
+            <div class="col-md-6">
                 @_region(node, "main")
             </div>
-            <div class="span3">
+            <div class="col-md-3">
                 @_region(node, "right")
             </div>
         </div>
