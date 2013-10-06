@@ -8,8 +8,18 @@ import main.origo.core.event.ProvidesEventGenerator;
 
 public class PreviewEventGenerator {
 
+    public static final String REQUEST_PREVIEW_TOKEN = "origo.preview.token";
+
     public static Ticket getValidTicket() throws ModuleException, NodeLoadException {
-        return ProvidesEventGenerator.triggerInterceptor(NodeContext.current().node, Core.Type.PREVIEW, Core.With.PREVIEW_TOKEN);
+        Ticket ticket = (Ticket) NodeContext.current().attributes.get(REQUEST_PREVIEW_TOKEN);
+        if (ticket == null) {
+            ticket = ProvidesEventGenerator.triggerInterceptor(NodeContext.current().node, Core.Type.PREVIEW, Core.With.PREVIEW_TOKEN);
+            if (ticket != null) {
+                NodeContext.current().attributes.put(REQUEST_PREVIEW_TOKEN, ticket);
+            }
+        }
+
+        return ticket;
     }
 
 }

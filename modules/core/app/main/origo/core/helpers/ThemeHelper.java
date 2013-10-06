@@ -1,83 +1,82 @@
 package main.origo.core.helpers;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import main.origo.core.ModuleException;
 import main.origo.core.Node;
+import main.origo.core.NodeLoadException;
 import main.origo.core.ThemeRepository;
 import main.origo.core.annotations.Decorates;
 import main.origo.core.internal.CachedDecorator;
 import main.origo.core.internal.CachedTheme;
 import main.origo.core.internal.CachedThemeVariant;
 import main.origo.core.internal.ReflectionInvoker;
+import main.origo.core.preview.PreviewEventGenerator;
 import main.origo.core.ui.DecoratedNode;
 import main.origo.core.ui.DecorationContext;
 import main.origo.core.ui.Element;
 import models.origo.core.EventHandler;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
+import play.Play;
 import play.api.templates.Html;
 import play.mvc.Content;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 public class ThemeHelper {
 
-    public static DecoratedNode decorate(Node node, CachedThemeVariant themeVariant) {
+    public static DecoratedNode decorate(Node node, CachedThemeVariant themeVariant) throws ModuleException, NodeLoadException {
         DecoratedNode decoratedNode = new DecoratedNode(node.nodeId());
-        setupRegions(themeVariant, decoratedNode);
         decoratedNode.themeVariant(themeVariant);
         decoratedNode.title(node.title());
         CachedTheme theme = ThemeRepository.getTheme(themeVariant.themeId);
+
+        handleRegionsInNodeMissingInTheme(themeVariant, node);
+        handleRegionsInThemeMissingInNode(themeVariant, node);
+
         DecorationContext decorationContext = new DecorationContext(theme, themeVariant, node, decoratedNode);
-        for (String pageRegion : node.regions()) {
-            for (Element element : node.elements(pageRegion)) {
-                Html decoratedContent = decorate(element, decorationContext);
-
-                switch(pageRegion) {
-
-                    case Node.HEAD: {
-                        if (!element.isAlwaysInBody()) {
-                            throw new RuntimeException("Element ["+element.getType()+"] is not allowed in the head. Tried to add "+element.toString());
-                        }
-                        decoratedNode.addHead(decoratedContent);
-                        break;
-                    }
-
-                    case Node.TAIL: {
-                        if (element.isAlwaysInHead()) {
-                            throw new RuntimeException("Element ["+element.getType()+"] is not allowed in the body. Tried to add "+element.toString());
-                        }
-                        decoratedNode.addTail(decoratedContent);
-                        break;
-                    }
-
-                    default: {
-                        if (element.isAlwaysInHead()) {
-                            throw new RuntimeException("Element ["+element.getType()+"] is not allowed in the body. Tried to add "+element.toString());
-                        }
-                        decoratedNode.add(pageRegion, decoratedContent);
-                        break;
-                    }
-                }
+        for (String pageRegion : themeVariant.regions) {
+            List<Element> elements = node.elements(pageRegion);
+            if (elements != null) {
+                decorateElements(elements, pageRegion, decoratedNode, decorationContext);
             }
         }
+
         return decoratedNode;
     }
 
-    /**
-     * Sets all the regions in the rendered node so the template can access them without
-     * nullpointer even if the region has no ui elements.
-     *
-     * @param themeVariant the theme variant that holds the regions available
-     * @param decoratedNode the node about to rendered
-     */
-    private static void setupRegions(CachedThemeVariant themeVariant, DecoratedNode decoratedNode) {
-        Map<String, List<Html>> regions = Maps.newHashMap();
-        for (String region : themeVariant.regions) {
-            regions.put(region, Lists.<Html>newArrayList());
+    private static void decorateElements(List<Element> elements, String pageRegion, DecoratedNode decoratedNode, DecorationContext decorationContext) {
+        for (Element element : elements) {
+            Html decoratedContent = decorate(element, decorationContext);
+
+            switch(pageRegion) {
+
+                case Node.HEAD: {
+                    if (!element.isAlwaysInBody()) {
+                        throw new RuntimeException("Element ["+element.getType()+"] is not allowed in the head. Tried to add "+element.toString());
+                    }
+                    decoratedNode.addHead(decoratedContent);
+                    break;
+                }
+
+                case Node.TAIL: {
+                    if (element.isAlwaysInHead()) {
+                        throw new RuntimeException("Element ["+element.getType()+"] is not allowed in the body. Tried to add "+element.toString());
+                    }
+                    decoratedNode.addTail(decoratedContent);
+                    break;
+                }
+
+                default: {
+                    if (element.isAlwaysInHead()) {
+                        throw new RuntimeException("Element ["+element.getType()+"] is not allowed in the body. Tried to add "+element.toString());
+                    }
+                    decoratedNode.add(pageRegion, decoratedContent);
+                    break;
+                }
+            }
         }
-        decoratedNode.regions(regions);
     }
 
     public static Html decorate(Element element, DecorationContext decorationContext) {
@@ -169,6 +168,69 @@ public class ThemeHelper {
         eventHandler.handlerClass = annotation.method.getDeclaringClass().getCanonicalName();
         eventHandler.create();
         return annotation;
+    }
+
+    private static void handleRegionsInNodeMissingInTheme(CachedThemeVariant theme, Node node) throws NodeLoadException, ModuleException {
+        Set<String> missingRegions = Sets.newHashSet();
+        for (String region : node.regions()) {
+            switch(region) {
+
+                // Implicit regions always present
+                case Node.HEAD:
+                case Node.TAIL: {
+                    break;
+                }
+                default: {
+                    if (!theme.regions.contains(region)) {
+                        missingRegions.add(region);
+                    }
+                }
+            }
+        }
+
+        if (!missingRegions.isEmpty()) {
+            if (Play.isProd() && PreviewEventGenerator.getValidTicket() == null) {
+                if (!missingRegions.isEmpty()) {
+                    for (String region : missingRegions) {
+                        Logger.warn("Your node has elements for a region named '" + region + "' but the theme has no matching region.");
+                    }
+                }
+                return;
+            }
+
+            Element wrapper = new Element.ErrorAlert().setWeight(10000);
+            for (String region : missingRegions) {
+                wrapper.addChild(new Element.Paragraph().setBody("Your node has elements for a region named '" + region + "' but the theme has no matching region."));
+            }
+            node.addElement(wrapper);
+        }
+
+    }
+
+    private static void handleRegionsInThemeMissingInNode(CachedThemeVariant theme, Node node) throws NodeLoadException, ModuleException {
+        Set<String> missingRegions = Sets.newHashSet();
+        for (String region : theme.regions) {
+            if (node.elements(region) == null) {
+                missingRegions.add(region);
+            }
+        }
+
+        if (!missingRegions.isEmpty()) {
+            if (Play.isProd() && PreviewEventGenerator.getValidTicket() == null) {
+                if (!missingRegions.isEmpty()) {
+                    for (String region : missingRegions) {
+                        Logger.warn("Your theme has a region named '"+region+"' but your node has no elements for that region.");
+                    }
+                }
+                return;
+            }
+
+            Element wrapper = new Element.ErrorAlert().setWeight(10000);
+            for (String region : missingRegions) {
+                wrapper.addChild(new Element.Paragraph().setWeight(10000).setBody("Your theme has a region named '"+region+"' but your node has no elements for that region."));
+            }
+            node.addElement(wrapper);
+        }
     }
 
 }

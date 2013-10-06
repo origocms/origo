@@ -32,27 +32,57 @@ public class Bootstrap2Theme {
         return variant_three_columns.render(node);
     }
 
-    @Decorates(types = {Element.Error.class})
+    @Decorates(types = {Element.ErrorAlert.class})
     public static Html decorateEmphasisError(Element element, DecorationContext decorationContext) {
         element.addAttribute("class", "text-error");
         return element.decorate(decorationContext);
     }
 
-    @Decorates(types = {Element.Warning.class})
+    @Decorates(types = {Element.WarningAlert.class})
     public static Html decorateEmphasisWarning(Element element, DecorationContext decorationContext) {
         element.addAttribute("class", "text-warning");
         return element.decorate(decorationContext);
     }
 
-    @Decorates(types = {Element.Info.class})
+    @Decorates(types = {Element.InfoAlert.class})
     public static Html decorateEmphasisInfo(Element element, DecorationContext decorationContext) {
         element.addAttribute("class", "text-info");
         return element.decorate(decorationContext);
     }
 
-    @Decorates(types = {Element.Success.class})
+    @Decorates(types = {Element.SuccessAlert.class})
     public static Html decorateEmphasisSuccess(Element element, DecorationContext decorationContext) {
         element.addAttribute("class", "text-success");
+        return element.decorate(decorationContext);
+    }
+
+    @Decorates(types = {Element.SuccessAlert.class})
+    public static Html decorateEmphasisMuted(Element element, DecorationContext decorationContext) {
+        element.addAttribute("class", "muted");
+        return element.decorate(decorationContext);
+    }
+
+    @Decorates(types = {Element.ErrorAlert.class})
+    public static Html decorateAlertError(Element element, DecorationContext decorationContext) {
+        element.addAttribute("class", "alert alert-error");
+        return element.decorate(decorationContext);
+    }
+
+    @Decorates(types = {Element.WarningAlert.class})
+    public static Html decorateAlertWarning(Element element, DecorationContext decorationContext) {
+        element.addAttribute("class", "alert alert-warning");
+        return element.decorate(decorationContext);
+    }
+
+    @Decorates(types = {Element.InfoAlert.class})
+    public static Html decorateAlertInfo(Element element, DecorationContext decorationContext) {
+        element.addAttribute("class", "alert alert-info");
+        return element.decorate(decorationContext);
+    }
+
+    @Decorates(types = {Element.SuccessAlert.class})
+    public static Html decorateAlertSuccess(Element element, DecorationContext decorationContext) {
+        element.addAttribute("class", "alert alert-success");
         return element.decorate(decorationContext);
     }
 

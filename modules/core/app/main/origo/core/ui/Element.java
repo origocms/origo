@@ -497,42 +497,99 @@ public class Element<T extends Element> {
 
     }
 
-    public static class Error extends Emphasis<Error> {
+    public static class ErrorEmphasis extends Emphasis<ErrorEmphasis> {
 
-        public Error() {
-            super("error", "error");
+        public ErrorEmphasis() {
+            super("emphasis_error", "error");
         }
 
     }
 
-    public static class Warning extends Emphasis<Warning> {
+    public static class WarningEmphasis extends Emphasis<WarningEmphasis> {
 
-        public Warning() {
-            super("warning", "warning");
+        public WarningEmphasis() {
+            super("emphasis_warning", "warning");
         }
 
     }
 
-    public static class Muted extends Emphasis<Muted> {
+    public static class MutedEmphasis extends Emphasis<MutedEmphasis> {
 
-        public Muted() {
-            super("warning", "muted");
+        public MutedEmphasis() {
+            super("emphasis_muted", "muted");
         }
 
     }
 
-    public static class Info extends Emphasis<Info> {
+    public static class InfoEmphasis extends Emphasis<InfoEmphasis> {
 
-        public Info() {
-            super("warning", "info");
+        public InfoEmphasis() {
+            super("emphasis_info", "info");
         }
 
     }
 
-    public static class Success extends Emphasis<Success> {
+    public static class SuccessEmphasis extends Emphasis<SuccessEmphasis> {
 
-        public Success() {
-            super("warning", "success");
+        public SuccessEmphasis() {
+            super("emphasis_success", "success");
+        }
+
+    }
+
+    public static class PrimaryEmphasis extends Emphasis<PrimaryEmphasis> {
+
+        public PrimaryEmphasis() {
+            super("emphasis_primary", "primary");
+        }
+
+    }
+
+    protected static class Alert<T> extends Element {
+
+        private String classAttribute;
+
+        protected Alert(String type, String classAttribute) {
+            super(type);
+            this.classAttribute = classAttribute;
+        }
+
+        @Override
+        public Html decorate(DecorationContext decorationContext) {
+            Html body = ThemeHelper.decorateChildren(this, decorationContext);
+            addAttribute("class", classAttribute);
+            return panel.render(this, body, this.getAttributes());
+        }
+    }
+
+    public static class ErrorAlert extends Alert<ErrorAlert> {
+
+        public ErrorAlert() {
+            super("alert_error", "error");
+        }
+
+    }
+
+    public static class WarningAlert extends Alert<WarningAlert> {
+
+        public WarningAlert() {
+            super("alert_warning", "warning");
+        }
+
+    }
+
+    public static class InfoAlert extends Alert<InfoAlert> {
+
+        public InfoAlert() {
+            super("alert_info", "info");
+        }
+
+    }
+
+    public static class SuccessAlert extends Alert<SuccessAlert> {
+
+        public SuccessAlert() {
+            super("alert_success", "success");
         }
 
     }
