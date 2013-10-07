@@ -35,7 +35,7 @@ public class ContentAdminProvider {
                 addChild(new Element.Raw().setBody(dashboard_item.render("Content", "", getDashboardUrl(), "View")));
     }
 
-    @Admin.Navigation(alias = "/content", key = "breadcrumb.origo.admin.dashboard.content.content")
+    @Admin.Navigation(alias = "/content", key = "breadcrumb.origo.admin.dashboard.content")
     public static String getDashboardUrl() {
         return routes.Dashboard.dashboard(Admin.With.CONTENT_PAGE).url();
     }

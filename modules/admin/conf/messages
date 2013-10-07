@@ -5,7 +5,6 @@ breadcrumb.origo.admin.dashboard.user = User
 breadcrumb.origo.admin.dashboard.settings = Settings
 
 # SUB CATEGORIES
-breadcrumb.origo.admin.dashboard.content.content = Content
-breadcrumb.origo.admin.dashboard.content.basicpage = Basic Page
+breadcrumb.origo.admin.dashboard.basicpage = Basic Page
 breadcrumb.origo.admin.dashboard.settings.event.provides = Provides Event Handlers
 breadcrumb.origo.admin.dashboard.user.basic = Basic User

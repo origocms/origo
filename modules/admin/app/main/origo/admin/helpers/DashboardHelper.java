@@ -91,11 +91,11 @@ public class DashboardHelper {
             }
             if (dashboardIterator.hasNext()) {
                 items.add(
-                        createBreadcrumbItem(new Element.Anchor().addAttribute("href", url).setBody(Messages.get(PREFIX +dashboard)), true)
+                        createBreadcrumbItem(new Element.Anchor().addAttribute("href", url).setBody(Messages.get(PREFIX +dashboard)))
                 );
             } else {
                 items.add(
-                        createBreadcrumbItem(new Element.Text().setBody(Messages.get(PREFIX +dashboard)), false)
+                        createBreadcrumbItem(new Element.Text().setBody(Messages.get(PREFIX +dashboard)))
                 );
             }
         }
@@ -103,15 +103,9 @@ public class DashboardHelper {
         return items;
     }
 
-    private static Element.ListItem createBreadcrumbItem(Element innerElement, boolean addDivider) {
+    private static Element.ListItem createBreadcrumbItem(Element innerElement) {
         Element.ListItem listItemElement = new Element.ListItem().addChild(innerElement);
-        if (addDivider) {
-            listItemElement.addChild(
-                    new Element.Span().addAttribute("class", "divider").setBody("/")
-            );
-        } else {
-            listItemElement.addAttribute("class", "active");
-        }
+        listItemElement.addAttribute("class", "active");
         return listItemElement;
     }
 
