@@ -625,6 +625,14 @@ public class Element<T extends Element> {
         }
     }
 
+    public static class AnchorButton extends Anchor {
+
+        public AnchorButton() {
+            super();
+        }
+
+    }
+
     private static class Heading<T extends Element> extends Base<T> {
 
         private Heading(String tagName, String type) {

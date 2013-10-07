@@ -36,14 +36,24 @@ public class ThemeHelper {
         handleRegionsInThemeMissingInNode(themeVariant, node);
 
         DecorationContext decorationContext = new DecorationContext(theme, themeVariant, node, decoratedNode);
-        for (String pageRegion : themeVariant.regions) {
+
+        // Combine theme regions with the implicit HEAD and TAIL regions
+        Set<String> regions = Sets.newHashSet(themeVariant.regions);
+        regions.add(Node.HEAD);
+        regions.add(Node.TAIL);
+
+        decorateRegions(node, decoratedNode, decorationContext, regions);
+
+        return decoratedNode;
+    }
+
+    private static void decorateRegions(Node node, DecoratedNode decoratedNode, DecorationContext decorationContext, Set<String> regions) {
+        for (String pageRegion : regions) {
             List<Element> elements = node.elements(pageRegion);
             if (elements != null) {
                 decorateElements(elements, pageRegion, decoratedNode, decorationContext);
             }
         }
-
-        return decoratedNode;
     }
 
     private static void decorateElements(List<Element> elements, String pageRegion, DecoratedNode decoratedNode, DecorationContext decorationContext) {

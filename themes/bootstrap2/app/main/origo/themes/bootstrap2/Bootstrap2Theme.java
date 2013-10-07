@@ -100,13 +100,19 @@ public class Bootstrap2Theme {
 
     @Decorates(types = {Element.InputButton.class,Element.InputReset.class})
     public static Html decorateButton(Element element, DecorationContext decorationContext) {
-        element.attributes.put("class", "btn");
+        element.addAttribute("class", "btn");
         return element.decorate(decorationContext);
     }
 
     @Decorates(types = {Element.InputSubmit.class})
     public static Html decorateSubmit(Element element, DecorationContext decorationContext) {
-        element.attributes.put("class", "btn btn-primary");
+        element.addAttribute("class", "btn btn-primary");
+        return element.decorate(decorationContext);
+    }
+
+    @Decorates(types = {Element.AnchorButton.class})
+    public static Html decorateAnchorButton(Element element, DecorationContext decorationContext) {
+        element.addAttribute("class", "btn");
         return element.decorate(decorationContext);
     }
 

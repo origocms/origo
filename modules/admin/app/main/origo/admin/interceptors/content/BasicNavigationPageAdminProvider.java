@@ -16,7 +16,6 @@ import models.origo.core.BasicPage;
 import models.origo.core.navigation.BasicNavigation;
 import models.origo.core.navigation.InternalPageIdNavigation;
 import org.apache.commons.lang3.StringUtils;
-import play.Logger;
 import play.data.DynamicForm;
 
 import java.util.List;
@@ -31,60 +30,52 @@ public class BasicNavigationPageAdminProvider {
     private static final String USE_NAVIGATION_PARAM = "nav";
 
     @OnInsertElement(with = Element.FieldSet.class, after = true)
-    public static void addNavigationFieldSet(Node node, Element parent, Element element) {
+    public static void addNavigationFieldSet(Node node, Element parent, Element element) throws ModuleException, NodeLoadException {
         if (!BasicNavigation.TYPE.equals(CoreSettingsHelper.getNavigationType())) {
             // Not the active navigation type
             return;
         }
 
         // TODO: Hard coded for now, should be moved to configuration
-        if (BasicPage.TYPE.equals(node.nodeType()) && element.getId().equals("content")) {
+        if (BasicPage.TYPE.equals(node.nodeType()) && element.getId().equals("general")) {
 
             AdminPage adminPage = (AdminPage) node;
-            try {
-                List<NavigationElement> navigationElements = NavigationHelper.getNavigation(adminPage.rootNode, NavigationElement.FRONT);
+            List<NavigationElement> navigationElements = NavigationHelper.getNavigation(adminPage.rootNode, NavigationElement.FRONT);
 
-                NavigationElement selectedNavigationElement = NavigationHelper.getSelectedNavigation(navigationElements);
-                BasicNavigation currentNavigation = null;
-                if (selectedNavigationElement != null) {
-                    currentNavigation = BasicNavigation.findWithReferenceIdentifier(selectedNavigationElement.id);
-                }
-
-                // Setup parent drop down element
-                Element.InputSelectOption noParentOption = new Element.InputSelectOption();
-                Element parentInputSelect = new Element.InputSelect().
-                        setId("text-" + PARENT_PARAM).
-                        addAttribute("name", PARENT_PARAM).
-                        addChild(noParentOption);
-                addNavigationElement(parentInputSelect, navigationElements, noParentOption, "");
-
-                // Setup the wrapper for the fieldset element
-                Element.InputCheckbox useNavigationCheckBox = new Element.InputCheckbox(Boolean.class).
-                        addAttribute("name", USE_NAVIGATION_PARAM).
-                        addAttribute("value", "true");
-                if (currentNavigation != null) {
-                    useNavigationCheckBox.addAttribute("checked", "checked");
-                }
-                parent.addChild(new Element.FieldSet().setWeight(200).
-                        addChild(new Element.Legend().setBody("Navigation")).
-                        addChild(new Element.Panel().
-                                addChild(new Element.Label().addAttribute("class", "checkbox").
-                                        addChild(useNavigationCheckBox).
-                                        setBody("Add Navigation"))).
-                        addChild(new Element.Panel().addAttribute("class", "row-fluid").
-                                addChild(new Element.Panel().addAttribute("class", "field span6").
-                                        addChild(new Element.Label().setBody("Parent").addAttribute("for", "text-" + PARENT_PARAM)).
-                                        addChild(parentInputSelect))
-                        )
-                );
-                parent.addChild(new Element.InputHidden().addAttribute("name", NAVIGATION_ID_PARAM).addAttribute("value", selectedNavigationElement != null ? selectedNavigationElement.id : ""));
-            } catch (NodeLoadException e) {
-                // TODO: recover somehow?
-                Logger.error("Unable to load node", e);
-            } catch (ModuleException e) {
-                // TODO: recover somehow?
-                Logger.error("Unable to load node", e);
+            NavigationElement selectedNavigationElement = NavigationHelper.getSelectedNavigation(navigationElements);
+            BasicNavigation currentNavigation = null;
+            if (selectedNavigationElement != null) {
+                currentNavigation = BasicNavigation.findWithReferenceIdentifier(selectedNavigationElement.id);
             }
+
+            // Setup parent drop down element
+            Element.InputSelectOption noParentOption = new Element.InputSelectOption();
+            Element parentInputSelect = new Element.InputSelect().
+                    setId("text-" + PARENT_PARAM).
+                    addAttribute("name", PARENT_PARAM).
+                    addChild(noParentOption);
+            addNavigationElement(parentInputSelect, navigationElements, noParentOption, "");
+
+            // Setup the wrapper for the fieldset element
+            Element.InputCheckbox useNavigationCheckBox = new Element.InputCheckbox(Boolean.class).
+                    addAttribute("name", USE_NAVIGATION_PARAM).
+                    addAttribute("value", "true");
+            if (currentNavigation != null) {
+                useNavigationCheckBox.addAttribute("checked", "checked");
+            }
+            parent.addChild(new Element.FieldSet().setWeight(200).
+                    addChild(new Element.Legend().setBody("Navigation")).
+                    addChild(new Element.Panel().
+                            addChild(new Element.Label().addAttribute("class", "checkbox").
+                                    addChild(useNavigationCheckBox).
+                                    setBody("Add Navigation"))).
+                    addChild(new Element.Panel().addAttribute("class", "row").
+                            addChild(new Element.Panel().addAttribute("class", "field span6").
+                                    addChild(new Element.Label().setBody("Parent").addAttribute("for", "text-" + PARENT_PARAM)).
+                                    addChild(parentInputSelect))
+                    )
+            );
+            parent.addChild(new Element.InputHidden().addAttribute("name", NAVIGATION_ID_PARAM).addAttribute("value", selectedNavigationElement != null ? selectedNavigationElement.id : ""));
         }
     }
 

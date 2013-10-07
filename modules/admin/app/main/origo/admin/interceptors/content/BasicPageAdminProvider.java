@@ -4,6 +4,7 @@ import controllers.origo.admin.routes;
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.forms.BasicPageForm;
 import main.origo.admin.helpers.DashboardHelper;
+import main.origo.admin.helpers.TabHelper;
 import main.origo.admin.helpers.forms.AdminFormHelper;
 import main.origo.admin.themes.AdminTheme;
 import main.origo.core.ModuleException;
@@ -20,23 +21,18 @@ import main.origo.core.annotations.forms.Validation;
 import main.origo.core.event.forms.OnCreateEventGenerator;
 import main.origo.core.event.forms.OnUpdateEventGenerator;
 import main.origo.core.helpers.CoreSettingsHelper;
-import main.origo.core.helpers.forms.EditorHelper;
 import main.origo.core.helpers.forms.FormHelper;
 import main.origo.core.internal.CachedThemeVariant;
 import main.origo.core.ui.Element;
 import models.origo.admin.AdminPage;
 import models.origo.core.BasicPage;
 import models.origo.core.RootNode;
-import models.origo.core.Text;
 import org.apache.commons.lang3.StringUtils;
-import play.Logger;
 import play.data.Form;
-import play.i18n.Messages;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -48,13 +44,7 @@ import java.util.Map;
 public class BasicPageAdminProvider {
 
     private static final String TITLE_PARAM = "title";
-    private static final String PUBLISH_DATE_PARAM = "publishDate";
-    private static final String PUBLISH_TIME_PARAM = "publishTime";
-    private static final String UNPUBLISH_DATE_PARAM = "unpublishDate";
-    private static final String UNPUBLISH_TIME_PARAM = "unpublishTime";
     private static final String THEME_VARIANT_PARAM = "themeVariant";
-    private static final String LEAD_PARAM = "leadText";
-    private static final String BODY_PARAM = "bodyText";
 
     /**
      * Provides a type with the static name 'content.basicpage'.
@@ -126,7 +116,7 @@ public class BasicPageAdminProvider {
      * Adds content to the nodes with the static name 'origo.admin.basicpage.edit'.
      */
     @OnLoad(type = Core.Type.FORM, with = BasicPage.TYPE, after = true)
-    public static void loadEditForm(Node node, String withType, Form<BasicPageForm> form, Element element, Map<String, Object> args) {
+    public static void loadEditForm(Node node, String withType, Form<BasicPageForm> form, Element element, Map<String, Object> args) throws NodeLoadException, ModuleException {
 
         element.setId("basicpageform").addAttribute("class", "origo-basicpageform, form");
 
@@ -135,14 +125,32 @@ public class BasicPageAdminProvider {
             element.addChild(globalErrors);
         }
 
-        /**
-         * Basic Options
-         */
+        Admin.TabBar tabBar = TabHelper.createTabBar(node);
+        tabBar.setId("pageTabBar");
+        TabHelper.addTabScript(node, tabBar);
+        element.addChild(tabBar);
+        tabBar.addChild(new Admin.TabItem().setWeight(100).addAttribute("class", "active").
+                addChild(new Element.Anchor().addAttribute("href", "#generalTab").setBody("General")));
 
-        Element basicFieldSet = new Element.FieldSet().setId("basic");
-        element.addChild(basicFieldSet);
+        Admin.TabContent tabContent = TabHelper.createTabContent(node);
+        tabContent.setId("pageTabContent");
+        element.addChild(tabContent);
 
-        basicFieldSet.addChild(new Element.Legend().setBody("Basic Information"));
+        tabContent.addChild(createGeneralInformationPane(form));
+
+        addActionButtons(element);
+
+    }
+
+    private static Admin.TabPane createGeneralInformationPane(Form<BasicPageForm> form) {
+
+        Admin.TabPane pane = new Admin.TabPane();
+        pane.setId("generalTab").addAttribute("class", "active");
+
+        Element basicFieldSet = new Element.FieldSet().setId("general");
+        pane.addChild(basicFieldSet);
+
+        basicFieldSet.addChild(new Element.Legend().setBody("General"));
 
         Element themeInputSelectElement = new Element.InputSelect();
         String themeVariantFormValue = FormHelper.getFieldValue(form, THEME_VARIANT_PARAM);
@@ -160,7 +168,7 @@ public class BasicPageAdminProvider {
             themeInputSelectElement.addChild(optionElement);
         }
 
-        basicFieldSet.addChild(new Element.Panel().addAttribute("class", "row-fluid").
+        basicFieldSet.addChild(new Element.Panel().addAttribute("class", "row").
                 addChild(
                         FormHelper.createField(form,
                                 new Element.Label().setWeight(10).setBody("Title").addAttribute("for", TITLE_PARAM),
@@ -176,112 +184,23 @@ public class BasicPageAdminProvider {
                 )
         );
 
-        /**
-         * Content
-         */
+        return pane;
+    }
 
-
-        Element contentFieldSet = new Element.FieldSet().setId("content");
-        element.addChild(contentFieldSet);
-
-        contentFieldSet.addChild(new Element.Legend().setBody("Content"));
-
-        try {
-            contentFieldSet.addChild(
-                    FormHelper.createField(form,
-                            new Element.Label().setWeight(10).setBody("Lead").addAttribute("for", LEAD_PARAM),
-                            EditorHelper.createRichTextEditor(node, new Text(FormHelper.getFieldValue(form, LEAD_PARAM))).
-                                    setWeight(20).addAttribute("class", "editor richtext").
-                                    addAttribute("name", LEAD_PARAM).addAttribute("cols", "80").addAttribute("rows", "10")
-                    )
-            );
-
-            contentFieldSet.addChild(
-                    FormHelper.createField(form,
-                            new Element.Label().setWeight(10).setBody("Body").addAttribute("for", BODY_PARAM),
-                            EditorHelper.createRichTextEditor(node, new Text(FormHelper.getFieldValue(form, BODY_PARAM))).
-                                    setWeight(20).addAttribute("class", "editor richtext").
-                                    addAttribute("name", BODY_PARAM).addAttribute("cols", "80").addAttribute("rows", "20")
-                    )
-            );
-        } catch (ModuleException e) {
-            // TODO: recover somehow?
-            Logger.error("Unable to load node", e);
-        } catch (NodeLoadException  e) {
-            // TODO: recover somehow?
-            Logger.error("Unable to load node", e);
-        }
-
-        /**
-         * Publishing options
-         */
-
-
-        Element publishingFieldSet = new Element.FieldSet().setId("publishing").setWeight(50);
-        element.addChild(publishingFieldSet);
-
-        publishingFieldSet.addChild(new Element.Legend().setBody("Publish"));
-
-        String datePattern = Messages.get("date.format");
-        Element publishElement = new Element.Panel().setWeight(15).addAttribute("class", "field").
-                addChild(new Element.Panel().addAttribute("class", "panel split-left").
-                        addChild(new Element.Label().setWeight(10).setBody("From Date").
-                                addAttribute("for", "date-" + PUBLISH_DATE_PARAM)
-                        ).
-                        addChild(new Element.InputText(Date.class).setId("date-" + PUBLISH_DATE_PARAM).
-                                addAttribute("name", PUBLISH_DATE_PARAM).
-                                addAttribute("value", FormHelper.getFieldValue(form, PUBLISH_DATE_PARAM)).
-                                addAttribute("placeholder", datePattern.toLowerCase())
-                        )
-                ).
-                addChild(new Element.Panel().addAttribute("class", "panel split-right").
-                        addChild(new Element.Label().setWeight(10).setBody("Until Date").
-                                addAttribute("for", "date-" + UNPUBLISH_DATE_PARAM)
-                        ).
-                        addChild(new Element.InputText(Date.class).setId("date-" + UNPUBLISH_DATE_PARAM).
-                                addAttribute("name", UNPUBLISH_DATE_PARAM).
-                                addAttribute("value", FormHelper.getFieldValue(form, UNPUBLISH_DATE_PARAM)).
-                                addAttribute("placeholder", datePattern.toLowerCase()))
-                );
-        publishingFieldSet.addChild(publishElement);
-
-        String timePattern = Messages.get("time.format");
-        Element publishTimeElement = new Element.Panel().setWeight(15).addAttribute("class", "field").
-                addChild(new Element.Panel().addAttribute("class", "panel split-left").
-                        addChild(new Element.Label().setWeight(10).setBody("From Time").
-                                addAttribute("for", "date-" + PUBLISH_TIME_PARAM)
-                        ).
-                        addChild(new Element.InputText().setId("date-" + PUBLISH_TIME_PARAM).
-                                addAttribute("name", PUBLISH_TIME_PARAM).
-                                addAttribute("value", FormHelper.getFieldValue(form, PUBLISH_TIME_PARAM)).
-                                addAttribute("placeholder", timePattern.toLowerCase()))
-                ).
-                addChild(new Element.Panel().addAttribute("class", "panel split-right").
-                        addChild(new Element.Label().setWeight(10).setBody("Until Time").
-                                addAttribute("for", "date-" + UNPUBLISH_TIME_PARAM)
-                        ).
-                        addChild(new Element.InputText().setId("date-" + UNPUBLISH_TIME_PARAM).
-                                addAttribute("name", UNPUBLISH_TIME_PARAM).
-                                addAttribute("value", FormHelper.getFieldValue(form, UNPUBLISH_TIME_PARAM)).
-                                addAttribute("placeholder", timePattern.toLowerCase()))
-                );
-        publishingFieldSet.addChild(publishTimeElement);
-
-        element.addChild(new Element.Panel().setId("actions").setWeight(1000).addAttribute("class", "well well-large").
+    private static void addActionButtons(Element element) {
+        element.addChild(new Element.Well().setId("actions").setWeight(1000).
                 addChild(new Element.Panel().
                         addAttribute("class", "pull-left").
-                        addChild(new Element.Anchor().setWeight(20).
-                                addAttribute("class", "btn").
+                        addChild(new Element.AnchorButton().setWeight(20).
                                 addAttribute("href", getProviderUrl()).
                                 setBody("Cancel")
                         )
                 ).
                 addChild(new Element.Panel().
                         addAttribute("class", "pull-right").
-                        addChild(new Element.InputSubmit().setWeight(10).addAttribute("class", "btn btn-primary").addAttribute("value", "Save")).
-                        addChild(new Element.InputReset().setWeight(15).addAttribute("class", "btn").addAttribute("value", "Reset"))
+                        addChild(new Element.InputSubmit().setWeight(10).addAttribute("value", "Save")).
+                        addChild(new Element.InputReset().setWeight(15).addAttribute("value", "Reset"))
                 ));
-
     }
 
     /**

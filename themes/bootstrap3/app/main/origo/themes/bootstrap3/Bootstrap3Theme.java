@@ -112,19 +112,25 @@ public class Bootstrap3Theme {
 
     @Decorates(types = {Element.InputButton.class,Element.InputReset.class})
     public static Html decorateButton(Element element, DecorationContext decorationContext) {
-        element.attributes.put("class", "btn btn-default");
+        element.addAttribute("class", "btn btn-default");
         return element.decorate(decorationContext);
     }
 
     @Decorates(types = {Element.InputSubmit.class})
     public static Html decorateSubmit(Element element, DecorationContext decorationContext) {
-        element.attributes.put("class", "btn btn-default btn-primary");
+        element.addAttribute("class", "btn btn-default btn-primary");
         return element.decorate(decorationContext);
     }
 
     @Decorates(types = {Element.InputText.class, Element.InputSelect.class, Element.InputPassword.class, Element.InputTextArea.class})
     public static Html decorateFormControls(Element element, DecorationContext decorationContext) {
-        element.attributes.put("class", "form-control");
+        element.addAttribute("class", "form-control");
+        return element.decorate(decorationContext);
+    }
+
+    @Decorates(types = {Element.AnchorButton.class})
+    public static Html decorateAnchorButton(Element element, DecorationContext decorationContext) {
+        element.addAttribute("class", "btn btn-default");
         return element.decorate(decorationContext);
     }
 }
