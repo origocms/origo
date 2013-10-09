@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @Interceptor
-public class ContentAdminProvider {
+public class DefaultContentDashboardProvider {
 
     /*
      * Dashboard Item for front page.

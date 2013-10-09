@@ -65,7 +65,7 @@ public class PreviewTokenInterceptor {
 
         element.addChild(new Element.Container().setId("actions").setWeight(1000).
                 addChild(new Element.Container().
-                        addChild(new Element.InputSubmit().setWeight(10).addAttribute("class", "btn btn-primary").addAttribute("value", "Create"))
+                        addChild(new Element.SubmitButton().setWeight(10).setBody("Create"))
                 ));
     }
 

@@ -92,13 +92,13 @@ public class Bootstrap2Theme {
         return element.decorate(decorationContext);
     }
 
-    @Decorates(types = {Element.InputButton.class,Element.InputReset.class})
+    @Decorates(types = {Element.Button.class,Element.ResetButton.class})
     public static Html decorateButton(Element element, DecorationContext decorationContext) {
         element.addAttribute("class", "btn");
         return element.decorate(decorationContext);
     }
 
-    @Decorates(types = {Element.InputSubmit.class})
+    @Decorates(types = {Element.SubmitButton.class})
     public static Html decorateSubmit(Element element, DecorationContext decorationContext) {
         element.addAttribute("class", "btn btn-primary");
         return element.decorate(decorationContext);

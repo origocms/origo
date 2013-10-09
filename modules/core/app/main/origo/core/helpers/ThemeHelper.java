@@ -115,6 +115,9 @@ public class ThemeHelper {
 
     public static Html decorateChildren(Element parent, DecorationContext decorationContext) {
         Html decoratedOutput = Html.empty();
+        if (parent.hasBody()) {
+            decoratedOutput.$plus(parent.getBody());
+        }
         if (parent.hasChildren()) {
             decorationContext.nest(parent);
             @SuppressWarnings("unchecked") final List<Element> children = parent.getChildren();
@@ -122,9 +125,6 @@ public class ThemeHelper {
                 decoratedOutput.$plus(decorate(childElement, decorationContext));
             }
             decorationContext.unNest();
-        }
-        if (parent.hasBody()) {
-            decoratedOutput.$plus(parent.getBody());
         }
         return decoratedOutput;
     }

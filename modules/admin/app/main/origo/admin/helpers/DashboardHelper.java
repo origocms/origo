@@ -58,11 +58,11 @@ public class DashboardHelper {
         return new Admin.DashboardItem().addAttribute("class", "item");
     }
 
-    public static Element.ListBulleted createBreadcrumb(String withType) {
+    public static Element.ListUnordered createBreadcrumb(String withType) {
         return createBreadcrumb(withType, null);
     }
 
-    public static Element.ListBulleted createBreadcrumb(String withType, String extraBullet) {
+    public static Element.ListUnordered createBreadcrumb(String withType, String extraBullet) {
         List<String> dashboards = createDashboardTrail(withType);
         if (StringUtils.isNotBlank(extraBullet)) {
             dashboards.add(extraBullet);
@@ -70,10 +70,10 @@ public class DashboardHelper {
         return createBreadcrumb(dashboards);
     }
 
-    private static Element.ListBulleted createBreadcrumb(List<String> dashboards) {
+    private static Element.ListUnordered createBreadcrumb(List<String> dashboards) {
         List<Element.ListItem> items = createBreadcrumbItems(dashboards);
 
-        return new Element.ListBulleted().
+        return new Element.ListUnordered().
                 addAttribute("class", "breadcrumb").
                 addChildren(items);
     }

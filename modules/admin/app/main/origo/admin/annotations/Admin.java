@@ -57,7 +57,7 @@ public class Admin {
 
     }
 
-    public static class TabBar extends Element.ListBulleted {
+    public static class TabBar extends Element.ListUnordered {
         public TabBar() {
             super();
         }

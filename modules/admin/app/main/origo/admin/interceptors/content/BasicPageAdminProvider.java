@@ -187,9 +187,9 @@ public class BasicPageAdminProvider {
 
     private static void addActionButtons(Element element) {
         element.addChild(new Admin.ActionPanel(
-                new Element.InputSubmit().setWeight(10).addAttribute("value", "Save"),
+                new Element.SubmitButton().setWeight(10).setBody("Save"),
                 new Element.AnchorButton().setWeight(20).addAttribute("href", getProviderUrl()).setBody("Cancel"),
-                new Element.InputReset().setWeight(15).addAttribute("value", "Reset")
+                new Element.ResetButton().setWeight(15).setBody("Reset")
         ));
     }
 

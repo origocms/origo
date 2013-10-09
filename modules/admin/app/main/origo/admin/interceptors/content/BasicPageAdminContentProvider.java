@@ -7,10 +7,8 @@ import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnLoad;
-import main.origo.core.helpers.forms.EditorHelper;
 import main.origo.core.helpers.forms.FormHelper;
 import main.origo.core.ui.Element;
-import models.origo.core.Text;
 import play.data.Form;
 
 import java.util.Map;
@@ -18,8 +16,6 @@ import java.util.Map;
 @Interceptor
 public class BasicPageAdminContentProvider {
 
-    private static final String LEAD_PARAM = "lead";
-    private static final String BODY_PARAM = "body";
 
     /*
      * Content
@@ -45,23 +41,32 @@ public class BasicPageAdminContentProvider {
 
         Form<BasicPageForm> form = FormHelper.getValidationResult(BasicPageForm.class);
 
-        contentFieldSet.addChild(
-                FormHelper.createField(form,
-                        new Element.Label().setWeight(10).setBody("Lead").addAttribute("for", LEAD_PARAM),
-                        EditorHelper.createRichTextEditor(node, new Text(FormHelper.getFieldValue(form, LEAD_PARAM))).
-                                setWeight(20).addAttribute("class", "editor richtext").
-                                addAttribute("name", LEAD_PARAM).addAttribute("cols", "80").addAttribute("rows", "10")
-                )
-        );
+        Element actionButton = new Element.DropDownButton(new Element.Button().setBody("Action").addChild(new Element.Span().addAttribute("class", "caret"))).
+                addChildren(
+                        new Element.Anchor().setBody("Add Content"),
+                        new Element.Anchor().setBody("Remove Content"),
+                        new Element.Divider(),
+                        new Element.Anchor().setBody("Manage Content")
+                );
+        contentFieldSet.addChild(actionButton);
 
-        contentFieldSet.addChild(
-                FormHelper.createField(form,
-                        new Element.Label().setWeight(10).setBody("Body").addAttribute("for", BODY_PARAM),
-                        EditorHelper.createRichTextEditor(node, new Text(FormHelper.getFieldValue(form, BODY_PARAM))).
-                                setWeight(20).addAttribute("class", "editor richtext").
-                                addAttribute("name", BODY_PARAM).addAttribute("cols", "80").addAttribute("rows", "20")
-                )
-        );
+//        contentFieldSet.addChild(
+//                FormHelper.createField(form,
+//                        new Element.Label().setWeight(10).setBody("Lead").addAttribute("for", LEAD_PARAM),
+//                        EditorHelper.createRichTextEditor(node, new Text(FormHelper.getFieldValue(form, LEAD_PARAM))).
+//                                setWeight(20).addAttribute("class", "editor richtext").
+//                                addAttribute("name", LEAD_PARAM).addAttribute("cols", "80").addAttribute("rows", "10")
+//                )
+//        );
+//
+//        contentFieldSet.addChild(
+//                FormHelper.createField(form,
+//                        new Element.Label().setWeight(10).setBody("Body").addAttribute("for", BODY_PARAM),
+//                        EditorHelper.createRichTextEditor(node, new Text(FormHelper.getFieldValue(form, BODY_PARAM))).
+//                                setWeight(20).addAttribute("class", "editor richtext").
+//                                addAttribute("name", BODY_PARAM).addAttribute("cols", "80").addAttribute("rows", "20")
+//                )
+//        );
     }
 
 }

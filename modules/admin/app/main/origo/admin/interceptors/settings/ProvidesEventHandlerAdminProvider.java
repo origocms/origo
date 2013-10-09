@@ -194,8 +194,8 @@ public class ProvidesEventHandlerAdminProvider {
                 ).
                 addChild(new Element.Container().
                         addAttribute("class", "pull-right").
-                        addChild(new Element.InputSubmit().setWeight(10).addAttribute("class", "btn btn-primary").addAttribute("value", "Save")).
-                        addChild(new Element.InputReset().setWeight(15).addAttribute("class", "btn").addAttribute("value", "Reset"))
+                        addChild(new Element.SubmitButton().setWeight(10).setBody("Save")).
+                        addChild(new Element.ResetButton().setWeight(15).setBody("Reset"))
                 );
     }
 
@@ -273,7 +273,7 @@ public class ProvidesEventHandlerAdminProvider {
 
     private static void addProviderTypeElements(Node node, List<String> providerTypes, String selectedEventType) {
 
-        Element providerTypeElement = new Element.ListBulleted().
+        Element providerTypeElement = new Element.ListUnordered().
                 addAttribute("class", "nav nav-tabs nav-stacked");
         for (String providerName : providerTypes) {
             Element eventTypeListItem = new Element.ListItem().

@@ -146,9 +146,9 @@ public class Element<T extends Element> {
 
     }
 
-    public static class ListBulleted extends Element<ListBulleted> {
+    public static class ListUnordered extends Element<ListUnordered> {
 
-        public ListBulleted() {
+        public ListUnordered() {
             super("list_bulleted");
         }
 
@@ -368,42 +368,109 @@ public class Element<T extends Element> {
         }
     }
 
-    public static class InputButton extends Element<InputButton> {
+    public static class Button extends Element<Button> {
 
-        public InputButton() {
-            super("input_button");
+        public Button() {
+            super("button");
         }
 
         @Override
         public Html decorate(DecorationContext decorationContext) {
             Map<String, String> combinedAttributes = ElementHelper.combineAttributes(Collections.singletonMap("type", "button"), this.getAttributes());
-            return input.render(this, null, combinedAttributes);
+            Html body = ThemeHelper.decorateChildren(this, decorationContext);
+            return button.render(this, body, attributes);
         }
     }
 
-    public static class InputSubmit extends Element<InputSubmit> {
+    public static class SubmitButton extends Element<SubmitButton> {
 
-        public InputSubmit() {
-            super("input_submit");
+        public SubmitButton() {
+            super("submit_button");
         }
 
         @Override
         public Html decorate(DecorationContext decorationContext) {
             Map<String, String> combinedAttributes = ElementHelper.combineAttributes(Collections.singletonMap("type", "submit"), this.getAttributes());
-            return input.render(this, null, combinedAttributes);
+            Html body = ThemeHelper.decorateChildren(this, decorationContext);
+            return button.render(this, body, attributes);
         }
     }
 
-    public static class InputReset extends Element<InputReset> {
+    public static class ResetButton extends Element<ResetButton> {
 
-        public InputReset() {
-            super("input_reset");
+        public ResetButton() {
+            super("reset_button");
         }
 
         @Override
         public Html decorate(DecorationContext decorationContext) {
             Map<String, String> combinedAttributes = ElementHelper.combineAttributes(Collections.singletonMap("type", "reset"), this.getAttributes());
-            return input.render(this, null, combinedAttributes);
+            Html body = ThemeHelper.decorateChildren(this, decorationContext);
+            return button.render(this, body, attributes);
+        }
+    }
+
+    public static class ButtonGroup extends Element.Container {
+
+        public enum Type {
+            NORMAL, VERTICAL, JUSTIFIED
+        }
+
+        private Type type;
+
+        public ButtonGroup() {
+            this(Type.NORMAL);
+        }
+
+        public ButtonGroup(Type type) {
+            this.type = type;
+        }
+
+        @Override
+        public Html decorate(DecorationContext decorationContext) {
+            switch(type) {
+                case NORMAL:
+                    addAttribute("class", "btn-group");
+                    break;
+                case JUSTIFIED:
+                    addAttribute("class", "btn-group btn-group-justified");
+                    break;
+                case VERTICAL:
+                    addAttribute("class", "btn-group-vertical");
+                    break;
+            }
+            return super.decorate(decorationContext);
+        }
+    }
+
+    public static class DropDownButton extends Element.Container {
+
+        private Button button;
+
+        public DropDownButton(Button button) {
+            super();
+            this.button = button;
+
+        }
+
+        @Override
+        public Html decorate(DecorationContext decorationContext) {
+            button.addAttribute("class", "dropdown-toggle");
+            button.addAttribute("data-toggle", "dropdown");
+
+            ButtonGroup btnGroup = ElementHelper.copyBasicAttributes(this, ButtonGroup.class);
+            ListUnordered list = new ListUnordered().
+                    addAttribute("class", "dropdown-menu").addAttribute("role", "menu");
+            for (Element element : getChildren()) {
+                if (element instanceof Divider) {
+                    list.addChild(new ListItem().addAttribute("class", "divider"));
+                } else {
+                    list.addChild(new ListItem().addChild(element));
+                }
+            }
+            btnGroup.addChild(button).addChild(list);
+
+            return btnGroup.decorate(decorationContext);
         }
     }
 
@@ -446,6 +513,12 @@ public class Element<T extends Element> {
         public Html decorate(DecorationContext decorationContext) {
             Map<String, String> attributes = ElementHelper.combineAttributes(Collections.<String, String>singletonMap("type", "password"), this.getAttributes());
             return input.render(this, null, attributes);
+        }
+    }
+
+    public static class Divider extends Base<Divider> {
+        public Divider() {
+            super("hr", "divider");
         }
     }
 
@@ -807,6 +880,11 @@ public class Element<T extends Element> {
         }
         ElementHelper.reorderElements(this.children);
         return (T) this;
+    }
+
+    public T addChildren(Element... elements) {
+        this.addChildren(Arrays.<Element>asList(elements));
+        return (T)this;
     }
 
     public boolean removeChild(Element element) {
