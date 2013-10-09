@@ -367,7 +367,7 @@ public class AnnotationProcessor {
                     "' but the method does not match the required signature (different amount of parameters)");
         }
         for (int i = 0; i < pc.length; i++) {
-            if (!pc[i].equals(parameterTypes[i])) {
+            if (!parameterTypes[i].isAssignableFrom(pc[i])) {
                 throw new InitializationException("Method '" + m.getDeclaringClass() + "." + m.getName() + "' in " +
                         " is annotated with '" + annotationClass.getName() +
                         "' but the method does not match the required signature (parameter '" + parameterTypes[i].getName() + "' has the wrong type)");

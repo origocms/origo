@@ -79,19 +79,26 @@ public class Admin {
         public TabPane() {
             super();
         }
-
     }
 
-    public static class TabScript extends Element.Script {
-        public TabScript() {
-            super();
+    public static class ActionPanel extends Element.Panel {
+        public Element submit;
+        public Element cancel;
+        public Element reset;
+
+        public ActionPanel(Element submit, Element cancel, Element reset) {
+            this.submit = submit;
+            this.cancel = cancel;
+            this.reset = reset;
         }
+
     }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.METHOD})
     public static @interface Navigation {
         String alias();
+
         String key();
 
         int weight() default 1000;

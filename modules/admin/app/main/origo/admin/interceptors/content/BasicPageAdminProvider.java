@@ -126,11 +126,11 @@ public class BasicPageAdminProvider {
         }
 
         Admin.TabBar tabBar = TabHelper.createTabBar(node);
-        tabBar.setId("pageTabBar");
-        TabHelper.addTabScript(node, tabBar);
-        element.addChild(tabBar);
-        tabBar.addChild(new Admin.TabItem().setWeight(100).addAttribute("class", "active").
-                addChild(new Element.Anchor().addAttribute("href", "#generalTab").setBody("General")));
+        element.addChild(tabBar.setId("pageTabBar").
+                addChild(new Admin.TabItem().setWeight(100).
+                        addAttribute("class", "active").
+                        addChild(new Element.Anchor().
+                                addAttribute("href", "#generalTab").setBody("General"))));
 
         Admin.TabContent tabContent = TabHelper.createTabContent(node);
         tabContent.setId("pageTabContent");
@@ -188,19 +188,11 @@ public class BasicPageAdminProvider {
     }
 
     private static void addActionButtons(Element element) {
-        element.addChild(new Element.Well().setId("actions").setWeight(1000).
-                addChild(new Element.Panel().
-                        addAttribute("class", "pull-left").
-                        addChild(new Element.AnchorButton().setWeight(20).
-                                addAttribute("href", getProviderUrl()).
-                                setBody("Cancel")
-                        )
-                ).
-                addChild(new Element.Panel().
-                        addAttribute("class", "pull-right").
-                        addChild(new Element.InputSubmit().setWeight(10).addAttribute("value", "Save")).
-                        addChild(new Element.InputReset().setWeight(15).addAttribute("value", "Reset"))
-                ));
+        element.addChild(new Admin.ActionPanel(
+                new Element.InputSubmit().setWeight(10).addAttribute("value", "Save"),
+                new Element.AnchorButton().setWeight(20).addAttribute("href", getProviderUrl()).setBody("Cancel"),
+                new Element.InputReset().setWeight(15).addAttribute("value", "Reset")
+        ));
     }
 
     /**

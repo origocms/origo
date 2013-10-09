@@ -18,4 +18,5 @@ public class AdminFormHelper extends FormHelper {
     public static Call getPostURL() {
         return routes.Submit.submit();
     }
+
 }

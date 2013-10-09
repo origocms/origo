@@ -198,6 +198,36 @@ public class AdminTheme {
         return element.decorate(decorationContext);
     }
 
+    @Decorates(types = {Admin.ActionPanel.class})
+    public static Html decorateActionPanel(Admin.ActionPanel element, DecorationContext decorationContext) {
+        Element panel = new Element.Panel().setId(element.getId()).setWeight(element.getWeight());
+        for (String attributeKey : element.getAttributes().keySet()) {
+            panel.addAttribute(attributeKey, element.getAttributes().get(attributeKey));
+        }
+        panel.addAttribute("class", "panel panel-default");
+        Element.Panel panelBody = new Element.Panel().addAttribute("class", "panel-body");
+        panel.addChild(panelBody);
+        if (element.cancel != null) {
+            panelBody.addChild(new Element.Panel().
+                    addAttribute("class", "pull-left").
+                    addChild(element.cancel)
+            );
+        }
+        if (element.submit != null || element.reset != null) {
+            Element.Panel buttonPanel = new Element.Panel().addAttribute("class", "pull-right");
+            panelBody.addChild(buttonPanel);
+            if (element.submit != null) {
+                buttonPanel.addChild(element.submit);
+            }
+            if (element.reset != null) {
+                buttonPanel.addChild(element.reset);
+            }
+        }
+
+        return panel.decorate(decorationContext);
+    }
+
+
     // TODO: Load this from database instead
     public static Meta centerColumnMeta() {
         Meta meta = new Meta();

@@ -7,7 +7,6 @@ import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Core;
 import main.origo.core.event.OnLoadEventGenerator;
-import main.origo.core.ui.Element;
 
 import java.util.Collections;
 
@@ -48,13 +47,6 @@ public class TabHelper {
 
         OnLoadEventGenerator.triggerAfterInterceptor(node, Core.Type.NODE, Admin.With.TAB_CONTENT, content, Collections.<String, Object>emptyMap());
         return content;
-    }
-
-    public static void addTabScript(Node node, Element element) {
-        node.addTailElement(
-                new Element.Script().addAttribute("type", "text/javascript").setBody(
-                        "$(document).ready(function () { $('#" + element.getId() + "').tab() })")
-        );
     }
 
 }
