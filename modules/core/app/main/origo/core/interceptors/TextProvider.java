@@ -20,7 +20,7 @@ public class TextProvider {
         if (block != null && StringUtils.isNotBlank(block.referenceId)) {
             Text text = Text.findWithIdentifier(block.referenceId);
             if (text != null) {
-                return new Element.Panel().setId(block.identifier).addChild(new Element.Paragraph().setId(text.identifier).setBody(text.value));
+                return new Element.Container().setId(block.identifier).addChild(new Element.Paragraph().setId(text.identifier).setBody(text.value));
             }
         }
 

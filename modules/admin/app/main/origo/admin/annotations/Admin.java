@@ -69,19 +69,19 @@ public class Admin {
         }
     }
 
-    public static class TabContent extends Element.Panel {
+    public static class TabContent extends Element.Container {
         public TabContent() {
             super();
         }
     }
 
-    public static class TabPane extends Element.Panel {
+    public static class TabPane extends Element.Container {
         public TabPane() {
             super();
         }
     }
 
-    public static class ActionPanel extends Element.Panel {
+    public static class ActionPanel extends Element.Container {
         public Element submit;
         public Element cancel;
         public Element reset;

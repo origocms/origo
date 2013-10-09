@@ -51,7 +51,7 @@ public class PreviewTokenInterceptor {
 
         previewFieldSet.addChild(new Element.Legend().setBody("Preview"));
 
-        previewFieldSet.addChild(new Element.Panel().
+        previewFieldSet.addChild(new Element.Container().
                 addChild(FormHelper.createField(
                         form,
                         new Element.Label().setWeight(10).setBody("Date").addAttribute("for", DATETIME_PARAM),
@@ -63,8 +63,8 @@ public class PreviewTokenInterceptor {
                 )
         );
 
-        element.addChild(new Element.Panel().setId("actions").setWeight(1000).
-                addChild(new Element.Panel().
+        element.addChild(new Element.Container().setId("actions").setWeight(1000).
+                addChild(new Element.Container().
                         addChild(new Element.InputSubmit().setWeight(10).addAttribute("class", "btn btn-primary").addAttribute("value", "Create"))
                 ));
     }

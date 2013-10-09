@@ -128,6 +128,7 @@ public class AdminTheme {
     @Decorates(types = {Element.Form.class})
     public static Html decorateForm(Element element, DecorationContext decorationContext) {
         element.addAttribute("role", "form");
+        element.addAttribute("class", "horizontal");
         return element.decorate(decorationContext);
     }
 
@@ -163,7 +164,7 @@ public class AdminTheme {
 
     @Decorates(types = {Admin.TabBar.class})
     public static Html decorateTabBar(Element element, DecorationContext decorationContext) {
-        element.addAttribute("class", "nav nav-tabs");
+        element.addAttribute("class", "nav nav-pills");
         return element.decorate(decorationContext);
     }
 
@@ -200,27 +201,27 @@ public class AdminTheme {
 
     @Decorates(types = {Admin.ActionPanel.class})
     public static Html decorateActionPanel(Admin.ActionPanel element, DecorationContext decorationContext) {
-        Element panel = new Element.Panel().setId(element.getId()).setWeight(element.getWeight());
+        Element panel = new Element.Container().setId(element.getId()).setWeight(element.getWeight());
         for (String attributeKey : element.getAttributes().keySet()) {
             panel.addAttribute(attributeKey, element.getAttributes().get(attributeKey));
         }
         panel.addAttribute("class", "panel panel-default");
-        Element.Panel panelBody = new Element.Panel().addAttribute("class", "panel-body");
-        panel.addChild(panelBody);
+        Element.Container containerBody = new Element.Container().addAttribute("class", "panel-body");
+        panel.addChild(containerBody);
         if (element.cancel != null) {
-            panelBody.addChild(new Element.Panel().
+            containerBody.addChild(new Element.Container().
                     addAttribute("class", "pull-left").
                     addChild(element.cancel)
             );
         }
         if (element.submit != null || element.reset != null) {
-            Element.Panel buttonPanel = new Element.Panel().addAttribute("class", "pull-right");
-            panelBody.addChild(buttonPanel);
+            Element.Container buttonContainer = new Element.Container().addAttribute("class", "pull-right");
+            containerBody.addChild(buttonContainer);
             if (element.submit != null) {
-                buttonPanel.addChild(element.submit);
+                buttonContainer.addChild(element.submit);
             }
             if (element.reset != null) {
-                buttonPanel.addChild(element.reset);
+                buttonContainer.addChild(element.reset);
             }
         }
 

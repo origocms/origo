@@ -449,29 +449,88 @@ public class Element<T extends Element> {
         }
     }
 
+    public static class Container extends Element<Container> {
+
+        public Container() {
+            super("container");
+        }
+
+        @Override
+        public Html decorate(DecorationContext decorationContext) {
+            Html body = ThemeHelper.decorateChildren(this, decorationContext);
+            return container.render(this, body, this.getAttributes());
+        }
+    }
+
+    public static class Well extends Element<Well> {
+        public static enum Size {
+
+            SMALL("well well-sm"), NORMAL("well"), LARGE("well-lg");
+
+            private String classes;
+            Size(String classes) {
+                this.classes = classes;
+            }
+        }
+
+        private Size size;
+
+        public Well() {
+            super("well");
+            size = Size.NORMAL;
+        }
+
+        @Override
+        public Html decorate(DecorationContext decorationContext) {
+            Html body = ThemeHelper.decorateChildren(this, decorationContext);
+            addAttribute("class", this.size.classes);
+
+            return container.render(this, body, this.getAttributes());
+        }
+    }
+
     public static class Panel extends Element<Panel> {
+
+        private Element header;
+        private Element footer;
 
         public Panel() {
             super("panel");
         }
 
-        @Override
-        public Html decorate(DecorationContext decorationContext) {
-            Html body = ThemeHelper.decorateChildren(this, decorationContext);
-            return panel.render(this, body, this.getAttributes());
+        public Panel(Element header) {
+            super("panel");
+            this.header = header;
         }
-    }
 
-    public static class Well extends Element<Panel> {
-        public Well() {
-            super("well");
-            addAttribute("class", "well");
+        public Panel(Element header, Element footer) {
+            super("panel");
+            this.header = header;
+            this.footer = footer;
         }
 
         @Override
         public Html decorate(DecorationContext decorationContext) {
-            Html body = ThemeHelper.decorateChildren(this, decorationContext);
-            return panel.render(this, body, this.getAttributes());
+            addAttribute("class", "panel panel-default");
+            Container panel = ElementHelper.copyBasicAttributes(this, Container.class);
+            if (header != null) {
+                panel.addChild(
+                        new Container().addAttribute("class", "panel-heading").
+                                addChild(header.addAttribute("class", "panel-title"))
+                );
+            }
+            panel.addChild(
+                    new Container().addAttribute("class", "panel-body").
+                            addChildren(getChildren()));
+            if (footer != null) {
+                panel.addChild(
+                        new Container().addAttribute("class", "panel-footer").
+                                addChild(footer)
+                );
+            }
+
+            Html body = ThemeHelper.decorateChildren(panel, decorationContext);
+            return container.render(panel, body, panel.getAttributes());
         }
     }
 
@@ -558,7 +617,7 @@ public class Element<T extends Element> {
         public Html decorate(DecorationContext decorationContext) {
             Html body = ThemeHelper.decorateChildren(this, decorationContext);
             addAttribute("class", classAttribute);
-            return panel.render(this, body, this.getAttributes());
+            return container.render(this, body, this.getAttributes());
         }
     }
 
@@ -712,12 +771,12 @@ public class Element<T extends Element> {
 
     private Class inputType;
 
-    protected Element(String type) {
+    protected <T> Element(String type) {
         this.id = UUID.randomUUID().toString();
         this.type = type;
     }
 
-    protected Element(String type, Class t) {
+    protected <T> Element(String type, Class t) {
         this.id = UUID.randomUUID().toString();
         this.type = type;
         this.inputType = t;
@@ -727,9 +786,9 @@ public class Element<T extends Element> {
         return id;
     }
 
-    public Element setId(String id) {
+    public T setId(String id) {
         this.id = id;
-        return this;
+        return (T) this;
     }
 
     public String getType() {

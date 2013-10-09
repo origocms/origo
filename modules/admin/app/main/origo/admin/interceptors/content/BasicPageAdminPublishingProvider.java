@@ -49,8 +49,8 @@ public class BasicPageAdminPublishingProvider {
         publishingFieldSet.addChild(new Element.Legend().setBody("Publish"));
 
         String datePattern = Messages.get("date.format");
-        Element publishElement = new Element.Panel().setWeight(15).addAttribute("class", "field").
-                addChild(new Element.Panel().addAttribute("class", "panel split-left").
+        Element publishElement = new Element.Container().setWeight(15).addAttribute("class", "field").
+                addChild(new Element.Container().addAttribute("class", "panel split-left").
                         addChild(new Element.Label().setWeight(10).setBody("From Date").
                                 addAttribute("for", "date-" + PUBLISH_DATE_PARAM)
                         ).
@@ -60,7 +60,7 @@ public class BasicPageAdminPublishingProvider {
                                 addAttribute("placeholder", datePattern.toLowerCase())
                         )
                 ).
-                addChild(new Element.Panel().addAttribute("class", "panel split-right").
+                addChild(new Element.Container().addAttribute("class", "panel split-right").
                         addChild(new Element.Label().setWeight(10).setBody("Until Date").
                                 addAttribute("for", "date-" + UNPUBLISH_DATE_PARAM)
                         ).
@@ -72,8 +72,8 @@ public class BasicPageAdminPublishingProvider {
         publishingFieldSet.addChild(publishElement);
 
         String timePattern = Messages.get("time.format");
-        Element publishTimeElement = new Element.Panel().setWeight(15).addAttribute("class", "field").
-                addChild(new Element.Panel().addAttribute("class", "panel split-left").
+        Element publishTimeElement = new Element.Container().setWeight(15).addAttribute("class", "field").
+                addChild(new Element.Container().addAttribute("class", "panel split-left").
                         addChild(new Element.Label().setWeight(10).setBody("From Time").
                                 addAttribute("for", "date-" + PUBLISH_TIME_PARAM)
                         ).
@@ -82,7 +82,7 @@ public class BasicPageAdminPublishingProvider {
                                 addAttribute("value", FormHelper.getFieldValue(form, PUBLISH_TIME_PARAM)).
                                 addAttribute("placeholder", timePattern.toLowerCase()))
                 ).
-                addChild(new Element.Panel().addAttribute("class", "panel split-right").
+                addChild(new Element.Container().addAttribute("class", "panel split-right").
                         addChild(new Element.Label().setWeight(10).setBody("Until Time").
                                 addAttribute("for", "date-" + UNPUBLISH_TIME_PARAM)
                         ).

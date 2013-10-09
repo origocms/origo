@@ -23,7 +23,7 @@ public class BasicUserAdminProvider {
     @Relationship(parent = Admin.With.USER_PAGE)
     public static Element createDashboardItem(Node node, String withType, Map<String, Object> args) {
         return new Admin.DashboardItem().addAttribute("class", "item").
-                addChild(new Element.Panel().setWeight(20).
+                addChild(new Element.Container().setWeight(20).
                         addChild(new Element.Heading4().setWeight(10).setBody("User").addAttribute("class", "title")));
     }
 

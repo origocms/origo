@@ -52,7 +52,7 @@ public class DefaultUserManagementDashboardProvider {
     public static Element addUserDashboardItemToFrontPage(Node node, String withType, Map<String, Object> args) {
         return DashboardHelper.createBasicDashboardItem().
                 setId("item.link." + Admin.With.USER_PAGE).
-                addChild(new Element.Panel().setWeight(20).
+                addChild(new Element.Container().setWeight(20).
                         addChild(new Element.Heading4().setWeight(10).setBody("User Management").addAttribute("class", "title")).
                         addChild(new Element.Anchor().setWeight(10).setBody("View").addAttribute("href", getDashboardUrl())));
     }

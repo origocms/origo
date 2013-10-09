@@ -34,11 +34,11 @@ public class AliasPageAdminProvider {
             }
             parent.addChild(new Element.FieldSet().setWeight(100).
                     addChild(new Element.Legend().setBody("Alias")).
-                    addChild(new Element.Panel().
+                    addChild(new Element.Container().
                             addChild(new Element.Label().addAttribute("class", "checkbox").
                                     addChild(useAliasCheckbox).
                                     setBody("Add Alias"))).
-                    addChild(new Element.Panel().setWeight(20).addAttribute("class", "field").
+                    addChild(new Element.Container().setWeight(20).addAttribute("class", "field").
                             addChild(new Element.Label().setWeight(10).setBody("URL part").addAttribute("for", "text-" + ALIAS_VALUE_PARAM))).
                     addChild(new Element.InputText().setId("text-" + ALIAS_VALUE_PARAM).addAttribute("name", ALIAS_VALUE_PARAM).addAttribute("value", alias != null ? alias.path : ""))
             );

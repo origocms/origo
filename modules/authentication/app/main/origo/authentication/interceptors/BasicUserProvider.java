@@ -75,7 +75,7 @@ public class BasicUserProvider {
             basicFieldSet.addChild(new Element.InputHidden().addAttribute("name", PATH_PARAM).addAttribute("value", path));
         }
 
-        basicFieldSet.addChild(new Element.Panel().
+        basicFieldSet.addChild(new Element.Container().
                 addChild(FormHelper.createField(
                         form,
                         new Element.Label().setWeight(10).setBody("Username").addAttribute("for", USERNAME_PARAM),
@@ -90,8 +90,8 @@ public class BasicUserProvider {
                 )
         );
 
-        element.addChild(new Element.Panel().setId("actions").setWeight(1000).
-                addChild(new Element.Panel().
+        element.addChild(new Element.Container().setId("actions").setWeight(1000).
+                addChild(new Element.Container().
                         addChild(new Element.InputSubmit().setWeight(10).addAttribute("value", "Login"))
                 ));
     }

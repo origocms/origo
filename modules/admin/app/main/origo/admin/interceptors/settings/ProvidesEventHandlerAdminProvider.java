@@ -86,7 +86,7 @@ public class ProvidesEventHandlerAdminProvider {
             addProviderElements(node, selectedEventType);
 
         } else {
-            node.addElement(new Element.Panel().
+            node.addElement(new Element.Container().
                     addAttribute("class", "well well-big").
                     setBody("No handlers found."));
         }
@@ -174,7 +174,7 @@ public class ProvidesEventHandlerAdminProvider {
                 Logger.error("Unable to load node", e);
             }
         } else {
-            node.addElement(new Element.Panel().
+            node.addElement(new Element.Container().
                     addAttribute("class", "well well-big").
                     addChild(new Element.Text().setBody("No handlers matching type ")).
                     addChild(new Element.Emphasize().setBody(selectedEventType))).
@@ -183,8 +183,8 @@ public class ProvidesEventHandlerAdminProvider {
     }
 
     private static Element createButtonPanel() {
-        return new Element.Panel().setWeight(40).addAttribute("class", "well well-large").
-                addChild(new Element.Panel().
+        return new Element.Container().setWeight(40).addAttribute("class", "well well-large").
+                addChild(new Element.Container().
                         addAttribute("class", "pull-left").
                         addChild(new Element.Anchor().setWeight(20).
                                 addAttribute("class", "btn").
@@ -192,7 +192,7 @@ public class ProvidesEventHandlerAdminProvider {
                                 setBody("Cancel")
                         )
                 ).
-                addChild(new Element.Panel().
+                addChild(new Element.Container().
                         addAttribute("class", "pull-right").
                         addChild(new Element.InputSubmit().setWeight(10).addAttribute("class", "btn btn-primary").addAttribute("value", "Save")).
                         addChild(new Element.InputReset().setWeight(15).addAttribute("class", "btn").addAttribute("value", "Reset"))
@@ -200,9 +200,9 @@ public class ProvidesEventHandlerAdminProvider {
     }
 
     private static Element createRowElement(String prefix, String key, Element inputSelect) {
-        return new Element.Panel().addAttribute("class", "field control-group row").
+        return new Element.Container().addAttribute("class", "field control-group row").
                 addChild(new Element.Label().addAttribute("class", "control-label span4").addAttribute("for", prefix + "." + key).setBody(key)).
-                addChild(new Element.Panel().addAttribute("class", "controls span5").
+                addChild(new Element.Container().addAttribute("class", "controls span5").
                         addChild(inputSelect));
     }
 

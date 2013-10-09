@@ -65,12 +65,12 @@ public class BasicNavigationPageAdminProvider {
             }
             parent.addChild(new Element.FieldSet().setWeight(200).
                     addChild(new Element.Legend().setBody("Navigation")).
-                    addChild(new Element.Panel().
+                    addChild(new Element.Container().
                             addChild(new Element.Label().addAttribute("class", "checkbox").
                                     addChild(useNavigationCheckBox).
                                     setBody("Add Navigation"))).
-                    addChild(new Element.Panel().addAttribute("class", "row").
-                            addChild(new Element.Panel().addAttribute("class", "field span6").
+                    addChild(new Element.Container().addAttribute("class", "row").
+                            addChild(new Element.Container().addAttribute("class", "field").
                                     addChild(new Element.Label().setBody("Parent").addAttribute("for", "text-" + PARENT_PARAM)).
                                     addChild(parentInputSelect))
                     )

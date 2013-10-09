@@ -118,7 +118,7 @@ public class BasicPageAdminProvider {
     @OnLoad(type = Core.Type.FORM, with = BasicPage.TYPE, after = true)
     public static void loadEditForm(Node node, String withType, Form<BasicPageForm> form, Element element, Map<String, Object> args) throws NodeLoadException, ModuleException {
 
-        element.setId("basicpageform").addAttribute("class", "origo-basicpageform, form");
+        element.setId("basicpageform").addAttribute("class", "origo-basicpageform form");
 
         Element globalErrors = FormHelper.createGlobalErrorElement();
         if (globalErrors != null) {
@@ -142,15 +142,15 @@ public class BasicPageAdminProvider {
 
     }
 
-    private static Admin.TabPane createGeneralInformationPane(Form<BasicPageForm> form) {
-
-        Admin.TabPane pane = new Admin.TabPane();
-        pane.setId("generalTab").addAttribute("class", "active");
+    private static Element createGeneralInformationPane(Form<BasicPageForm> form) {
 
         Element basicFieldSet = new Element.FieldSet().setId("general");
-        pane.addChild(basicFieldSet);
 
-        basicFieldSet.addChild(new Element.Legend().setBody("General"));
+        Element pane = new Admin.TabPane().setId("generalTab").addAttribute("class", "active").
+                addChild(new Element.Panel().
+                        addChild(new Element.Legend().setBody("General")).
+                        addChild(basicFieldSet)
+                );
 
         Element themeInputSelectElement = new Element.InputSelect();
         String themeVariantFormValue = FormHelper.getFieldValue(form, THEME_VARIANT_PARAM);
@@ -168,21 +168,20 @@ public class BasicPageAdminProvider {
             themeInputSelectElement.addChild(optionElement);
         }
 
-        basicFieldSet.addChild(new Element.Panel().addAttribute("class", "row").
+        basicFieldSet.
                 addChild(
                         FormHelper.createField(form,
                                 new Element.Label().setWeight(10).setBody("Title").addAttribute("for", TITLE_PARAM),
                                 new Element.InputText().setWeight(20).addAttribute("name", TITLE_PARAM)
-                        ).addAttribute("class", "span6")
+                        )
                 ).
                 addChild(
                         FormHelper.createField(form,
                                 new Element.Label().setWeight(10).setBody("Theme Variant").addAttribute("for", THEME_VARIANT_PARAM),
                                 themeInputSelectElement.setWeight(25).addAttribute("class", "themeSelector").
                                         addAttribute("name", THEME_VARIANT_PARAM)
-                        ).addAttribute("class", "span6")
-                )
-        );
+                        )
+                );
 
         return pane;
     }
