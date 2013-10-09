@@ -65,63 +65,51 @@ public class AdminTheme {
                         Collections.singletonMap("class", defaultDashboardItemClasses() + " col-md-3")));
     }
 
-    @Decorates(types = {Element.ErrorEmphasis.class})
-    public static Html decorateEmphasisError(Element element, DecorationContext decorationContext) {
-        element.addAttribute("class", "text-error");
+    @Decorates(types = {Element.Emphasis.class})
+    public static Html decorateEmphasisWarning(Element.Emphasis element, DecorationContext decorationContext) {
+        switch(element.type) {
+            case ERROR:
+                element.addAttribute("class", "text-danger");
+                break;
+            case WARNING:
+                element.addAttribute("class", "text-warning");
+                break;
+            case INFO:
+                element.addAttribute("class", "text-info");
+                break;
+            case MUTED:
+                element.addAttribute("class", "text-muted");
+                break;
+            case PRIMARY:
+                element.addAttribute("class", "text-primary");
+                break;
+            case SUCCESS:
+                element.addAttribute("class", "text-success");
+                break;
+            case ITALICS:
+            case SMALL:
+            case BOLD:
+                break;
+        }
         return element.decorate(decorationContext);
     }
 
-    @Decorates(types = {Element.WarningEmphasis.class})
-    public static Html decorateEmphasisWarning(Element element, DecorationContext decorationContext) {
-        element.addAttribute("class", "text-warning");
-        return element.decorate(decorationContext);
-    }
-
-    @Decorates(types = {Element.InfoEmphasis.class})
-    public static Html decorateEmphasisInfo(Element element, DecorationContext decorationContext) {
-        element.addAttribute("class", "text-info");
-        return element.decorate(decorationContext);
-    }
-
-    @Decorates(types = {Element.SuccessEmphasis.class})
-    public static Html decorateEmphasisSuccess(Element element, DecorationContext decorationContext) {
-        element.addAttribute("class", "text-success");
-        return element.decorate(decorationContext);
-    }
-
-    @Decorates(types = {Element.PrimaryEmphasis.class})
-    public static Html decorateEmphasisPrimary(Element element, DecorationContext decorationContext) {
-        element.addAttribute("class", "text-primary");
-        return element.decorate(decorationContext);
-    }
-
-    @Decorates(types = {Element.MutedEmphasis.class})
-    public static Html decorateEmphasisMuted(Element element, DecorationContext decorationContext) {
-        element.addAttribute("class", "text-muted");
-        return element.decorate(decorationContext);
-    }
-
-    @Decorates(types = {Element.ErrorAlert.class})
-    public static Html decorateAlertError(Element element, DecorationContext decorationContext) {
-        element.addAttribute("class", "alert alert-danger");
-        return element.decorate(decorationContext);
-    }
-
-    @Decorates(types = {Element.WarningAlert.class})
-    public static Html decorateAlertWarning(Element element, DecorationContext decorationContext) {
-        element.addAttribute("class", "alert alert-warning");
-        return element.decorate(decorationContext);
-    }
-
-    @Decorates(types = {Element.InfoAlert.class})
-    public static Html decorateAlertInfo(Element element, DecorationContext decorationContext) {
-        element.addAttribute("class", "alert alert-info");
-        return element.decorate(decorationContext);
-    }
-
-    @Decorates(types = {Element.SuccessAlert.class})
-    public static Html decorateAlertSuccess(Element element, DecorationContext decorationContext) {
-        element.addAttribute("class", "alert alert-success");
+    @Decorates(types = {Element.Alert.class})
+    public static Html decorateAlertError(Element.Alert element, DecorationContext decorationContext) {
+        switch(element.type) {
+            case ERROR:
+                element.addAttribute("class", "alert alert-danger");
+                break;
+            case WARNING:
+                element.addAttribute("class", "alert alert-warning");
+                break;
+            case INFO:
+                element.addAttribute("class", "alert alert-info");
+                break;
+            case SUCCESS:
+                element.addAttribute("class", "alert alert-success");
+                break;
+        }
         return element.decorate(decorationContext);
     }
 

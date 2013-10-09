@@ -111,7 +111,7 @@ public class FormHelper {
         Validation.Result validationResult = getValidationResult();
         if (validationResult != null && validationResult.hasErrors()) {
             for (ValidationError validationError : validationResult.globalErrors) {
-                elements.add(new Element.ErrorEmphasis().setBody(validationError.message()));
+                elements.add(new Element.Emphasis(Element.Emphasis.Type.ERROR).setBody(validationError.message()));
             }
         }
         return elements;

@@ -177,7 +177,7 @@ public class ProvidesEventHandlerAdminProvider {
             node.addElement(new Element.Container().
                     addAttribute("class", "well well-big").
                     addChild(new Element.Text().setBody("No handlers matching type ")).
-                    addChild(new Element.Emphasize().setBody(selectedEventType))).
+                    addChild(new Element.Emphasis().setBody(selectedEventType))).
                     addChild(new Element.Text().setBody("."));
         }
     }

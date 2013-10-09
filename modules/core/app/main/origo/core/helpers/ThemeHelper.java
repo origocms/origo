@@ -208,7 +208,7 @@ public class ThemeHelper {
                 return;
             }
 
-            Element wrapper = new Element.ErrorAlert().setWeight(10000);
+            Element wrapper = new Element.Alert(Element.Alert.Type.ERROR).setWeight(10000);
             for (String region : missingRegions) {
                 wrapper.addChild(new Element.Paragraph().setBody("Your node has elements for a region named '" + region + "' but the theme has no matching region."));
             }
@@ -235,7 +235,7 @@ public class ThemeHelper {
                 return;
             }
 
-            Element wrapper = new Element.ErrorAlert().setWeight(10000);
+            Element wrapper = new Element.Alert(Element.Alert.Type.ERROR).setWeight(10000);
             for (String region : missingRegions) {
                 wrapper.addChild(new Element.Paragraph().setWeight(10000).setBody("Your theme has a region named '"+region+"' but your node has no elements for that region."));
             }

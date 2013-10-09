@@ -547,110 +547,62 @@ public class Element<T extends Element> {
         }
     }
 
-    protected static class Emphasis<T> extends Base {
+    public static class Emphasis extends Base {
 
-        protected Emphasis(String type, String classAttribute) {
-            super("p", type);
-            addAttribute("class", classAttribute);
+        public Type type;
+
+        public static enum Type {
+            // Just css (P tag)
+            PRIMARY, SUCCESS, INFO, MUTED, WARNING, ERROR,
+            // Different tags (em, bold, small)
+            ITALICS, BOLD, SMALL,
+        }
+
+        public Emphasis() {
+            super("em", "emphasis");
+            this.type = Type.ITALICS;
+        }
+
+        public Emphasis(Type type) {
+            super("p", "emphasis");
+            switch (type) {
+                case ITALICS:
+                    super.type = "em";
+                    break;
+                case BOLD:
+                    super.type = "bold";
+                    break;
+                case SMALL:
+                    super.type = "small";
+                    break;
+            }
+            this.type = type;
         }
 
     }
 
-    public static class ErrorEmphasis extends Emphasis<ErrorEmphasis> {
+    public static class Alert extends Element {
 
-        public ErrorEmphasis() {
-            super("emphasis_error", "error");
+        public Type type;
+
+        public static enum Type {
+            SUCCESS, INFO, WARNING, ERROR
         }
 
-    }
-
-    public static class WarningEmphasis extends Emphasis<WarningEmphasis> {
-
-        public WarningEmphasis() {
-            super("emphasis_warning", "warning");
+        public Alert() {
+            this(Type.SUCCESS);
         }
 
-    }
-
-    public static class MutedEmphasis extends Emphasis<MutedEmphasis> {
-
-        public MutedEmphasis() {
-            super("emphasis_muted", "muted");
-        }
-
-    }
-
-    public static class InfoEmphasis extends Emphasis<InfoEmphasis> {
-
-        public InfoEmphasis() {
-            super("emphasis_info", "info");
-        }
-
-    }
-
-    public static class SuccessEmphasis extends Emphasis<SuccessEmphasis> {
-
-        public SuccessEmphasis() {
-            super("emphasis_success", "success");
-        }
-
-    }
-
-    public static class PrimaryEmphasis extends Emphasis<PrimaryEmphasis> {
-
-        public PrimaryEmphasis() {
-            super("emphasis_primary", "primary");
-        }
-
-    }
-
-    protected static class Alert<T> extends Element {
-
-        private String classAttribute;
-
-        protected Alert(String type, String classAttribute) {
-            super(type);
-            this.classAttribute = classAttribute;
+        public Alert(Type type) {
+            super("alert");
+            this.type = type;
         }
 
         @Override
         public Html decorate(DecorationContext decorationContext) {
             Html body = ThemeHelper.decorateChildren(this, decorationContext);
-            addAttribute("class", classAttribute);
             return container.render(this, body, this.getAttributes());
         }
-    }
-
-    public static class ErrorAlert extends Alert<ErrorAlert> {
-
-        public ErrorAlert() {
-            super("alert_error", "error");
-        }
-
-    }
-
-    public static class WarningAlert extends Alert<WarningAlert> {
-
-        public WarningAlert() {
-            super("alert_warning", "warning");
-        }
-
-    }
-
-    public static class InfoAlert extends Alert<InfoAlert> {
-
-        public InfoAlert() {
-            super("alert_info", "info");
-        }
-
-    }
-
-    public static class SuccessAlert extends Alert<SuccessAlert> {
-
-        public SuccessAlert() {
-            super("alert_success", "success");
-        }
-
     }
 
     public static class Text extends Element<Text> {
@@ -739,12 +691,6 @@ public class Element<T extends Element> {
 
         public Heading6() {
             super("h6", "heading_6");
-        }
-    }
-
-    public static class Emphasize extends Base<Emphasize> {
-        public Emphasize() {
-            super("em", "em");
         }
     }
 
