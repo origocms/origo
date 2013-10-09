@@ -35,16 +35,15 @@ public class BasicPageAdminContentProvider {
     @OnLoad(with = Admin.With.TAB_CONTENT)
     public static void loadNewPage(Node node, String withType, Element element, Map<String, Object> args) throws ModuleException, NodeLoadException {
 
-        Admin.TabPane pane = new Admin.TabPane();
-        pane.setId("contentTab");
-        element.addChild(pane);
+        Element contentFieldSet = new Element.FieldSet().setId("content");
+
+        element.addChild(
+                new Admin.TabPane().setId("contentTab").
+                        addChild(new Element.Panel(new Element.Heading3().setBody("Content")).
+                                addChild(contentFieldSet)
+                        ));
 
         Form<BasicPageForm> form = FormHelper.getValidationResult(BasicPageForm.class);
-
-        Element contentFieldSet = new Element.FieldSet().setId("content");
-        pane.addChild(contentFieldSet);
-
-        contentFieldSet.addChild(new Element.Legend().setBody("Content"));
 
         contentFieldSet.addChild(
                 FormHelper.createField(form,

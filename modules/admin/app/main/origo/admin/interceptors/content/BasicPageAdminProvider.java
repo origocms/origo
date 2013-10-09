@@ -147,8 +147,7 @@ public class BasicPageAdminProvider {
         Element basicFieldSet = new Element.FieldSet().setId("general");
 
         Element pane = new Admin.TabPane().setId("generalTab").addAttribute("class", "active").
-                addChild(new Element.Panel().
-                        addChild(new Element.Legend().setBody("General")).
+                addChild(new Element.Panel(new Element.Heading3().setBody("General")).
                         addChild(basicFieldSet)
                 );
 

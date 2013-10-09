@@ -30,27 +30,26 @@ public class BasicPageAdminPublishingProvider {
     @OnLoad(with = Admin.With.TAB_BAR)
     public static void addTabItem(Node node, String withType, Element element, Map<String, Object> args) throws ModuleException, NodeLoadException {
 
-        element.addChild(new Admin.TabItem().setWeight(500).addChild(new Element.Anchor().addAttribute("href", "#publishingTab").setBody("Publishing")));
+        element.addChild(new Admin.TabItem().setWeight(500).addChild(new Element.Anchor().addAttribute("href", "#publishingTab").setBody("Publish")));
 
     }
 
     @OnLoad(with = Admin.With.TAB_CONTENT)
     public static void loadNewPage(Node node, String withType, Element element, Map<String, Object> args) throws ModuleException, NodeLoadException {
 
-        Admin.TabPane pane = new Admin.TabPane();
-        pane.setId("publishingTab");
-        element.addChild(pane);
+        Element publishingFieldSet = new Element.FieldSet().setId("publishing");
+
+        element.addChild(
+                new Admin.TabPane().setId("publishingTab").
+                        addChild(new Element.Panel(new Element.Heading3().setBody("Publish")).
+                                addChild(publishingFieldSet)
+                        ));
 
         Form<BasicPageForm> form = FormHelper.getValidationResult(BasicPageForm.class);
 
-        Element publishingFieldSet = new Element.FieldSet().setId("publishing").setWeight(50);
-        pane.addChild(publishingFieldSet);
-
-        publishingFieldSet.addChild(new Element.Legend().setBody("Publish"));
-
         String datePattern = Messages.get("date.format");
         Element publishElement = new Element.Container().setWeight(15).addAttribute("class", "field").
-                addChild(new Element.Container().addAttribute("class", "panel split-left").
+                addChild(new Element.Container().addAttribute("class", "split-left").
                         addChild(new Element.Label().setWeight(10).setBody("From Date").
                                 addAttribute("for", "date-" + PUBLISH_DATE_PARAM)
                         ).
@@ -60,7 +59,7 @@ public class BasicPageAdminPublishingProvider {
                                 addAttribute("placeholder", datePattern.toLowerCase())
                         )
                 ).
-                addChild(new Element.Container().addAttribute("class", "panel split-right").
+                addChild(new Element.Container().addAttribute("class", "split-right").
                         addChild(new Element.Label().setWeight(10).setBody("Until Date").
                                 addAttribute("for", "date-" + UNPUBLISH_DATE_PARAM)
                         ).
@@ -73,7 +72,7 @@ public class BasicPageAdminPublishingProvider {
 
         String timePattern = Messages.get("time.format");
         Element publishTimeElement = new Element.Container().setWeight(15).addAttribute("class", "field").
-                addChild(new Element.Container().addAttribute("class", "panel split-left").
+                addChild(new Element.Container().addAttribute("class", "split-left").
                         addChild(new Element.Label().setWeight(10).setBody("From Time").
                                 addAttribute("for", "date-" + PUBLISH_TIME_PARAM)
                         ).
@@ -82,7 +81,7 @@ public class BasicPageAdminPublishingProvider {
                                 addAttribute("value", FormHelper.getFieldValue(form, PUBLISH_TIME_PARAM)).
                                 addAttribute("placeholder", timePattern.toLowerCase()))
                 ).
-                addChild(new Element.Container().addAttribute("class", "panel split-right").
+                addChild(new Element.Container().addAttribute("class", "split-right").
                         addChild(new Element.Label().setWeight(10).setBody("Until Time").
                                 addAttribute("for", "date-" + UNPUBLISH_TIME_PARAM)
                         ).
