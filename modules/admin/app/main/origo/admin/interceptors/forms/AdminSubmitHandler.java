@@ -1,6 +1,5 @@
 package main.origo.admin.interceptors.forms;
 
-import main.origo.admin.AdminLoader;
 import main.origo.core.*;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
@@ -12,10 +11,8 @@ import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.helpers.forms.FormHelper;
 import main.origo.core.interceptors.forms.DefaultSubmitHandler;
 import main.origo.core.ui.Element;
-import models.origo.core.RootNode;
 import org.apache.commons.lang3.StringUtils;
 import play.data.DynamicForm;
-import play.mvc.Controller;
 import play.mvc.Result;
 
 import java.lang.reflect.InvocationTargetException;
@@ -45,8 +42,7 @@ public class AdminSubmitHandler extends DefaultSubmitHandler {
     }
 
     protected static Result handleValidationFailure(String identifier, String withType, Validation.Result validationResult) throws InvocationTargetException, IllegalAccessException, NodeNotFoundException, NodeLoadException, ModuleException {
-        Node node = ValidationHandlerEventGenerator.triggerValidationFailedHandler(new RootNode(identifier, 0, withType), withType, validationResult);
-        return Controller.badRequest(AdminLoader.decorateNode(node));
+        return ValidationHandlerEventGenerator.triggerValidationFailedHandler(identifier, withType, validationResult);
     }
 
     @OnLoad(type = Core.Type.FORM)

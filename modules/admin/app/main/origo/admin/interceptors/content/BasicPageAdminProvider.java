@@ -1,6 +1,7 @@
 package main.origo.admin.interceptors.content;
 
 import controllers.origo.admin.routes;
+import main.origo.admin.AdminLoader;
 import main.origo.admin.annotations.Admin;
 import main.origo.admin.forms.BasicPageForm;
 import main.origo.admin.helpers.DashboardHelper;
@@ -73,7 +74,7 @@ public class BasicPageAdminProvider {
 
         if (form.hasErrors()) {
 
-            node.addElement(AdminFormHelper.createFormElement(node, BasicPage.TYPE));
+            node.addElement(AdminFormHelper.createFormElement(node, BasicPage.TYPE, form));
             return;
 
         }
@@ -144,7 +145,8 @@ public class BasicPageAdminProvider {
 
     private static Element createGeneralInformationPane(Form<BasicPageForm> form) {
 
-        Element basicFieldSet = new Element.FieldSet().setId("general");
+        Element basicFieldSet = new Element.FieldSet().setId("general").
+                addChild(new Element.Legend().setBody("Basic"));
 
         Element pane = new Admin.TabPane().setId("generalTab").addAttribute("class", "active").
                 addChild(new Element.Panel(new Element.Heading3().setBody("General")).
@@ -302,8 +304,8 @@ public class BasicPageAdminProvider {
     }
 
     @Validation.Failure(with = BasicPage.TYPE)
-    public static Node validationFailure(RootNode node, Map<String, Object> args) {
-        return createPage(node, BasicPage.TYPE, args);
+    public static Result validationFailure(String identifier, Map<String, Object> args) throws NodeLoadException, ModuleException {
+        return Controller.badRequest(AdminLoader.loadAndDecorateNode(BasicPage.TYPE, identifier));
     }
 
     /**

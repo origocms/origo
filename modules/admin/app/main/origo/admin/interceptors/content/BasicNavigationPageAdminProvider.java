@@ -6,13 +6,13 @@ import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnInsertElement;
 import main.origo.core.annotations.forms.OnSubmit;
+import main.origo.core.event.NodeContext;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.helpers.NavigationHelper;
 import main.origo.core.helpers.forms.FormHelper;
 import main.origo.core.ui.Element;
 import main.origo.core.ui.NavigationElement;
 import models.origo.admin.AdminPage;
-import models.origo.core.BasicPage;
 import models.origo.core.navigation.BasicNavigation;
 import models.origo.core.navigation.InternalPageIdNavigation;
 import org.apache.commons.lang3.StringUtils;
@@ -28,6 +28,8 @@ public class BasicNavigationPageAdminProvider {
     private static final String PARENT_PARAM = "nav_parent";
     private static final String NAVIGATION_ID_PARAM = "nav_id";
     private static final String USE_NAVIGATION_PARAM = "nav";
+    private static final String APPLIED = "NAVIGATION_ADMIN_APPLIED";
+
 
     @OnInsertElement(with = Element.FieldSet.class, after = true)
     public static void addNavigationFieldSet(Node node, Element parent, Element element) throws ModuleException, NodeLoadException {
@@ -37,7 +39,7 @@ public class BasicNavigationPageAdminProvider {
         }
 
         // TODO: Hard coded for now, should be moved to configuration
-        if (BasicPage.TYPE.equals(node.nodeType()) && element.getId().equals("general")) {
+        if (!NodeContext.current().attributes.containsKey(APPLIED) && element.getId().equals("general")) {
 
             AdminPage adminPage = (AdminPage) node;
             List<NavigationElement> navigationElements = NavigationHelper.getNavigation(adminPage.rootNode, NavigationElement.FRONT);
@@ -69,13 +71,14 @@ public class BasicNavigationPageAdminProvider {
                             addChild(new Element.Label().addAttribute("class", "checkbox").
                                     addChild(useNavigationCheckBox).
                                     setBody("Add Navigation"))).
-                    addChild(new Element.Container().addAttribute("class", "row").
+                    addChild(new Element.Container().
                             addChild(new Element.Container().addAttribute("class", "field").
                                     addChild(new Element.Label().setBody("Parent").addAttribute("for", "text-" + PARENT_PARAM)).
                                     addChild(parentInputSelect))
                     )
             );
             parent.addChild(new Element.InputHidden().addAttribute("name", NAVIGATION_ID_PARAM).addAttribute("value", selectedNavigationElement != null ? selectedNavigationElement.id : ""));
+            NodeContext.current().attributes.put(APPLIED, true);
         }
     }
 

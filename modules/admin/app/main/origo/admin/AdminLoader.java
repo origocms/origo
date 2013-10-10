@@ -53,20 +53,25 @@ public class AdminLoader {
         }
     }
 
-    private static Content loadAndDecorateNode(String withType) throws NodeLoadException, ModuleException {
-        Logger.debug("Loading [" + withType + "] as type");
-        RootNode rootNode = new RootNode(0);
-        rootNode.nodeType(withType);
-        Node node = NodeHelper.load(rootNode, Admin.Type.ADMIN_NODE);
+    public static Content loadAndDecorateNode(String withType) throws NodeLoadException, ModuleException {
+        Node node = loadNode(withType, null);
         return decorateNode(node);
     }
 
-    private static Content loadAndDecorateNode(String withType, String identifier) throws NodeLoadException, ModuleException {
-        Logger.debug("Loading [" + withType + "] as type and identifier [" + identifier + "]");
+    public static Content loadAndDecorateNode(String withType, String identifier) throws NodeLoadException, ModuleException {
+        Node node = loadNode(withType, identifier);
+        return decorateNode(node);
+    }
+
+    private static Node loadNode(String withType, String identifier) throws ModuleException, NodeLoadException {
+        if (identifier != null) {
+            Logger.debug("Loading [" + withType + "] as type and identifier [" + identifier + "]");
+        } else {
+            Logger.debug("Loading [" + withType + "] as type");
+        }
         RootNode rootNode = new RootNode(identifier, 0);
         rootNode.nodeType(withType);
-        Node node = NodeHelper.load(rootNode, Admin.Type.ADMIN_NODE);
-        return decorateNode(node);
+        return NodeHelper.load(rootNode, Admin.Type.ADMIN_NODE);
     }
 
     private static String getType(String identifier) throws NodeLoadException {

@@ -120,7 +120,7 @@ public class FormHelper {
     public static Element createGlobalErrorElement() {
         List<Element> globalErrors = FormHelper.getGlobalErrors();
         if (!globalErrors.isEmpty()) {
-            return new Element.Well().addChildren(globalErrors);
+            return new Element.Alert(Element.Alert.Type.ERROR).addChildren(globalErrors);
         }
         return null;
     }

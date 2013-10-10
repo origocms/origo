@@ -12,13 +12,10 @@ import main.origo.core.event.forms.OnSubmitEventGenerator;
 import main.origo.core.event.forms.SubmitStateEventGenerator;
 import main.origo.core.event.forms.ValidationHandlerEventGenerator;
 import main.origo.core.helpers.CoreSettingsHelper;
-import main.origo.core.helpers.NodeHelper;
 import main.origo.core.helpers.forms.FormHelper;
 import main.origo.core.ui.Element;
-import models.origo.core.RootNode;
 import org.apache.commons.lang3.StringUtils;
 import play.data.DynamicForm;
-import play.mvc.Controller;
 import play.mvc.Result;
 
 import java.lang.reflect.InvocationTargetException;
@@ -43,7 +40,7 @@ public class DefaultSubmitHandler {
             Validation.Result validationResult = runValidation(withType);
 
             if (validationResult.hasErrors()) {
-                return handleValidationFailure(identifier, version, validationResult);
+                return handleValidationFailure(identifier, withType, validationResult);
             }
             return sendSubmitState(withType, validationResult);
 
@@ -58,11 +55,8 @@ public class DefaultSubmitHandler {
         return validationResult;
     }
 
-    protected static Result handleValidationFailure(String identifier, Integer version, Validation.Result validationResult) throws InvocationTargetException, IllegalAccessException, NodeNotFoundException, NodeLoadException, ModuleException {
-        RootNode rootNode = NodeHelper.loadRootNode(identifier, version);
-        NodeContext.current().node = rootNode;
-        Node node = ValidationHandlerEventGenerator.triggerValidationFailedHandler(rootNode, rootNode.nodeType(), validationResult);
-        return Controller.badRequest(CoreLoader.decorateNode(node));
+    protected static Result handleValidationFailure(String identifier, String withType, Validation.Result validationResult) throws InvocationTargetException, IllegalAccessException, NodeNotFoundException, NodeLoadException, ModuleException {
+        return ValidationHandlerEventGenerator.triggerValidationFailedHandler(identifier, withType, validationResult);
     }
 
     protected static Result sendSubmitState(String withType, Validation.Result validationResult) throws NodeLoadException, ModuleException {

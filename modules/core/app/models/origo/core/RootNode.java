@@ -375,11 +375,11 @@ public final class RootNode extends Model<RootNode> implements Node {
 
     public RootNode copy(boolean increaseVersion) {
         if (increaseVersion) {
-            RootNode copy = new RootNode(nodeId, version + 1);
+            RootNode copy = new RootNode(nodeId, version + 1, nodeType);
             copy.release = new Release(State.DRAFT);
             return copy;
         } else {
-            RootNode copy = new RootNode(nodeId, version);
+            RootNode copy = new RootNode(nodeId, version, nodeType);
             copy.release = release;
             return copy;
         }

@@ -92,12 +92,14 @@ public class CoreModule {
         annotations.add(new AnnotationProcessor.Prototype(SubmitHandler.class, Result.class, Map.class));
         annotations.add(new AnnotationProcessor.Prototype(Validation.Processing.class, Validation.Result.class, String.class));
         annotations.add(new AnnotationProcessor.Prototype(Validation.Processing.class, Validation.Result.class, String.class, Map.class));
-        annotations.add(new AnnotationProcessor.Prototype(Validation.Failure.class, Node.class, Node.class));
-        annotations.add(new AnnotationProcessor.Prototype(Validation.Failure.class, Node.class, Node.class, Map.class));
-        annotations.add(new AnnotationProcessor.Prototype(Validation.Failure.class, Node.class, Node.class, Validation.Result.class));
-        annotations.add(new AnnotationProcessor.Prototype(Validation.Failure.class, Node.class, Node.class, Validation.Result.class, Map.class));
-        annotations.add(new AnnotationProcessor.Prototype(Validation.Failure.class, Node.class, Node.class, String.class, Validation.Result.class));
-        annotations.add(new AnnotationProcessor.Prototype(Validation.Failure.class, Node.class, Node.class, String.class, Validation.Result.class, Map.class));
+        annotations.add(new AnnotationProcessor.Prototype(Validation.Failure.class, Result.class));
+        annotations.add(new AnnotationProcessor.Prototype(Validation.Failure.class, Result.class, Map.class));
+        annotations.add(new AnnotationProcessor.Prototype(Validation.Failure.class, Result.class, String.class, Map.class));
+        annotations.add(new AnnotationProcessor.Prototype(Validation.Failure.class, Result.class, String.class, Validation.Result.class));
+        annotations.add(new AnnotationProcessor.Prototype(Validation.Failure.class, Result.class, String.class, Validation.Result.class, Map.class));
+        annotations.add(new AnnotationProcessor.Prototype(Validation.Failure.class, Result.class, String.class, String.class, Map.class));
+        annotations.add(new AnnotationProcessor.Prototype(Validation.Failure.class, Result.class, String.class, String.class, Validation.Result.class));
+        annotations.add(new AnnotationProcessor.Prototype(Validation.Failure.class, Result.class, String.class, String.class, Validation.Result.class, Map.class));
         annotations.add(new AnnotationProcessor.Prototype(SubmitState.class, Result.class));
         annotations.add(new AnnotationProcessor.Prototype(SubmitState.class, Result.class, Map.class));
 

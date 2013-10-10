@@ -52,6 +52,7 @@ public class Authentication extends Controller {
         } catch (NodeLoadException e) {
             return CoreLoader.handleException(e);
         }
+
     }
 
     @ContextAware

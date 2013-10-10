@@ -31,7 +31,8 @@ public class BasicPageAdminContentProvider {
     @OnLoad(with = Admin.With.TAB_CONTENT)
     public static void loadNewPage(Node node, String withType, Element element, Map<String, Object> args) throws ModuleException, NodeLoadException {
 
-        Element contentFieldSet = new Element.FieldSet().setId("content");
+        Element contentFieldSet = new Element.FieldSet().setId("content").
+                addChild(new Element.Legend().setBody("Content"));
 
         element.addChild(
                 new Admin.TabPane().setId("contentTab").

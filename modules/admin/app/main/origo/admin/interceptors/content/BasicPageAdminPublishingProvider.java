@@ -30,17 +30,18 @@ public class BasicPageAdminPublishingProvider {
     @OnLoad(with = Admin.With.TAB_BAR)
     public static void addTabItem(Node node, String withType, Element element, Map<String, Object> args) throws ModuleException, NodeLoadException {
 
-        element.addChild(new Admin.TabItem().setWeight(500).addChild(new Element.Anchor().addAttribute("href", "#publishingTab").setBody("Publish")));
+        element.addChild(new Admin.TabItem().setWeight(500).addChild(new Element.Anchor().addAttribute("href", "#publishTab").setBody("Publish")));
 
     }
 
     @OnLoad(with = Admin.With.TAB_CONTENT)
     public static void loadNewPage(Node node, String withType, Element element, Map<String, Object> args) throws ModuleException, NodeLoadException {
 
-        Element publishingFieldSet = new Element.FieldSet().setId("publishing");
+        Element publishingFieldSet = new Element.FieldSet().setId("publish").
+                addChild(new Element.Legend().setBody("Publish"));
 
         element.addChild(
-                new Admin.TabPane().setId("publishingTab").
+                new Admin.TabPane().setId("publishTab").
                         addChild(new Element.Panel(new Element.Heading3().setBody("Publish")).
                                 addChild(publishingFieldSet)
                         ));

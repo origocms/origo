@@ -12,16 +12,13 @@ import java.util.Set;
 
 public class AdminPage implements Node {
 
-    public String type;
-
     public RootNode rootNode;
 
     public String title;
 
     public String themeVariant;
 
-    private AdminPage(String type, RootNode node) {
-        this.type = type;
+    private AdminPage(RootNode node) {
         this.rootNode = node;
     }
 
@@ -32,7 +29,7 @@ public class AdminPage implements Node {
 
     @Override
     public String nodeType() {
-        return "ADMIN";
+        return this.rootNode.nodeType();
     }
 
     @Override
@@ -137,7 +134,7 @@ public class AdminPage implements Node {
     @Override
     public String toString() {
         return new StringBuilder().append("AdminPage {").
-                append("type='").append(type).append("\', ").
+                append("type='").append(rootNode.nodeType()).append("\', ").
                 append("title='").append(title).append("\', ").
                 append("themeVariant='").append(themeVariant()).append("\', ").
                 toString();
@@ -145,16 +142,16 @@ public class AdminPage implements Node {
 
     public static AdminPage create(RootNode node, String type) {
         if (node == null) {
-            return new AdminPage(type, new RootNode(0));
+            return new AdminPage(new RootNode(0, type));
         } else {
             if (StringUtils.isNotBlank(node.nodeId())) {
                 if (node.version() == null || node.version() == 0) {
-                    return new AdminPage(type, RootNode.findLatestVersionWithNodeId(node.nodeId()).copy());
+                    return new AdminPage(RootNode.findLatestVersionWithNodeId(node.nodeId()).copy());
                 } else {
-                    return new AdminPage(type, RootNode.findLatestPublishedVersionWithNodeId(node.nodeId()));
+                    return new AdminPage(RootNode.findLatestPublishedVersionWithNodeId(node.nodeId()));
                 }
             } else {
-                return new AdminPage(type, node);
+                return new AdminPage(node);
             }
         }
     }

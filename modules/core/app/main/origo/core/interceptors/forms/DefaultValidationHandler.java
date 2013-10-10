@@ -1,15 +1,16 @@
 package main.origo.core.interceptors.forms;
 
+import main.origo.core.CoreLoader;
 import main.origo.core.ModuleException;
-import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
+import main.origo.core.NodeNotFoundException;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.forms.Validation;
 import main.origo.core.event.forms.OnSubmitEventGenerator;
-import main.origo.core.helpers.NodeHelper;
-import models.origo.core.RootNode;
 import play.data.Form;
+import play.mvc.Controller;
+import play.mvc.Result;
 
 import java.util.List;
 import java.util.Map;
@@ -37,8 +38,8 @@ public class DefaultValidationHandler {
     }
 
     @Validation.Failure(with = Core.With.VALIDATION_DEFAULT_FAILURE)
-    public static Node validationFailure(RootNode node, Map<String, Object> args) throws NodeLoadException, ModuleException {
-        return NodeHelper.load(node);
+    public static Result validationFailure(String withType, String identifier, Map<String, Object> args) throws NodeLoadException, ModuleException, NodeNotFoundException {
+        return Controller.badRequest(CoreLoader.loadAndDecorateNode(identifier));
     }
 
 }

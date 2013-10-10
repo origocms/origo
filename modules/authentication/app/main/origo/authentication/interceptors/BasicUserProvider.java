@@ -1,6 +1,7 @@
 package main.origo.authentication.interceptors;
 
 import be.objectify.deadbolt.core.models.Subject;
+import controllers.origo.authentication.Authentication;
 import main.origo.authentication.form.LoginForm;
 import main.origo.authentication.util.AuthenticationSessionUtils;
 import main.origo.core.*;
@@ -124,8 +125,9 @@ public class BasicUserProvider {
 
 
     @Validation.Failure(with = Core.With.AUTHENTICATION_CHECK)
-    public static Node validationFailure(Node node, Map<String, Object> args) throws NodeLoadException, ModuleException {
-        return createLoginPage(node, Core.With.AUTHENTICATION_CHECK, args);
+    public static Result validationFailure(Map<String, Object> args) throws NodeLoadException, ModuleException, NodeNotFoundException {
+        String path = (String) NodeContext.current().attributes.get(Security.Params.AUTH_PATH);
+        return Authentication.login(path);
     }
 
     @Provides(type = Core.Type.SECURITY, with = Core.With.AUTHENTICATION_CURRENT_USER)

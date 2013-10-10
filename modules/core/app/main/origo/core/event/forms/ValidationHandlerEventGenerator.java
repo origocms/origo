@@ -3,13 +3,13 @@ package main.origo.core.event.forms;
 import com.google.common.collect.Maps;
 import main.origo.core.InterceptorRepository;
 import main.origo.core.ModuleException;
-import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.forms.Validation;
 import main.origo.core.helpers.CoreSettingsHelper;
 import main.origo.core.internal.CachedAnnotation;
 import main.origo.core.internal.ReflectionInvoker;
+import play.mvc.Result;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -43,17 +43,17 @@ public class ValidationHandlerEventGenerator {
         return postHandlers.iterator().next();
     }
 
-    public static Node triggerValidationFailedHandler(Node node, String withType, Validation.Result validationResult) throws InvocationTargetException, IllegalAccessException {
-        return triggerValidationFailedHandler(node, withType, validationResult, Maps.<String, Object>newHashMap());
+    public static Result triggerValidationFailedHandler(String identifier, String withType, Validation.Result validationResult) throws InvocationTargetException, IllegalAccessException {
+        return triggerValidationFailedHandler(identifier, withType, validationResult, Maps.<String, Object>newHashMap());
     }
 
-    public static Node triggerValidationFailedHandler(Node node, String withType, Validation.Result validationResult, Map<String, Object> args) throws InvocationTargetException, IllegalAccessException {
+    public static Result triggerValidationFailedHandler(String identifier, String withType, Validation.Result validationResult, Map<String, Object> args) throws InvocationTargetException, IllegalAccessException {
         CachedAnnotation cachedAnnotation = getFailureHandler(withType, Validation.Failure.class);
         if (cachedAnnotation != null) {
-            return ReflectionInvoker.execute(cachedAnnotation, node, withType, validationResult, args);
+            return ReflectionInvoker.execute(cachedAnnotation, identifier, withType, validationResult, args);
         } else {
             cachedAnnotation = getFailureHandler(Core.With.VALIDATION_DEFAULT_FAILURE, Validation.Failure.class);
-            return ReflectionInvoker.execute(cachedAnnotation, node, Core.With.VALIDATION_DEFAULT_FAILURE, validationResult, args);
+            return ReflectionInvoker.execute(cachedAnnotation, identifier, Core.With.VALIDATION_DEFAULT_FAILURE, validationResult, args);
         }
     }
 
