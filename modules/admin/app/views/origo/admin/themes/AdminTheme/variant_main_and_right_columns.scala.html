@@ -1,0 +1,38 @@
+@(node:main.origo.core.ui.DecoratedNode)
+
+@import views.html.origo.core.tags._
+
+@head = {
+    <link rel='stylesheet' href='@routes.Assets.at("stylesheets/origo/admin/main_and_right_columns.min.css")' xmlns="http://www.w3.org/1999/html">
+}
+
+@scripts = {
+}
+
+@theme(node, head, scripts) {
+
+    @_navigation(node.navigation)
+
+    <header class="page-header">
+        <div class="container">
+            <h1>@node.title</h1>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                @_region(node, "top")
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-9">
+                @_region(node, "main")
+            </div>
+            <div class="col-md-3">
+                @_region(node, "right")
+            </div>
+        </div>
+    </div>
+}

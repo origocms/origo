@@ -41,6 +41,7 @@ public class BasicPageProvider {
 
         BasicPage page = (BasicPage) node;
 
+
         for (String segmentIdentifier : page.blocks) {
             Element element = BlockHelper.loadBlock(node, segmentIdentifier);
             node.addElement(element);

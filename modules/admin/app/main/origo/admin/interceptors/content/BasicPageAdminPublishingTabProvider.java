@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.Map;
 
 @Interceptor
-public class BasicPageAdminPublishingProvider {
+public class BasicPageAdminPublishingTabProvider {
 
     private static final String PUBLISH_DATE_PARAM = "publishDate";
     private static final String PUBLISH_TIME_PARAM = "publishTime";

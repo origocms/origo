@@ -13,6 +13,7 @@ import models.origo.core.Meta;
 import play.api.templates.Html;
 import play.mvc.Content;
 import views.html.origo.admin.themes.AdminTheme.variant_main_and_left_columns;
+import views.html.origo.admin.themes.AdminTheme.variant_main_and_right_columns;
 import views.html.origo.admin.themes.AdminTheme.variant_main_only;
 import views.html.origo.admin.themes.AdminTheme.variant_three_columns;
 import views.html.origo.core.decorators.base;
@@ -24,6 +25,7 @@ public class AdminTheme {
 
     public static final String DEFAULT_VARIANT_NAME = "admin-main_only";
     public static final String LEFT_AND_MAIN_COLUMNS_VARIANT_NAME = "admin-main_and_left_columns";
+    public static final String RIGHT_AND_MAIN_COLUMNS_VARIANT_NAME = "admin-main_and_right_columns";
     public static final String THREE_COLUMNS_VARIANT_NAME = "admin-three_columns";
 
     @ThemeVariant(id = DEFAULT_VARIANT_NAME, regions = {"top", "main"})
@@ -34,6 +36,11 @@ public class AdminTheme {
     @ThemeVariant(id = LEFT_AND_MAIN_COLUMNS_VARIANT_NAME, regions = {"top", "main", "left"})
     public static Content renderDefaultMainAndLeftColumnTemplate(DecoratedNode decoratedNode) {
         return variant_main_and_left_columns.render(decoratedNode);
+    }
+
+    @ThemeVariant(id = RIGHT_AND_MAIN_COLUMNS_VARIANT_NAME, regions = {"top", "main", "right"})
+    public static Content renderDefaultMainAndRightColumnTemplate(DecoratedNode decoratedNode) {
+        return variant_main_and_right_columns.render(decoratedNode);
     }
 
     @ThemeVariant(id = THREE_COLUMNS_VARIANT_NAME, regions = {"top", "main", "left", "right"})

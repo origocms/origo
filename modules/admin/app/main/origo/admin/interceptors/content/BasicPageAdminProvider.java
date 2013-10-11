@@ -11,7 +11,6 @@ import main.origo.admin.themes.AdminTheme;
 import main.origo.core.ModuleException;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
-import main.origo.core.ThemeRepository;
 import main.origo.core.annotations.Core;
 import main.origo.core.annotations.Interceptor;
 import main.origo.core.annotations.OnLoad;
@@ -21,9 +20,8 @@ import main.origo.core.annotations.forms.SubmitState;
 import main.origo.core.annotations.forms.Validation;
 import main.origo.core.event.forms.OnCreateEventGenerator;
 import main.origo.core.event.forms.OnUpdateEventGenerator;
-import main.origo.core.helpers.CoreSettingsHelper;
+import main.origo.core.helpers.BlockHelper;
 import main.origo.core.helpers.forms.FormHelper;
-import main.origo.core.internal.CachedThemeVariant;
 import main.origo.core.ui.Element;
 import models.origo.admin.AdminPage;
 import models.origo.core.BasicPage;
@@ -44,9 +42,6 @@ import java.util.Map;
 @Interceptor
 public class BasicPageAdminProvider {
 
-    private static final String TITLE_PARAM = "title";
-    private static final String THEME_VARIANT_PARAM = "themeVariant";
-
     /**
      * Provides a type with the static name 'content.basicpage'.
      * This will create the AdminPage for the UI to render.
@@ -58,7 +53,7 @@ public class BasicPageAdminProvider {
         AdminPage page = AdminPage.create(node, BasicPage.TYPE);
 
         // TODO: Look up themevariant (and also meta) from DB instead of resetting here.
-        page.themeVariant = null;
+        page.themeVariant = AdminTheme.RIGHT_AND_MAIN_COLUMNS_VARIANT_NAME;
         page.setTitle("Basic Page");
         return page;
     }
@@ -88,6 +83,13 @@ public class BasicPageAdminProvider {
             }
             RootNode rootNode = RootNode.findWithNodeIdAndSpecificVersion(node.nodeId(), node.version());
 
+            // TODO Make this be form parts instead of just the content
+            for (String segmentIdentifier : basicPage.blocks) {
+                BlockHelper.loadBlock(node, segmentIdentifier);
+            }
+
+
+
 /*
             Text leadText = Text.findWithIdentifier(basicPage.leadReferenceId);
             Text bodyText = Text.findWithIdentifier(basicPage.bodyReferenceId);
@@ -110,6 +112,13 @@ public class BasicPageAdminProvider {
         form = form.fill(page);
         node.addElement(AdminFormHelper.createFormElement(node, BasicPage.TYPE, form));
 
+        Admin.TabBar tabBar = TabHelper.createTabBar(node);
+        node.addElement(tabBar.setId("pageTabBar"), AdminTheme.getRightColumnMeta());
+
+        Admin.TabContent tabContent = TabHelper.createTabContent(node);
+        tabContent.setId("pageTabContent");
+        node.addElement(tabContent, AdminTheme.getRightColumnMeta());
+
     }
 
 
@@ -126,65 +135,18 @@ public class BasicPageAdminProvider {
             element.addChild(globalErrors);
         }
 
-        Admin.TabBar tabBar = TabHelper.createTabBar(node);
-        element.addChild(tabBar.setId("pageTabBar").
-                addChild(new Admin.TabItem().setWeight(100).
-                        addAttribute("class", "active").
-                        addChild(new Element.Anchor().
-                                addAttribute("href", "#generalTab").setBody("General"))));
+        Element actionButton = new Element.DropDownButton(new Element.Button().setBody("Action").addChild(new Element.Span().addAttribute("class", "caret"))).
+                addChildren(
+                        new Element.Anchor().setBody("Add Content"),
+                        new Element.Anchor().setBody("Remove Content"),
+                        new Element.Divider(),
+                        new Element.Anchor().setBody("Manage Content")
+                );
+        node.addElement(actionButton);
 
-        Admin.TabContent tabContent = TabHelper.createTabContent(node);
-        tabContent.setId("pageTabContent");
-        element.addChild(tabContent);
-
-        tabContent.addChild(createGeneralInformationPane(form));
 
         addActionButtons(element);
 
-    }
-
-    private static Element createGeneralInformationPane(Form<BasicPageForm> form) {
-
-        Element basicFieldSet = new Element.FieldSet().setId("general").
-                addChild(new Element.Legend().setBody("Basic"));
-
-        Element pane = new Admin.TabPane().setId("generalTab").addAttribute("class", "active").
-                addChild(new Element.Panel(new Element.Heading3().setBody("General")).
-                        addChild(basicFieldSet)
-                );
-
-        Element themeInputSelectElement = new Element.InputSelect();
-        String themeVariantFormValue = FormHelper.getFieldValue(form, THEME_VARIANT_PARAM);
-        for (CachedThemeVariant themeVariant : ThemeRepository.getAvailableThemeVariants()) {
-            Element optionElement = new Element.InputSelectOption().setBody(themeVariant.variantId);
-            if (StringUtils.isEmpty(themeVariantFormValue)) {
-                if (themeVariant.variantId.equals(CoreSettingsHelper.getThemeVariant())) {
-                    optionElement.addAttribute("selected", "selected");
-                }
-            } else {
-                if (themeVariant.variantId.equals(themeVariantFormValue)) {
-                    optionElement.addAttribute("selected", "selected");
-                }
-            }
-            themeInputSelectElement.addChild(optionElement);
-        }
-
-        basicFieldSet.
-                addChild(
-                        FormHelper.createField(form,
-                                new Element.Label().setWeight(10).setBody("Title").addAttribute("for", TITLE_PARAM),
-                                new Element.InputText().setWeight(20).addAttribute("name", TITLE_PARAM)
-                        )
-                ).
-                addChild(
-                        FormHelper.createField(form,
-                                new Element.Label().setWeight(10).setBody("Theme Variant").addAttribute("for", THEME_VARIANT_PARAM),
-                                themeInputSelectElement.setWeight(25).addAttribute("class", "themeSelector").
-                                        addAttribute("name", THEME_VARIANT_PARAM)
-                        )
-                );
-
-        return pane;
     }
 
     private static void addActionButtons(Element element) {
@@ -221,6 +183,7 @@ public class BasicPageAdminProvider {
 
         boolean newVersion = false;
 
+/*
         if (!latestVersion.title.equals(data.get(TITLE_PARAM))) {
             newVersion = true;
         }
@@ -229,7 +192,6 @@ public class BasicPageAdminProvider {
             newVersion = true;
         }
 
-/*
         Text leadText = Text.findWithIdentifier(latestVersion.leadReferenceId);
         if (leadText == null || !leadText.value.equals(data.get(LEAD_PARAM).trim())) {
             newVersion = true;
