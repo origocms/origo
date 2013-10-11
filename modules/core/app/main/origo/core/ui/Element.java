@@ -818,13 +818,9 @@ public class Element<T extends Element> {
         return parent;
     }
 
-    public boolean is(String type) {
-        return getType().equalsIgnoreCase(type);
-    }
-
     public boolean is(Class<? extends Element> elementType) {
         try {
-            return is(elementType.newInstance().type);
+            return getType().equalsIgnoreCase(elementType.newInstance().type) && this.getClass().equals(elementType);
         } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException("Unable to instantiate instance: "+elementType.getName(), e);
         }

@@ -181,7 +181,7 @@ public class AdminTheme {
 
     @Decorates(types = {Element.Anchor.class})
     public static Html decorateAnchor(Element element, DecorationContext decorationContext) {
-        if (decorationContext.parent().parent().is(Admin.TabBar.class)) {
+        if (element.parent().parent().is(Admin.TabBar.class)) {
             element.addAttribute("data-toggle", "tab");
         }
         return element.decorate(decorationContext);
