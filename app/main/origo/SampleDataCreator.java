@@ -9,7 +9,14 @@ import main.origo.themes.bootstrap3.Bootstrap3Theme;
 import models.origo.authentication.BasicAuthorization;
 import models.origo.authentication.BasicRole;
 import models.origo.authentication.BasicUser;
-import models.origo.core.*;
+import models.origo.core.Alias;
+import models.origo.core.BasicPage;
+import models.origo.core.Block;
+import models.origo.core.Meta;
+import models.origo.core.Release;
+import models.origo.core.RootNode;
+import models.origo.core.Settings;
+import models.origo.core.Text;
 import models.origo.core.navigation.BasicNavigation;
 import models.origo.core.navigation.ExternalLinkNavigation;
 import models.origo.core.navigation.GroupHolderNavigation;
@@ -218,6 +225,7 @@ public class SampleDataCreator {
         BasicPage page = createPage(
                 createRootNode(BasicPage.TYPE, "699eb321-7545-4b27-8a7f-94a4442d2046", 1),
                 "Protected Page",
+                "bootstrap3-main_and_left_columns",
                 block_1,
                 block_2);
 
