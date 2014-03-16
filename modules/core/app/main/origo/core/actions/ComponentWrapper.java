@@ -2,8 +2,13 @@ package main.origo.core.actions;
 
 import main.origo.core.CoreLoader;
 import main.origo.core.event.NodeContext;
+import play.Logger;
+import play.core.j.JavaResultExtractor;
 import play.libs.F;
-import play.mvc.*;
+import play.mvc.Action;
+import play.mvc.Http;
+import play.mvc.SimpleResult;
+import play.mvc.With;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -23,22 +28,20 @@ public @interface ComponentWrapper {
 
             F.Promise<SimpleResult> result = delegate.call(context);
 
-            return result;
-/*
-
-            final int statusCode = JavaResultExtractor.getStatus(result);
-            final Map<String,String> headers = JavaResultExtractor.getHeaders(result);
-            final String body = new String(JavaResultExtractor.getBody(result));
+            SimpleResult simpleResult = result.get(100);
+            final int statusCode = simpleResult.getWrappedSimpleResult().header().status();
+            final Map<String,String> headers = JavaResultExtractor.getHeaders(simpleResult);
+            final String body = new String(JavaResultExtractor.getBody(simpleResult));
 
             switch(statusCode) {
                 // Codes that should be handled by error pages
                 case 404: // File Not Found
                 {
-                    return CoreLoader.redirectToPageNotFoundPage();
+                    return F.Promise.pure(CoreLoader.redirectToPageNotFoundPage());
                 }
                 case 500: // Internal Server Error
                 {
-                    return CoreLoader.redirectToPageLoadErrorPage();
+                    return F.Promise.pure(CoreLoader.redirectToPageLoadErrorPage());
                 }
                 // Codes which should be sent directly to the browser
                 case 204: // No Content
@@ -63,7 +66,7 @@ public @interface ComponentWrapper {
                     if (body.isEmpty()) {
                         return result;
                     }
-                    return decorate(headers, body);
+                    return F.Promise.pure(decorate(headers, body));
                 }
 
                     // Codes which mean that the body should be wrapped and sent to be decorated
@@ -71,17 +74,16 @@ public @interface ComponentWrapper {
                 case 201: // Created
                 case 202: // Accepted
                 {
-                    return decorate(headers, body);
+                    return F.Promise.pure(decorate(headers, body));
                 }
                 default:
-                    Logger.error("Code '"+statusCode+"' is not set up to be handled");
+                    Logger.error("Code '" + statusCode + "' is not set up to be handled");
             }
 
             return result;
-*/
         }
 
-        private Result decorate(Map<String, String> headers, String body) {
+        private SimpleResult decorate(Map<String, String> headers, String body) {
 
             try {
                 NodeContext.set();

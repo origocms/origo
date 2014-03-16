@@ -6,13 +6,19 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import main.origo.core.User;
 import models.origo.core.Model;
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.jasypt.hibernate4.type.EncryptedStringType;
 import play.db.jpa.JPA;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+import javax.persistence.Table;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -38,7 +44,6 @@ public class BasicUser extends Model<BasicUser> implements User {
     public String email;
 
     @Type(type="encryptedString")
-    @JsonIgnore
     public String password;
 
     @ManyToMany

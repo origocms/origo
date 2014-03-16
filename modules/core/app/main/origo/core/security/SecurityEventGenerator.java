@@ -12,7 +12,6 @@ import main.origo.core.event.ProvidesEventGenerator;
 import main.origo.core.helpers.CoreSettingsHelper;
 import org.apache.commons.lang3.StringUtils;
 import play.libs.F;
-import play.mvc.Result;
 import play.mvc.SimpleResult;
 
 import java.util.Collections;
@@ -20,14 +19,14 @@ import java.util.Map;
 
 public class SecurityEventGenerator {
 
-    public static Result triggerAuthenticationCheck(String path) throws ModuleException, NodeLoadException {
+    public static SimpleResult triggerAuthenticationCheck(String path) throws ModuleException, NodeLoadException {
         if (StringUtils.isNotBlank(path)) {
             NodeContext.current().attributes.put(Security.Params.AUTH_PATH, path);
         }
         return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.SECURITY, Core.With.AUTHENTICATION_CHECK);
     }
 
-    public static Result triggerSignout() throws ModuleException, NodeLoadException {
+    public static SimpleResult triggerSignout() throws ModuleException, NodeLoadException {
         return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.SECURITY, Core.With.AUTHENTICATION_SIGNOUT);
     }
 

@@ -7,7 +7,6 @@ import main.origo.core.actions.ContextAware;
 import main.origo.core.event.NodeContext;
 import main.origo.core.security.SecurityEventGenerator;
 import play.db.jpa.Transactional;
-import play.libs.F;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -15,13 +14,13 @@ public class Authentication extends Controller {
 
     @Transactional
     @ContextAware
-    public static F.Promise<Result> login() {
+    public static Result login() {
         try {
-            return F.Promise.pure(SecurityEventGenerator.triggerAuthenticationCheck(null));
+            return SecurityEventGenerator.triggerAuthenticationCheck(null);
         } catch (NodeLoadException e) {
-            return F.Promise.pure(CoreLoader.handleException(e));
+            return CoreLoader.handleException(e);
         } catch (ModuleException e) {
-            return F.Promise.pure(CoreLoader.handleException(e));
+            return CoreLoader.handleException(e);
         }
     }
 

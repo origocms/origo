@@ -14,14 +14,14 @@ import play.Play;
 import play.mvc.Content;
 import play.mvc.Controller;
 import play.mvc.Http;
-import play.mvc.Result;
+import play.mvc.SimpleResult;
 
 import java.util.Collection;
 import java.util.List;
 
 public class CoreLoader {
 
-    public static Result loadStartPage() {
+    public static SimpleResult loadStartPage() {
         String startPage = CoreSettingsHelper.getStartPage();
         try {
             return Controller.ok(loadAndDecorateNode(startPage, 0));
@@ -32,7 +32,7 @@ public class CoreLoader {
         }
     }
 
-    public static Result loadPage(String identifier) {
+    public static SimpleResult loadPage(String identifier) {
         try {
             return Controller.ok(loadAndDecorateNode(identifier, 0));
         } catch (NodeNotFoundException e) {
@@ -44,7 +44,7 @@ public class CoreLoader {
         }
     }
 
-    public static Result loadPage(String identifier, int version) {
+    public static SimpleResult loadPage(String identifier, int version) {
         try {
             return Controller.ok(loadAndDecorateNode(identifier, version));
         } catch (NodeNotFoundException e) {
@@ -56,7 +56,7 @@ public class CoreLoader {
         }
     }
 
-    public static Result handleException(Throwable e) {
+    public static SimpleResult handleException(Throwable e) {
         if (Play.isDev()) {
             throw ExceptionUtil.getCause(e);
         }
@@ -64,7 +64,7 @@ public class CoreLoader {
         return redirectToPageLoadErrorPage();
     }
 
-    public static Result redirectToStartPage() {
+    public static SimpleResult redirectToStartPage() {
         String startPage = CoreSettingsHelper.getStartPage();
         if (StringUtils.isBlank(startPage)) {
             return redirectToPageNotFoundPage();
@@ -72,7 +72,7 @@ public class CoreLoader {
         return Controller.redirect(CoreSettingsHelper.getBaseUrl());
     }
 
-    public static Result redirectToPageNotFoundPage() {
+    public static SimpleResult redirectToPageNotFoundPage() {
         String pageNotFoundPage = CoreSettingsHelper.getPageNotFoundPage();
         Collection<Alias> aliases = Alias.findWithPageId(pageNotFoundPage);
         String url;
@@ -96,7 +96,7 @@ public class CoreLoader {
         return Controller.redirect(url);
     }
 
-    public static Result redirectToPageLoadErrorPage() {
+    public static SimpleResult redirectToPageLoadErrorPage() {
         String internalServerErrorPage = CoreSettingsHelper.getInternalServerErrorPage();
         Collection<Alias> aliases = Alias.findWithPageId(internalServerErrorPage);
         String url;
