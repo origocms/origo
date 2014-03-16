@@ -1,12 +1,23 @@
 import main.origo.core.internal.AnnotationProcessor;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import play.Application;
+import play.Configuration;
 import play.GlobalSettings;
 import play.db.jpa.JPA;
 import play.libs.F;
 
+import java.io.File;
+
 public class Global extends GlobalSettings {
+
+    @Override
+    public void beforeStart(Application application) {
+        super.beforeStart(application);
+    }
+
+    @Override
+    public Configuration onLoadConfig(Configuration configuration, File file, ClassLoader classLoader) {
+        return super.onLoadConfig(configuration, file, classLoader);
+    }
 
     @Override
     public void onStart(play.Application application) {

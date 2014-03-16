@@ -2,12 +2,8 @@ package main.origo.core.actions;
 
 import main.origo.core.CoreLoader;
 import main.origo.core.event.NodeContext;
-import play.Logger;
-import play.core.j.JavaResultExtractor;
-import play.mvc.Action;
-import play.mvc.Http;
-import play.mvc.Result;
-import play.mvc.With;
+import play.libs.F;
+import play.mvc.*;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -21,10 +17,14 @@ import java.util.Map;
 public @interface ComponentWrapper {
 
     public static class ComponentWrapperAction extends Action.Simple {
-        @Override
-        public Result call(Http.Context context) throws Throwable {
 
-            Result result = delegate.call(context);
+        @Override
+        public F.Promise<SimpleResult> call(Http.Context context) throws Throwable {
+
+            F.Promise<SimpleResult> result = delegate.call(context);
+
+            return result;
+/*
 
             final int statusCode = JavaResultExtractor.getStatus(result);
             final Map<String,String> headers = JavaResultExtractor.getHeaders(result);
@@ -78,6 +78,7 @@ public @interface ComponentWrapper {
             }
 
             return result;
+*/
         }
 
         private Result decorate(Map<String, String> headers, String body) {

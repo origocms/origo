@@ -115,7 +115,7 @@ public class ProvidesEventGenerator {
 
         CachedAnnotation cacheAnnotation = EventGeneratorUtils.selectEventHandler(Provides.class, nodeType, withType, providers);
         if (cacheAnnotation == null) {
-            throw new RuntimeException("Every type (specified by using attribute 'with') must have a class annotated with @Provides to instantiate an instance. Unable to find a provider for type '" + nodeType + "' with '"+withType+"'");
+            throw new NoSuchProviderException(nodeType, withType, "Every type (specified by using attribute 'with') must have a class annotated with @Provides to instantiate an instance. Unable to find a provider for type '" + nodeType + "' with '"+withType+"'");
         }
         return cacheAnnotation;
     }

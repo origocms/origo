@@ -11,7 +11,9 @@ import main.origo.core.event.OnLoadEventGenerator;
 import main.origo.core.event.ProvidesEventGenerator;
 import main.origo.core.helpers.CoreSettingsHelper;
 import org.apache.commons.lang3.StringUtils;
+import play.libs.F;
 import play.mvc.Result;
+import play.mvc.SimpleResult;
 
 import java.util.Collections;
 import java.util.Map;
@@ -96,7 +98,7 @@ public class SecurityEventGenerator {
         throw new RuntimeException("Unable to trigger user provider, no user type set.");
     }
 
-    public static Result triggerProvidesAuthorizationFailure() throws ModuleException, NodeLoadException {
+    public static F.Promise<SimpleResult> triggerProvidesAuthorizationFailure() throws ModuleException, NodeLoadException {
         return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.SECURITY, Core.With.AUTHORIZATION_FAILURE, Maps.<String, Object>newHashMap());
     }
 

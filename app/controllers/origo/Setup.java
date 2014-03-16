@@ -2,7 +2,6 @@ package controllers.origo;
 
 import main.origo.SampleDataCreator;
 import models.origo.core.Settings;
-import org.springframework.stereotype.Component;
 import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -22,9 +21,7 @@ public class Setup extends Controller {
             Settings.load().setValue("origo.basicdata.insert", "false");
             return redirect(routes.Application.index());
         } else {
-            Settings settings = Settings.load();
-            settings.setValue("origo.basicdata.insert", "false");
-            Settings.save(settings);
+            Settings.load().setValue("origo.basicdata.insert", "false");
             return redirect(controllers.origo.admin.routes.Dashboard.index());
         }
 

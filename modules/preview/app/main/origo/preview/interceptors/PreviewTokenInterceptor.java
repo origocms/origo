@@ -1,7 +1,6 @@
 package main.origo.preview.interceptors;
 
 import forms.origo.preview.PreviewTokenForm;
-import main.origo.authentication.form.LoginForm;
 import main.origo.core.ModuleException;
 import main.origo.core.Node;
 import main.origo.core.NodeLoadException;
@@ -31,7 +30,7 @@ public class PreviewTokenInterceptor {
     @OnLoad(with = Core.With.PREVIEW_CREATE)
     public static void addPreviewForm(Node node, String withType) throws ModuleException, NodeLoadException {
 
-        Form<LoginForm> form = FormHelper.getValidationResult(LoginForm.class);
+        Form<PreviewTokenForm> form = FormHelper.getValidationResult(PreviewTokenForm.class);
 
         FormHelper.createFormElement(node, withType, form);
     }
@@ -70,7 +69,7 @@ public class PreviewTokenInterceptor {
     }
 
     @OnSubmit(with = Core.With.PREVIEW_CREATE, validate = PreviewTokenForm.class)
-    public static Boolean handlePreviewSubmit(Form<LoginForm> loginForm) throws NodeLoadException, ModuleException {
+    public static Boolean handlePreviewSubmit(Form<PreviewTokenForm> loginForm) throws NodeLoadException, ModuleException {
 
         Form<PreviewTokenForm> form = FormHelper.getValidationResult(PreviewTokenForm.class);
 

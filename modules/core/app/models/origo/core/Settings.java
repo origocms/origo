@@ -30,16 +30,18 @@ public class Settings {
         return values;
     }
 
-    public void setValues(final Map<String, String> values) {
+    public Settings setValues(final Map<String, String> values) {
         this.values = values;
+        return this;
     }
 
     public boolean containsKey(final String key) {
         return getValues().containsKey(key);
     }
 
-    public void setValue(final String key, final String value) {
+    public Settings setValue(final String key, final String value) {
         getValues().put(key, value);
+        return this;
     }
 
     public String getValue(final String key) {
@@ -110,10 +112,11 @@ public class Settings {
         return defaultValue;
     }
 
-    public void setValueIfMissing(String settingKey, String newValue) {
+    public Settings setValueIfMissing(String settingKey, String newValue) {
         if (StringUtils.isBlank(getValue(settingKey))) {
             setValue(settingKey, newValue);
         }
+        return this;
     }
 
     public static Settings load() {

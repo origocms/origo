@@ -38,7 +38,7 @@ public class Element<T extends Element> {
 
         @Override
         public Html decorate(DecorationContext decorationContext) {
-            return Html.apply("<!-- ").$plus(getBody()).$plus(Html.apply(" -->"));
+            return Html.apply("<!-- ").$plus$eq(getBody()).$plus$eq(Html.apply(" -->"));
         }
     }
 

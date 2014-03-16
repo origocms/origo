@@ -116,13 +116,13 @@ public class ThemeHelper {
     public static Html decorateChildren(Element parent, DecorationContext decorationContext) {
         Html decoratedOutput = Html.empty();
         if (parent.hasBody()) {
-            decoratedOutput.$plus(parent.getBody());
+            decoratedOutput.$plus$eq(parent.getBody());
         }
         if (parent.hasChildren()) {
             decorationContext.nest(parent);
             @SuppressWarnings("unchecked") final List<Element> children = parent.getChildren();
             for (Element childElement : children) {
-                decoratedOutput.$plus(decorate(childElement, decorationContext));
+                decoratedOutput.$plus$eq(decorate(childElement, decorationContext));
             }
             decorationContext.unNest();
         }

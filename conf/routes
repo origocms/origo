@@ -3,8 +3,8 @@
 # ~~~~
 
 ->      /core                               core.Routes
-->      /auth                               auth.Routes
-->      /admin                              admin.Routes
+#->      /auth                               auth.Routes
+#->      /admin                              admin.Routes
 
 
 # Map static resources from the /public folder to the /assets URL path
