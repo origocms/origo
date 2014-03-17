@@ -29,7 +29,7 @@ public class Authentication extends Controller {
     public static Result logout(String path) {
         try {
             NodeContext.current().attributes.put(main.origo.core.security.Security.Params.AUTH_PATH, path);
-            return SecurityEventGenerator.triggerSignout();
+            return SecurityEventGenerator.triggerSignOut();
         } catch (NodeLoadException e) {
             return CoreLoader.handleException(e);
         } catch (ModuleException e) {

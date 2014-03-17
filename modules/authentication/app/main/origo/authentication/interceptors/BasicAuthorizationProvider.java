@@ -29,12 +29,8 @@ public class BasicAuthorizationProvider {
         String path = (String) NodeContext.current().attributes.get(Security.Params.AUTH_PATH);
 
         String[] roles = SecurityEventGenerator.triggerProvidesAuthorizationRolesInterceptor(path);
-        if (roles.length == 0) {
-            // If no groups are set on the node, let anyone through
-            return true;
-        }
+        return roles.length == 0 || JavaDeadboltAnalyzer.checkRole(subject, roles);
 
-        return JavaDeadboltAnalyzer.checkRole(subject, roles);
     }
 
     @Provides(type = Core.Type.SECURITY, with = Core.With.AUTHORIZATION_ROLES)
@@ -81,7 +77,7 @@ public class BasicAuthorizationProvider {
             }
             currentPath = currentPath.substring(0, currentPath.lastIndexOf("/"));
         } while(StringUtils.isNotBlank(currentPath));
-        return basicAuthorization;
+        return null;
     }
 
     private static boolean matches(String queryPath, String authPath) {

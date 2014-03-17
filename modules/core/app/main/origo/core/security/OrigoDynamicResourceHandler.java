@@ -7,6 +7,7 @@ import main.origo.core.ModuleException;
 import main.origo.core.NodeLoadException;
 import main.origo.core.event.NodeContext;
 import main.origo.core.utils.ExceptionUtil;
+import org.apache.commons.lang3.BooleanUtils;
 import play.Logger;
 import play.mvc.Http;
 
@@ -22,7 +23,7 @@ public class OrigoDynamicResourceHandler implements DynamicResourceHandler {
             args.put(Security.Params.AUTH_HANDLER, name);
             args.put(Security.Params.AUTH_META, meta);
             Boolean isAllowed = SecurityEventGenerator.triggerAuthorizationCheck(Http.Context.current().request().path(), args);
-            return !(isAllowed == null || !isAllowed);
+            return BooleanUtils.isTrue(isAllowed);
         } catch (NodeLoadException e) {
             ExceptionUtil.assertExceptionHandling(e);
             Logger.error("Authorization check failed, returning false", e);

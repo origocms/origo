@@ -146,7 +146,7 @@ public class CoreLoader {
             Logger.debug("Found alias: " + alias.toString());
             return loadByNodeIdAndVersion(alias.pageId, version);
         } else {
-            Logger.debug("No Alias found trying [" + identifier + "] as nodeId");
+            Logger.debug("No Alias found, trying [" + identifier + "] as nodeId");
             return loadByNodeIdAndVersion(identifier, version);
         }
     }

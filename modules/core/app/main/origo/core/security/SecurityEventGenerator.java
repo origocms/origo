@@ -26,7 +26,7 @@ public class SecurityEventGenerator {
         return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.SECURITY, Core.With.AUTHENTICATION_CHECK);
     }
 
-    public static SimpleResult triggerSignout() throws ModuleException, NodeLoadException {
+    public static SimpleResult triggerSignOut() throws ModuleException, NodeLoadException {
         return ProvidesEventGenerator.triggerInterceptor(null, Core.Type.SECURITY, Core.With.AUTHENTICATION_SIGNOUT);
     }
 

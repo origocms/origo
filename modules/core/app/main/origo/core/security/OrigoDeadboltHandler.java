@@ -34,7 +34,8 @@ public class OrigoDeadboltHandler extends AbstractDeadboltHandler {
     @Override
     public F.Promise<SimpleResult> onAuthFailure(Http.Context context, String content) {
         try {
-            return SecurityEventGenerator.triggerProvidesAuthorizationFailure();
+            F.Promise<SimpleResult> simpleResultPromise = SecurityEventGenerator.triggerProvidesAuthorizationFailure();
+            return simpleResultPromise;
         } catch (NodeLoadException | ModuleException e) {
             throw new RuntimeException(e);
         }
